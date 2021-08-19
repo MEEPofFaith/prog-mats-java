@@ -1,5 +1,19 @@
-# Mindustry Java Mod Template
-A Java Mindustry mod template that works on Android and PC. The Kotlin version of this mod can be seen [here](https://github.com/Anuken/ExampleKotlinMod).
+![Logo](images/ProgMats.png)
+
+[![Commit Compiling](https://github.com/MEEPofFaith/prog-mats-java-anuk/workflows/Commit%20Test/badge.svg)](https://github.com/MEEPofFaith/prog-mats-java/actions) [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)](https://discord.gg/RCCVQFW) [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=8a1a1a&label=Avant)](https://discord.gg/V6ygvgGVqE) [![Stars](https://img.shields.io/github/stars/MEEPofFaith/prog-mats-java?label=Star%20the%20mod%20here%21&style=social)]()
+
+Progressed Materials is a combination of three of my mods originally made in v5 mods:
+- Ohno Missiles
+- Extra Sand in the Sandbox
+- Progressed Materials
+
+Most of the content in this mod is just experimental turrets. They probably aren't balanced, and are just me trying out various ideas.
+
+[![Download](https://img.shields.io/github/v/release/MEEPofFaith/prog-mats-java-anuk?color=gold&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=FCC21B&style=for-the-badge)](https://github.com/MEEPofFaith/prog-mats-java-anuk/releases)
+
+_Or just find it in the in-game mod browser!_
+
+---
 
 ## Building for Desktop Testing
 
