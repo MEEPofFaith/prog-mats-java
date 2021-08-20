@@ -980,7 +980,7 @@ public class PMBlocks implements ContentList{
             fuelPerItem = 3;
             fuelPerCraft = 12;
             fuelCapacity = 48;
-            fuelUseReduction = 0.45f;
+            fuelUseReduction = 0.8f;
             consumes.items(with(
                 Items.lead, 4,
                 Items.sand, 10,

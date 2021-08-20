@@ -31,6 +31,7 @@ public class SentryUnitType extends UnitType{
         speed = accel = 0f;
         drag = 0.12f;
         flying = lowAltitude = true;
+        onTitleScreen = false;
         engineOffset = 6f;
         engineSize = 2f;
         isCounted = false;
