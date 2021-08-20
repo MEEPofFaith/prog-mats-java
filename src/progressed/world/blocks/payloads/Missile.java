@@ -53,6 +53,11 @@ public class Missile extends NuclearWarhead{
         Draw.rect(region, tile.drawx(), tile.drawy());
     }
 
+    @Override
+    public boolean canBeBuilt(){
+        return false;
+    }
+
     public class MissileBuild extends NuclearWarheadBuild{
         @Override
         public void onDestroyed(){

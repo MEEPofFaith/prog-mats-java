@@ -15,7 +15,7 @@ public class CapBlock extends Wall{
     public class CapBlockBuild extends WallBuild{
         @Override
         public void draw(){
-            Draw.rect(block.region, x, y);
+            Draw.rect(region, x, y);
     
             drawTeamTop();
         }
