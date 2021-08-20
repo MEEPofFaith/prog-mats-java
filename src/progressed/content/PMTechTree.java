@@ -155,6 +155,11 @@ public class PMTechTree implements ContentList{
             node(mindronCollider);
         });
 
+        vanillaNode(siliconCrucible, () -> {
+           //Forge
+           node(forge);
+        });
+
         // Effect
         vanillaNode(shockMine, () -> {
             //Static link

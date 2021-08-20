@@ -117,7 +117,7 @@ public class TeslaTurret extends Block{
             throw new RuntimeException(name + " does not have any rings!");
         }
         if(maxTargets <= 0){
-            throw new RuntimeException("The maxTargets of " + name + " is 0!");
+            throw new RuntimeException("The 'maxTargets' of " + name + " is 0!");
         }
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
@@ -310,7 +310,7 @@ public class TeslaTurret extends Block{
 
                             shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
                             shootEffect.at(shootX, shootY, shootAngle, lightningColor);
-                            PMFx.PMChainLightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
+                            PMFx.fakeLightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
                         }
 
                         Effect.shake(shootShake, shootShake, this);

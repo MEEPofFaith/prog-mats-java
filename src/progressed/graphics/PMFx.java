@@ -357,21 +357,8 @@ public class PMFx{
             Drawf.tri(e.x + x, e.y + y, e.fslope() * 3f + 1, e.fslope() * 3f + 1, Mathf.angle(x, y));
         });
     }),
-    
-    teleportEffect = new Effect(60f, e -> {
-        color(e.color, e.fout());
 
-        float[] data = (float[])e.data;
-        
-        stroke(data[0] * e.fout());
-        line(e.x, e.y, data[1], data[2]);
-        Fill.circle(e.x, e.y, data[0] * 1.5f);
-        Fill.circle(data[1], data[2], data[0] * 1.5f);
-        
-        reset();
-    }),
-
-    PMChainLightning = new Effect(10f, 500f, e -> {
+    fakeLightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
         Tmp.v1.set(d.pos).sub(e.x, e.y).nor();
@@ -506,6 +493,13 @@ public class PMFx{
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
     }).layer(32.5f),
+
+    superSmeltsmoke = new Effect(15, e -> {
+        randLenVectors(e.id, 14, 6f + e.fin() * 18f, (x, y) -> {
+            color(Color.white, e.color, e.fin());
+            Fill.square(e.x + x, e.y + y, 0.5f + e.fout() * 3f, 45);
+        });
+    }),
     
     swordStab = new Effect(24f, e -> {
         color(e.color, Color.violet, e.fin());

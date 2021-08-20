@@ -15,6 +15,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.ui.*;
@@ -77,7 +78,7 @@ public class PMBlocks implements ContentList{
     // Region Crafting
 
     //Crafters
-    mindronCollider, shellPress, missileFactory, sentryBuilder,
+    mindronCollider, forge, shellPress, missileFactory, sentryBuilder,
 
     // endregion
     // Region Effect
@@ -907,10 +908,8 @@ public class PMBlocks implements ContentList{
                 PMItems.fusium, 3
             ));
             health = 15;
-            speed = 0.08f;
-            deepSpeed = 0.06f;
-            displayedSpeed = 11f;
-            deepDisplayedSpeed = 8.4f;
+            speed = 0.06f;
+            displayedSpeed = 8.4f;
             buildCostMultiplier = 0.25f;
             researchCostMultiplier = 300f;
         }};
@@ -952,6 +951,46 @@ public class PMBlocks implements ContentList{
                 Items.thorium, 3
             ));
             outputItem = new ItemStack(PMItems.fusium, 2);
+        }};
+
+        forge = new FuelCrafter("forge"){{
+            requirements(Category.crafting, with(
+                Items.titanium, 300,
+                Items.metaglass, 120,
+                Items.plastanium, 50,
+                Items.silicon, 180,
+                Items.surgeAlloy, 70,
+                PMItems.fusium, 100
+            ));
+            size = 5;
+            itemCapacity = 32;
+            craftTime = 75f;
+            hasPower = true;
+            hasLiquids = false;
+            craftEffect = PMFx.superSmeltsmoke;
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 1f; //Big flame louder sound
+
+            DrawSmelter d = new DrawSmelter(Color.valueOf("ffef99"));
+            d.flameRadius = 11f;
+            d.flameRadiusIn = 7f;
+            drawer = d;
+
+            fuelItem = Items.pyratite;
+            fuelPerItem = 3;
+            fuelPerCraft = 12;
+            fuelCapacity = 48;
+            fuelUseReduction = 0.45f;
+            consumes.items(with(
+                Items.lead, 4,
+                Items.sand, 10,
+                Items.coal, 6
+            ));
+            consumes.power(9f);
+            outputItems = with(
+                Items.silicon, 16,
+                Items.metaglass, 8
+            );
         }};
 
         shellPress = new PayloadCrafter("shell-press"){{

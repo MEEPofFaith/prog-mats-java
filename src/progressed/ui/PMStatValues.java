@@ -12,6 +12,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.maps.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -20,6 +21,7 @@ import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.InjectorBulletType.*;
 import progressed.entities.units.*;
+import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.payloads.*;
 
@@ -195,37 +197,87 @@ public class PMStatValues{
         };
     }
 
+    public static StatValue fuelEfficiency(Floor floor, float multiplier){
+        return table -> table.stack(
+            new Image(floor.uiIcon).setScaling(Scaling.fit),
+            new Table(t -> t.top().right().add((multiplier < 0 ? "[accent]" : "[scarlet]+") + PMUtls.stringsFixed(multiplier * 100)).style(Styles.outlineLabel))
+        );
+    }
+
     public static StatValue fuel(FuelCrafter crafter){
         return table -> {
-            table.row();
-
-            table.image(crafter.fuelItem.fullIcon).size(3 * 8).padRight(4).right().top();
-            table.add(crafter.fuelItem.localizedName).padRight(10).left().top();
-
             table.table(t -> {
-                t.left().defaults().padRight(3).left();
+                t.table(ct -> {
+                    for(ItemStack stack : crafter.consumes.getItem().items){
+                        ct.add(new ItemDisplay(stack.item, stack.amount, crafter.craftTime, true)).padRight(5);
+                    }
+                }).left().get().background(Tex.underline);
 
-                t.add(Core.bundle.format("fuel.fc-input", crafter.fuelPerItem));
+                t.row();
 
-                sep(t, Core.bundle.format("fuel.fc-use", crafter.fuelPerCraft));
+                t.table(ft -> {
+                    ft.image(crafter.fuelItem.fullIcon).size(3 * 8).padRight(4).right().top();
+                    ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
 
-                sep(t, Core.bundle.format("fuel.fc-capacity", crafter.fuelCapacity));
+                    ft.table(st -> {
+                        st.clearChildren();
+                        st.left().defaults().padRight(3).left();
 
-                if(crafter.attribute != null){
-                    sep(t, Core.bundle.get("fuel.fc-affinity"));
-                    t.row();
-                    t.table(at -> {
-                        Attribute attr = crafter.attribute;
+                        st.add(Core.bundle.format("pm-fuel.input", crafter.fuelPerItem));
 
-                        at.left().defaults().padRight(3).left();
-                        for(var block : Vars.content.blocks()
-                            .select(block -> block instanceof Floor f && f.attributes.get(attr) != 0 && !(f.isLiquid && !crafter.floating))
-                            .<Floor>as().with(s -> s.sort(f -> f.attributes.get(attr)))){
-                            floorStat(at, crafter, attr, block);
+                        sep(st, Core.bundle.format("pm-fuel.use", crafter.fuelPerCraft));
+
+                        sep(st, Core.bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
+
+                        if(crafter.attribute != null){
+                            st.row();
+                            st.table(at -> {
+                                Runnable[] rebuild = {null};
+                                Map[] lastMap = {null};
+
+                                rebuild[0] = () -> {
+                                    at.clearChildren();
+                                    at.left();
+
+                                    at.add("@pm-fuel.affinity");
+
+                                    if(state.isGame()){
+                                        var blocks = Vars.content.blocks()
+                                            .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
+                                            .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
+
+                                        if(blocks.any()){
+                                            int i = 0;
+                                            for(var block: blocks){
+                                                fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
+                                                if(++i % 5 == 0){
+                                                    at.row();
+                                                }
+                                            }
+                                        }else{
+                                            at.add("@none.inmap");
+                                        }
+                                    }else{
+                                        at.add("@stat.showinmap");
+                                    }
+                                };
+
+                                rebuild[0].run();
+
+                                //rebuild when map changes.
+                                at.update(() -> {
+                                    Map current = state.isGame() ? state.map : null;
+
+                                    if(current != lastMap[0]){
+                                        rebuild[0].run();
+                                        lastMap[0] = current;
+                                    }
+                                });
+                            });
                         }
-                    }).padTop(0).left().get().background(null);
-                }
-            }).padTop(-9).left().get().background(Tex.underline);
+                    }).padTop(-9).left().get().background(Tex.underline);
+                }).left();
+            });
         };
     }
 

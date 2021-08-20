@@ -24,8 +24,6 @@ public class FloatingConveyor extends Conveyor{
     final Vec2 tr2 = new Vec2();
 
     public boolean shallowDeep;
-    public float deepSpeed = -1f;
-    public float deepDisplayedSpeed = 0f;
 
     public TextureRegion[] topRegions = new TextureRegion[5];
 
@@ -38,11 +36,6 @@ public class FloatingConveyor extends Conveyor{
     @Override
     public void init(){
         super.init();
-
-        if(deepSpeed < 0f){
-            deepSpeed = speed;
-            deepDisplayedSpeed = displayedSpeed;
-        }
     }
 
     @Override
@@ -50,25 +43,6 @@ public class FloatingConveyor extends Conveyor{
         super.load();
         for(int i = 0; i < 5; i++){
             topRegions[i] = Core.atlas.find(name + "-top-" + i);
-        }
-    }
-
-    @Override
-    public void setStats(){
-        super.setStats();
-
-        if(deepDisplayedSpeed != displayedSpeed){
-            stats.remove(Stat.itemsMoved);
-            stats.add(Stat.itemsMoved, s -> {
-                Table t = new Table();
-                t.add(Core.bundle.get("stat.pm-land-speed") + PMUtls.stringsFixed(displayedSpeed) + " " + StatUnit.itemsSecond.localized()).left();
-                t.row();
-                String l = shallowDeep ? Core.bundle.get("stat.pm-liquid-speed") : Core.bundle.get("stat.pm-deep-speed");
-                t.add(l + PMUtls.stringsFixed(deepDisplayedSpeed) + " " + StatUnit.itemsSecond.localized()).left();
-
-
-                s.add(t);
-            });
         }
     }
 
@@ -109,7 +83,7 @@ public class FloatingConveyor extends Conveyor{
 
         @Override
         public void draw(){
-            int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * (deep ? deepSpeed : speed) * 8f * timeScale)) % 4) : 0;
+            int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * speed * 8f * timeScale)) % 4) : 0;
 
             //draw extra conveyors facing this one for non-square tiling purposes
             Draw.z(Layer.blockUnder);
@@ -165,7 +139,7 @@ public class FloatingConveyor extends Conveyor{
             }
 
             float nextMax = aligned ? 1f - Math.max(itemSpace - nextc.minitem, 0) : 1f;
-            float moved = (deep ? deepSpeed : speed) * edelta();
+            float moved = speed * edelta();
 
             for(int i = len - 1; i >= 0; i--){
                 float nextpos = (i == len - 1 ? 100f : ys[i + 1]) - itemSpace;
