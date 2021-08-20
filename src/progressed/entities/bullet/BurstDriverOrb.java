@@ -9,16 +9,17 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.world.blocks.distribution.BurstDriver.*;
 
-public class BurstDriverItem extends BulletType{
+public class BurstDriverOrb extends BulletType{
     float size = 6f;
     float minSpin = 10f, maxSpin = 25f;
 
-    public BurstDriverItem(){
+    public BurstDriverOrb(){
         super(1f, 2f);
         collidesTiles = false;
         lifetime = 1f;
         despawnEffect = Fx.smeltsmoke;
         hitEffect = Fx.hitBulletSmall;
+        layer = Layer.bullet - 1f;
     }
 
     @Override
@@ -27,14 +28,11 @@ public class BurstDriverItem extends BulletType{
             return;
         }
 
-        Draw.z(Layer.bullet - 0.03f); //Don't bloom
-
         TextureRegion region = data.item.fullIcon;
         float rot = b.rotation() + Mathf.randomSeed(b.id, 0f, 380f) + Time.time * Mathf.randomSeed(b.id + 1, minSpin, maxSpin) * Mathf.signs[Mathf.randomSeed(b.id + 2, 0, 1)];
 
         Drawf.shadow(region, b.x - size / 2f, b.y - size / 2f, size, size, rot);
 
-        Draw.z(Layer.bullet - 0.02f); //Don't bloom
         Lines.stroke(size / 12f, data.item.color);
         Lines.circle(b.x, b.y, size / 2f);
         Draw.color();

@@ -318,7 +318,7 @@ public class BurstDriver extends Block{
 
                         tr.trns(angle, shootLength, Mathf.range(xRand));
 
-                        PMBullets.burstBolt.create(this, team, x + tr.x, y + tr.y, angle, -1f, speed, lifetime, data);
+                        PMBullets.burstDriverOrb.create(this, team, x + tr.x, y + tr.y, angle, -1f, speed, lifetime, data);
 
                         shootEffect.at(x + tr.x, y + tr.y, angle);
                         smokeEffect.at(x + tr.x, y + tr.y, angle);

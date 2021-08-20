@@ -43,7 +43,7 @@ public class PMBullets implements ContentList{
     
     harbingerLaser, excaliburLaser, sentinelLaser,
 
-    burstBolt;
+    burstDriverOrb;
 
     @Override
     public void load(){
@@ -640,6 +640,6 @@ public class PMBullets implements ContentList{
             hitSoundVolume = 4f;
         }};
 
-        burstBolt = new BurstDriverItem();
+        burstDriverOrb = new BurstDriverOrb();
     }
 }
