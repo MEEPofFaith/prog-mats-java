@@ -85,8 +85,6 @@ public class SwordTurret extends BaseTurret{
         if(expandedRadius < 0) expandedRadius = radius * 2.5f;
         if(baseLength < 0) baseLength = size * tilesize / 2f;
 
-        clipSize = Math.max(clipSize, (range + expandedRadius + swordRegion.height) * 2f);
-
         super.init();
     }
 
@@ -98,6 +96,8 @@ public class SwordTurret extends BaseTurret{
         swordRegion = atlas.find(name + "-sword");
         outlineRegion = atlas.find(name + "-sword-outline");
         heatRegion = atlas.find(name + "-sword-heat");
+
+        clipSize = Math.max(clipSize, (range + expandedRadius + swordRegion.height) * 2f);
     }
 
     @Override
