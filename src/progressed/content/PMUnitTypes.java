@@ -218,6 +218,7 @@ public class PMUnitTypes implements ContentList{
                 alwaysUnlocked = true;
                 flying = true;
                 lowAltitude = true;
+                onTitleScreen = false;
                 mineSpeed = 100f;
                 mineTier = 10000;
                 buildSpeed = 10000f;
