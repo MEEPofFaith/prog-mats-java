@@ -1,5 +1,6 @@
 package progressed.world.blocks.payloads;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
@@ -11,6 +12,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
+import progressed.*;
 
 import static mindustry.Vars.*;
 
@@ -25,6 +27,8 @@ public class Missile extends NuclearWarhead{
     public boolean requiresUnlock;
 
     public float shadowRad = -1f;
+
+    public TextureRegion topRegion;
 
     public Missile(String name){
         super(name);
@@ -46,11 +50,24 @@ public class Missile extends NuclearWarhead{
         super.init();
     }
 
+    @Override
+    public void load(){
+        super.load();
+
+        topRegion = Core.atlas.find(name + "-top");
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return Core.atlas.isFound(topRegion) ? new TextureRegion[]{region, topRegion} : super.icons();
+    }
+
     public void drawBase(Tile tile){
         Draw.z(Layer.blockUnder - 1f);
         Drawf.shadow(tile.drawx(), tile.drawy(), shadowRad);
         Draw.z(Layer.block);
         Draw.rect(region, tile.drawx(), tile.drawy());
+        if(topRegion.found()) Draw.rect(topRegion, tile.drawx(), tile.drawy());
     }
 
     @Override

@@ -1002,6 +1002,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 5;
+            ambientSound = Sounds.machine;
             products = Seq.with(PMPayloads.emptyMissile, PMPayloads.emptyNuke);
         }};
 
@@ -1016,6 +1017,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 5;
+            ambientSound = Sounds.machine;
             products = Seq.with(PMPayloads.basicMissile, PMPayloads.empMissile, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
         }};
 
@@ -1028,6 +1030,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 3;
+            build = false;
             products = Seq.with(PMPayloads.basicSentry, PMPayloads.strikeSentry, PMPayloads.dashSentry);
         }};
 
