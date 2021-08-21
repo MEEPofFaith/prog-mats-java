@@ -55,7 +55,19 @@ public class ProgMats extends Mod{
             progM.meta.version = "[#FCC21B]" + progM.meta.version + "[]";
             progM.meta.description = stringf.get(progM.meta.name + ".description");
 
-            Events.on(ClientLoadEvent.class, e -> PMUtls.godHood(PMUnitTypes.everythingUnit));
+            Events.on(ClientLoadEvent.class, e -> {
+                PMUtls.godHood(PMUnitTypes.everythingUnit);
+
+                /*if(Core.settings.getBool("pm-farting")){
+                    content.blocks().each(b -> {
+                        b.destroySound = Sounds.wind3;
+                    });
+
+                    content.units().each(u -> {
+                       u.deathSound = Sounds.wind3;
+                    });
+                }*/
+            });
         }
     }
 
