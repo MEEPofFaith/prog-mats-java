@@ -52,6 +52,7 @@ public class PayloadTurret extends PayloadMissileTurret{
         if(lineLength < 0) lineLength = loadLength + shootLength;
         if(width < 0) width = size * tilesize / 4f;
         if(elevation < 0) elevation = size / 2f;
+        clipSize = Math.max(clipSize, size * tilesize + (lineLength + lineStart) * 2f);
 
         super.init();
     }

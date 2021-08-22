@@ -22,17 +22,16 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.ui.*;
-import progressed.util.*;
 
 import static mindustry.Vars.*;
 
 public class PayloadCrafter extends BlockProducer{
+    private float scrollPos;
+
     public Seq<Missile> products;
     public boolean hasTop = true, build = true;
 
     public int[] capacities = {};
-
-    private float scrollPos;
 
     public PayloadCrafter(String name){
         super(name);
@@ -91,43 +90,7 @@ public class PayloadCrafter extends BlockProducer{
         super.setStats();
         stats.remove(Stat.powerUse);
 
-        stats.add(Stat.input, t -> {
-           t.row();
-
-           products.each(p -> {
-               t.image(p.fullIcon).padRight(4).right().top();
-               t.add(p.localizedName).padRight(10).left().top();
-
-               t.table(ct -> {
-                   ct.left().defaults().padRight(3).left();
-
-                   ct.table(it -> {
-                       it.add(Stat.input.localized() + ": ");
-                       for(ItemStack stack : p.requirements){
-                           it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
-                       }
-                   });
-
-                   if(p.prev != null){
-                       ct.row();
-                       ct.table(pt -> {
-                           pt.image(p.prev.fullIcon).padLeft(60f).padRight(4).right().top();
-                           pt.add(p.prev.localizedName).padRight(10).left().top();
-                       });
-                   }
-                   if(p.constructTime > 0){
-                       ct.row();
-                       ct.add(Stat.buildTime.localized() + ": " + PMUtls.stringsFixed(p.constructTime / 60f) + " " + StatUnit.seconds.localized());
-                   }
-                   if(p.powerUse > 0){
-                       ct.row();
-                       ct.add(Stat.powerUse.localized() + ": " + PMUtls.stringsFixed(p.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
-                   }
-               }).padTop(-9).left().get().background(Tex.underline);
-
-               t.row();
-           });
-        });
+        stats.add(Stat.input, PMStatValues.payloadProducts(products));
     }
 
     @Override

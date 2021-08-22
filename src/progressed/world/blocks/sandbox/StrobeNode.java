@@ -1,6 +1,7 @@
 package progressed.world.blocks.sandbox;
 
 import arc.*;
+import arc.flabel.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -10,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
+import progressed.util.*;
 
 public class StrobeNode extends PowerNode{
     public float lerpSpeed = 0.005f;
@@ -36,6 +38,16 @@ public class StrobeNode extends PowerNode{
         colorRegion = Core.atlas.find(name + "-strobe");
         laser = Core.atlas.find("prog-mats-rainbow-laser");
         laserEnd = Core.atlas.find("prog-mats-rainbow-laser-end");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.powerRange);
+        stats.remove(Stat.powerConnections);
+
+        stats.add(Stat.powerRange, t -> t.add(new FLabel("{wave}{rainbow}" + PMUtls.stringsFixed(laserRange) + " " + StatUnit.blocks.localized())));
+        stats.add(Stat.powerConnections, t -> t.add(new FLabel("{wave}{rainbow}" + PMUtls.stringsFixed(maxNodes))));
     }
 
     @Override

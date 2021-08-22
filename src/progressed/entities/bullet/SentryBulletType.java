@@ -6,7 +6,6 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import progressed.world.blocks.payloads.*;
 
 public class SentryBulletType extends BulletType{
     public UnitType unit;

@@ -17,6 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.graphics.*;
+import progressed.ui.*;
 import progressed.util.*;
 
 public class FlareUnitType extends UnitType{
@@ -150,18 +151,7 @@ public class FlareUnitType extends UnitType{
         stats.remove(Stat.range);
 
         stats.remove(Stat.health);
-        stats.add(Stat.health, t -> {
-            t.row();
-            t.table(ht -> {
-                ht.left().defaults().padRight(3).left();
-                
-                ht.add(Core.bundle.format("bullet.pm-flare-health", health));
-                ht.row();
-                ht.add(Core.bundle.format("bullet.pm-flare-attraction", attraction));
-                ht.row();
-                ht.add(Core.bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
-            }).padTop(-9f).left().get().background(Tex.underline);
-        });
+        stats.add(Stat.health, PMStatValues.signalFlareHealth(health, attraction, duration));
     }
 
     @Override

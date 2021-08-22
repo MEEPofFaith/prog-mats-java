@@ -112,7 +112,7 @@ public class EverythingTurret extends PowerTurret{
 
     public class EverythingTurretBuild extends PowerTurretBuild{
         protected float bias = startingBias, drawRot = Mathf.random(360f);
-        protected int selectedBullet;
+        protected int selectedBullet; //guaranteed desync since bullets are random - won't be fixed and probably isn't too important
 
         @Override
         public void updateTile(){

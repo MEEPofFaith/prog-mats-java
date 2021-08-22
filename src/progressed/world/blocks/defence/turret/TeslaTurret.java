@@ -20,6 +20,7 @@ import mindustry.world.meta.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.graphics.PMFx.*;
+import progressed.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -75,19 +76,7 @@ public class TeslaTurret extends Block{
         super.setStats();
 
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.ammo, stat -> {
-            stat.row();
-            stat.table(t -> {
-                t.left().defaults().padRight(3).left();
-
-                t.add(Core.bundle.format("bullet.lightning", maxTargets, damage));
-                t.row();
-
-                if(status != StatusEffects.none){
-                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
-                }
-            }).padTop(-9).left().get().background(Tex.underline);
-        });
+        stats.add(Stat.ammo, PMStatValues.teslaZapping(damage, maxTargets, status));
     }
 
     @Override

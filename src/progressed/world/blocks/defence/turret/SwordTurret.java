@@ -23,6 +23,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
+import progressed.ui.*;
 import progressed.util.*;
 
 import static arc.Core.*;
@@ -120,27 +121,7 @@ public class SwordTurret extends BaseTurret{
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
 
-        stats.add(Stat.ammo, stat -> {
-            stat.row();
-            stat.table(t -> {
-                t.left().defaults().padRight(3).left();
-
-                t.add(bundle.format("bullet.splashdamage", damage, Strings.fixed(damageRadius / tilesize, 1)));
-                t.row();
-
-                if(buildingDamageMultiplier != 1f){
-                    t.add(bundle.format("bullet.buildingdamage", PMUtls.stringsFixed(buildingDamageMultiplier * 100f)));
-                    t.row();
-                }
-
-                if(status != StatusEffects.none){
-                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
-                    t.row();
-                }
-
-                t.add(bundle.format("bullet.pm-sword-speed", speed));
-            }).padTop(-9).left().get().background(Tex.underline);
-        });
+        stats.add(Stat.ammo, PMStatValues.swordDamage(damage, damageRadius, buildingDamageMultiplier, speed, status));
     }
 
     @Override

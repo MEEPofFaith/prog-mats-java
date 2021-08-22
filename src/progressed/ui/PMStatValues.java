@@ -25,6 +25,7 @@ import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.payloads.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class PMStatValues{
@@ -278,6 +279,114 @@ public class PMStatValues{
                     }).padTop(-9).left().get().background(Tex.underline);
                 }).left();
             });
+        };
+    }
+
+    public static StatValue payloadProducts(Seq<Missile> products){
+        return table -> {
+            table.row();
+            products.each(p -> {
+                table.image(p.fullIcon).padRight(4).right().top();
+                table.add(p.localizedName).padRight(10).left().top();
+
+                table.table(ct -> {
+                    ct.left().defaults().padRight(3).left();
+
+                    ct.table(it -> {
+                        it.add("[lightgray]" + Stat.input.localized() + ": []");
+                        for(ItemStack stack : p.requirements){
+                            it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
+                        }
+                    });
+
+                    if(p.prev != null){
+                        ct.row();
+                        ct.table(pt -> {
+                            pt.image(p.prev.fullIcon).padLeft(60f).padRight(4).right().top();
+                            pt.add(p.prev.localizedName).padRight(10).left().top();
+                        });
+                    }
+                    if(p.constructTime > 0){
+                        ct.row();
+                        ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(p.constructTime / 60f) + " " + StatUnit.seconds.localized());
+                    }
+                    if(p.powerUse > 0){
+                        ct.row();
+                        ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(p.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
+                    }
+                }).padTop(-9).left().get().background(Tex.underline);
+
+                table.row();
+            });
+        };
+    }
+
+    public static StatValue signalFlareHealth(float health, float attraction, float duration){
+        return table -> {
+            table.table(ht -> {
+                ht.left().defaults().padRight(3).left();
+
+                ht.add(Core.bundle.format("bullet.pm-flare-health", health));
+                ht.row();
+                ht.add(Core.bundle.format("bullet.pm-flare-attraction", attraction));
+                ht.row();
+                ht.add(Core.bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
+            }).padTop(-9f).left().get().background(Tex.underline);
+        };
+    }
+
+    public static StatValue staticDamage(float damage, float reload, StatusEffect status){
+        return table -> {
+            table.table(t -> {
+                t.left().defaults().padRight(3).left();
+
+                t.add(Core.bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
+                t.row();
+
+                if(status != StatusEffects.none){
+                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
+                    t.row();
+                }
+            }).padTop(-9).left().get().background(Tex.underline);
+        };
+    }
+
+    public static StatValue swordDamage(float damage, float damageRadius, float buildingDamageMultiplier, float speed, StatusEffect status){
+        return table -> {
+            table.table(t -> {
+                t.left().defaults().padRight(3).left();
+
+                t.add(bundle.format("bullet.splashdamage", damage, Strings.fixed(damageRadius / tilesize, 1)));
+                t.row();
+
+                if(buildingDamageMultiplier != 1f){
+                    t.add(bundle.format("bullet.buildingdamage", PMUtls.stringsFixed(buildingDamageMultiplier * 100f)));
+                    t.row();
+                }
+
+                if(status != StatusEffects.none){
+                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
+                    t.row();
+                }
+
+                t.add(bundle.format("bullet.pm-sword-speed", speed));
+            }).padTop(-9).left().get().background(Tex.underline);
+        };
+    }
+
+    public static StatValue teslaZapping(float damage, float maxTargets, StatusEffect status){
+        return table -> {
+            table.row();
+            table.table(t -> {
+                t.left().defaults().padRight(3).left();
+
+                t.add(Core.bundle.format("bullet.lightning", maxTargets, damage));
+                t.row();
+
+                if(status != StatusEffects.none){
+                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
+                }
+            }).padTop(-9).left().get().background(Tex.underline);
         };
     }
 

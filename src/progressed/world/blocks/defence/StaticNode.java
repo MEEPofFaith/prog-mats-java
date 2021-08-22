@@ -23,6 +23,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.entities.*;
 import progressed.graphics.*;
+import progressed.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -114,20 +115,7 @@ public class StaticNode extends Block{
         stats.add(Stat.targetsAir, hitAir);
         stats.add(Stat.targetsGround, hitGround);
 
-        stats.add(Stat.ammo, stat -> {
-            stat.row();
-            stat.table(t -> {
-                t.left().defaults().padRight(3).left();
-
-                t.add(Core.bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
-                t.row();
-
-                if(status != StatusEffects.none){
-                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
-                    t.row();
-                }
-            }).padTop(-9).left().get().background(Tex.underline);
-        });
+        stats.add(Stat.ammo, PMStatValues.staticDamage(damage, reload, status));
     }
 
     @Override

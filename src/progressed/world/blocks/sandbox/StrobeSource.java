@@ -25,9 +25,7 @@ public class StrobeSource extends StrobeNode{
     public void setStats(){
         super.setStats();
         if(boost){
-            stats.add(Stat.speedIncrease, t -> {
-                t.add(new FLabel("{wave}{rainbow}" + PMUtls.stringsFixed(100 * speedBoost) + " " + StatUnit.percent));
-            });
+            stats.add(Stat.speedIncrease, t -> t.add(new FLabel("{wave}{rainbow}" + PMUtls.stringsFixed(100 * speedBoost) + StatUnit.percent.localized())));
         }
     }
 

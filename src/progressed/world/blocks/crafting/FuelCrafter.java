@@ -4,7 +4,6 @@ import arc.*;
 import arc.math.*;
 import arc.util.io.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
@@ -56,8 +55,8 @@ public class FuelCrafter extends GenericCrafter{
     @Override
     public void setStats(){
         super.setStats();
-
         stats.remove(Stat.input);
+
         stats.add(Stat.input, PMStatValues.fuel(this));
     }
 

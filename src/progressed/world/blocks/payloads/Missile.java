@@ -12,7 +12,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
-import progressed.*;
 
 import static mindustry.Vars.*;
 
