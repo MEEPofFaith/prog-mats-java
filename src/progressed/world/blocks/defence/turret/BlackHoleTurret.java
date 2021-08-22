@@ -11,8 +11,8 @@ import mindustry.entities.bullet.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import progressed.ui.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 public class BlackHoleTurret extends PowerTurret{
     public TextureRegion spaceRegion;

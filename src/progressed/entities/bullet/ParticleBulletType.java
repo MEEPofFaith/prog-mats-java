@@ -5,7 +5,7 @@ import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import progressed.graphics.*;
+import progressed.content.*;
 
 public class ParticleBulletType extends BulletType{
     public Sound particleSound = Sounds.none;

@@ -16,9 +16,9 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
-import progressed.graphics.*;
-import progressed.ui.*;
+import progressed.content.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 public class FlareUnitType extends UnitType{
     public Effect flareEffect = PMFx.flare;

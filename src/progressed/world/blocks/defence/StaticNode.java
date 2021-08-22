@@ -21,9 +21,9 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 import progressed.entities.*;
-import progressed.graphics.*;
-import progressed.ui.*;
+import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 

@@ -1,4 +1,4 @@
-package progressed.ui;
+package progressed.world.blocks;
 
 import arc.func.*;
 import arc.scene.style.*;

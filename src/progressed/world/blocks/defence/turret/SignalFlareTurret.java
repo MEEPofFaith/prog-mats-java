@@ -14,8 +14,8 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.units.*;
-import progressed.ui.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 public class SignalFlareTurret extends ItemTurret{
     public int flareLimit = 1;

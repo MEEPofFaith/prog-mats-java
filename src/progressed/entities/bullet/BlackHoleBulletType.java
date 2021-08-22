@@ -12,7 +12,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
-import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
     public Color color = Color.black;

@@ -8,7 +8,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
-import progressed.ui.*;
+import progressed.world.meta.*;
 
 /** A smelter uses fuel to craft. Attribute tiles make it use less fuel. */
 public class FuelCrafter extends GenericCrafter{

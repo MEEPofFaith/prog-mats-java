@@ -14,7 +14,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.consumers.*;
-import progressed.graphics.*;
+import progressed.content.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;

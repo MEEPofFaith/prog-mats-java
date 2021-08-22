@@ -1,4 +1,4 @@
-package progressed.ui;
+package progressed.world.meta;
 
 import arc.*;
 import arc.graphics.g2d.*;
@@ -21,6 +21,7 @@ import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.InjectorBulletType.*;
 import progressed.entities.units.*;
+import progressed.ui.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.payloads.*;

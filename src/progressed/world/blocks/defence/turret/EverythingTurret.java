@@ -16,7 +16,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import progressed.graphics.*;
+import progressed.content.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;

@@ -8,7 +8,7 @@ import arc.struct.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.production.*;
-import progressed.graphics.*;
+import progressed.content.*;
 import progressed.util.*;
 
 public class ColliderCrafter extends GenericCrafter{

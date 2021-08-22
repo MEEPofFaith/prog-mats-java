@@ -17,10 +17,10 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 import progressed.entities.*;
-import progressed.graphics.*;
-import progressed.graphics.PMFx.*;
-import progressed.ui.*;
+import progressed.content.PMFx.*;
+import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 

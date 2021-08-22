@@ -15,7 +15,6 @@ import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
 import progressed.entities.bullet.BlackHoleBulletType.*;
-import progressed.graphics.*;
 
 public class BlackHoleCataclysmType extends BulletType{
     public float growTime = 20f, secondaryGrowTime = 180f, fadeTime = 90f;

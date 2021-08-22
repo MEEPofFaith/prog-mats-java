@@ -1,4 +1,4 @@
-package progressed.graphics;
+package progressed.content;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -10,6 +10,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.AimLaserTurret.*;
 

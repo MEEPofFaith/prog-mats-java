@@ -23,8 +23,8 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
-import progressed.ui.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;

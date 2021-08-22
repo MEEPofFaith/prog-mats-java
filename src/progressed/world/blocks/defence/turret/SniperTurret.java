@@ -10,8 +10,8 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import progressed.ui.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 import static arc.Core.*;
 
