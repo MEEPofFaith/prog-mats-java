@@ -142,7 +142,7 @@ public class PayloadCrafter extends BlockProducer{
                 if(payload != null && payload.block() != m.prev){
                     moveOutPayload();
                 }
-            }else if(!products.contains(b -> b.prev == payload.block())){
+            }else if(payload != null && !products.contains(b -> b.prev == payload.block())){
                 moveOutPayload();
             }
 
