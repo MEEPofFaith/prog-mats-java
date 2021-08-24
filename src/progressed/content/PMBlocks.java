@@ -22,6 +22,7 @@ import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.EruptorTurret.*;
+import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.sandbox.*;
@@ -62,11 +63,14 @@ public class PMBlocks implements ContentList{
     //Why do I hear anxiety piano
     sentinel,
 
+    //Misc
+    blackhole, excalibur,
+
     //Missiles
     firestorm, strikedown, trinity,
 
-    //Misc
-    blackhole, excalibur,
+    //Apotheosis
+    apotheosisNexus, apotheosisCharger,
 
     // endregion
     // Region Distribution
@@ -747,6 +751,74 @@ public class PMBlocks implements ContentList{
             };
         }};
 
+        blackhole = new BlackHoleTurret("blackhole"){{
+            requirements(Category.turret, with(
+                Items.titanium, 100,
+                Items.thorium, 150,
+                Items.plastanium, 250,
+                Items.surgeAlloy, 250,
+                Items.silicon, 800,
+                Items.phaseFabric, 500,
+                PMItems.fusium, 500
+            ));
+            size = 4;
+            health = 230 * size * size;
+            canOverdrive = false;
+            reloadTime = 520f;
+            range = 256f;
+            shootEffect = smokeEffect = Fx.none;
+            chargeBeginEffect = PMFx.kugelblitzChargeBegin;
+            chargeEffect = PMFx.kugelblitzCharge;
+            chargeMaxDelay = 30f;
+            chargeEffects = 16;
+            chargeTime = PMFx.kugelblitzChargeBegin.lifetime;
+            rotateSpeed = 2f;
+            recoilAmount = 2f;
+            restitution = 0.015f;
+            cooldown = 0.005f;
+            shootLength = 0f;
+            shootSound = Sounds.release;
+            shootType = PMBullets.blackHole;
+        }};
+
+        excalibur = new PopeshadowTurret("excalibur"){
+            {
+                requirements(Category.turret, with(
+                    Items.copper, 1200,
+                    Items.lead, 1100,
+                    Items.graphite, 800,
+                    Items.silicon, 1500,
+                    Items.titanium, 800,
+                    Items.thorium, 700,
+                    Items.plastanium, 350,
+                    Items.surgeAlloy, 450,
+                    PMItems.fusium, 800
+                ));
+                size = 6;
+                health = 140 * size * size;
+                reloadTime = 450f;
+                range = 740f;
+                shootEffect = smokeEffect = Fx.none;
+                shootLength = 0f;
+                cooldown = 0.0075f;
+                heatColor = Pal.surge;
+                chargeTime = 180f;
+                chargeSound = PMSounds.popeshadowCharge;
+                shootSound = PMSounds.popeshadowBlast;
+                rotateSpeed = 2f;
+                recoilAmount = 8f;
+                restitution = 0.05f;
+                shootType = PMBullets.excaliburLaser;
+            }
+
+            @Override
+            public void load(){
+                super.load();
+
+                baseRegion = Core.atlas.find("prog-mats-block-" + size);
+            }
+        };
+
         firestorm = new MissileTurret("firestorm"){{
             requirements(Category.turret, with(
                 Items.copper, 180,
@@ -828,73 +900,28 @@ public class PMBlocks implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        blackhole = new BlackHoleTurret("blackhole"){{
-            requirements(Category.turret, with(
-                Items.titanium, 100,
-                Items.thorium, 150,
-                Items.plastanium, 250,
-                Items.surgeAlloy, 250,
-                Items.silicon, 800,
-                Items.phaseFabric, 500,
-                PMItems.fusium, 500
-            ));
-            size = 4;
-            health = 230 * size * size;
-            canOverdrive = false;
-            reloadTime = 520f;
-            range = 256f;
-            shootEffect = smokeEffect = Fx.none;
-            chargeBeginEffect = PMFx.kugelblitzChargeBegin;
-            chargeEffect = PMFx.kugelblitzCharge;
-            chargeMaxDelay = 30f;
-            chargeEffects = 16;
-            chargeTime = PMFx.kugelblitzChargeBegin.lifetime;
-            rotateSpeed = 2f;
-            recoilAmount = 2f;
-            restitution = 0.015f;
-            cooldown = 0.005f;
-            shootLength = 0f;
-            shootSound = Sounds.release;
-            shootType = PMBullets.blackHole;
+        apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            size = 9;
+            reloadTime = 60f * 5f;
+            range = 400f * tilesize;
+            powerUse = 1000f;
+            damage = 3000f / 12f;
+            splashDamageRadius = 6f * tilesize;
+            speed = 2f;
+            duration = 3f * 60f;
         }};
 
-        excalibur = new PopeshadowTurret("excalibur"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 1200,
-                    Items.lead, 1100,
-                    Items.graphite, 800,
-                    Items.silicon, 1500,
-                    Items.titanium, 800,
-                    Items.thorium, 700,
-                    Items.plastanium, 350,
-                    Items.surgeAlloy, 450,
-                    PMItems.fusium, 800
-                ));
-                size = 6;
-                health = 140 * size * size;
-                reloadTime = 450f;
-                range = 740f;
-                shootEffect = smokeEffect = Fx.none;
-                shootLength = 0f;
-                cooldown = 0.0075f;
-                heatColor = Pal.surge;
-                chargeTime = 180f;
-                chargeSound = PMSounds.popeshadowCharge;
-                shootSound = PMSounds.popeshadowBlast;
-                rotateSpeed = 2f;
-                recoilAmount = 8f;
-                restitution = 0.05f;
-                shootType = PMBullets.excaliburLaser;
-            }
-
-            @Override
-            public void load(){
-                super.load();
-
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
-        };
+        apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            size = 7;
+            range = 60f;
+            damageBoost = 100f;
+            radiusBoost = tilesize / 2f;
+            speedBoost = 1f / 4f;
+            durationBoost = 20f;
+            powerUse = 200f;
+        }};
         
         // endregion
         // Region Distribution

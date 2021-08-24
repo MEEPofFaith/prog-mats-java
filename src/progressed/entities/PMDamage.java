@@ -32,8 +32,8 @@ public class PMDamage{
 
         int tileRange = Mathf.floorPositive(range / tilesize);
 
-        for(int x = -tileRange + tx; x <= tileRange + tx; x++){
-            for(int y = -tileRange + ty; y <= tileRange + ty; y++){
+        for(int x = tx - tileRange - 2; x <= tx + tileRange + 2; x++){
+            for(int y = ty - tileRange - 2; y <= ty + tileRange + 2; y++){
                 if(Mathf.within(x * tilesize, y * tilesize, wx, wy, range)){
                     Building other = world.build(x, y);
                     if(other != null && !collidedBlocks.contains(other.pos())){
@@ -52,8 +52,8 @@ public class PMDamage{
 
         int tileRange = Mathf.floorPositive(range / tilesize);
 
-        for(int x = -tileRange + tx; x <= tileRange + tx; x++){
-            for(int y = -tileRange + ty; y <= tileRange + ty; y++){
+        for(int x = tx - tileRange - 2; x <= tx + tileRange + 2; x++){
+            for(int y = ty - tileRange - 2; y <= ty + tileRange + 2; y++){
                 if(Mathf.within(x * tilesize, y * tilesize, wx, wy, range)){
                     Tile other = world.tile(x, y);
                     if(other != null && !collidedBlocks.contains(other.pos())){

@@ -217,29 +217,7 @@ public class PayloadTurret extends PayloadMissileTurret{
                 }
 
                 if(shooting){
-                    if(charging){
-                        charge += edelta();
-                        if(charge >= chargeTime){
-                            charging = false;
-                            charge = chargeTime;
-                        }
-                    }else{
-                        BulletType type = peekAmmo();
-
-                        if(payLength < shootLength){
-                            payLength += peekAmmo().speed * delta();
-                            if(payLength >= shootLength){
-                                loaded = false;
-                                payLength = shootLength;
-                            }
-                        }
-
-                        if(!loaded){
-                            shoot(type);
-                            shooting = false;
-                            reload %= reloadTime;
-                        }
-                    }
+                    updateLaunching();
                 }
             }else{
                 moveInPayload(false); //Rotating is done elsewhere
@@ -261,6 +239,32 @@ public class PayloadTurret extends PayloadMissileTurret{
             if(reload > reloadTime && loaded && !shooting){
                 charging = true;
                 shooting = true;
+            }
+        }
+
+        protected void updateLaunching(){
+            if(charging){
+                charge += edelta();
+                if(charge >= chargeTime){
+                    charging = false;
+                    charge = chargeTime;
+                }
+            }else{
+                BulletType type = peekAmmo();
+
+                if(payLength < shootLength){
+                    payLength += peekAmmo().speed * delta();
+                    if(payLength >= shootLength){
+                        loaded = false;
+                        payLength = shootLength;
+                    }
+                }
+
+                if(!loaded){
+                    shoot(type);
+                    shooting = false;
+                    reload %= reloadTime;
+                }
             }
         }
 
