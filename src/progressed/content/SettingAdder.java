@@ -2,6 +2,7 @@ package progressed.content;
 
 import arc.scene.*;
 import arc.scene.ui.layout.*;
+import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
@@ -21,7 +22,7 @@ public class SettingAdder{
         progm.sliderPref("pm-swordopacity", 100, 20, 100, 5, s -> s + "%");
         progm.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
         progm.checkPref("pm-tesla-range", true);
-        progm.checkPref("pm-farting", false);
+        progm.checkPref("pm-farting", false, b -> Sounds.wind3.play());
 
         dialog.cont.center().add(progm);
 
