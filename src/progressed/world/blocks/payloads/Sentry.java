@@ -35,9 +35,11 @@ public class Sentry extends Missile{
     }
 
     public class SentryBuild extends MissileBuild{
+        public boolean activated;
+
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
-            if(type == LAccess.enabled && !Mathf.zero((float)p1)){
+            if(type == LAccess.enabled && !Mathf.zero((float)p1) && !activated){
                 spawn();
             }
             super.control(type, p1, p2, p3, p4);
@@ -57,6 +59,7 @@ public class Sentry extends Missile{
         public void spawn(){
             Unit spawned = unit.spawn(team, self());
             spawned.rotation(rotdeg());
+            activated = true;
             kill();
         }
 
