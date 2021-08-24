@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.util.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
+import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import progressed.content.*;
@@ -58,7 +59,7 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 PMUtls.godHood(PMUnitTypes.everythingUnit);
 
-                /*if(Core.settings.getBool("pm-farting")){
+                if(Core.settings.getBool("pm-farting")){
                     content.blocks().each(b -> {
                         b.destroySound = Sounds.wind3;
                     });
@@ -66,7 +67,7 @@ public class ProgMats extends Mod{
                     content.units().each(u -> {
                        u.deathSound = Sounds.wind3;
                     });
-                }*/
+                }
             });
         }
     }
