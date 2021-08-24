@@ -993,7 +993,7 @@ public class PMBlocks implements ContentList{
         }};
 
         shellPress = new PayloadCrafter("shell-press"){{
-            requirements(Category.units, with(
+            requirements(Category.crafting, with(
                 Items.copper, 75,
                 Items.lead, 100,
                 Items.titanium, 100,
@@ -1006,7 +1006,7 @@ public class PMBlocks implements ContentList{
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
-            requirements(Category.units, with(
+            requirements(Category.crafting, with(
                 Items.copper, 300,
                 Items.lead, 200,
                 Items.silicon, 200,
@@ -1021,7 +1021,7 @@ public class PMBlocks implements ContentList{
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{
-            requirements(Category.units, with(
+            requirements(Category.crafting, with(
                 Items.copper, 90,
                 Items.lead, 80,
                 Items.titanium, 60,
