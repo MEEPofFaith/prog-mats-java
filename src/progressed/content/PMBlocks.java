@@ -907,7 +907,7 @@ public class PMBlocks implements ContentList{
             range = 400f * tilesize;
             powerUse = 1000f;
             damage = 3000f / 12f;
-            splashDamageRadius = 6f * tilesize;
+            damageRadius = 6f * tilesize;
             speed = 2f;
             duration = 3f * 60f;
         }};

@@ -1,6 +1,7 @@
 package progressed.world.meta;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.*;
@@ -46,153 +47,158 @@ public class PMStatValues{
                 boolean payload = t instanceof Missile;
 
                 BulletType type = map.get(t);
-
                 //no point in displaying unit icon twice
                 if(!compact && !(t instanceof PowerTurret)){
                     if(payload){
-                        table.image(icon(t)).padRight(4).right().top();
+                        if(t.unlockedNow()){
+                            table.image(icon(t)).padRight(4).right().top();
+                        }else{
+                            table.add(PMElements.imageStack(icon(t), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
+                        }
                     }else{
                         table.image(icon(t)).size(3 * 8).padRight(4).right().top();
                     }
-                    table.add(t.localizedName).padRight(10).left().top();
+                    table.add(payload && !t.unlockedNow() ? "@bullet.pm-missing-research" : t.localizedName).padRight(10).left().top();
                 }
 
-                table.table(bt -> {
-                    bt.left().defaults().padRight(3).left();
+                if(!payload || t.unlockedNow()){
+                    table.table(bt -> {
+                        bt.left().defaults().padRight(3).left();
 
-                    if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-                        if(type instanceof BlackHoleBulletType stype){
-                            bt.add(Core.bundle.format("bullet.pm-blackhole-damage", stype.continuousDamage(), Strings.fixed(stype.damageRadius / tilesize, 1)));
-                            sep(bt, Core.bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
-                        }else if(type.continuousDamage() > 0){
-                            bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
-                        }else{
-                            bt.add(Core.bundle.format("bullet.damage", type.damage));
-                            if(type instanceof MagnetBulletType stype){
-                                sep(bt, Core.bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
+                        if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+                            if(type instanceof BlackHoleBulletType stype){
+                                bt.add(Core.bundle.format("bullet.pm-blackhole-damage", stype.continuousDamage(), Strings.fixed(stype.damageRadius / tilesize, 1)));
+                                sep(bt, Core.bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
+                            }else if(type.continuousDamage() > 0){
+                                bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+                            }else{
+                                bt.add(Core.bundle.format("bullet.damage", type.damage));
+                                if(type instanceof MagnetBulletType stype){
+                                    sep(bt, Core.bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
+                                }
                             }
                         }
-                    }
 
-                    if(type instanceof CritBulletType stype){
-                        sep(bt, Core.bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
-                        sep(bt, Core.bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
-                    }
+                        if(type instanceof CritBulletType stype){
+                            sep(bt, Core.bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
+                            sep(bt, Core.bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
+                        }
 
-                    if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof FlareUnitType u){
-                        sep(bt, Core.bundle.format("bullet.pm-flare-health", u.health));
-                        sep(bt, Core.bundle.format("bullet.pm-flare-attraction", u.attraction));
-                        sep(bt, Core.bundle.format("bullet.pm-flare-lifetime", (int)(u.duration / 60f)));
-                    }
+                        if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof FlareUnitType u){
+                            sep(bt, Core.bundle.format("bullet.pm-flare-health", u.health));
+                            sep(bt, Core.bundle.format("bullet.pm-flare-attraction", u.attraction));
+                            sep(bt, Core.bundle.format("bullet.pm-flare-lifetime", (int)(u.duration / 60f)));
+                        }
 
-                    if(type.buildingDamageMultiplier != 1){
-                        sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
-                    }
+                        if(type.buildingDamageMultiplier != 1){
+                            sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
+                        }
 
-                    if(type.splashDamage > 0){
-                        sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
-                    }
+                        if(type.splashDamage > 0){
+                            sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+                        }
 
-                    if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
-                        sep(bt, Core.bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
-                    }
+                        if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
+                            sep(bt, Core.bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
+                        }
 
-                    if(!Mathf.equal(type.reloadMultiplier, 1f)){
-                        sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
-                    }
+                        if(!Mathf.equal(type.reloadMultiplier, 1f)){
+                            sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
+                        }
 
-                    if(type.knockback > 0){
-                        sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
-                    }
+                        if(type.knockback > 0){
+                            sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
+                        }
 
-                    if(type.healPercent > 0f){
-                        sep(bt, Core.bundle.format("bullet.healpercent", (int)type.healPercent));
-                    }
+                        if(type.healPercent > 0f){
+                            sep(bt, Core.bundle.format("bullet.healpercent", (int)type.healPercent));
+                        }
 
-                    if(type.pierce || type.pierceCap != -1){
-                        sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
-                    }
+                        if(type.pierce || type.pierceCap != -1){
+                            sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+                        }
 
-                    if(type.incendAmount > 0){
-                        sep(bt, "@bullet.incendiary");
-                    }
+                        if(type.incendAmount > 0){
+                            sep(bt, "@bullet.incendiary");
+                        }
 
-                    if(type.status != StatusEffects.none){
-                        sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
-                    }
+                        if(type.status != StatusEffects.none){
+                            sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+                        }
 
-                    if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but stat display is only run once so whatever
-                        Vaccine[] v = stype.vaccines;
-                        StringBuilder str = new StringBuilder();
-                        str.append("[lightgray]");
+                        if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but stat display is only run once so whatever
+                            Vaccine[] v = stype.vaccines;
+                            StringBuilder str = new StringBuilder();
+                            str.append("[lightgray]");
 
-                        if(v.length == 1){ //Single
-                            StatusEffect s = v[0].status;
-                            str.append(s.minfo.mod == null ? s.emoji() : "")
-                                .append("[stat]")
-                                .append(s.localizedName);
-                        }else if(v.length == 2){ //Double
-                            StatusEffect s = v[0].status;
-                            str.append(s.minfo.mod == null ? s.emoji() : "")
-                                .append("[stat]")
-                                .append(s.localizedName)
-                                .append("[] or ");
-
-                            s = v[1].status;
-                            str.append(s.minfo.mod == null ? s.emoji() : "")
-                                .append("[stat]")
-                                .append(s.localizedName);
-                        }else if(v.length > 2){ //3 or more
-                            for(int i = 0; i < v.length - 1; i++){
-                                StatusEffect s = v[i].status;
+                            if(v.length == 1){ //Single
+                                StatusEffect s = v[0].status;
+                                str.append(s.minfo.mod == null ? s.emoji() : "")
+                                    .append("[stat]")
+                                    .append(s.localizedName);
+                            }else if(v.length == 2){ //Double
+                                StatusEffect s = v[0].status;
                                 str.append(s.minfo.mod == null ? s.emoji() : "")
                                     .append("[stat]")
                                     .append(s.localizedName)
-                                    .append("[], ");
+                                    .append("[] or ");
+
+                                s = v[1].status;
+                                str.append(s.minfo.mod == null ? s.emoji() : "")
+                                    .append("[stat]")
+                                    .append(s.localizedName);
+                            }else if(v.length > 2){ //3 or more
+                                for(int i = 0; i < v.length - 1; i++){
+                                    StatusEffect s = v[i].status;
+                                    str.append(s.minfo.mod == null ? s.emoji() : "")
+                                        .append("[stat]")
+                                        .append(s.localizedName)
+                                        .append("[], ");
+                                }
+
+                                StatusEffect s = v[v.length - 1].status;
+                                str.append("or ")
+                                    .append(s.minfo.mod == null ? s.emoji() : "")
+                                    .append("[stat]")
+                                    .append(s.localizedName);
                             }
 
-                            StatusEffect s = v[v.length - 1].status;
-                            str.append("or ")
-                                .append(s.minfo.mod == null ? s.emoji() : "")
-                                .append("[stat]")
-                                .append(s.localizedName);
+                            sep(bt, str.toString());
+                            if(stype.nanomachines){
+                                bt.row();
+                                bt.image(Core.atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
+                            }
                         }
 
-                        sep(bt, str.toString());
-                        if(stype.nanomachines){
+                        if(type instanceof SentryBulletType stype){
                             bt.row();
-                            bt.image(Core.atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
+                            bt.table(ut -> {
+                                ut.add("@bullet.pm-sentry-spawn");
+                                ut.image(icon(stype.unit)).size(3 * 8);
+                                ut.add("[lightgray] " + stype.unit.localizedName);
+                            });
                         }
-                    }
 
-                    if(type instanceof SentryBulletType stype){
-                        bt.row();
-                        bt.table(ut -> {
-                            ut.add("@bullet.pm-sentry-spawn");
-                            ut.image(stype.unit.fullIcon).size(3 * 8);
-                            ut.add("[lightgray] " + stype.unit.localizedName);
-                        });
-                    }
+                        if(type.homingPower > 0.01f){
+                            sep(bt, "@bullet.homing");
+                        }
 
-                    if(type.homingPower > 0.01f){
-                        sep(bt, "@bullet.homing");
-                    }
+                        if(type instanceof CritBulletType stype && stype.bouncing){
+                            sep(bt, "@bullet.pm-bouncing");
+                        }
 
-                    if(type instanceof CritBulletType stype && stype.bouncing){
-                        sep(bt, "@bullet.pm-bouncing");
-                    }
+                        if(type.lightning > 0){
+                            sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+                        }
 
-                    if(type.lightning > 0){
-                        sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
-                    }
+                        if(type.fragBullet != null){
+                            sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
+                            bt.row();
 
-                    if(type.fragBullet != null){
-                        sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
-                        bt.row();
-
-                        ammo(ObjectMap.of(t, type.fragBullet), indent + 1).display(bt);
-                    }
-                }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
+                            ammo(ObjectMap.of(t, type.fragBullet), indent + 1).display(bt);
+                        }
+                    }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
+                }
 
                 table.row();
             }
@@ -218,7 +224,7 @@ public class PMStatValues{
                 t.row();
 
                 t.table(ft -> {
-                    ft.image(crafter.fuelItem.fullIcon).size(3 * 8).padRight(4).right().top();
+                    ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
                     ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
 
                     ft.table(st -> {
@@ -287,35 +293,45 @@ public class PMStatValues{
         return table -> {
             table.row();
             products.each(p -> {
-                table.image(p.fullIcon).padRight(4).right().top();
-                table.add(p.localizedName).padRight(10).left().top();
+                if(p.unlockedNow()){
+                    table.image(icon(p)).padRight(4).right().top();
+                }else{
+                    table.add(PMElements.imageStack(icon(p), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
+                }
+                table.add(p.unlockedNow() ? p.localizedName : "@bullet.pm-missing-research").padRight(10).left().top();
 
-                table.table(ct -> {
-                    ct.left().defaults().padRight(3).left();
+                if(p.unlockedNow()){
+                    table.table(ct -> {
+                        ct.left().defaults().padRight(3).left();
 
-                    ct.table(it -> {
-                        it.add("[lightgray]" + Stat.input.localized() + ": []");
-                        for(ItemStack stack : p.requirements){
-                            it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
-                        }
-                    });
-
-                    if(p.prev != null){
-                        ct.row();
-                        ct.table(pt -> {
-                            pt.image(p.prev.fullIcon).padLeft(60f).padRight(4).right().top();
-                            pt.add(p.prev.localizedName).padRight(10).left().top();
+                        ct.table(it -> {
+                            it.add("[lightgray]" + Stat.input.localized() + ": []");
+                            for(ItemStack stack: p.requirements){
+                                it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
+                            }
                         });
-                    }
-                    if(p.constructTime > 0){
-                        ct.row();
-                        ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(p.constructTime / 60f) + " " + StatUnit.seconds.localized());
-                    }
-                    if(p.powerUse > 0){
-                        ct.row();
-                        ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(p.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
-                    }
-                }).padTop(-9).left().get().background(Tex.underline);
+
+                        if(p.prev != null){
+                            ct.row();
+                            ct.table(pt -> {
+                                if(p.prev.unlockedNow()){
+                                    pt.image(icon(p.prev)).padLeft(60f).padRight(4).right().top();
+                                }else{
+                                    pt.add(PMElements.imageStack(icon(p.prev), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
+                                }
+                                pt.add(p.prev.unlockedNow() ? p.prev.localizedName : "@bullet.pm-missing-research").padRight(10).left().top();
+                            });
+                        }
+                        if(p.constructTime > 0){
+                            ct.row();
+                            ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(p.constructTime / 60f) + " " + StatUnit.seconds.localized());
+                        }
+                        if(p.powerUse > 0){
+                            ct.row();
+                            ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(p.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
+                        }
+                    }).padTop(-9).left().get().background(Tex.underline);
+                }
 
                 table.row();
             });
@@ -398,12 +414,5 @@ public class PMStatValues{
 
     private static TextureRegion icon(UnlockableContent t){
         return t.fullIcon;
-    }
-
-    private static void floorStat(Table t, FuelCrafter crafter, Attribute attr, Floor floor){
-        float multiplier = floor.attributes.get(attr) * crafter.fuelUseReduction / -100f;
-        t.stack(new Image(floor.fullIcon).setScaling(Scaling.fit), new Table (ft -> {
-            ft.top().right().add((multiplier < 0 ? "[accent]" : "[scarlet]+") + (multiplier * 100f) + "%").style(Styles.outlineLabel);
-        }));
     }
 }

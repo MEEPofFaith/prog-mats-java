@@ -1,6 +1,7 @@
 package progressed.content;
 
 import arc.*;
+import arc.math.*;
 import arc.scene.*;
 import arc.scene.ui.layout.*;
 import mindustry.game.EventType.*;
@@ -24,7 +25,7 @@ public class SettingAdder{
         progm.sliderPref("pm-swordopacity", 100, 20, 100, 5, s -> s + "%");
         progm.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
         progm.checkPref("pm-tesla-range", true);
-        progm.checkPref("pm-farting", false, b -> Sounds.wind3.play(Core.settings.getInt("sfxvol"))); //haha yes LOUD FART
+        progm.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 100f)); //haha, yes LOUD FART
 
         dialog.cont.center().add(progm);
 

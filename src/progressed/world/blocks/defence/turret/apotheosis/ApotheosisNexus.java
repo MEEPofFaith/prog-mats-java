@@ -1,10 +1,12 @@
 package progressed.world.blocks.defence.turret.apotheosis;
 
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
@@ -14,7 +16,9 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
+import progressed.*;
 import progressed.entities.*;
+import progressed.world.blocks.defence.turret.apotheosis.ApotheosisChargeTower.*;
 
 import static mindustry.Vars.*;
 
@@ -29,7 +33,8 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public float powerUse = 1f;
     public float speed, duration = 60f;
-    public float damage, splashDamageRadius = tilesize;
+    public float damage, damageRadius = tilesize;
+    public float chargeTime = 5f * 60f;
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
@@ -52,13 +57,13 @@ public class ApotheosisNexus extends ReloadTurret{
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
         public IntSeq chargers = new IntSeq();
         public float heat, logicControlTime = -1;
-        public float activeTime;
-        public float boost; //Just used in calculations
+        public float charge, activeTime;
+        public float realDamage, realRadius, realSpeed, realDuration;
         public int shotCounter;
         public boolean logicShooting = false;
         public Posc target;
         public Vec2 targetPos = new Vec2(), curPos = new Vec2();
-        public boolean wasShooting, isShooting;
+        public boolean wasShooting, isShooting, charging;
         public BlockUnitc unit;
 
         @Override
@@ -112,9 +117,9 @@ public class ApotheosisNexus extends ReloadTurret{
         public void draw(){
             super.draw();
 
-            if(isShooting){
-                Draw.color(team.color);
-                Fill.circle(curPos.x, curPos.y, calcRadius());
+            if(charging || isShooting){
+                Draw.color(charging ? Color.red : team.color);
+                Fill.circle(curPos.x, curPos.y, realRadius);
             }
         }
 
@@ -137,7 +142,7 @@ public class ApotheosisNexus extends ReloadTurret{
             if(!isShooting){
                 curPos.set(pos);
             }else{
-                Tmp.v1.trns(curPos.angleTo(pos), Math.min(calcSpeed() * edelta(), curPos.dst(pos)));
+                Tmp.v1.trns(curPos.angleTo(pos), Math.min(realSpeed * edelta(), curPos.dst(pos)));
                 curPos.add(Tmp.v1);
             }
         }
@@ -146,6 +151,7 @@ public class ApotheosisNexus extends ReloadTurret{
         public void updateTile(){
             if(!validateTarget()) target = null;
             checkConnections();
+            calc();
 
             wasShooting = false;
 
@@ -193,24 +199,7 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
             }
 
-            float dur = calcDuration();
-            if(isShooting && activeTime < dur){
-                activeTime += Time.delta / Math.max(efficiency(), 0.00001f);
-                if(timer.get(damageTimer, damageInterval)){
-                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, calcRadius(), h -> {
-                        h.damage(calcDamage());
-                        if(h instanceof Unit u){
-                            u.apply(status, statusDuration);
-                        }
-                    });
-                }
-
-                if(activeTime >= dur){
-                    isShooting = false;
-                    reload %= reloadTime;
-                    shotCounter++;
-                }
-            }
+            updateFiring();
 
             if(acceptCoolant){
                 updateCooling();
@@ -220,10 +209,44 @@ public class ApotheosisNexus extends ReloadTurret{
         protected void updateShooting(){
             reload += delta() * baseReloadSpeed();
 
-            if(reload >= reloadTime && !isShooting){
-                isShooting = true;
-                activeTime = 0f;
+            if(reload >= reloadTime && !isShooting && !charging){
+                connectChargers();
+                charging = true;
             }
+        }
+
+        protected void updateFiring(){
+            if(charging){
+                charge += delta();
+                if(charge >= chargeTime){
+                    charge = chargeTime;
+                    charging = false;
+                    isShooting = true;
+                    activeTime = 0f;                }
+            }
+
+            if(isShooting){
+                activeTime += Time.delta / Math.max(efficiency(), 0.00001f);
+                if(timer.get(damageTimer, damageInterval)){
+                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius, h -> {
+                        h.damage(realDamage);
+                        if(h instanceof Unit u){
+                            u.apply(status, statusDuration);
+                        }
+                    });
+                }
+
+                if(activeTime >= realDuration){
+                    isShooting = false;
+                    reload %= reloadTime;
+                    charge = 0f;
+                    shotCounter++;
+                }
+            }
+        }
+
+        public float chargef(){
+            return charge / chargeTime;
         }
 
         protected boolean validateTarget(){
@@ -245,49 +268,62 @@ public class ApotheosisNexus extends ReloadTurret{
             }
         }
 
-        protected float calcDamage(){
-            boost = 0f;
+        protected void connectChargers(){
             chargers.each(i -> {
-                Building other = world.build(i);
-                if(other.consValid()){
-                    boost += ((ApotheosisChargeTower)(other.block())).damageBoost * other.efficiency();
+                ApotheosisChargeTowerBuild other = (ApotheosisChargeTowerBuild)world.build(i);
+                other.connected = other.consValid();
+            });
+        }
+        
+        protected void calc(){
+            realDamage = realRadius = realSpeed = realDuration = 0;
+            chargers.each(i -> {
+                ApotheosisChargeTowerBuild other = (ApotheosisChargeTowerBuild)world.build(i);
+                if(other.consValid() && other.connected){
+                    ApotheosisChargeTower b = ((ApotheosisChargeTower)(other.block()));
+                    realDamage += b.damageBoost * other.efficiency();
+                    realRadius += b.radiusBoost * other.efficiency();
+                    realSpeed += b.speedBoost * other.efficiency();
+                    realDuration += b.durationBoost * other.efficiency();
+                }else{
+                    other.connected = false;
                 }
             });
-            return damage + boost;
+            realDamage += damage;
+            realRadius += damageRadius;
+            realSpeed += speed;
+            realDuration += duration;
         }
 
-        protected float calcRadius(){
-            boost = 0f;
-            chargers.each(i -> {
-                Building other = world.build(i);
-                if(other.consValid()){
-                    boost += ((ApotheosisChargeTower)(other.block())).radiusBoost * other.efficiency();
-                }
-            });
-            return splashDamageRadius + boost;
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(realDamage);
+            write.f(realRadius);
+            write.f(realSpeed);
+            write.f(realDuration);
+
+            write.i(chargers.size);
+            chargers.each(write::i);
         }
 
-        protected float calcSpeed(){
-            boost = 0f;
-            chargers.each(i -> {
-                Building other = world.build(i);
-                if(other.consValid()){
-                    boost += ((ApotheosisChargeTower)(other.block())).speedBoost * other.efficiency();
-                }
-            });
-            return speed + boost;
-        }
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
 
+            realDamage = read.f();
+            realRadius = read.f();
+            realSpeed = read.f();
+            realDuration = read.f();
 
-        protected float calcDuration(){
-            boost = 0f;
-            chargers.each(i -> {
-                Building other = world.build(i);
-                if(other.consValid()){
-                    boost += ((ApotheosisChargeTower)(other.block())).durationBoost * other.efficiency();
-                }
-            });
-            return duration + boost;
+            int c = read.i();
+            for(int i = 0; i < c; i++){
+                int build = read.i();
+                chargers.add(build);
+                ((ApotheosisChargeTowerBuild)(world.build(build))).nexus = pos();
+                ProgMats.print(self(), i);
+            }
         }
     }
 }

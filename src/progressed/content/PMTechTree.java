@@ -78,7 +78,7 @@ public class PMTechTree implements ContentList{
                         brq(trinity),
                         brq(emptyNuke),
                         brq(basicNuke)
-                    }), Seq.with(new Research(interplanetaryAccelerator), new SectorComplete(SectorPresets.planetaryTerminal)));
+                    }), Seq.with(new Research(interplanetaryAccelerator)));
                 });
             });
 
