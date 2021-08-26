@@ -52,44 +52,30 @@ public class PMTechTree implements ContentList{
         vanillaNode(ripple, () -> {
             //Missile (also painful to look at)
             node(firestorm, Seq.with(new Research(launchPad), new SectorComplete(SectorPresets.impact0078)), () -> {
-                node(strikedown, PMUtls.addItemStacks(new ItemStack[][]{
-                    brq(strikedown),
-                    brq(shellPress),
-                    brq(emptyMissile),
-                    brq(basicMissile),
-                    brq(missileFactory),
-                }), Seq.with(new Research(launchPad), new SectorComplete(SectorPresets.nuclearComplex)), () -> {
-                    node(shellPress, ItemStack.empty, Seq.with(new Research(strikedown)), () -> {
-                        node(emptyMissile, ItemStack.empty, Seq.with(new Research(strikedown)));
-                        node(emptyNuke, ItemStack.empty, Seq.with(new Research(trinity)));
-                        node(missileFactory, ItemStack.empty, Seq.with(new Research(strikedown)), () -> {
+                node(strikedown, Seq.with(new Research(launchPad), new SectorComplete(SectorPresets.nuclearComplex)), () -> {
+                    node(shellPress, Seq.with(new Research(strikedown)), () -> {
+                        node(emptyMissile, Seq.with(new Research(strikedown)));
+                        node(emptyNuke, Seq.with(new Research(trinity)));
+                        node(missileFactory, Seq.with(new Research(strikedown)), () -> {
                             //Missile
-                            node(basicMissile, ItemStack.empty, Seq.with(new Research(strikedown)), () -> {
+                            node(basicMissile, Seq.with(new Research(strikedown)), () -> {
                                 node(empMissile);
                                 node(recursiveMissile);
                             });
                             //Nuke
-                            node(basicNuke, ItemStack.empty, Seq.with(new Research(trinity)), () -> {
+                            node(basicNuke, Seq.with(new Research(trinity)), () -> {
                                 node(clusterNuke);
                             });
                         });
                     });
-                    node(trinity, PMUtls.addItemStacks(new ItemStack[][]{
-                        brq(trinity),
-                        brq(emptyNuke),
-                        brq(basicNuke)
-                    }), Seq.with(new Research(interplanetaryAccelerator)));
+                    node(trinity, Seq.with(new Research(interplanetaryAccelerator)));
                 });
             });
 
             //Tinker
-            node(tinker, PMUtls.addItemStacks(new ItemStack[][]{
-                brq(tinker),
-                brq(sentryBuilder),
-                brq(basicSentry)
-            }), Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
-                node(sentryBuilder, ItemStack.empty, Seq.with(new Research(tinker)), () -> {
-                    node(basicSentry, ItemStack.empty, Seq.with(new Research(sentryBuilder)), () -> {
+            node(tinker, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
+                node(sentryBuilder, Seq.with(new Research(tinker)), () -> {
+                    node(basicSentry, Seq.with(new Research(sentryBuilder)), () -> {
                         node(barrage, ItemStack.empty, Seq.with(new Research(basicSentry)));
                     });
                     node(strikeSentry, Seq.with(new Research(firestorm)), () -> {

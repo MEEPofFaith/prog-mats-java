@@ -79,22 +79,7 @@ public class PMFx{
         );
     }),
 
-    missileTrailSmall = new Effect(150f, 100f, e -> {
-        color(e.color);
-        Fill.circle(e.x, e.y, 3f * e.fout());
-    }),
-
-    missileTrailMedium = new Effect(120f, 300f, e -> {
-        color(e.color);
-        Fill.circle(e.x, e.y, 5f * e.fout());
-    }),
-
-    missileTrailLarge = new Effect(240f, 500f, e -> {
-        color(e.color);
-        Fill.circle(e.x, e.y, 8f * e.fout());
-    }),
-
-    missileBoom = new Effect(30f, e -> {
+    smallBoom = new Effect(30f, e -> {
         color(Pal.missileYellow);
 
         e.scaled(7, s -> {
@@ -116,15 +101,15 @@ public class PMFx{
         });
     }),
 
-    nuclearExplosion = new Effect(30, 500f, b -> {
+    missileExplosion = new Effect(30, 500f, b -> {
         float intensity = 2f;
         float baseLifetime = 25f + intensity * 15f;
         b.lifetime = 50f + intensity * 64f;
 
-        color(Pal.redderDust);
-        alpha(0.8f);
+        color(Color.darkGray);
+        alpha(0.9f);
         for(int i = 0; i < 5; i++){
-            rand.setSeed(b.id * 2 + i);
+            rand.setSeed(b.id * 2L + i);
             float lenScl = rand.random(0.25f, 1f);
             int fi = i;
             b.scaled(b.lifetime * lenScl, e -> {
@@ -157,15 +142,15 @@ public class PMFx{
         });
     }),
 
-    mushroomCloudExplosion = new Effect(30, 500f, b -> {
+    nuclearExplosion = new Effect(30, 500f, b -> {
         float intensity = 8f;
         float baseLifetime = 25f + intensity * 15f;
         b.lifetime = 50f + intensity * 64f;
 
-        color(Pal.redderDust);
-        alpha(0.8f);
+        color(Color.darkGray);
+        alpha(0.9f);
         for(int i = 0; i < 5; i++){
-            rand.setSeed(b.id * 2 + i);
+            rand.setSeed(b.id * 2L + i);
             float lenScl = rand.random(0.25f, 1f);
             int fi = i;
             b.scaled(b.lifetime * lenScl, e -> {
@@ -275,11 +260,6 @@ public class PMFx{
             float ty = y * e.fin(Interp.pow2Out);
             PMDrawf.plus(e.x + tx + Tmp.v1.x, e.y + ty + Tmp.v1.y, 4f, rot, e.color, e.fout());
         });
-    }),
-    
-    sentryTrail = new Effect(150f, e -> {
-        color(e.color);
-        Fill.circle(e.x, e.y, e.rotation * e.fout());
     }),
     
     kugelblitzChargeBegin = new Effect(80f, e -> {

@@ -326,7 +326,7 @@ public class PMBullets implements ContentList{
             hitSound = Sounds.explosion;
             collidesAir = false;
             hitShake = 2f;
-            despawnEffect = PMFx.missileBoom;
+            despawnEffect = PMFx.smallBoom;
             blockEffect = PMFx.missileBlockedSmall;
             
             targetColor = PMPal.missileBasic;
@@ -353,7 +353,7 @@ public class PMBullets implements ContentList{
             lifetime = 180f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             targetColor = PMPal.missileBasic;
@@ -381,7 +381,7 @@ public class PMBullets implements ContentList{
             lifetime = 120f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             fragBullets = 360;
@@ -410,7 +410,7 @@ public class PMBullets implements ContentList{
             lifetime = 70f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             targetColor = PMPal.missileFrag;
@@ -439,7 +439,7 @@ public class PMBullets implements ContentList{
             lifetime = 90f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             targetColor = PMPal.missileFrag;
@@ -473,7 +473,7 @@ public class PMBullets implements ContentList{
             lifetime = 135f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             targetColor = PMPal.missileFrag;
@@ -505,7 +505,7 @@ public class PMBullets implements ContentList{
             lifetime = 5500f;
             hitSound = Sounds.explosionbig;
             hitShake = 30f;
-            despawnEffect = PMFx.mushroomCloudExplosion;
+            despawnEffect = PMFx.nuclearExplosion;
             blockEffect = PMFx.missileBlockedLarge;
 
             targetColor = PMPal.missileBasic;
@@ -532,7 +532,7 @@ public class PMBullets implements ContentList{
             lifetime = 150f;
             hitSound = Sounds.bang;
             hitShake = 5f;
-            despawnEffect = PMFx.nuclearExplosion;
+            despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
 
             targetColor = PMPal.missileFrag;

@@ -119,7 +119,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
             if(charging || isShooting){
                 Draw.color(charging ? Color.red : team.color);
-                Fill.circle(curPos.x, curPos.y, realRadius);
+                Fill.circle(curPos.x, curPos.y, realRadius * chargef());
             }
         }
 

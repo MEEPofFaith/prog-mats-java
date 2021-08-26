@@ -137,7 +137,7 @@ public class PMUnitTypes implements ContentList{
 
                     targetColor = PMPal.missileBasic;
 
-                    despawnEffect = PMFx.missileBoom;
+                    despawnEffect = PMFx.smallBoom;
                     blockEffect = PMFx.missileBlockedSmall;
 
                     autoDropRadius = 12f;

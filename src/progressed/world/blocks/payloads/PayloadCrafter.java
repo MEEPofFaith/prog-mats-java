@@ -153,6 +153,7 @@ public class PayloadCrafter extends BlockProducer{
             if(produce){
                 progress += edelta();
 
+                assert recipe instanceof Missile;
                 Missile m = (Missile)recipe;
                 if(progress >= m.constructTime){
                     consume();
@@ -250,10 +251,10 @@ public class PayloadCrafter extends BlockProducer{
                         button.replaceImage(PMElements.imageStack(m.uiIcon, Icon.tree.getRegion(), Color.red));
                         button.getImageCell().tooltip("@pm-missing-research");
                     }else{
-                        button.changed(() -> configure(button.isChecked() ? m : null));
                         button.getStyle().imageUp = new TextureRegionDrawable(m.uiIcon);
                         button.getImageCell().tooltip(m.localizedName);
                     }
+                    button.changed(() -> configure(button.isChecked() ? m : null));
 
                     if(i++ % 4 == 3){
                         cont.row();
@@ -286,6 +287,24 @@ public class PayloadCrafter extends BlockProducer{
         @Override
         public boolean acceptPayload(Building source, Payload payload){
             return this.payload == null && recipe instanceof Missile m && payload instanceof BuildPayload p && p.block() == m.prev;
+        }
+
+        @Override
+        public void display(Table table){
+            super.display(table);
+
+            TextureRegionDrawable reg = new TextureRegionDrawable();
+
+            table.row();
+            table.table(t -> {
+                t.left();
+                t.image().update(i -> {
+                    i.setDrawable(recipe == null ? Icon.cancel : reg.set(recipe.uiIcon));
+                    i.setScaling(Scaling.fit);
+                    i.setColor(recipe == null ? Color.lightGray : Color.white);
+                }).size(32).padBottom(-4).padRight(2);
+                t.label(() -> recipe == null ? "@none" : recipe.localizedName).wrap().width(230f).color(Color.lightGray);
+            }).left();
         }
 
         @Override

@@ -904,7 +904,7 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 9;
             reloadTime = 60f * 5f;
-            range = 400f * tilesize;
+            range = 200f * tilesize;
             powerUse = 1000f;
             damage = 3000f / 12f;
             damageRadius = 6f * tilesize;
@@ -921,6 +921,8 @@ public class PMBlocks implements ContentList{
             speedBoost = 1f / 4f;
             durationBoost = 20f;
             powerUse = 200f;
+
+            startLength = size * tilesize / -4f - 3f;
         }};
         
         // endregion
@@ -976,17 +978,17 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 3,
                 Items.thorium, 3
             ));
-            outputItem = new ItemStack(PMItems.fusium, 2);
+            outputItem = new ItemStack(PMItems.fusium, 3);
         }};
 
         forge = new FuelCrafter("forge"){{
             requirements(Category.crafting, with(
-                Items.titanium, 300,
-                Items.metaglass, 120,
-                Items.plastanium, 50,
-                Items.silicon, 180,
-                Items.surgeAlloy, 70,
-                PMItems.fusium, 100
+                Items.titanium, 600,
+                Items.metaglass, 150,
+                Items.plastanium, 175,
+                Items.silicon, 370,
+                Items.surgeAlloy, 150,
+                PMItems.fusium, 250
             ));
             size = 5;
             itemCapacity = 32;

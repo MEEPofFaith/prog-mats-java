@@ -28,7 +28,7 @@ public class PayloadTurret extends PayloadMissileTurret{
     protected Vec2 tr = new Vec2();
     protected Vec2 tr2 = new Vec2();
 
-    protected TextureRegion baseRegion;
+    public TextureRegion baseRegion;
     public float elevation = -1f;
 
     public PayloadTurret(String name){

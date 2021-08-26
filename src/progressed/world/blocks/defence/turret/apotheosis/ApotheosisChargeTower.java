@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.apotheosis;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -11,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.apotheosis.ApotheosisNexus.*;
 
 import static mindustry.Vars.*;
@@ -23,6 +25,17 @@ public class ApotheosisChargeTower extends Block{
     public float damageBoost, radiusBoost, speedBoost, durationBoost;
     public float powerUse = 1f;
 
+    public float startLength;
+    public Color placeLine = Color.valueOf("FF5845");
+    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), Color.valueOf("FF5845"), Color.white};
+    public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
+    public float[] strokes = {2f, 1.5f, 1f, 0.3f};
+    public float[] lenscales = {0.96f, 0.98f, 0.99f, 1f};
+    public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
+    public float activeScl = 3f;
+
+    public TextureRegion baseRegion;
+
     public ApotheosisChargeTower(String name){
         super(name);
 
@@ -32,6 +45,7 @@ public class ApotheosisChargeTower extends Block{
         hasPower = true;
         solid = true;
         group = BlockGroup.turrets;
+        outlineIcon = true;
         schematicPriority = -1;
 
         config(Integer.class, (ApotheosisChargeTowerBuild tile, Integer value) -> {
@@ -47,6 +61,7 @@ public class ApotheosisChargeTower extends Block{
                     }
                     o.chargers.add(pos);
                     tile.nexus = o.pos();
+                    tile.rotation = tile.angleTo(o);
                 }
                 tile.connected = false;
             }
@@ -64,9 +79,18 @@ public class ApotheosisChargeTower extends Block{
     }
 
     @Override
+    public void load(){
+        super.load();
+
+        baseRegion = Core.atlas.find(name + "-base", Core.atlas.find("prog-mats-block-" + size, "block-" + size));
+    }
+
+    @Override
     public void init(){
         consumes.powerCond(powerUse, ApotheosisChargeTowerBuild::isActive);
         super.init();
+
+        clipSize = Math.max(clipSize, (range + 2) * tilesize * 2f);
     }
 
     @Override
@@ -84,11 +108,17 @@ public class ApotheosisChargeTower extends Block{
         });
 
         if(otherReq != null){
-            Lines.line(req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy());
+            Drawf.dashLine(placeLine, req.drawx(), req.drawy(), otherReq.drawx(), otherReq.drawy());
         }
     }
 
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{baseRegion, region};
+    }
+
     public class ApotheosisChargeTowerBuild extends Building{
+        public float rotation = 90f;
         public int nexus;
         public boolean connected;
 
@@ -98,10 +128,15 @@ public class ApotheosisChargeTower extends Block{
 
         @Override
         public void draw(){
-            super.draw();
+            Draw.rect(baseRegion, x, y);
+
+            Draw.z(Layer.turret);
+            Draw.rect(region, x, y, rotation - 90f);
+
             if(getNexus() != null){
-                Draw.color(connected ? team.color : Color.red);
-                Lines.line(x, y, getNexus().x, getNexus().y);
+                Tmp.v1.trns(rotation, startLength);
+                Draw.z(Layer.effect);
+                PMDrawf.laser(x + Tmp.v1.x, y + Tmp.v1.y, dst(getNexus()) - startLength, width, rotation, 1f + ((activeScl - 1f) * chargef()), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors);
             }
         }
 
@@ -126,9 +161,16 @@ public class ApotheosisChargeTower extends Block{
         }
 
         @Override
+        public void drawSelect(){
+            Drawf.circles(x, y, range * tilesize);
+        }
+
+        @Override
         public void updateTile(){
             super.updateTile();
-            if(getNexus() != null && !getNexus().added) nexus = -1;
+            if(getNexus() != null){
+                rotation = angleTo(getNexus());
+            }
         }
 
         @Override

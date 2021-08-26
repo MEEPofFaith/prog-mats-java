@@ -2,6 +2,7 @@ package progressed.graphics;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.graphics.*;
@@ -67,5 +68,17 @@ public class PMDrawf{
 
     public static void target(float x, float y, float angle, float radius, Color color, float alpha){
         target(x, y, angle, radius, color, color, alpha);
+    }
+
+    /** Meltdown laser drawing */
+    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors){
+        for(int s = 0; s < colors.length; s++){
+            Draw.color(Tmp.c1.set(colors[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+            for(int i = 0; i < tscales.length; i++){
+                Tmp.v1.trns(angle + 180f, (lenscales[i] - 1f) * spaceMag);
+                Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
+                Lines.lineAngle(x + Tmp.v1.x, y + Tmp.v1.y, angle, length * lenscales[i], false);
+            }
+        }
     }
 }

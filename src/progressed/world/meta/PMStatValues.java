@@ -58,7 +58,7 @@ public class PMStatValues{
                     }else{
                         table.image(icon(t)).size(3 * 8).padRight(4).right().top();
                     }
-                    table.add(payload && !t.unlockedNow() ? "@bullet.pm-missing-research" : t.localizedName).padRight(10).left().top();
+                    table.add(payload && !t.unlockedNow() ? "@pm-missing-research" : t.localizedName).padRight(10).left().top();
                 }
 
                 if(!payload || t.unlockedNow()){
@@ -298,7 +298,7 @@ public class PMStatValues{
                 }else{
                     table.add(PMElements.imageStack(icon(p), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
                 }
-                table.add(p.unlockedNow() ? p.localizedName : "@bullet.pm-missing-research").padRight(10).left().top();
+                table.add(p.unlockedNow() ? p.localizedName : "@pm-missing-research").padRight(10).left().top();
 
                 if(p.unlockedNow()){
                     table.table(ct -> {
@@ -319,7 +319,7 @@ public class PMStatValues{
                                 }else{
                                     pt.add(PMElements.imageStack(icon(p.prev), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
                                 }
-                                pt.add(p.prev.unlockedNow() ? p.prev.localizedName : "@bullet.pm-missing-research").padRight(10).left().top();
+                                pt.add(p.prev.unlockedNow() ? p.prev.localizedName : "@pm-missing-research").padRight(10).left().top();
                             });
                         }
                         if(p.constructTime > 0){

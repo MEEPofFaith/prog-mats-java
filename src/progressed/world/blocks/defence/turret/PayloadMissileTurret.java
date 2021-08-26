@@ -65,7 +65,7 @@ public class PayloadMissileTurret extends PayloadBlock{
 
     public ObjectMap<Block, BulletType> ammoTypes = new ObjectMap<>();
 
-    protected TextureRegion heatRegion;
+    public TextureRegion heatRegion;
 
     public PayloadMissileTurret(String name){
         super(name);
