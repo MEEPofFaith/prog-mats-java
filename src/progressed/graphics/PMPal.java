@@ -11,5 +11,6 @@ public class PMPal{
     missileBasic = Color.valueOf("D4816B"),
     missileEmp = Color.valueOf("5757C1"),
     missileFrag = Color.valueOf("9CB664"),
-    missileUnit = Color.valueOf("BC5452");
+
+    apotheosisLaser = Color.valueOf("FF5845");
 }

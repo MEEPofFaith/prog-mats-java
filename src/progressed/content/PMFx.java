@@ -21,6 +21,7 @@ import static mindustry.Vars.*;
 
 public class PMFx{
     private static final Rand rand = new Rand();
+    private static final Vec2 v1 = new Vec2(), v2 = new Vec2();
 
     public static final Effect
 
@@ -45,12 +46,12 @@ public class PMFx{
                     float front = Mathf.clamp(s, 0f, 21f - 2f * 3f);
                     float back = Mathf.clamp(s - 3f, 0f, 21f - 2f * 3f);
                     
-                    Tmp.v1.trns(j * 45f, 0f, front);
-                    Tmp.v1.add(e.x, e.y);
-                    Tmp.v2.trns(j * 45f, 0f, back);
-                    Tmp.v2.add(e.x, e.y);
+                    v1.trns(j * 45f, 0f, front);
+                    v1.add(e.x, e.y);
+                    v2.trns(j * 45f, 0f, back);
+                    v2.add(e.x, e.y);
                     
-                    line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
+                    line(v1.x, v1.y, v2.x, v2.y);
                 }
             }
         }
@@ -241,24 +242,24 @@ public class PMFx{
     }),
     
     sniperCritMini = new Effect(90f, e -> {
-        Tmp.v1.trns(e.rotation + 90f, 0f, 32f * e.fin(Interp.pow2Out));
+        v1.trns(e.rotation + 90f, 0f, 32f * e.fin(Interp.pow2Out));
         
         randLenVectors(e.id, 2, 18f, (x, y) -> {
             float rot = Mathf.randomSeed((long)(e.id + x + y), 360);
             float tx = x * e.fin(Interp.pow2Out);
             float ty = y * e.fin(Interp.pow2Out);
-            PMDrawf.plus(e.x + tx + Tmp.v1.x, e.y + ty + Tmp.v1.y, 3f, rot, e.color, e.fout());
+            PMDrawf.plus(e.x + tx + v1.x, e.y + ty + v1.y, 3f, rot, e.color, e.fout());
         });
     }),
     
     sniperCrit = new Effect(120f, e -> {
-        Tmp.v1.trns(e.rotation + 90f, 0f, 48f * e.fin(Interp.pow2Out));
+        v1.trns(e.rotation + 90f, 0f, 48f * e.fin(Interp.pow2Out));
         
         randLenVectors(e.id, 6, 24f, (x, y) -> {
             float rot = Mathf.randomSeed((long)(e.id + x + y), 360);
             float tx = x * e.fin(Interp.pow2Out);
             float ty = y * e.fin(Interp.pow2Out);
-            PMDrawf.plus(e.x + tx + Tmp.v1.x, e.y + ty + Tmp.v1.y, 4f, rot, e.color, e.fout());
+            PMDrawf.plus(e.x + tx + v1.x, e.y + ty + v1.y, 4f, rot, e.color, e.fout());
         });
     }),
     
@@ -342,9 +343,9 @@ public class PMFx{
     fakeLightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
-        Tmp.v1.set(d.pos).sub(e.x, e.y).nor();
+        v1.set(d.pos).sub(e.x, e.y).nor();
 
-        float normx = Tmp.v1.x, normy = Tmp.v1.y;
+        float normx = v1.x, normy = v1.y;
         float range = 6f;
         int links = Mathf.ceil(dst / range);
         float spacing = dst / links;
@@ -365,9 +366,9 @@ public class PMFx{
                 ny = ty;
             }else{
                 float len = (i + 1) * spacing;
-                Tmp.v1.setToRandomDirection(rand).scl(range/2f);
-                nx = e.x + normx * len + Tmp.v1.x;
-                ny = e.y + normy * len + Tmp.v1.y;
+                v1.setToRandomDirection(rand).scl(range/2f);
+                nx = e.x + normx * len + v1.x;
+                ny = e.y + normy * len + v1.y;
             }
 
             Lines.linePoint(nx, ny);
@@ -395,18 +396,18 @@ public class PMFx{
             float offsetXB = f == tileLength ? 0f : Mathf.randomSeed(e.id + (f * 6413), -4.5f, 4.5f);
             float offsetYB = (length / tileLength) * f;
             
-            Tmp.v1.trns(e.rotation, offsetYA, offsetXA);
-            Tmp.v1.add(e.x, e.y);
+            v1.trns(e.rotation, offsetYA, offsetXA);
+            v1.add(e.x, e.y);
             
-            Tmp.v2.trns(e.rotation, offsetYB, offsetXB);
-            Tmp.v2.add(e.x, e.y);
+            v2.trns(e.rotation, offsetYB, offsetXB);
+            v2.add(e.x, e.y);
             
-            Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
-            Fill.circle(Tmp.v1.x, Tmp.v1.y, Lines.getStroke() / 2f);
-            Drawf.light((Team)data[2], Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, (float)data[1] * 3f, e.color, 0.4f);
+            Lines.line(v1.x, v1.y, v2.x, v2.y, false);
+            Fill.circle(v1.x, v1.y, Lines.getStroke() / 2f);
+            Drawf.light((Team)data[2], v1.x, v1.y, v2.x, v2.y, (float)data[1] * 3f, e.color, 0.4f);
         }
 
-        Fill.circle(Tmp.v2.x, Tmp.v2.y, Lines.getStroke() / 2);
+        Fill.circle(v2.x, v2.y, Lines.getStroke() / 2);
     }).layer(Layer.bullet + 0.01f),
     
     harbingerCharge = new Effect(150f, 1600f, e -> {
@@ -422,9 +423,9 @@ public class PMFx{
         Lines.circle(e.x, e.y, 384f * (1f - e.finpow()));
         
         for(int i = 0; i < 36; i++){
-            Tmp.v1.trns(i * 10f, 384f * (1 - e.finpow()));
-            Tmp.v2.trns(i * 10f + 10f, 384f * (1f - e.finpow()));
-            Drawf.light((Team)e.data, e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.x + Tmp.v2.x, e.y + Tmp.v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
+            v1.trns(i * 10f, 384f * (1 - e.finpow()));
+            v2.trns(i * 10f + 10f, 384f * (1f - e.finpow()));
+            Drawf.light((Team)e.data, e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
         }
         
         float fade = 1f - Mathf.curve(e.time, e.lifetime - 30f, e.lifetime);
@@ -442,9 +443,9 @@ public class PMFx{
                         Lines.lineAngle(e.x, e.y, (e.rotation + 360f * e.finpow() + side) * dir, baseLen * lenscales[l], false);
                     }
                     
-                    Tmp.v1.trns((e.rotation + 360f * e.finpow() + side) * dir, baseLen * 1.1f);
+                    v1.trns((e.rotation + 360f * e.finpow() + side) * dir, baseLen * 1.1f);
                     
-                    Drawf.light((Team)e.data, e.x, e.y, e.x + Tmp.v1.x, e.y + Tmp.v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
+                    Drawf.light((Team)e.data, e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
                 }
             }
             Draw.reset();
@@ -512,8 +513,8 @@ public class PMFx{
         if(e.data instanceof AimLaserTurretBuild d){
             color(e.color);
 
-            Tmp.v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
-            Fill.circle(d.x + Tmp.v1.x, d.y + Tmp.v1.y, 3f * e.fin());
+            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
+            Fill.circle(d.x + v1.x, d.y + v1.y, 3f * e.fin());
 
             color();
         }
@@ -523,9 +524,9 @@ public class PMFx{
         if(e.data instanceof AimLaserTurretBuild d){
             color(e.color);
 
-            Tmp.v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
+            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
             randLenVectors(e.id, 3, 24f * e.fout(), (x, y) -> {
-                Fill.circle(d.x + Tmp.v1.x + x, d.y + Tmp.v1.y + y, 2f * e.fin());
+                Fill.circle(d.x + v1.x + x, d.y + v1.y + y, 2f * e.fin());
             });
 
             color();
@@ -552,6 +553,19 @@ public class PMFx{
         randLenVectors(e.id + 1, 11, 2f + 73f * e.finpow(), (x, y) -> {
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + e.fout() * 5f);
         });
+    }),
+
+    apotheosisChargerBlast = new Effect(30f, e -> {
+        color(PMPal.apotheosisLaser);
+        Lines.stroke(0.5f + 0.5f*e.fout());
+        float spread = 3f;
+
+        rand.setSeed(e.id);
+        for(int i = 0; i < 20; i++){
+            float ang = e.rotation + rand.range(17f);
+            v1.trns(ang, rand.random(e.fin() * 55f));
+            Lines.lineAngle(e.x + v1.x + rand.range(spread), e.y + v1.y + rand.range(spread), ang, e.fout() * 5f * rand.random(1f) + 1f);
+        }
     }),
     
     staticSpark = new Effect(10f, e -> {

@@ -1,9 +1,12 @@
 package progressed.world.blocks.defence.turret.apotheosis;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -26,6 +29,8 @@ public class ApotheosisNexus extends ReloadTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
 
+    public ApotheosisChargeTower chargeTower;
+
     public final int timerTarget = timers++;
     public final int damageTimer = timers++;
     public int targetInterval = 20;
@@ -38,6 +43,8 @@ public class ApotheosisNexus extends ReloadTurret{
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
+
+    public float laserRadius;
 
     public Sortf unitSort = Unit::dst2;
 
@@ -55,7 +62,7 @@ public class ApotheosisNexus extends ReloadTurret{
     }
 
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
-        public IntSeq chargers = new IntSeq();
+        public IntSeq chargers = new IntSeq(), connectedChargers = new IntSeq();
         public float heat, logicControlTime = -1;
         public float charge, activeTime;
         public float realDamage, realRadius, realSpeed, realDuration;
@@ -212,6 +219,12 @@ public class ApotheosisNexus extends ReloadTurret{
             if(reload >= reloadTime && !isShooting && !charging){
                 connectChargers();
                 charging = true;
+                for(int i = 0; i < connectedChargers.size; i++){
+                    int ii = i;
+                    Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
+                        if(isValid()) ((ApotheosisChargeTowerBuild)(world.build(connectedChargers.get(ii)))).activate();
+                    });
+                }
             }
         }
 
@@ -241,6 +254,9 @@ public class ApotheosisNexus extends ReloadTurret{
                     reload %= reloadTime;
                     charge = 0f;
                     shotCounter++;
+                    chargers.each(i -> {
+                        ((ApotheosisChargeTowerBuild)(world.build(i))).fullLaser = false;
+                    });
                 }
             }
         }
@@ -257,6 +273,24 @@ public class ApotheosisNexus extends ReloadTurret{
             target = Units.bestTarget(team, x, y, range, e -> !e.dead(), b -> true, unitSort);
         }
 
+        @Override
+        public void display(Table table){
+            super.display(table);
+
+            TextureRegionDrawable reg = new TextureRegionDrawable();
+
+            table.row();
+            table.table(t -> {
+                t.left();
+                t.image().update(i -> {
+                    i.setDrawable(chargeTower.unlockedNow() ? reg.set(chargeTower.uiIcon) : Icon.lock);
+                    i.setScaling(Scaling.fit);
+                    i.setColor(chargeTower.unlockedNow() ? Color.white : Color.lightGray);
+                }).size(32).padBottom(-4).padRight(2);
+                t.label(() -> Core.bundle.format("pm-apotheosis-chargers", chargeTower.unlockedNow() ? chargers.size : Core.bundle.get("pm-missing-research"))).wrap().width(230f).color(Color.lightGray);
+            });
+        }
+
         protected void checkConnections(){
             int index = 0;
             while(index < chargers.size){
@@ -269,10 +303,15 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         protected void connectChargers(){
+            connectedChargers.clear();
             chargers.each(i -> {
                 ApotheosisChargeTowerBuild other = (ApotheosisChargeTowerBuild)world.build(i);
                 other.connected = other.consValid();
+                if(other.consValid()){
+                    connectedChargers.add(i);
+                }
             });
+            connectedChargers.shuffle();
         }
         
         protected void calc(){
@@ -317,8 +356,7 @@ public class ApotheosisNexus extends ReloadTurret{
             realSpeed = read.f();
             realDuration = read.f();
 
-            int c = read.i();
-            for(int i = 0; i < c; i++){
+            for(int i = 0, n = read.i(); i < n; i++){
                 int build = read.i();
                 chargers.add(build);
                 ((ApotheosisChargeTowerBuild)(world.build(build))).nexus = pos();

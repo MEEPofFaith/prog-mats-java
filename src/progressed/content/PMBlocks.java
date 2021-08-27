@@ -282,7 +282,7 @@ public class PMBlocks implements ContentList{
         }};
 
         storm = new TeslaTurret("storm"){{
-            requirements(Category.turret, ItemStack.with(
+            requirements(Category.turret, with(
                 Items.copper, 120,
                 Items.lead, 150,
                 Items.graphite, 55,
@@ -359,7 +359,7 @@ public class PMBlocks implements ContentList{
         }};
 
         flame = new EruptorTurret("flame"){{
-            requirements(Category.turret, ItemStack.with(
+            requirements(Category.turret, with(
                 Items.copper, 200,
                 Items.lead, 300,
                 Items.graphite, 300,
@@ -910,6 +910,8 @@ public class PMBlocks implements ContentList{
             damageRadius = 6f * tilesize;
             speed = 2f;
             duration = 3f * 60f;
+
+            laserRadius = 2f * tilesize;
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
@@ -922,8 +924,12 @@ public class PMBlocks implements ContentList{
             durationBoost = 20f;
             powerUse = 200f;
 
-            startLength = size * tilesize / -4f - 3f;
+            startLength = size * tilesize / -4f - 5f;
+            endLength = size * tilesize / 2f - 2f;
+            effectLength = endLength - 4f;
         }};
+
+        ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
         
         // endregion
         // Region Distribution

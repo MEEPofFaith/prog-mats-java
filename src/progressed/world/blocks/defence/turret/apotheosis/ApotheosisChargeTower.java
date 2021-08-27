@@ -7,11 +7,13 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.apotheosis.ApotheosisNexus.*;
 
@@ -25,14 +27,15 @@ public class ApotheosisChargeTower extends Block{
     public float damageBoost, radiusBoost, speedBoost, durationBoost;
     public float powerUse = 1f;
 
-    public float startLength;
-    public Color placeLine = Color.valueOf("FF5845");
-    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), Color.valueOf("FF5845"), Color.white};
+    public float startLength, effectLength, endLength;
+    public Color placeLine = PMPal.apotheosisLaser;
+    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), PMPal.apotheosisLaser, Color.white};
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
-    public float[] lenscales = {0.96f, 0.98f, 0.99f, 1f};
+    public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f};
     public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float activeScl = 3f;
+    public Effect activateEffect = PMFx.apotheosisChargerBlast;
 
     public TextureRegion baseRegion;
 
@@ -51,19 +54,21 @@ public class ApotheosisChargeTower extends Block{
         config(Integer.class, (ApotheosisChargeTowerBuild tile, Integer value) -> {
             Building other = world.build(value);
             int pos = tile.pos();
-            if(other instanceof ApotheosisNexusBuild o && o.within(tile, range * tilesize)){
+            if(other instanceof ApotheosisNexusBuild o && ((ApotheosisNexus)o.block).chargeTower == tile.block && o.within(tile, range * tilesize)){
                 if(o.chargers.contains(pos)){
                     o.chargers.removeValue(pos);
                     tile.nexus = -1;
                 }else{
                     if(tile.getNexus() != null){
                         tile.getNexus().chargers.removeValue(pos);
+                        tile.getNexus().connectedChargers.removeValue(pos);
                     }
                     o.chargers.add(pos);
                     tile.nexus = o.pos();
                     tile.rotation = tile.angleTo(o);
                 }
                 tile.connected = false;
+                tile.fullLaser = false;
             }
         });
 
@@ -120,7 +125,7 @@ public class ApotheosisChargeTower extends Block{
     public class ApotheosisChargeTowerBuild extends Building{
         public float rotation = 90f;
         public int nexus;
-        public boolean connected;
+        public boolean connected, fullLaser;
 
         public boolean isActive(){
             return connected && getNexus() != null && getNexus().isActive();
@@ -136,7 +141,7 @@ public class ApotheosisChargeTower extends Block{
             if(getNexus() != null){
                 Tmp.v1.trns(rotation, startLength);
                 Draw.z(Layer.effect);
-                PMDrawf.laser(x + Tmp.v1.x, y + Tmp.v1.y, dst(getNexus()) - startLength, width, rotation, 1f + ((activeScl - 1f) * chargef()), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors);
+                PMDrawf.laser(x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, 1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors);
             }
         }
 
@@ -152,6 +157,7 @@ public class ApotheosisChargeTower extends Block{
                     if(link instanceof ApotheosisNexusBuild){
                         if(getNexus() == link){
                             Drawf.square(link.x, link.y, link.block.size * tilesize / 2f + 1f, Pal.place);
+                            Drawf.dashLine(placeLine, this.x, this.y, link.x, link.y);
                         }
                     }
                 }
@@ -185,12 +191,24 @@ public class ApotheosisChargeTower extends Block{
             return true;
         }
 
+        public ApotheosisNexus getNexusBlock(){
+            return world.tile(nexus).block() instanceof ApotheosisNexus b ? b : null;
+        }
+
         public ApotheosisNexusBuild getNexus(){
             return world.build(nexus) instanceof ApotheosisNexusBuild b ? b : null;
         }
 
         public float chargef(){
             return getNexus() != null && connected ? getNexus().chargef() : 0f;
+        }
+
+        public void activate(){
+            if(connected){
+                fullLaser = true;
+                Tmp.v1.trns(rotation, effectLength);
+                activateEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+            }
         }
 
         @Override
