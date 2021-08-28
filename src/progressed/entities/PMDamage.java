@@ -181,7 +181,7 @@ public class PMDamage{
                 }
             }else if(t instanceof Building b){
                 if(ground){
-                    b.damage(damage * buildDmbMult);
+                    b.damage(team, damage * buildDmbMult);
                 }
             }
         });
