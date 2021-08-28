@@ -283,7 +283,11 @@ public class TeslaTurret extends Block{
                             }
 
                             //Deal damage
-                            other.damage(damage);
+                            if(other instanceof Building b){
+                                b.damage(team, damage);
+                            }else{
+                                other.damage(damage);
+                            }
                             if(other instanceof Statusc s){
                                 s.apply(status, statusDuration);
                             }

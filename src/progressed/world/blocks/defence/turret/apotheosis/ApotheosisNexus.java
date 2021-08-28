@@ -311,10 +311,14 @@ public class ApotheosisNexus extends ReloadTurret{
             if(shooting){
                 activeTime += Time.delta / Math.max(efficiency(), 0.00001f);
                 if(timer.get(damageTimer, damageInterval)){
-                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius * fadef(), h -> {
-                        h.damage(realDamage * fadef());
-                        if(h instanceof Unit u){
-                            u.apply(status, statusDuration);
+                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius * fadef(), other -> {
+                        if(other instanceof Building b){
+                            b.damage(team, realDamage * fadef());
+                        }else{
+                            other.damage(realDamage * fadef());
+                        }
+                        if(other instanceof Statusc s){
+                            s.apply(status, statusDuration);
                         }
                     });
                 }
