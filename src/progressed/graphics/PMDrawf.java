@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.game.*;
 import mindustry.graphics.*;
 
 public class PMDrawf{
@@ -71,14 +72,41 @@ public class PMDrawf{
     }
 
     /** Meltdown laser drawing */
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors){
+    public static void laser(Team team,  float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
         for(int s = 0; s < colors.length; s++){
-            Draw.color(Tmp.c1.set(colors[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+            Draw.color(Tmp.c1.set(colors[s]).a(alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
             for(int i = 0; i < tscales.length; i++){
-                Tmp.v1.trns(angle + 180f, (lenscales[i] - 1f) * spaceMag);
+                Tmp.v1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
                 Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
                 Lines.lineAngle(x + Tmp.v1.x, y + Tmp.v1.y, angle, length * lenscales[i], false);
             }
+        }
+
+        Tmp.v1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
+        Tmp.v2.trns(angle, length * lenscales[lenscales.length - 1]);
+        Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
+    }
+
+    public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
+        laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, alpha);
+    }
+
+    public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
+        laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
+    }
+
+    public static void laser2(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] pullscales, float oscScl, float oscMag, Color[] colors, Color lightColor, float alpha){
+        for(int s = 0; s < colors.length; s++){
+            Draw.color(Tmp.c1.set(colors[s]).a(alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+            for(int i = 0; i < tscales.length; i++){
+                Tmp.v1.trns(angle + 180f, length * pullscales[i] - length);
+                Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
+                Lines.lineAngle(x + Tmp.v1.x, y + Tmp.v1.y, angle, length * pullscales[i], false);
+            }
+
+            Tmp.v1.trns(angle, length * pullscales[pullscales.length - 1] - length);
+            Tmp.v2.trns(angle, length * length * pullscales[pullscales.length - 1]);
+            Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
         }
     }
 }

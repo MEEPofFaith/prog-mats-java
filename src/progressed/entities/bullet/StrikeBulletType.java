@@ -1,5 +1,6 @@
 package progressed.entities.bullet;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -34,6 +35,7 @@ public class StrikeBulletType extends BasicBulletType{
     public Color targetColor;
     public float riseSpin = 0f, fallSpin = 0f;
     public Effect blockEffect = Fx.none;
+    public float fartVolume = 50f;
 
     public Sortf unitSort = Unit::dst2;
 
@@ -58,7 +60,14 @@ public class StrikeBulletType extends BasicBulletType{
         super.init();
 
         drawSize = elevation + 64f;
-        blockEffect = blockEffect == Fx.none ? blockEffect = despawnEffect : blockEffect;
+        if(blockEffect == Fx.none){
+            blockEffect = despawnEffect;
+        }
+
+        if(Core.settings.getBool("pm-farting") && hitSound != Sounds.none){
+            hitSound = Sounds.wind3;
+            hitSoundVolume = fartVolume;
+        }
     }
 
     @Override

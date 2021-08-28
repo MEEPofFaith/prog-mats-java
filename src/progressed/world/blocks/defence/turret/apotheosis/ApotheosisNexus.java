@@ -15,13 +15,17 @@ import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.apotheosis.ApotheosisChargeTower.*;
+
+import java.util.*;
 
 import static mindustry.Vars.*;
 
@@ -40,11 +44,20 @@ public class ApotheosisNexus extends ReloadTurret{
     public float speed, duration = 60f;
     public float damage, damageRadius = tilesize;
     public float chargeTime = 5f * 60f;
+    public float arcTime = 30f;
+    public float fadeTime = 60f;
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
 
     public float laserRadius;
+    public float hight = 300f * tilesize;
+    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), PMPal.apotheosisLaser, Color.white};
+    public Color laserLightColor = PMPal.apotheosisLaser;
+    public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
+    public float[] strokes = {2f, 1.5f, 1f, 0.3f};
+    public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
+    public float width = -1f, oscScl = 3f, oscMag = 0.2f;
 
     public Sortf unitSort = Unit::dst2;
 
@@ -59,18 +72,24 @@ public class ApotheosisNexus extends ReloadTurret{
     public void init(){
         consumes.powerCond(powerUse, ApotheosisNexusBuild::isActive);
         super.init();
+
+        if(width < 0) width = size * tilesize / 3f;
+        blankscales = new float[lenscales.length];
+        Arrays.fill(blankscales, 1f);
+
+        clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
     }
 
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
         public IntSeq chargers = new IntSeq(), connectedChargers = new IntSeq();
         public float heat, logicControlTime = -1;
-        public float charge, activeTime;
+        public float charge, arc, fade, activeTime;
         public float realDamage, realRadius, realSpeed, realDuration;
         public int shotCounter;
         public boolean logicShooting = false;
         public Posc target;
         public Vec2 targetPos = new Vec2(), curPos = new Vec2();
-        public boolean wasShooting, isShooting, charging;
+        public boolean wasShooting, shooting, charging, arcing, fading;
         public BlockUnitc unit;
 
         @Override
@@ -124,9 +143,35 @@ public class ApotheosisNexus extends ReloadTurret{
         public void draw(){
             super.draw();
 
-            if(charging || isShooting){
-                Draw.color(charging ? Color.red : team.color);
-                Fill.circle(curPos.x, curPos.y, realRadius * chargef());
+            if(arc > 0){
+                //Very messy, don't know how to clean this
+                Draw.z(Layer.effect + 0.002f);
+                float u1 = Mathf.curve(arc * 2f, 0f, arcTime / 2f),
+                    u2 = Mathf.curve(arc * 2f, arcTime / 2f, arcTime / 2f + arcTime / 3f),
+                    u3 = Mathf.curve(arc * 2f, arcTime / 2f + arcTime / 3f, arcTime);
+                if(u1 > 0.01){
+                    PMDrawf.laser(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, fadef());
+                }
+                if(u2 > 0.01){
+                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 2f * fadef());
+                }
+                if(u2 > 0.01){
+                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef(), tscales, strokes, lenscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 6f * fadef());
+                }
+
+                Draw.z(Layer.effect + (curPos.y < y ? 0.003f : 0.001f));
+                float d1 = Mathf.curve((arc - arcTime / 2f) * 2f, 0f, arcTime / 6f),
+                    d2 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 6f, arcTime / 2f),
+                    d3 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 2f, arcTime);
+                if(d1 > 0.01){
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, colors, laserLightColor, 1f / 6f * fadef());
+                }
+                if(d2 > 0.01){
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, 1f / 2f * fadef());
+                }
+                if(d2 > 0.01){
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, fadef());
+                }
             }
         }
 
@@ -140,13 +185,13 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         public boolean isActive(){
-            return (target != null || wasShooting || isShooting) && enabled;
+            return (target != null || wasShooting || shooting) && enabled;
         }
 
         public void targetPosition(Position pos){
             if(!consValid() || pos == null) return;
 
-            if(!isShooting){
+            if(!shooting && !arcing && !fading){
                 curPos.set(pos);
             }else{
                 Tmp.v1.trns(curPos.angleTo(pos), Math.min(realSpeed * edelta(), curPos.dst(pos)));
@@ -216,9 +261,10 @@ public class ApotheosisNexus extends ReloadTurret{
         protected void updateShooting(){
             reload += delta() * baseReloadSpeed();
 
-            if(reload >= reloadTime && !isShooting && !charging){
+            if(reload >= reloadTime && !shooting && !charging){
                 connectChargers();
                 charging = true;
+                fade = fadeTime;
                 for(int i = 0; i < connectedChargers.size; i++){
                     int ii = i;
                     Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
@@ -234,15 +280,39 @@ public class ApotheosisNexus extends ReloadTurret{
                 if(charge >= chargeTime){
                     charge = chargeTime;
                     charging = false;
-                    isShooting = true;
-                    activeTime = 0f;                }
+                    arcing = true;
+                }
             }
 
-            if(isShooting){
+            if(arcing){
+                arc += delta();
+                if(arc >= arcTime){
+                    arc = arcTime;
+                    arcing = false;
+                    shooting = true;
+                    activeTime = 0f;
+                }
+            }
+
+            if(fading){
+                fade -= delta();
+                if(fade <= 0f){
+                    fade = 0f;
+                    shooting = false;
+                    fading = false;
+                    reload %= reloadTime;
+                    charge = 0f;
+                    arc = 0f;
+                    shotCounter++;
+                    chargers.each(i -> ((ApotheosisChargeTowerBuild)(world.build(i))).fullLaser = false);
+                }
+            }
+
+            if(shooting){
                 activeTime += Time.delta / Math.max(efficiency(), 0.00001f);
                 if(timer.get(damageTimer, damageInterval)){
-                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius, h -> {
-                        h.damage(realDamage);
+                    PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius * fadef(), h -> {
+                        h.damage(realDamage * fadef());
                         if(h instanceof Unit u){
                             u.apply(status, statusDuration);
                         }
@@ -250,19 +320,21 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
 
                 if(activeTime >= realDuration){
-                    isShooting = false;
-                    reload %= reloadTime;
-                    charge = 0f;
-                    shotCounter++;
-                    chargers.each(i -> {
-                        ((ApotheosisChargeTowerBuild)(world.build(i))).fullLaser = false;
-                    });
+                    fading = true;
                 }
             }
         }
 
         public float chargef(){
             return charge / chargeTime;
+        }
+
+        public float fadef(){
+            return fade / fadeTime;
+        }
+
+        public float radscl(){
+            return realRadius / damageRadius;
         }
 
         protected boolean validateTarget(){

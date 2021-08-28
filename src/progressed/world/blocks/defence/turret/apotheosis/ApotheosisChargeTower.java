@@ -30,11 +30,12 @@ public class ApotheosisChargeTower extends Block{
     public float startLength, effectLength, endLength;
     public Color placeLine = PMPal.apotheosisLaser;
     public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), PMPal.apotheosisLaser, Color.white};
+    public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f};
     public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
-    public float activeScl = 3f;
+    public float activeScl = 4f;
     public Effect activateEffect = PMFx.apotheosisChargerBlast;
 
     public TextureRegion baseRegion;
@@ -141,7 +142,7 @@ public class ApotheosisChargeTower extends Block{
             if(getNexus() != null){
                 Tmp.v1.trns(rotation, startLength);
                 Draw.z(Layer.effect);
-                PMDrawf.laser(x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, 1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors);
+                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, 1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
             }
         }
 

@@ -505,6 +505,7 @@ public class PMBullets implements ContentList{
             lifetime = 5500f;
             hitSound = Sounds.explosionbig;
             hitShake = 30f;
+            fartVolume = 200f;
             despawnEffect = PMFx.nuclearExplosion;
             blockEffect = PMFx.missileBlockedLarge;
 
@@ -514,7 +515,6 @@ public class PMBullets implements ContentList{
             stopRadius = 20f;
             riseEngineSize = 24f;
             fallEngineSize = 14f;
-            trailSize = 0.7f;
             elevation = 900f;
             riseTime = 240f;
             fallTime = 90f;
@@ -565,7 +565,6 @@ public class PMBullets implements ContentList{
             autoDropRadius = 30f;
             stopRadius = 20f;
             riseEngineSize = 24f;
-            trailSize = 0.7f;
             elevation = 900f;
             riseTime = 240f;
             fallTime = -1f;

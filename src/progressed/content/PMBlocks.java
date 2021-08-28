@@ -906,7 +906,7 @@ public class PMBlocks implements ContentList{
             reloadTime = 60f * 5f;
             range = 200f * tilesize;
             powerUse = 1000f;
-            damage = 3000f / 12f;
+            damage = 2000f / 12f;
             damageRadius = 6f * tilesize;
             speed = 2f;
             duration = 3f * 60f;
@@ -918,10 +918,10 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 7;
             range = 60f;
-            damageBoost = 100f;
-            radiusBoost = tilesize / 2f;
-            speedBoost = 1f / 4f;
-            durationBoost = 20f;
+            damageBoost = 150f / 12f;
+            radiusBoost = tilesize / 8f;
+            speedBoost = 1f / tilesize / 2f;
+            durationBoost = 5f;
             powerUse = 200f;
 
             startLength = size * tilesize / -4f - 5f;
