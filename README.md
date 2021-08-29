@@ -13,6 +13,10 @@ Most of the content in this mod is just experimental turrets. They probably aren
 
 _Or just find it in the in-game mod browser!_
 
+This repo is a continuation of [this](https://github.com/MEEPofFaith/prog-mats-java-sonnicon).
+
+_Anuke Template > Sonnicon Template_
+
 ---
 
 ## Building for Desktop Testing
