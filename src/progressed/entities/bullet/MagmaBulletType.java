@@ -27,7 +27,6 @@ public class MagmaBulletType extends BulletType{
         lightOpacity = 0.7f;
         hitColor = lightColor = colors[2];
         lightRadius = -1f;
-        lightColor = Color.orange;
         makeFire = true;
         keepVelocity = backMove = false;
         collides = pierce = true;

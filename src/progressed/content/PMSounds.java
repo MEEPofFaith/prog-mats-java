@@ -3,72 +3,47 @@ package progressed.content;
 import arc.*;
 import arc.assets.*;
 import arc.assets.loaders.*;
+import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
 import mindustry.*;
 
-//Don't mind me just stealing from BetaMindy.
+/**
+ * @author GlennFolker
+ * For how to make this. Just copy over and adjust the code.
+ */
 public class PMSounds{
-    public static Sound pixelShoot, pixelHit, harbingerCharge, harbingerBlast, popeshadowCharge, popeshadowBlast, swordStab, sentenelCharge;
-    public static final String[] soundFiles = {"pixelShoot", "pixelHit", "harbingerCharge", "harbingerBlast", "popeshadowCharge", "popeshadowBlast", "swordStab", "sentenelCharge"};
-    private static int num = 0;
-    
-    public static void load(){
-        num = 0;
-        pixelShoot = l();
-        pixelHit = l();
-        harbingerCharge = l();
-        harbingerBlast = l();
-        popeshadowCharge = l();
-        popeshadowBlast = l();
-        swordStab = l();
-        sentenelCharge = l();
+    public static Sound
+        pixelShoot = new Sound(),
+        pixelHit = new Sound(),
+        harbingerCharge = new Sound(),
+        harbingerBlast = new Sound(),
+        popeshadowCharge = new Sound(),
+        popeshadowBlast = new Sound(),
+        swordStab = new Sound(),
+        sentenelCharge = new Sound();
+
+    public static void load() {
+        if(Vars.headless) return;
+
+        pixelShoot = loadSound("pixelShoot");
+        pixelHit = loadSound("pixelHit");
+        harbingerCharge = loadSound("harbingerCharge");
+        harbingerBlast = loadSound("harbingerBlast");
+        popeshadowCharge = loadSound("popeshadowCharge");
+        popeshadowBlast = loadSound("popeshadowBlast");
+        swordStab = loadSound("swordStab");
+        sentenelCharge = loadSound("sentenelCharge");
     }
 
-    public static void dispose(){
-        num = 0;
-        pixelShoot = d();
-        pixelHit = d();
-        harbingerCharge = d();
-        harbingerBlast = d();
-        popeshadowCharge = d();
-        popeshadowBlast = d();
-        swordStab = d();
-    }
+    protected static Sound loadSound(String soundName) {
+        String name = "sounds/" + soundName;
+        String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
 
-    protected static Sound l(){
-        return loadSound(soundFiles[num++]);
-    }
+        Sound sound = new Sound();
 
-    protected static Sound d(){
-        return disposeSound(soundFiles[num++]);
-    }
+        AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundParameter(sound));
+        desc.errored = Throwable::printStackTrace;
 
-    protected static Sound loadSound(String soundName){
-        if(!Vars.headless){
-            String name = "sounds/" + soundName;
-            String path = name + ".ogg";
-
-            Sound sound = new Sound();
-
-            AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
-            desc.errored = Throwable::printStackTrace;
-
-            return sound;
-        }else{
-            return new Sound();
-        }
-    }
-
-    protected static Sound disposeSound(String soundName){
-        if(!Vars.headless){
-            String name = "sounds/" + soundName;
-            String path = name + ".ogg";
-
-            if(Core.assets.isLoaded(path, Sound.class)){
-                Core.assets.unload(path);
-            }
-        }
-
-        return null;
+        return sound;
     }
 }

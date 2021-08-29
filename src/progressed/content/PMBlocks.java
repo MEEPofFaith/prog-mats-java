@@ -979,10 +979,10 @@ public class PMBlocks implements ContentList{
             size = 5;
             craftTime = 300f;
             itemCapacity = 15;
-            consumes.power(8f);
+            consumes.power(10f);
             consumes.items(with(
-                Items.titanium, 3,
-                Items.thorium, 3
+                Items.titanium, 4,
+                Items.thorium, 4
             ));
             outputItem = new ItemStack(PMItems.fusium, 3);
         }};

@@ -153,10 +153,10 @@ public class ApotheosisNexus extends ReloadTurret{
                     PMDrawf.laser(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, fadef());
                 }
                 if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 2f * fadef());
+                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef() * (1f + (radscl() - 1f) / 2f), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, 2f / 3f * fadef());
                 }
                 if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef(), tscales, strokes, lenscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 6f * fadef());
+                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 3f * fadef());
                 }
 
                 Draw.z(Layer.effect + (curPos.y < y ? 0.003f : 0.001f));
@@ -164,10 +164,10 @@ public class ApotheosisNexus extends ReloadTurret{
                     d2 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 6f, arcTime / 2f),
                     d3 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 2f, arcTime);
                 if(d1 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, colors, laserLightColor, 1f / 6f * fadef());
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, colors, laserLightColor, 1f / 3f * fadef());
                 }
                 if(d2 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, 1f / 2f * fadef());
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, 2f / 3f * fadef());
                 }
                 if(d2 > 0.01){
                     PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, fadef());
@@ -256,19 +256,27 @@ public class ApotheosisNexus extends ReloadTurret{
             if(acceptCoolant){
                 updateCooling();
             }
+
+            connectedChargers.each(i -> {
+                ApotheosisChargeTowerBuild charger = (ApotheosisChargeTowerBuild)world.build(i);
+                if(charger != null) charger.scl = fadef();
+            });
         }
 
         protected void updateShooting(){
             reload += delta() * baseReloadSpeed();
 
-            if(reload >= reloadTime && !shooting && !charging){
+            if(reload >= reloadTime && !(charging || shooting || arcing || fading)){
                 connectChargers();
                 charging = true;
                 fade = fadeTime;
                 for(int i = 0; i < connectedChargers.size; i++){
                     int ii = i;
                     Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
-                        if(isValid()) ((ApotheosisChargeTowerBuild)(world.build(connectedChargers.get(ii)))).activate();
+                        ApotheosisChargeTowerBuild charger = (ApotheosisChargeTowerBuild)world.build(connectedChargers.get(ii));
+                        if(isValid() && charger != null){
+                            charger.activate();
+                        }
                     });
                 }
             }

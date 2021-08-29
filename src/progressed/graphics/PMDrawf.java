@@ -74,7 +74,7 @@ public class PMDrawf{
     /** Meltdown laser drawing */
     public static void laser(Team team,  float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
         for(int s = 0; s < colors.length; s++){
-            Draw.color(Tmp.c1.set(colors[s]).a(alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+            Draw.color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
             for(int i = 0; i < tscales.length; i++){
                 Tmp.v1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
                 Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
@@ -97,7 +97,7 @@ public class PMDrawf{
 
     public static void laser2(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] pullscales, float oscScl, float oscMag, Color[] colors, Color lightColor, float alpha){
         for(int s = 0; s < colors.length; s++){
-            Draw.color(Tmp.c1.set(colors[s]).a(alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+            Draw.color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
             for(int i = 0; i < tscales.length; i++){
                 Tmp.v1.trns(angle + 180f, length * pullscales[i] - length);
                 Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);

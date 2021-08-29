@@ -76,6 +76,7 @@ public class TeslaTurret extends Block{
         super.setStats();
 
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
+        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
         stats.add(Stat.ammo, PMStatValues.teslaZapping(damage, maxTargets, status));
     }
 
@@ -265,7 +266,7 @@ public class TeslaTurret extends Block{
             if(nearby){
                 updateCooling();
 
-                if((reload += delta()) >= reloadTime){
+                if((reload += edelta()) >= reloadTime){
                     targets.clear();
                     PMDamage.allNearbyEnemies(team, x, y, range, targets::add);
 

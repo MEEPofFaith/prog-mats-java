@@ -70,6 +70,7 @@ public class ApotheosisChargeTower extends Block{
                 }
                 tile.connected = false;
                 tile.fullLaser = false;
+                tile.scl = 1f;
             }
         });
 
@@ -124,7 +125,7 @@ public class ApotheosisChargeTower extends Block{
     }
 
     public class ApotheosisChargeTowerBuild extends Building{
-        public float rotation = 90f;
+        public float rotation = 90f, scl = 1f;
         public int nexus;
         public boolean connected, fullLaser;
 
@@ -142,7 +143,7 @@ public class ApotheosisChargeTower extends Block{
             if(getNexus() != null){
                 Tmp.v1.trns(rotation, startLength);
                 Draw.z(Layer.effect);
-                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, 1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
+                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency(), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
             }
         }
 
@@ -175,9 +176,8 @@ public class ApotheosisChargeTower extends Block{
         @Override
         public void updateTile(){
             super.updateTile();
-            if(getNexus() != null){
-                rotation = angleTo(getNexus());
-            }
+
+            checkNexus();
         }
 
         @Override
@@ -202,6 +202,16 @@ public class ApotheosisChargeTower extends Block{
 
         public float chargef(){
             return getNexus() != null && connected ? getNexus().chargef() : 0f;
+        }
+
+        public void checkNexus(){
+            if(getNexus() == null){
+                connected = false;
+                fullLaser = false;
+                scl = 1f;
+            }else if(!getNexus().chargers.contains(pos())){
+                getNexus().chargers.add(pos());
+            }
         }
 
         public void activate(){
