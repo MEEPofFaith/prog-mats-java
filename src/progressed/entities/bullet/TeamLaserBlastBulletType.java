@@ -10,6 +10,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import progressed.content.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -53,10 +54,11 @@ public class TeamLaserBlastBulletType extends BulletType{
     }
 
     @Override
-    public void despawned(Bullet b){
-        if(b.data instanceof PMTrail tr) tr.clear();
-
-        super.despawned(b);
+    public void removed(Bullet b){
+        if(b.data instanceof PMTrail tr){
+            PMFx.PMTrailFade.at(b.x, b.y, 1f, b.team.color, tr.copy());
+        }
+        super.removed(b);
     }
 
     @Override

@@ -25,6 +25,16 @@ public class PMFx{
 
     public static final Effect
 
+    PMTrailFade = new Effect(400f, e -> {
+        if(!(e.data instanceof PMTrail trail)) return;
+        //lifetime is how many frames it takes to fade out the trail
+        e.lifetime = trail.length * 1.4f;
+
+        trail.shorten();
+        trail.drawCap(e.color, e.rotation);
+        trail.draw(e.color, e.rotation);
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

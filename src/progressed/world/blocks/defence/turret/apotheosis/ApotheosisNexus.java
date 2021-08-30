@@ -188,13 +188,29 @@ public class ApotheosisNexus extends ReloadTurret{
             return (target != null || wasShooting || shooting) && enabled;
         }
 
-        public void targetPosition(Position pos){
+        public void targetPosition(Posc pos){ //Entity targets, leads targets
             if(!consValid() || pos == null) return;
 
             if(!shooting && !arcing && !fading){
-                curPos.set(pos);
+                Tmp.v1.set(pos.getX() - x, pos.getY() - y).setLength(Math.min(Tmp.v1.len(), range)).add(x, y);
+                curPos.set(Tmp.v1);
             }else{
-                Tmp.v1.trns(curPos.angleTo(pos), Math.min(realSpeed * edelta(), curPos.dst(pos)));
+                Tmp.v1.set(Predict.intercept(curPos, pos, realSpeed));
+                Tmp.v2.set(Tmp.v1.getX() - x, Tmp.v1.getY() - y).setLength(Math.min(Tmp.v2.len(), range)).add(x, y);
+                Tmp.v3.trns(curPos.angleTo(Tmp.v2), Math.min(realSpeed * edelta(), curPos.dst(Tmp.v2)));
+                curPos.add(Tmp.v3);
+            }
+        }
+
+        public void targetPosition(Vec2 pos){ //Logic/manual aim. Doesn't lead because it can't lead
+            if(!consValid() || pos == null) return;
+
+            Tmp.v1.set(pos.getX() - x, pos.getY() - y).setLength(Math.min(Tmp.v1.len(), range)).add(x, y);
+
+            if(!shooting && !arcing && !fading){
+                curPos.set(Tmp.v1);
+            }else{
+                Tmp.v1.trns(curPos.angleTo(Tmp.v1), Math.min(realSpeed * edelta(), curPos.dst(Tmp.v1)));
                 curPos.add(Tmp.v1);
             }
         }
@@ -232,17 +248,18 @@ public class ApotheosisNexus extends ReloadTurret{
                     if(isControlled()){ //player behavior
                         targetPos.set(unit.aimX(), unit.aimY());
                         canShoot = unit.isShooting();
+                        targetPosition(targetPos);
                     }else if(logicControlled()){ //logic behavior
                         canShoot = logicShooting;
+                        targetPosition(targetPos);
                     }else{ //default AI behavior
                         targetPos.set(target);
+                        targetPosition(target);
 
                         if(Float.isNaN(rotation)){
                             rotation = 0;
                         }
                     }
-
-                    targetPosition(targetPos);
 
                     if(canShoot){
                         wasShooting = true;

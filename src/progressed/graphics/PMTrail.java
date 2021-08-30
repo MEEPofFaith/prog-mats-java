@@ -3,66 +3,99 @@ package progressed.graphics;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.pooling.*;
+import arc.util.*;
 
 public class PMTrail{ //Taken from Project Unity and modified a bit
     public int length;
 
-    private final Seq<Vec3> points;
-    private float lastX = -1, lastY = -1;
+    private final FloatSeq points;
+    private float lastX = -1, lastY = -1, counter = 0f;
 
     public PMTrail(int length){
         this.length = length;
-        points = new Seq<>(length);
+        points = new FloatSeq(length * 4);
+    }
+
+    public PMTrail copy(){
+        PMTrail out = new PMTrail(length);
+        out.points.addAll(points);
+        out.lastX = lastX;
+        out.lastY = lastY;
+        return out;
     }
 
     public void clear(){
         points.clear();
     }
 
+    public int size(){
+        return points.size / 4;
+    }
+
+    public void drawCap(Color color, float width){
+        if(points.size > 0){
+            Draw.color(color);
+            float[] items = points.items;
+            int i = points.size - 4;
+            float x1 = items[i], y1 = items[i + 1], w1 = items[i + 2], ai = items[i + 3], w = w1 * width / (points.size / 4) * i / 4f * 2f;
+            if(w1 <= 0.001f) return;
+            Draw.rect("hcircle", x1, y1, w, w, -Mathf.radDeg * ai + 180f);
+            Draw.reset();
+        }
+    }
+
     public void draw(Color color, float width){
         Draw.color(color);
+        float[] items = points.items;
 
-        for(int i = 0; i < points.size - 1; i++){
-            Vec3 c = points.get(i);
-            Vec3 n = points.get(i + 1);
-            float size = width / length;
-            float sclc = ((float)i / (points.size - 1f)) * length;
-            float scln = ((i + 1f) / (points.size - 1f)) * length;
+        for(int i = 0; i < points.size - 4; i+= 4){
+            float x1 = items[i], y1 = items[i + 1], w1 = items[i + 2], a1 = items[i + 3],
+                x2 = items[i + 4], y2 = items[i + 5], w2 = items[i + 6], a2 = items[i + 7];
+            float size = width / (points.size / 4);
+            if(w1 <= 0.001f || w2 <= 0.001f) continue;
 
-            float cx = Mathf.sin(c.z) * sclc * size,
-                cy = Mathf.cos(c.z) * sclc * size,
-                nx = Mathf.sin(n.z) * scln * size,
-                ny = Mathf.cos(n.z) * scln * size;
-            Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
+            float cx = Mathf.sin(a1) * i / 4f * size * w1, cy = Mathf.cos(a1) * i / 4f * size * w1,
+                nx = Mathf.sin(a2) * (i / 4f + 1) * size * w2, ny = Mathf.cos(a2) * (i / 4f + 1) * size * w2;
+            Fill.quad(x1 - cx, y1 - cy, x1 + cx, y1 + cy, x2 + nx, y2 + ny, x2 - nx, y2 - ny);
         }
 
         Draw.reset();
     }
 
-    public void update(float x, float y, float rotation){
-        if(points.size > length){
-            Pools.free(points.first());
-            points.remove(0);
+    /** Removes the last point from the trail at intervals. */
+    public void shorten(){
+        if((counter += Time.delta) >= 0.99f){
+            if(points.size >= 4){
+                points.removeRange(0, 3);
+            }
+
+            counter = 0f;
         }
-
-        points.add(Pools.obtain(Vec3.class, Vec3::new).set(x, y, -rotation * Mathf.degRad));
     }
 
+    /** Adds a new point to the trail at intervals. */
     public void update(float x, float y){
-        float angle = -Angles.angle(x, y, lastX, lastY);
-
-        update(x, y, angle);
-
-        lastX = x;
-        lastY = y;
+        update(x, y, 1f);
     }
 
-    public PMTrail copy(){ // Not this though, this I make myself
-        PMTrail trail = new PMTrail(length);
-        points.each(p -> trail.update(p.x, p.y, p.z));
-        return trail;
+    /** Adds a new point to the trail at intervals. */
+    public void update(float x, float y, float width){
+        update(x, y, width, -Angles.angleRad(x, y, lastX, lastY));
+    }
+
+    public void update(float x, float y, float width, float angle){
+        if((counter += Time.delta) >= 0.99f){
+            if(points.size > length * 4){
+                points.removeRange(0, 3);
+            }
+
+            points.add(x, y, width, angle);
+
+            counter = 0f;
+
+            lastX = x;
+            lastY = y;
+        }
     }
 }

@@ -109,4 +109,17 @@ public class PMDrawf{
             Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
         }
     }
+
+    /**
+     * @author sh1ponfire
+     * draws a chain of sprites
+     */
+    public static void drawChain(TextureRegion region, float x, float y, float endx, float endy, float drawRotation){
+        float angleToEnd = Mathf.angle(endx - x, endy - y);
+        float distance = Mathf.dst(x, y, endx, endy);
+        for (int i = 0; i < distance/region.height * 4; i++) {
+            Tmp.v1.trns(angleToEnd, i * region.height / 4f + distance % region.height/4).add(x ,y);
+            Draw.rect(region, Tmp.v1.x, Tmp.v1.y, drawRotation + angleToEnd);
+        }
+    }
 }

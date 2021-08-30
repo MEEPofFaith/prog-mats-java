@@ -36,10 +36,6 @@ public class CritBulletType extends BasicBulletType{
         this(speed, damage, "bullet");
     }
 
-    public CritBulletType(){
-        this(1f, 1f);
-    }
-
     @Override
     public void init(){
         super.init();
@@ -92,7 +88,7 @@ public class CritBulletType extends BasicBulletType{
         }
 
         PMTrail trail = ((CritBulletData)b.data).trail;
-        if(trail != null && trailLength > 0) trail.update(b.x, b.y, b.rotation());
+        if(trail != null && trailLength > 0) trail.update(b.x, b.y, 1f, b.rotation());
     }
 
     @Override
@@ -114,10 +110,18 @@ public class CritBulletType extends BasicBulletType{
     @Override
     public void despawned(Bullet b){
         if(b.data instanceof CritBulletData data){
-            if(data.trail != null) data.trail.clear();
             data.despawned = true;
         }
         super.despawned(b);
+    }
+
+    @Override
+    public void removed(Bullet b){
+        if(b.data instanceof CritBulletData data && data.trail != null){
+            PMFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, data.trail.copy());
+        }
+
+        super.removed(b);
     }
 
     @Override
@@ -171,9 +175,7 @@ public class CritBulletType extends BasicBulletType{
             }
 
             if(makeFire){
-                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> {
-                    Fires.create(other.tile);
-                });
+                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
             }
         }
 

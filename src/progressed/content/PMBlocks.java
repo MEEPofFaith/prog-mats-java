@@ -923,6 +923,7 @@ public class PMBlocks implements ContentList{
             speedBoost = 1f / tilesize / 2f;
             durationBoost = 5f;
             powerUse = 200f;
+            outlineColor = Color.valueOf("2e2c2c");
 
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;
