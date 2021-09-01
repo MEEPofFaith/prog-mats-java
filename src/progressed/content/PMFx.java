@@ -112,84 +112,84 @@ public class PMFx{
         });
     }),
 
-    missileExplosion = new Effect(30, 500f, b -> {
+    missileExplosion = new Effect(30, 500f, e -> {
         float intensity = 2f;
         float baseLifetime = 25f + intensity * 15f;
-        b.lifetime = 50f + intensity * 64f;
+        e.lifetime = 50f + intensity * 64f;
 
         color(Color.darkGray);
         alpha(0.9f);
         for(int i = 0; i < 5; i++){
-            rand.setSeed(b.id * 2L + i);
+            rand.setSeed(e.id * 2L + i);
             float lenScl = rand.random(0.25f, 1f);
             int fi = i;
-            b.scaled(b.lifetime * lenScl, e -> {
-                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
-                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+            e.scaled(e.lifetime * lenScl, s -> {
+                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
+                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
                     float rad = fout * ((2f + intensity) * 2.35f);
 
-                    Fill.circle(e.x + x, e.y + y, rad);
-                    Drawf.light(e.x + x, e.y + y, rad * 2.6f, Pal.gray, 0.7f);
+                    Fill.circle(s.x + x, s.y + y, rad);
+                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, Pal.gray, 0.7f);
                 });
             });
         }
 
-        b.scaled(baseLifetime, e -> {
+        e.scaled(baseLifetime, s -> {
             Draw.color();
-            e.scaled(2 + intensity * 2f, i -> {
+            s.scaled(2 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
-                Lines.circle(e.x, e.y, (3f + i.fin() * 14f) * intensity);
-                Drawf.light(e.x, e.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * e.fout());
+                Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
+                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * s.fout());
             });
 
-            color(Pal.lighterOrange, Pal.redSpark, e.fin());
-            stroke((2f * e.fout()));
+            color(Pal.lighterOrange, Pal.redSpark, s.fin());
+            stroke((2f * s.fout()));
 
             Draw.z(Layer.effect + 0.001f);
-            randLenVectors(e.id + 1, e.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
-                Drawf.light(e.x + x, e.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
+            randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
+                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
             });
         });
     }),
 
-    nuclearExplosion = new Effect(30, 500f, b -> {
+    nuclearExplosion = new Effect(30, 500f, e -> {
         float intensity = 8f;
         float baseLifetime = 25f + intensity * 15f;
-        b.lifetime = 50f + intensity * 64f;
+        e.lifetime = 50f + intensity * 64f;
 
         color(Color.darkGray);
         alpha(0.9f);
         for(int i = 0; i < 5; i++){
-            rand.setSeed(b.id * 2L + i);
+            rand.setSeed(e.id * 2L + i);
             float lenScl = rand.random(0.25f, 1f);
             int fi = i;
-            b.scaled(b.lifetime * lenScl, e -> {
-                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
-                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+            e.scaled(e.lifetime * lenScl, s -> {
+                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
+                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
                     float rad = fout * ((2f + intensity) * 2.35f);
 
-                    Fill.circle(e.x + x, e.y + y, rad);
-                    Drawf.light(e.x + x, e.y + y, rad * 2.6f, Pal.gray, 0.7f);
+                    Fill.circle(s.x + x, s.y + y, rad);
+                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
                 });
             });
         }
 
-        b.scaled(baseLifetime, e -> {
+        e.scaled(baseLifetime, s -> {
             Draw.color();
-            e.scaled(2 + intensity * 2f, i -> {
+            s.scaled(2 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
-                Lines.circle(e.x, e.y, (3f + i.fin() * 14f) * intensity);
-                Drawf.light(e.x, e.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * e.fout());
+                Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
+                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
             });
 
-            color(Pal.lighterOrange, Pal.redSpark, e.fin());
-            stroke((2f * e.fout()));
+            color(Pal.lighterOrange, Pal.redSpark, s.fin());
+            stroke((2f * s.fout()));
 
             Draw.z(Layer.effect + 0.001f);
-            randLenVectors(e.id + 1, e.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
-                Drawf.light(e.x + x, e.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
+            randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
+                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
     }),
@@ -576,6 +576,50 @@ public class PMFx{
             v1.trns(ang, rand.random(e.fin() * 55f));
             Lines.lineAngle(e.x + v1.x + rand.range(spread), e.y + v1.y + rand.range(spread), ang, e.fout() * 5f * rand.random(1f) + 1f);
         }
+    }),
+
+    apotheosisDamage = new Effect(30f, e -> {
+        if(!(e.data instanceof float[] f)) return;
+        z(f[0]);
+
+        float intensity = 2f * f[1];
+        float baseLifetime = 10f + intensity * 4f;
+        e.lifetime = 25f + intensity * 6f;
+
+        color(PMPal.apotheosisLaserDark);
+        alpha(0.9f);
+        for(int i = 0; i < 5; i++){
+            rand.setSeed(e.id * 2L + i);
+            float lenScl = rand.random(0.25f, 1f);
+            int fi = i;
+            e.scaled(e.lifetime * lenScl, s -> {
+                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
+                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+                    float rad = fout * ((2f + intensity) * 2.35f);
+
+                    Fill.circle(s.x + x, s.y + y, rad);
+                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
+                });
+            });
+        }
+
+        e.scaled(baseLifetime, s -> {
+            color(PMPal.apotheosisLaser);
+            s.scaled(2 + intensity * 2f, i -> {
+                stroke((3.1f + intensity/5f) * i.fout());
+                Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
+                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
+            });
+
+            color(PMPal.apotheosisLaser, PMPal.apotheosisLaserDark, s.fin());
+            stroke((2f * s.fout()));
+
+            z(Layer.effect + 0.001f);
+            randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
+                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
+            });
+        });
     }),
     
     staticSpark = new Effect(10f, e -> {

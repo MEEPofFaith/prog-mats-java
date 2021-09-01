@@ -14,5 +14,10 @@ public class PMPal{
     missileEmp = valueOf("5757C1"),
     missileFrag = valueOf("9CB664"),
 
-    apotheosisLaser = valueOf("FF5845");
+    apotheosisLaser = valueOf("CE5EE5"),
+    apotheosisLaserDark = valueOf("9A27C4");
+
+    public static Color[]
+
+    apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, Color.white};
 }

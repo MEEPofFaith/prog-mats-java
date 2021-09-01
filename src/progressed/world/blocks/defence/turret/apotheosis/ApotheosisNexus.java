@@ -21,6 +21,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.*;
+import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.apotheosis.ApotheosisChargeTower.*;
@@ -52,14 +53,18 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public float laserRadius;
     public float hight = 300f * tilesize;
-    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), PMPal.apotheosisLaser, Color.white};
+    public Color[] colors = PMPal.apotheosisLaserColors;
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
 
+    public Effect touchDownEffect = Fx.none, damageEffect = PMFx.apotheosisDamage;
+
     public Sortf unitSort = Unit::dst2;
+
+    public TextureRegion spin1Light, spin1Dark, spin2Light,spin2Dark;
 
     public ApotheosisNexus(String name){
         super(name);
@@ -346,6 +351,7 @@ public class ApotheosisNexus extends ReloadTurret{
                             s.apply(status, statusDuration);
                         }
                     });
+                    damageEffect.at(curPos.x, curPos.y, 0f, new float[]{Layer.effect + (curPos.y < y ? 0.0029f : 0.0009f), radscl() * fadef()}); //Layer data to draw properly close to the beam
                 }
 
                 if(activeTime >= realDuration){

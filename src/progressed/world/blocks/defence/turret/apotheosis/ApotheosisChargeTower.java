@@ -29,7 +29,7 @@ public class ApotheosisChargeTower extends Block{
 
     public float startLength, effectLength, endLength;
     public Color placeLine = PMPal.apotheosisLaser;
-    public Color[] colors = {Color.valueOf("CD423855"), Color.valueOf("CD4238aa"), PMPal.apotheosisLaser, Color.white};
+    public Color[] colors = PMPal.apotheosisLaserColors;
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
@@ -74,7 +74,7 @@ public class ApotheosisChargeTower extends Block{
             }
         });
 
-        config(Point2.class, (tile, value) -> configurations.get(Integer.class).get(tile, Point2.pack(value.x +  + tile.tileX(), value.y +  + tile.tileY())));
+        config(Point2.class, (tile, value) -> configurations.get(Integer.class).get(tile, Point2.pack(value.x + tile.tileX(), value.y + tile.tileY())));
 
         configClear((ApotheosisChargeTowerBuild tile) -> {
            if(tile.getNexus() != null){
@@ -128,6 +128,16 @@ public class ApotheosisChargeTower extends Block{
         public float rotation = 90f, scl = 1f;
         public int nexus;
         public boolean connected, fullLaser;
+
+        @Override
+        public void placed(){
+            super.placed();
+
+            Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n && ((ApotheosisNexus)(n.block)).chargeTower == block);
+            if(find != null){
+                configure(find.pos());
+            }
+        }
 
         public boolean isActive(){
             return connected && getNexus() != null && getNexus().isActive();

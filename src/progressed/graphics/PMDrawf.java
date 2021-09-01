@@ -110,16 +110,12 @@ public class PMDrawf{
         }
     }
 
-    /**
-     * @author sh1ponfire
-     * draws a chain of sprites
-     */
-    public static void drawChain(TextureRegion region, float x, float y, float endx, float endy, float drawRotation){
-        float angleToEnd = Mathf.angle(endx - x, endy - y);
-        float distance = Mathf.dst(x, y, endx, endy);
-        for (int i = 0; i < distance/region.height * 4; i++) {
-            Tmp.v1.trns(angleToEnd, i * region.height / 4f + distance % region.height/4).add(x ,y);
-            Draw.rect(region, Tmp.v1.x, Tmp.v1.y, drawRotation + angleToEnd);
-        }
+    /** Draws a sprite that should be light-wise correct, Provided sprites myst be similar ins shape */
+    public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
+        float mr = Mathf.mod(r, 90f);
+        Draw.rect(dark, x, y, r);
+        Draw.alpha(mr / 90f);
+        Draw.rect(light, x, y, r);
+        Draw.alpha(1f);
     }
 }
