@@ -20,7 +20,9 @@ public class PMSounds{
         popeshadowCharge = new Sound(),
         popeshadowBlast = new Sound(),
         swordStab = new Sound(),
-        sentenelCharge = new Sound();
+        sentenelCharge = new Sound(),
+        moonPiss = new Sound(),
+        loudMoonPiss = new Sound();
 
     public static void load() {
         if(Vars.headless) return;
@@ -33,6 +35,8 @@ public class PMSounds{
         popeshadowBlast = loadSound("popeshadowBlast");
         swordStab = loadSound("swordStab");
         sentenelCharge = loadSound("sentenelCharge");
+        moonPiss = loadSound("moonPiss");
+        loudMoonPiss = loadSound("extraLoudMoonPiss");
     }
 
     protected static Sound loadSound(String soundName) {

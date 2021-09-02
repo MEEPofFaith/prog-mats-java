@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.apotheosis;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -59,8 +60,11 @@ public class ApotheosisNexus extends ReloadTurret{
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
+    public float pissChance = 0.01f;
 
     public Effect touchDownEffect = Fx.none, damageEffect = PMFx.apotheosisDamage;
+    public Sound fireSound = Sounds.none;
+    public float fireSoundPitch = 1f, fireSoundVolume = 1f;
 
     public Sortf unitSort = Unit::dst2;
 
@@ -94,7 +98,7 @@ public class ApotheosisNexus extends ReloadTurret{
         public boolean logicShooting = false;
         public Posc target;
         public Vec2 targetPos = new Vec2(), curPos = new Vec2();
-        public boolean wasShooting, shooting, charging, arcing, fading;
+        public boolean wasShooting, shooting, charging, arcing, fading, piss;
         public BlockUnitc unit;
 
         @Override
@@ -149,19 +153,20 @@ public class ApotheosisNexus extends ReloadTurret{
             super.draw();
 
             if(arc > 0){
+                Color[] c = Core.settings.getBool("pm-farting") || piss ? PMPal.piss : colors;
                 //Very messy, don't know how to clean this
                 Draw.z(Layer.effect + 0.002f);
                 float u1 = Mathf.curve(arc * 2f, 0f, arcTime / 2f),
                     u2 = Mathf.curve(arc * 2f, arcTime / 2f, arcTime / 2f + arcTime / 3f),
                     u3 = Mathf.curve(arc * 2f, arcTime / 2f + arcTime / 3f, arcTime);
                 if(u1 > 0.01){
-                    PMDrawf.laser(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, fadef());
+                    PMDrawf.laser(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, c, laserLightColor, fadef());
                 }
                 if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef() * (1f + (radscl() - 1f) / 2f), tscales, strokes, blankscales, oscScl, oscMag, 0f, colors, laserLightColor, 2f / 3f * fadef());
+                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef() * (1f + (radscl() - 1f) / 2f), tscales, strokes, blankscales, oscScl, oscMag, 0f, c, laserLightColor, 2f / 3f * fadef());
                 }
                 if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, 0f, colors, laserLightColor, 1f / 3f * fadef());
+                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, 0f, c, laserLightColor, 1f / 3f * fadef());
                 }
 
                 Draw.z(Layer.effect + (curPos.y < y ? 0.003f : 0.001f));
@@ -169,13 +174,13 @@ public class ApotheosisNexus extends ReloadTurret{
                     d2 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 6f, arcTime / 2f),
                     d3 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 2f, arcTime);
                 if(d1 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, colors, laserLightColor, 1f / 3f * fadef());
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, c, laserLightColor, 1f / 3f * fadef());
                 }
                 if(d2 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, 2f / 3f * fadef());
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, c, laserLightColor, 2f / 3f * fadef());
                 }
                 if(d2 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, colors, laserLightColor, fadef());
+                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, c, laserLightColor, fadef());
                 }
             }
         }
@@ -292,6 +297,7 @@ public class ApotheosisNexus extends ReloadTurret{
                 connectChargers();
                 charging = true;
                 fade = fadeTime;
+                piss = Mathf.chance(pissChance);
                 for(int i = 0; i < connectedChargers.size; i++){
                     int ii = i;
                     Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
@@ -311,6 +317,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     charge = chargeTime;
                     charging = false;
                     arcing = true;
+                    getSound().at(x, y, fireSoundPitch, fireSoundVolume);
                 }
             }
 
@@ -370,6 +377,10 @@ public class ApotheosisNexus extends ReloadTurret{
 
         public float radscl(){
             return realRadius / damageRadius;
+        }
+
+        public Sound getSound(){
+            return Core.settings.getBool("pm-farting") ? (piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss) : (piss ? PMSounds.moonPiss : fireSound);
         }
 
         protected boolean validateTarget(){

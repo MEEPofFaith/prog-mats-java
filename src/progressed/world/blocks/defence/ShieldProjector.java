@@ -9,6 +9,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -64,6 +65,13 @@ public class ShieldProjector extends ForceProjector{
         clipSize = Math.max(clipSize, PMMathf.cornerDst(radius + phaseRadiusBoost + 3f) * 2f);
 
         super.init();
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        //use team region in vanilla team blocks
+        TextureRegion r = variants > 0 ? Core.atlas.find(name + "1") : region;
+        return teamRegion.found() ? new TextureRegion[]{r, teamRegions[Team.sharded.id]} : new TextureRegion[]{r};
     }
 
     @Override

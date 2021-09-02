@@ -133,9 +133,11 @@ public class ApotheosisChargeTower extends Block{
         public void placed(){
             super.placed();
 
-            Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n && ((ApotheosisNexus)(n.block)).chargeTower == block);
-            if(find != null){
-                configure(find.pos());
+            if(getNexus() == null){ //This is a mess
+                Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n && ((ApotheosisNexus)(n.block)).chargeTower == block);
+                if(find != null){
+                    configure(find.pos());
+                }
             }
         }
 

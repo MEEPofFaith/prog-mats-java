@@ -21,7 +21,7 @@ import progressed.world.blocks.defence.ShieldProjector.*;
 import static mindustry.Vars.*;
 
 public class StrikeBulletType extends BasicBulletType{
-    public float autoDropRadius, stopRadius, stopDelay;
+    public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, snapRot, randRot;
     public float weaveWidth, weaveSpeed;
     public Effect rocketEffect = Fx.rocketSmoke;
@@ -36,6 +36,9 @@ public class StrikeBulletType extends BasicBulletType{
     public float riseSpin = 0f, fallSpin = 0f;
     public Effect blockEffect = Fx.none;
     public float fartVolume = 50f;
+    public int splitBullets;
+    public float splitVelocityMin = 0.2f, splitVelocityMax = 1f, splitLifeMin = 1f, splitLifeMax = 1f;
+    public BulletType splitBullet;
 
     public Sortf unitSort = Unit::dst2;
 
@@ -49,10 +52,6 @@ public class StrikeBulletType extends BasicBulletType{
         lightOpacity = 0.6f;
         lightColor = Pal.engine;
         trailEffect = Fx.none;
-    }
-
-    public StrikeBulletType(float speed, float damage){
-        this(speed, damage, "error");
     }
 
     @Override
@@ -101,7 +100,7 @@ public class StrikeBulletType extends BasicBulletType{
 
             //Instant drop
             float dropTime = (1f - Mathf.curve(b.time, 0, riseTime)) + Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime);
-            if(autoDropRadius > 0f && dropTime == 0 && target != null && Mathf.within(b.x, b.y, target.x(), target.y(), autoDropRadius)){
+            if(autoDropRadius > 0f && b.time >= dropDelay && dropTime == 0 && target != null && Mathf.within(b.x, b.y, target.x(), target.y(), autoDropRadius)){
                 b.time = b.lifetime - fallTime;
             }
 
@@ -137,6 +136,13 @@ public class StrikeBulletType extends BasicBulletType{
                     if(Mathf.chanceDelta(trailChance)){
                         trailEffect.at(b.x, b.y, trailParam, trailColor);
                     }
+                }
+            }
+
+            if(splitBullet != null && !data.split && b.time >= (b.lifetime - fallTime)){
+                data.split = true;
+                for(int i = 0; i < splitBullets; i++){
+                    splitBullet.create(b.owner, b.team, b.x, b.y, Mathf.random(360f), -1f, Mathf.random(splitVelocityMin, splitVelocityMax), Mathf.random(splitLifeMin, splitLifeMax), new StrikeBulletData(b.x, b.y));
                 }
             }
         }
@@ -319,7 +325,7 @@ public class StrikeBulletType extends BasicBulletType{
     public static class StrikeBulletData{
         public float x, y;
         public Vec2 vel;
-        public boolean stopped, blocked;
+        public boolean stopped, blocked, split;
         public ShieldBuild shield;
 
         public StrikeBulletData(float x, float y){
@@ -340,7 +346,8 @@ public class StrikeBulletType extends BasicBulletType{
             return "x : " + x +
             "\ny: " + y +
                 "\nstopped: " + stopped +
-                "\nblocked: " + blocked;
+                "\nblocked: " + blocked +
+                "\nsplit: " + split;
         }
     }
 }

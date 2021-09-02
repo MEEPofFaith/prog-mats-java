@@ -583,7 +583,7 @@ public class PMFx{
         z(f[0]);
 
         float intensity = 2f * f[1];
-        float baseLifetime = 10f + intensity * 4f;
+        float baseLifetime = 20f + intensity * 4f;
         e.lifetime = 25f + intensity * 6f;
 
         color(PMPal.apotheosisLaserDark);
@@ -593,7 +593,7 @@ public class PMFx{
             float lenScl = rand.random(0.25f, 1f);
             int fi = i;
             e.scaled(e.lifetime * lenScl, s -> {
-                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
+                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(3.1f * intensity), 30f * intensity, (x, y, in, out) -> {
                     float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
                     float rad = fout * ((2f + intensity) * 2.35f);
 
@@ -606,8 +606,8 @@ public class PMFx{
         e.scaled(baseLifetime, s -> {
             color(PMPal.apotheosisLaser);
             s.scaled(2 + intensity * 2f, i -> {
-                stroke((3.1f + intensity/5f) * i.fout());
-                Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
+                stroke((6f + intensity / 2f) * i.fout());
+                Lines.circle(s.x, s.y, (3f + i.fin() * 18f) * intensity);
                 Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
             });
 

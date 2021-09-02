@@ -191,6 +191,13 @@ public class PMStatValues{
                             sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
                         }
 
+                        if(type instanceof StrikeBulletType stype && stype.splitBullet != null){
+                            sep(bt, Core.bundle.format("bullet.pm-splits", stype.splitBullets));
+                            bt.row();
+
+                            ammo(ObjectMap.of(t, stype.splitBullet), indent + 1).display(bt);
+                        }
+
                         if(type.fragBullet != null){
                             sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
                             bt.row();
@@ -223,67 +230,70 @@ public class PMStatValues{
 
                 t.row();
 
-                t.table(ft -> {
-                    ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
-                    ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
+                t.table(tt -> {
+                    tt.add("@pm-fuel").top();
+                    tt.table(ft -> {
+                        ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
+                        ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
 
-                    ft.table(st -> {
-                        st.clearChildren();
-                        st.left().defaults().padRight(3).left();
+                        ft.table(st -> {
+                            st.clearChildren();
+                            st.left().defaults().padRight(3).left();
 
-                        st.add(Core.bundle.format("pm-fuel.input", crafter.fuelPerItem));
+                            st.add(Core.bundle.format("pm-fuel.input", crafter.fuelPerItem));
 
-                        sep(st, Core.bundle.format("pm-fuel.use", crafter.fuelPerCraft));
+                            sep(st, Core.bundle.format("pm-fuel.use", crafter.fuelPerCraft));
 
-                        sep(st, Core.bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
+                            sep(st, Core.bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
 
-                        if(crafter.attribute != null){
-                            st.row();
-                            st.table(at -> {
-                                Runnable[] rebuild = {null};
-                                Map[] lastMap = {null};
+                            if(crafter.attribute != null){
+                                st.row();
+                                st.table(at -> {
+                                    Runnable[] rebuild = {null};
+                                    Map[] lastMap = {null};
 
-                                rebuild[0] = () -> {
-                                    at.clearChildren();
-                                    at.left();
+                                    rebuild[0] = () -> {
+                                        at.clearChildren();
+                                        at.left();
 
-                                    at.add("@pm-fuel.affinity");
+                                        at.add("@pm-fuel.affinity");
 
-                                    if(state.isGame()){
-                                        var blocks = Vars.content.blocks()
-                                            .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
-                                            .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
+                                        if(state.isGame()){
+                                            var blocks = Vars.content.blocks()
+                                                .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
+                                                .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
 
-                                        if(blocks.any()){
-                                            int i = 0;
-                                            for(var block: blocks){
-                                                fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
-                                                if(++i % 5 == 0){
-                                                    at.row();
+                                            if(blocks.any()){
+                                                int i = 0;
+                                                for(var block: blocks){
+                                                    fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
+                                                    if(++i % 5 == 0){
+                                                        at.row();
+                                                    }
                                                 }
+                                            }else{
+                                                at.add("@none.inmap");
                                             }
                                         }else{
-                                            at.add("@none.inmap");
+                                            at.add("@stat.showinmap");
                                         }
-                                    }else{
-                                        at.add("@stat.showinmap");
-                                    }
-                                };
+                                    };
 
-                                rebuild[0].run();
+                                    rebuild[0].run();
 
-                                //rebuild when map changes.
-                                at.update(() -> {
-                                    Map current = state.isGame() ? state.map : null;
+                                    //rebuild when map changes.
+                                    at.update(() -> {
+                                        Map current = state.isGame() ? state.map : null;
 
-                                    if(current != lastMap[0]){
-                                        rebuild[0].run();
-                                        lastMap[0] = current;
-                                    }
+                                        if(current != lastMap[0]){
+                                            rebuild[0].run();
+                                            lastMap[0] = current;
+                                        }
+                                    });
                                 });
-                            });
-                        }
-                    }).padTop(-9).left().get().background(Tex.underline);
+                            }
+                        }).padTop(-9).left().get().background(Tex.underline);
+                    }).left();
                 }).left();
             });
         };

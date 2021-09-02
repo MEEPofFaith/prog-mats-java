@@ -1023,8 +1023,8 @@ public class PMBlocks implements ContentList{
             ));
             consumes.power(9f);
             outputItems = with(
-                Items.silicon, 16,
-                Items.metaglass, 8
+                Items.silicon, 14,
+                Items.metaglass, 6
             );
         }};
 

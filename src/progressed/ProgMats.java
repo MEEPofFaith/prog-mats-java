@@ -33,6 +33,8 @@ public class ProgMats extends Mod{
         PMSounds.load();
 
         Events.on(FileTreeInitEvent.class, e -> PMSounds.load());
+
+        Events.on(ClientLoadEvent.class, e -> settingAdder.init());
     }
 
     @Override

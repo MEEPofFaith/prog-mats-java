@@ -417,14 +417,13 @@ public class PMBullets implements ContentList{
 
             autoDropRadius = 15f;
             stopRadius = 10f;
-            stopDelay = 30f;
-            riseEngineSize = 16f;
+            stopDelay = 35f;
+            dropDelay = 25f;
             fallEngineSize = 8f;
             elevation = 230f;
-            riseTime = 25f;
+            riseTime = 0f;
             fallTime = 15f;
             trailSize = 0.7f;
-            riseSpin = 190f;
             fallSpin = 110f;
             randRot = true;
 
@@ -446,23 +445,22 @@ public class PMBullets implements ContentList{
 
             autoDropRadius = 15f;
             stopRadius = 10f;
-            stopDelay = 45f;
-            riseEngineSize = 16f;
+            stopDelay = 55f;
+            dropDelay = 35f;
             fallEngineSize = 8f;
             elevation = 260f;
-            riseTime = 35f;
+            riseTime = 0f;
             fallTime = 20f;
             trailSize = 0.7f;
-            riseSpin = 230f;
             fallSpin = 120f;
             randRot = true;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
 
-            fragBullets = 3;
-            fragVelocityMin = 0.8f;
-            fragVelocityMax = 1.2f;
-            fragBullet = recursionTwo;
+            splitBullets = 3;
+            splitVelocityMin = 0.8f;
+            splitVelocityMax = 1.2f;
+            splitBullet = recursionTwo;
         }};
 
         strikedownRecursive = new StrikeBulletType(2f, 80f, "prog-mats-recursive-missile"){{
@@ -491,10 +489,10 @@ public class PMBullets implements ContentList{
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
 
-            fragBullets = 3;
-            fragVelocityMin = 0.8f;
-            fragVelocityMax = 1.2f;
-            fragBullet = recursionOne;
+            splitBullets = 3;
+            splitVelocityMin = 0.8f;
+            splitVelocityMax = 1.2f;
+            splitBullet = recursionOne;
         }};
 
         arbiterBasic = new StrikeBulletType(1f, 300f, "prog-mats-basic-nuke"){{
@@ -554,11 +552,11 @@ public class PMBullets implements ContentList{
             hitShake = 0f;
             despawnEffect = hitEffect = Fx.none;
 
-            fragBullets = 20;
-            fragBullet = arbiterClusterFrag;
-            fragVelocityMin = 0.1f;
-            fragVelocityMax = 1f;
-            fragLifeMin = 0.5f;
+            splitBullets = 20;
+            splitBullet = arbiterClusterFrag;
+            splitVelocityMin = 0.1f;
+            splitVelocityMax = 1f;
+            splitLifeMin = 0.5f;
 
             targetColor = PMPal.missileFrag;
 
