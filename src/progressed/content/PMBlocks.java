@@ -871,7 +871,7 @@ public class PMBlocks implements ContentList{
             health = 160 * size * size;
             range = 330f;
             shootSound = Sounds.artillery;
-            cooldown = 0.001f;
+            cooldown = 0.01f;
             shootShake = 5f;
             inaccuracy = 5f;
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
@@ -895,7 +895,7 @@ public class PMBlocks implements ContentList{
             health = 170 * size * size;
             range = 4400f;
             shootSound = Sounds.explosionbig;
-            cooldown = 0.001f;
+            cooldown = 0.005f;
             shootShake = 10f;
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
