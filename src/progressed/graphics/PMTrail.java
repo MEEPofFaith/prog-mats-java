@@ -80,17 +80,17 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
     }
 
     /** Adds a new point to the trail at intervals. */
-    public void update(float x, float y, float width){
-        update(x, y, width, -Angles.angleRad(x, y, lastX, lastY));
+    public void update(float x, float y, float rotation){
+        update(x, y, 1f, rotation);
     }
 
-    public void update(float x, float y, float width, float angle){
+    public void update(float x, float y, float width, float rotation){
         if((counter += Time.delta) >= 0.99f){
             if(points.size > length * 4){
                 points.removeRange(0, 3);
             }
 
-            points.add(x, y, width, angle);
+            points.add(x, y, width, -rotation * Mathf.degRad);
 
             counter = 0f;
 
