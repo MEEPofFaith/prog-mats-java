@@ -51,7 +51,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float cooldown = 0.02f;
 
     public float laserRadius;
-    public float hight = 300f * tilesize;
+    public float hight = 150f * tilesize;
     public Color[] colors = PMPal.apotheosisLaserColors;
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
