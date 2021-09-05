@@ -88,7 +88,7 @@ public class CritBulletType extends BasicBulletType{
         }
 
         PMTrail trail = ((CritBulletData)b.data).trail;
-        if(trail != null && trailLength > 0) trail.update(b.x, b.y, 1f, b.rotation());
+        if(trail != null && trailLength > 0) trail.update(b.x, b.y, b.rotation());
     }
 
     @Override

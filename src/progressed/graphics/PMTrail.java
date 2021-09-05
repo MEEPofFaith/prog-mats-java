@@ -76,7 +76,7 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
 
     /** Adds a new point to the trail at intervals. */
     public void update(float x, float y){
-        update(x, y, 1f);
+        update(x, y, Angles.angle(x, y, lastX, lastY));
     }
 
     /** Adds a new point to the trail at intervals. */

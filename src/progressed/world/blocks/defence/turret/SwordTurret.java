@@ -422,7 +422,7 @@ public class SwordTurret extends BaseTurret{
                 Tmp.v2.trns(rot + getRotation() + 90f, bladeCenter);
 
                 if(isAttacking()){
-                    trails[i].update(sX + Tmp.v2.x, sY + Tmp.v2.y, 1f, rot + getRotation());
+                    trails[i].update(sX + Tmp.v2.x, sY + Tmp.v2.y, rot + getRotation());
                 }else{
                     trails[i].shorten();
                 }
