@@ -604,13 +604,6 @@ public class PMFx{
         }
 
         e.scaled(baseLifetime, s -> {
-            color(PMPal.apotheosisLaser);
-            s.scaled(2 + intensity * 2f, i -> {
-                stroke((6f + intensity / 2f) * i.fout());
-                Lines.circle(s.x, s.y, (3f + i.fin() * 18f) * intensity);
-                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
-            });
-
             color(PMPal.apotheosisLaser, PMPal.apotheosisLaserDark, s.fin());
             stroke((2f * s.fout()));
 
@@ -620,6 +613,15 @@ public class PMFx{
                 Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
+    }),
+
+    apotheosisPulse = new Effect(120f, e -> {
+        if(!(e.data instanceof float[] f)) return;
+        z(f[0]);
+
+        color(PMPal.apotheosisLaser, 0.7f);
+        stroke(32f * f[1] * e.fout(Interp.pow5In));
+        Lines.circle(e.x, e.y, 16f * tilesize * f[1] * e.fin(Interp.pow5Out));
     }),
     
     staticSpark = new Effect(10f, e -> {
