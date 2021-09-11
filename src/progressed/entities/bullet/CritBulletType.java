@@ -1,5 +1,6 @@
 package progressed.entities.bullet;
 
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -16,8 +17,6 @@ import static mindustry.Vars.*;
 public class CritBulletType extends BasicBulletType{
     public float critChance = 0.15f, critMultiplier = 5f;
     public Effect critEffect = PMFx.sniperCrit;
-    public int trailLength = 10;
-    public float trailWidth = -1f;
     public boolean bouncing, despawnHitEffects = true;
 
     public CritBulletType(float speed, float damage, String sprite){
@@ -28,8 +27,9 @@ public class CritBulletType extends BasicBulletType{
         shootEffect = Fx.shootBig;
         smokeEffect = Fx.shootBigSmoke;
         hitEffect = PMFx.critPierce;
-        drawSize = 300f;
         hitColor = Pal.lightOrange;
+        trailLength = 10;
+        trailWidth = -1f;
     }
 
     public CritBulletType(float speed, float damage){
@@ -59,6 +59,14 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void update(Bullet b){
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new PMTrail(trailLength);
+            }
+            b.trail.length = trailLength;
+            ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
+        }
+
         if(Mathf.chanceDelta(1) && ((CritBulletData)b.data).crit){
             critEffect.at(b.x, b.y, b.rotation(), b.team.color);
         }
@@ -78,14 +86,6 @@ public class CritBulletType extends BasicBulletType{
             if(Mathf.chanceDelta(trailChance)){
                 trailEffect.at(b.x, b.y, trailParam, trailColor);
             }
-        }
-
-        if(!headless && trailLength > 0){
-            if(b.trail == null){
-                b.trail = new PMTrail(trailLength);
-            }
-            b.trail.length = trailLength;
-            ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
         }
     }
 

@@ -17,10 +17,17 @@ import static mindustry.Vars.*;
 
 public class TeamLaserBlastBulletType extends BulletType{
     public float length, width;
-    public int trailLength;
     
     public TeamLaserBlastBulletType(float damage, float speed){
         super(damage, speed);
+        trailWidth = -1f;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(trailWidth < 0) trailWidth = width / 2f;
     }
 
     @Override
@@ -70,7 +77,7 @@ public class TeamLaserBlastBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        b.trail.draw(b.team.color, width / 2f);
+        drawTrail(b);
 
         Draw.color(b.team.color);
         PMDrawf.pill(b.x, b.y, b.rotation(), length, width);

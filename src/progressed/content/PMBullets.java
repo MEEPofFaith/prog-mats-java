@@ -138,7 +138,6 @@ public class PMBullets implements ContentList{
             frontColor = Color.valueOf("F3E979");
             backColor = hitColor = Color.valueOf("D99F6B");
             lifetime = 42f;
-            knockback = 5f;
             width = 10f;
             height = 19f;
             trailLength = 11;
@@ -200,12 +199,18 @@ public class PMBullets implements ContentList{
                     float a = b.rotation() + ((fragCone / fragBullets) * (i - (fragBullets - 1f) / 2f)) + Mathf.range(fragInacc);
                     if(fragBullet instanceof CritBulletType critB){
                         Bullet bullet = critB.create(b.owner, b.team, b.x, b.y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), 1f, new CritBulletData(data.crit));
+                        bullet.trail = ((PMTrail)(b.trail)).copyPM();
                         if(b.collided.size > 0) bullet.collided.add(b.collided.peek());
                     }
                 }
                 Sounds.missile.at(b, Mathf.random(0.9f, 1.1f));
 
                 super.despawned(b);
+            }
+
+            @Override
+            public void removed(Bullet b){
+                //Don't fade the trail
             }
         };
 

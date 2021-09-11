@@ -51,7 +51,7 @@ public class SwordTurret extends BaseTurret{
     public int trailLength = 8;
 
     public float baseLength = -1f;
-    public float baseWidth = 2f, connectWidth = 4f;
+    public float connectorStroke = 4f;
 
     public float damage = 450f, buildingDamageMultiplier = 0.25f, damageRadius = tilesize;
     public StatusEffect status = StatusEffects.none;
@@ -68,6 +68,9 @@ public class SwordTurret extends BaseTurret{
     public Sortf unitSort = Unit::dst2;
 
     public float elevation = -1f, swordElevation = -1f;
+
+    protected Vec2 tr = new Vec2();
+    protected Vec2 tr2 = new Vec2();
 
     public TextureRegion baseRegion, outlineRegion, swordRegion, heatRegion;
 
@@ -130,14 +133,14 @@ public class SwordTurret extends BaseTurret{
 
         for(int i = 0; i < swords; i++){
             float rot = 90f + i * (360f / swords);
-            Tmp.v1.trns(rot, -radius);
-            Draw.rect(outlineRegion, req.drawx() + Tmp.v1.x, req.drawy() + Tmp.v1.y, rot);
+            tr.trns(rot, -radius);
+            Draw.rect(outlineRegion, req.drawx() + tr.x, req.drawy() + tr.y, rot);
         }
     }
 
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
         public @Nullable Posc target;
-        public Vec2 targetPos = new Vec2(), currentPos = new Vec2();
+        public Vec2 targetPos = new Vec2(), curPos = new Vec2();
         protected float animationTime, coolantScl = 1f, logicControlTime = -1, lookAngle, heat;
         public BlockUnitc unit;
         protected boolean logicShooting, wasAttacking, ready, hit;
@@ -147,7 +150,7 @@ public class SwordTurret extends BaseTurret{
         public void created(){
             unit = (BlockUnitc)UnitTypes.block.create(team);
             unit.tile(this);
-            currentPos.set(x, y);
+            curPos.set(x, y + baseLength);
             for(int i = 0; i < swords; i++){
                 trails[i] = new PMTrail(trailLength);
             }
@@ -224,8 +227,8 @@ public class SwordTurret extends BaseTurret{
 
         public void targetPosition(Posc pos){
             if(!consValid() || pos == null) return;
-            Tmp.v1.trns(angleTo(pos), dst(pos)).limit(range).add(this);
-            targetPos.set(Predict.intercept(currentPos, Tmp.v1, speed));
+            tr.trns(angleTo(pos), dst(pos)).limit(range).add(this);
+            targetPos.set(Predict.intercept(curPos, tr, speed));
         }
 
         @Override
@@ -241,26 +244,20 @@ public class SwordTurret extends BaseTurret{
             //Swords
             float swordOpacity = settings.getInt("pm-swordopacity") / 100f;
 
-            Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, 0.5f * swordOpacity);
-
-            Vec2 v1 = Tmp.v1.trns(lookAngle + 90f, baseLength);
-
+            tr.trns(lookAngle + 90f, baseLength);
+            Lines.stroke(connectorStroke);
+            Draw.color(Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, swordOpacity / 4f));
             Draw.z(Layer.flyingUnit + 0.002f);
+
+            Lines.line(x + tr.x, y + tr.y, curPos.x, curPos.y);
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
+                tr2.trns(rot, -getRadius()).add(curPos).sub(this);
 
-                Vec2 v2 = Tmp.v2.trns(rot, -getRadius()).add(currentPos).sub(this);
-
-                Vec2 v3 = Tmp.v3.trns(v1.angleTo(v2) - 90f, -connectWidth / 2f, v1.dst(v2)).add(v1).add(this);
-                Vec2 v4 = Tmp.v4.trns(v1.angleTo(v2) - 90f, connectWidth / 2f, v1.dst(v2)).add(v1).add(this);
-
-                Vec2 v5 = Tmp.v5.trns(v1.angleTo(v2) - 90f, -baseWidth / 2f, 0f);
-                Vec2 v6 = Tmp.v6.trns(v1.angleTo(v2) - 90f, baseWidth / 2f, 0f);
-
-                Draw.color(Tmp.c1);
-                Fill.quad(x + v1.x + v5.x, y + v1.y + v5.y, v3.x, v3.y, v4.x, v4.y, x + v1.x + v6.x, y + v1.y + v6.y);
+                Lines.line(curPos.x, curPos.y, x + tr2.x, y + tr2.y);
             }
-            Fill.circle(x + v1.x, y + v1.y, baseWidth / 2f);
+            Fill.circle(x + tr.x, y + tr.y, connectorStroke / 2f);
+            Fill.circle(curPos.x, curPos.y, connectorStroke / 2f);
 
             Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, swordOpacity);
 
@@ -272,9 +269,9 @@ public class SwordTurret extends BaseTurret{
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
 
-                Tmp.v1.trns(rot, -getRadius());
+                SwordTurret.this.tr.trns(rot, -getRadius());
 
-                float sX = currentPos.x + Tmp.v1.x, sY = currentPos.y + Tmp.v1.y;
+                float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
 
                 Draw.z(Layer.flyingUnit + 0.001f);
                 PMDrawf.shadowAlpha(outlineRegion, sX - swordElevation, sY - swordElevation, rot + getRotation(), swordOpacity);
@@ -287,9 +284,9 @@ public class SwordTurret extends BaseTurret{
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
 
-                Tmp.v1.trns(rot, -getRadius());
+                SwordTurret.this.tr.trns(rot, -getRadius());
 
-                float sX = currentPos.x + Tmp.v1.x, sY = currentPos.y + Tmp.v1.y;
+                float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
 
                 Draw.alpha(swordOpacity);
                 Draw.z(Layer.flyingUnit + 0.005f);
@@ -383,21 +380,21 @@ public class SwordTurret extends BaseTurret{
                 }
                 if(animationTime >= stabTime && !hit){
                     hit = true;
-                    hitEffect.at(currentPos.x, currentPos.y, hitColor);
+                    hitEffect.at(curPos.x, curPos.y, hitColor);
                     for(int i = 0; i < swords; i++){
-                        hitSound.at(currentPos.x, currentPos.y, Mathf.random(minPitch, maxPitch), Mathf.random(minVolume, maxVolume));
+                        hitSound.at(curPos.x, curPos.y, Mathf.random(minPitch, maxPitch), Mathf.random(minVolume, maxVolume));
                     }
                     if(hitShake > 0f){
                         Effect.shake(hitShake, hitShake, this);
                     }
                     //Slow speed, weak hit -> * efficiency()
-                    PMDamage.completeDamage(team, currentPos.x, currentPos.y, damageRadius, damage * efficiency(), buildingDamageMultiplier, targetAir, targetGround);
+                    PMDamage.completeDamage(team, curPos.x, curPos.y, damageRadius, damage * efficiency(), buildingDamageMultiplier, targetAir, targetGround);
                     if(status != StatusEffects.none){
-                        Damage.status(team, currentPos.x, currentPos.y, damageRadius, status, statusDuration * efficiency(), targetAir, targetGround);
+                        Damage.status(team, curPos.x, curPos.y, damageRadius, status, statusDuration * efficiency(), targetAir, targetGround);
                     }
                 }
                 if(animationTime > totalTime){
-                    if(!validateTarget() || !isAttacking() || !consValid() || aiTargetDistCheck() || currentPos.dst(targetPos) > attackRadius){
+                    if(!validateTarget() || !isAttacking() || !consValid() || aiTargetDistCheck() || curPos.dst(targetPos) > attackRadius){
                         ready = false; //do not stop until dead or unable to attack
                         target = null;
                     }
@@ -409,20 +406,21 @@ public class SwordTurret extends BaseTurret{
                 animationTime = 0f;
             }
 
-            if(dst(currentPos) > size / 2f || isAttacking()) turnTo(angleTo(currentPos));
+            tr.trns(lookAngle + 90f, baseLength);
+            if(tr.dst(curPos) > connectorStroke || isAttacking()) turnTo(angleTo(curPos));
             rotation = (rotation - rotateSpeed * cdelta() * efficiency()) % 360f;
 
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
 
-                Tmp.v1.trns(rot, -getRadius());
+                tr.trns(rot, -getRadius());
 
-                float sX = currentPos.x + Tmp.v1.x, sY = currentPos.y + Tmp.v1.y;
+                float sX = curPos.x + tr.x, sY = curPos.y + tr.y;
 
-                Tmp.v2.trns(rot + getRotation() + 90f, bladeCenter);
+                tr2.trns(rot + getRotation() + 90f, bladeCenter);
 
-                if(isAttacking()){
-                    trails[i].updateRot(sX + Tmp.v2.x, sY + Tmp.v2.y, rot + getRotation());
+                if(ready){
+                    trails[i].updateRot(sX + tr2.x, sY + tr2.y, rot + getRotation());
                 }else{
                     trails[i].shorten();
                 }
@@ -445,20 +443,21 @@ public class SwordTurret extends BaseTurret{
 
         protected void reset(){
             coolantScl = 1f;
-            moveTo(x, y, false);
+            resetPos();
         }
 
         protected void moveTo(Vec2 pos, boolean readyUp){
-            float angle = currentPos.angleTo(pos);
-            float dist = currentPos.dst(pos);
-            boolean checkDst = dist < attackRadius;
-            ready = checkDst && readyUp;
-            Tmp.v1.trns(angle, speed * cdelta() * efficiency()).limit(dist);
-            currentPos.add(Tmp.v1);
+            float angle = curPos.angleTo(pos);
+            float dist = curPos.dst(pos);
+            if(dist < attackRadius && readyUp) ready = true;
+            tr.trns(angle, speed * cdelta() * efficiency()).limit(dist);
+            curPos.add(tr);
         }
 
-        protected void moveTo(float x, float y, boolean readyUp){
-            moveTo(Tmp.v1.set(x, y), readyUp);
+        protected void resetPos(){
+            tr.trns(lookAngle + 90f, baseLength);
+            tr2.set(x + tr.x, y + tr.y);
+            if(!curPos.within(tr2, 0.1f)) moveTo(tr2, false);
         }
 
         protected boolean validateTarget(){
@@ -503,8 +502,8 @@ public class SwordTurret extends BaseTurret{
             write.bool(hit);
             write.f(lookAngle);
             write.f(animationTime);
-            write.f(currentPos.x);
-            write.f(currentPos.y);
+            write.f(curPos.x);
+            write.f(curPos.y);
         }
 
         @Override
@@ -516,7 +515,7 @@ public class SwordTurret extends BaseTurret{
                 hit = read.bool();
                 lookAngle = read.f();
                 animationTime = read.f();
-                currentPos.set(read.f(), read.f());
+                curPos.set(read.f(), read.f());
             }
         }
 
