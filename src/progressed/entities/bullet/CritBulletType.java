@@ -47,21 +47,14 @@ public class CritBulletType extends BasicBulletType{
     public void init(Bullet b){
         if(b.data == null){
             if(Mathf.chance(critChance)){
-                b.data = new CritBulletData(true, new PMTrail(trailLength));
+                b.data = new CritBulletData(true);
             }else{
-                b.data = new CritBulletData(false, new PMTrail(trailLength));
+                b.data = new CritBulletData(false);
             }
         }
         if(((CritBulletData)b.data).crit) b.damage *= critMultiplier;
 
         super.init(b);
-    }
-
-    @Override
-    public void draw(Bullet b){
-        PMTrail trail = ((CritBulletData)b.data).trail;
-        if(trail != null && trailLength > 0) trail.draw(backColor, trailWidth);
-        super.draw(b);
     }
 
     @Override
@@ -87,8 +80,13 @@ public class CritBulletType extends BasicBulletType{
             }
         }
 
-        PMTrail trail = ((CritBulletData)b.data).trail;
-        if(trail != null && trailLength > 0) trail.update(b.x, b.y, b.rotation());
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new PMTrail(trailLength);
+            }
+            b.trail.length = trailLength;
+            ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
+        }
     }
 
     @Override
@@ -117,11 +115,9 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void removed(Bullet b){
-        if(b.data instanceof CritBulletData data && data.trail != null){
-            PMFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, data.trail.copy());
+        if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+            PMFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
         }
-
-        super.removed(b);
     }
 
     @Override
@@ -142,7 +138,7 @@ public class CritBulletType extends BasicBulletType{
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
                 if(fragBullet instanceof CritBulletType critB){
-                    critB.create(b.owner, b.team, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax), new CritBulletData(crit, new PMTrail(critB.trailLength)));
+                    critB.create(b.owner, b.team, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax), new CritBulletData(crit));
                 }else{
                     fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
                 }
@@ -198,11 +194,9 @@ public class CritBulletType extends BasicBulletType{
 
     public static class CritBulletData{
         public boolean crit, despawned;
-        public PMTrail trail;
 
-        public CritBulletData(boolean crit, PMTrail trail){
+        public CritBulletData(boolean crit){
             this.crit = crit;
-            this.trail = trail;
         }
     }
 }

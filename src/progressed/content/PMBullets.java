@@ -199,7 +199,7 @@ public class PMBullets implements ContentList{
                 for(int i = 0; i < fragBullets; i++){
                     float a = b.rotation() + ((fragCone / fragBullets) * (i - (fragBullets - 1f) / 2f)) + Mathf.range(fragInacc);
                     if(fragBullet instanceof CritBulletType critB){
-                        Bullet bullet = critB.create(b.owner, b.team, b.x, b.y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), 1f, new CritBulletData(data.crit, data.trail.copy()));
+                        Bullet bullet = critB.create(b.owner, b.team, b.x, b.y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), 1f, new CritBulletData(data.crit));
                         if(b.collided.size > 0) bullet.collided.add(b.collided.peek());
                     }
                 }

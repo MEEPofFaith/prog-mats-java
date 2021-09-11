@@ -5,19 +5,23 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.graphics.*;
 
-public class PMTrail{ //Taken from Project Unity and modified a bit
-    public int length;
-
+public class PMTrail extends Trail{ //Taken from Project Unity and modified a bit
     private final FloatSeq points;
     private float lastX = -1, lastY = -1, counter = 0f;
 
     public PMTrail(int length){
-        this.length = length;
+        super(length);
         points = new FloatSeq(length * 4);
     }
 
-    public PMTrail copy(){
+    @Override
+    public Trail copy(){
+        return null; //Don't
+    }
+
+    public PMTrail copyPM(){
         PMTrail out = new PMTrail(length);
         out.points.addAll(points);
         out.lastX = lastX;
@@ -25,14 +29,12 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
         return out;
     }
 
-    public void clear(){
-        points.clear();
-    }
-
+    @Override
     public int size(){
         return points.size / 4;
     }
 
+    @Override
     public void drawCap(Color color, float width){
         if(points.size > 0){
             Draw.color(color);
@@ -45,6 +47,7 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
         }
     }
 
+    @Override
     public void draw(Color color, float width){
         Draw.color(color);
         float[] items = points.items;
@@ -64,6 +67,7 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
     }
 
     /** Removes the last point from the trail at intervals. */
+    @Override
     public void shorten(){
         if((counter += Time.delta) >= 0.99f){
             if(points.size >= 4){
@@ -75,15 +79,23 @@ public class PMTrail{ //Taken from Project Unity and modified a bit
     }
 
     /** Adds a new point to the trail at intervals. */
+    @Override
     public void update(float x, float y){
-        update(x, y, Angles.angle(x, y, lastX, lastY));
+        updateRot(x, y, Angles.angle(x, y, lastX, lastY));
     }
 
-    /** Adds a new point to the trail at intervals. */
-    public void update(float x, float y, float rotation){
+    /** Adds a new point with a width multiplier to the trail at intervals. */
+    @Override
+    public void update(float x, float y, float width){
+        update(x, y, width, Angles.angle(x, y, lastX, lastY));
+    }
+
+    /** Adds a new point with a specific rotation to the trail at intervals. */
+    public void updateRot(float x, float y, float rotation){
         update(x, y, 1f, rotation);
     }
 
+    /** Adds a new point with a width multiplier and specific rotation to the trail at intervals. */
     public void update(float x, float y, float width, float rotation){
         if((counter += Time.delta) >= 0.99f){
             if(points.size > length * 4){

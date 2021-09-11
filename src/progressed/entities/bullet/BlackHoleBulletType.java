@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
     public Color color = Color.black;
@@ -137,9 +138,25 @@ public class BlackHoleBulletType extends BulletType{
         if(!cataclysm){
             if(absorbEffect != Fx.none) absorbEffect.at(other.x, other.y);
         }
+        if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
+            if(other.trail instanceof PMTrail t){
+                PMFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+                Log.info("Absorbed PMTrail Bullet");
+            }else{
+                Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
+                Log.info("Absorbed Trail Bullet");
+            }
+        }
         other.type = PMBullets.absorbed;
         other.absorb();
         if(cataclysm){
+            if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+                if(b.trail instanceof PMTrail t){
+                    PMFx.PMTrailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, t.copyPM());
+                }else{
+                    Fx.trailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, b.trail.copy());
+                }
+            }
             b.type = PMBullets.absorbed;
             b.absorb();
         }

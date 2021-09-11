@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
 import progressed.entities.bullet.BlackHoleBulletType.*;
+import progressed.graphics.*;
 
 public class BlackHoleCataclysmType extends BulletType{
     public float growTime = 20f, secondaryGrowTime = 180f, fadeTime = 90f;
@@ -130,6 +131,13 @@ public class BlackHoleCataclysmType extends BulletType{
 
     public void absorbBullet(Bullet other){
         PMFx.blackHoleAbsorb.at(other.x, other.y);
+        if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
+            if(other.trail instanceof PMTrail t){
+                PMFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+            }else{
+                Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
+            }
+        }
         other.type = PMBullets.absorbed;
         other.absorb();
     }

@@ -24,25 +24,53 @@ public class TeamLaserBlastBulletType extends BulletType{
     }
 
     @Override
-    public void init(Bullet b){
-        super.init(b);
-
-        if(trailLength > 0) b.data = new PMTrail(trailLength);
-    }
-
-    @Override
     public void update(Bullet b){
-        super.update(b);
-
-        if(b.data instanceof PMTrail tr){
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new Trail(trailLength);
+            }
+            b.trail.length = trailLength;
             Tmp.v1.trns(b.rotation() - 180f, length / 2f - width / 2f);
-            tr.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+            b.trail.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+        }
+
+        //All this just to change the trail a little
+        if(homingPower > 0.0001f && b.time >= homingDelay){
+            Teamc target;
+            //home in on allies if possible
+            if(healPercent > 0){
+                target = Units.closestTarget(null, b.x, b.y, homingRange,
+                    e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team,
+                    t -> collidesGround && (t.team != b.team || t.damaged()));
+            }else{
+                target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+            }
+
+            if(target != null){
+                b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
+            }
+        }
+
+        if(weaveMag > 0){
+            b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
+        }
+
+        if(trailChance > 0){
+            if(Mathf.chanceDelta(trailChance)){
+                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
+            }
+        }
+
+        if(trailInterval > 0f){
+            if(b.timer(0, trailInterval)){
+                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
+            }
         }
     }
 
     @Override
     public void draw(Bullet b){
-        if(b.data instanceof PMTrail tr) tr.draw(b.team.color, width / 2f);
+        b.trail.draw(b.team.color, width / 2f);
 
         Draw.color(b.team.color);
         PMDrawf.pill(b.x, b.y, b.rotation(), length, width);
@@ -51,21 +79,6 @@ public class TeamLaserBlastBulletType extends BulletType{
         PMDrawf.pill(b.x, b.y, b.rotation(), length / 2f, width / 2f);
 
         Draw.color();
-    }
-
-    @Override
-    public void removed(Bullet b){
-        if(b.data instanceof PMTrail tr){
-            PMFx.PMTrailFade.at(b.x, b.y, 1f, b.team.color, tr.copy());
-        }
-        super.removed(b);
-    }
-
-    @Override
-    public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
-        super.hitTile(b, build, initialHealth, direct);
-
-        if(direct && b.data instanceof PMTrail tr) tr.clear();
     }
 
     @Override
@@ -110,9 +123,7 @@ public class TeamLaserBlastBulletType extends BulletType{
             }
 
             if(makeFire){
-                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> {
-                    Fires.create(other.tile);
-                });
+                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
             }
         }
 

@@ -422,7 +422,7 @@ public class SwordTurret extends BaseTurret{
                 Tmp.v2.trns(rot + getRotation() + 90f, bladeCenter);
 
                 if(isAttacking()){
-                    trails[i].update(sX + Tmp.v2.x, sY + Tmp.v2.y, rot + getRotation());
+                    trails[i].updateRot(sX + Tmp.v2.x, sY + Tmp.v2.y, rot + getRotation());
                 }else{
                     trails[i].shorten();
                 }
@@ -485,7 +485,7 @@ public class SwordTurret extends BaseTurret{
         public void onRemoved(){
             super.onRemoved();
             for(PMTrail trail : trails){
-                PMFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copy());
+                PMFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copyPM());
             }
         }
 
