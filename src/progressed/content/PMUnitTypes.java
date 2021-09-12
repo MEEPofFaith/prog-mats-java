@@ -132,7 +132,7 @@ public class PMUnitTypes implements ContentList{
                     homingPower = 0.035f;
                     homingRange = 200f;
 
-                    hitSound = Sounds.explosion;
+                    hitSound = Sounds.bang;
                     hitShake = 1.5f;
 
                     targetColor = PMPal.missileBasic;

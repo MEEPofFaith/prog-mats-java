@@ -328,7 +328,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.035f;
             homingRange = 200f;
             ammoMultiplier = 4f;
-            hitSound = Sounds.explosion;
+            hitSound = Sounds.bang;
             collidesAir = false;
             hitShake = 2f;
             despawnEffect = PMFx.smallBoom;
@@ -356,7 +356,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.05f;
             homingRange = 330f;
             lifetime = 180f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
@@ -384,7 +384,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.075f;
             homingRange = 330f;
             lifetime = 120f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
@@ -413,7 +413,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.1f;
             homingRange = 330f;
             lifetime = 70f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
@@ -441,7 +441,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.07f;
             homingRange = 330f;
             lifetime = 90f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
@@ -474,7 +474,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.05f;
             homingRange = 330f;
             lifetime = 135f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
@@ -506,7 +506,7 @@ public class PMBullets implements ContentList{
             homingPower = 0.05f;
             homingRange = 2200f;
             lifetime = 5500f;
-            hitSound = Sounds.explosionbig;
+            hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
             fartVolume = 200f;
             despawnEffect = PMFx.nuclearExplosion;
@@ -533,7 +533,7 @@ public class PMBullets implements ContentList{
             splashDamage = 3000f;
             splashDamageRadius = 40f;
             lifetime = 150f;
-            hitSound = Sounds.bang;
+            hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
             blockEffect = PMFx.missileBlocked;
