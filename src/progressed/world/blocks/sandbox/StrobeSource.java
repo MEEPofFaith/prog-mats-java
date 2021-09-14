@@ -52,12 +52,7 @@ public class StrobeSource extends StrobeNode{
         public void updateTile(){
             super.updateTile();
             if(boost && timer(0, 60f)){
-                for(int i = 0; i < power.links.size; i++){
-                    Building b = Vars.world.tile(power.links.items[i]).build;
-                    if(b != null){
-                        b.applyBoost(speedBoost, 65f);
-                    }
-                }
+                power.graph.all.each(b -> b.applyBoost(speedBoost, 65f));
             }
         }
     }
