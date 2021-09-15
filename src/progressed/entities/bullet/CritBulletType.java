@@ -23,6 +23,7 @@ public class CritBulletType extends BasicBulletType{
         super(speed, damage, sprite);
         pierce = true;
         pierceBuilding = true;
+        impact = true;
         ammoMultiplier = 1;
         shootEffect = Fx.shootBig;
         smokeEffect = Fx.shootBigSmoke;
