@@ -911,7 +911,7 @@ public class PMBlocks implements ContentList{
             speed = 2f;
             duration = 3f * 60f;
 
-            laserRadius = 2f * tilesize;
+            laserRadius = tilesize / 2f;
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
@@ -923,7 +923,7 @@ public class PMBlocks implements ContentList{
             speedBoost = 1f / tilesize / 2f;
             durationBoost = 5f;
             powerUse = 200f;
-            outlineColor = Color.valueOf("1c1b1c");
+            outlineColor = Color.valueOf("2e3142");
 
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;

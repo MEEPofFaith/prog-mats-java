@@ -58,6 +58,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
+    public float[] pullLengths = {0f, 1.75f, 2.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
     public float pissChance = 0.01f;
@@ -68,8 +69,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public Sortf unitSort = Unit::dst2;
 
-    public TextureRegion spin1Light, spin1Dark, spin2Light,spin2Dark;
-    public TextureRegion[] lightRegions;
+    public TextureRegion[] lightRegions, spin1 = new TextureRegion[2], spin2 = new TextureRegion[2];
 
     public ApotheosisNexus(String name){
         super(name);
@@ -178,7 +178,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     u2 = Mathf.curve(arc * 2f, arcTime / 2f, arcTime / 2f + arcTime / 3f),
                     u3 = Mathf.curve(arc * 2f, arcTime / 2f + arcTime / 3f, arcTime);
                 if(u1 > 0.01){
-                    PMDrawf.laser(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, blankscales, oscScl, oscMag, 0f, c, laserLightColor, fadef());
+                    PMDrawf.laser3(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, pullLengths, oscScl, oscMag, c, laserLightColor, fadef());
                 }
                 if(u2 > 0.01){
                     PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef() * (1f + (radscl() - 1f) / 2f), tscales, strokes, blankscales, oscScl, oscMag, 0f, c, laserLightColor, 2f / 3f * fadef());

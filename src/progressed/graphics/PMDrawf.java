@@ -74,6 +74,7 @@ public class PMDrawf{
         target(x, y, angle, radius, color, color, alpha);
     }
 
+    //Too much duplicated code, how to condense down laser drawing?
     /** Meltdown laser drawing */
     public static void laser(Team team,  float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
         for(int s = 0; s < colors.length; s++){
@@ -108,7 +109,22 @@ public class PMDrawf{
             }
 
             Tmp.v1.trns(angle, length * pullscales[pullscales.length - 1] - length);
-            Tmp.v2.trns(angle, length * length * pullscales[pullscales.length - 1]);
+            Tmp.v2.trns(angle, length);
+            Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
+        }
+    }
+
+    public static void laser3(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] pullLengths, float oscScl, float oscMag, Color[] colors, Color lightColor, float alpha){
+        for(int s = 0; s < colors.length; s++){
+            color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + absin(Time.time, 1f, 0.1f)));
+            for(int i = 0; i < tscales.length; i++){
+                Tmp.v1.trns(angle + 180f, pullLengths[i]);
+                stroke((width + absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
+                lineAngle(x + Tmp.v1.x, y + Tmp.v1.y, angle, length + pullLengths[i], false);
+            }
+
+            Tmp.v1.trns(angle, -pullLengths[pullLengths.length - 1]);
+            Tmp.v2.trns(angle, length);
             Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
         }
     }
@@ -127,20 +143,15 @@ public class PMDrawf{
         float space = 360 / sides;
         for(int i = 0; i < sides; i++){
             float a = space * i;
-            vec1.trns(
-                rot,
+            vec1.trns(rot,
                 rad * width * cosDeg(a),
                 rad * height * sinDeg(a)
             );
-            vec2.trns(
-                rot,
+            vec2.trns(rot,
                 rad * width * cosDeg(a + space),
                 rad * height * sinDeg(a + space)
             );
-            line(
-                x + vec1.x, y + vec1.y,
-                x + vec2.x, y + vec2.y
-            );
+            line(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y);
         }
     }
 }
