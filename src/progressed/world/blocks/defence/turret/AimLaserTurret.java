@@ -92,7 +92,7 @@ public class AimLaserTurret extends PowerTurret{
                 Tmp.v3.rnd(Mathf.random(aimRnd * (1f - c)));
                 Tmp.v4.set(Tmp.v2).add(Tmp.v3);
 
-                PMDrawf.line(x, y, Tmp.v1, Tmp.v4, false);
+                PMDrawf.vecLine(x, y, Tmp.v1, Tmp.v4, false);
 
                 if(isAI() && target instanceof Unit u){
                     Draw.alpha(0.75f);
