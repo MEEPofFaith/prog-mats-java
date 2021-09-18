@@ -138,18 +138,18 @@ public class PMDrawf{
         alpha(1f);
     }
 
-    public static void ellipse(float x, float y, float rad, float width, float height, float rot){
+    public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot){
         float sides = circleVertices(rad);
         float space = 360 / sides;
         for(int i = 0; i < sides; i++){
             float a = space * i;
             vec1.trns(rot,
-                rad * width * cosDeg(a),
-                rad * height * sinDeg(a)
+                rad * wScl * cosDeg(a),
+                rad * hScl * sinDeg(a)
             );
             vec2.trns(rot,
-                rad * width * cosDeg(a + space),
-                rad * height * sinDeg(a + space)
+                rad * wScl * cosDeg(a + space),
+                rad * hScl * sinDeg(a + space)
             );
             line(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y);
         }

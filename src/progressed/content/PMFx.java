@@ -566,16 +566,27 @@ public class PMFx{
     }),
 
     apotheosisChargerBlast = new Effect(30f, e -> {
-        color(PMPal.apotheosisLaser);
-        Lines.stroke(0.5f + 0.5f*e.fout());
+        stroke(0.5f + 0.5f*e.fout(), PMPal.apotheosisLaser);
         float spread = 3f;
 
         rand.setSeed(e.id);
         for(int i = 0; i < 20; i++){
             float ang = e.rotation + rand.range(17f);
             v1.trns(ang, rand.random(e.fin() * 55f));
-            Lines.lineAngle(e.x + v1.x + rand.range(spread), e.y + v1.y + rand.range(spread), ang, e.fout() * 5f * rand.random(1f) + 1f);
+            lineAngle(e.x + v1.x + rand.range(spread), e.y + v1.y + rand.range(spread), ang, e.fout() * 5f * rand.random(1f) + 1f);
         }
+    }),
+
+    apotheosisBlast = new Effect(300f, e -> {
+        float fin = Interp.pow5Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
+        float fade = 1f - Interp.pow2Out.apply(Mathf.curve(e.fin(), 0.6f, 1f));
+        color(PMPal.apotheosisLaser);
+        stroke(fin * 4f * fade);
+        for(int dir : Mathf.signs){
+            PMDrawf.ellipse(e.x, e.y, fin * 64f, 1f - 0.75f * fin, 1f + fin, fin * 540 * dir + 45 * dir);
+        }
+        stroke(fin * 6f * fade);
+        Lines.circle(e.x, e.y, fin * 100f);
     }),
 
     apotheosisDamage = new Effect(30f, e -> {

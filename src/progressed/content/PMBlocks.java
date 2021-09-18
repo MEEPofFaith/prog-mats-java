@@ -912,6 +912,7 @@ public class PMBlocks implements ContentList{
             duration = 3f * 60f;
 
             laserRadius = tilesize / 2f;
+            fireEffect = PMFx.apotheosisBlast;
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{

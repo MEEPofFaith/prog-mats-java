@@ -63,7 +63,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
     public float pissChance = 0.01f;
 
-    public Effect touchDownEffect = Fx.none, damageEffect = PMFx.apotheosisDamage, pulseEffect = PMFx.apotheosisPulse;
+    public Effect fireEffect = Fx.none, touchDownEffect = Fx.none, damageEffect = PMFx.apotheosisDamage, pulseEffect = PMFx.apotheosisPulse;
     public Sound fireSound = Sounds.none;
     public float fireSoundPitch = 1f, fireSoundVolume = 1f;
 
@@ -337,6 +337,7 @@ public class ApotheosisNexus extends ReloadTurret{
                         charging = false;
                         arcing = true;
                         getSound().at(x, y, fireSoundPitch, fireSoundVolume);
+                        fireEffect.at(x, y);
                     }
                 }else{
                     reset();
