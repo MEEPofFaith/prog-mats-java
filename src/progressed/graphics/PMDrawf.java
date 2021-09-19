@@ -12,7 +12,7 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Mathf.*;
 
 public class PMDrawf{
-    private static Vec2 vec1 = new Vec2(), vec2 = new Vec2();
+    private static Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
 
     public static void plus(float x, float y, float diameter, float angle, Color color, float alpha){
         color(color, alpha);
@@ -141,17 +141,32 @@ public class PMDrawf{
     public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot){
         float sides = circleVertices(rad);
         float space = 360 / sides;
+        float r1 = rad - getStroke() / 2f, r2 = rad + getStroke() / 2f;
+
         for(int i = 0; i < sides; i++){
             float a = space * i;
             vec1.trns(rot,
-                rad * wScl * cosDeg(a),
-                rad * hScl * sinDeg(a)
+                r1 * wScl * cosDeg(a),
+                r1 * hScl * sinDeg(a)
             );
             vec2.trns(rot,
-                rad * wScl * cosDeg(a + space),
-                rad * hScl * sinDeg(a + space)
+                r1 * wScl * cosDeg(a + space),
+                r1 * hScl * sinDeg(a + space)
             );
-            line(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y);
+            vec3.trns(rot,
+                r2 * wScl * cosDeg(a + space),
+                r2 * hScl * sinDeg(a + space)
+            );
+            vec4.trns(rot,
+                r2 * wScl * cosDeg(a),
+                r2 * hScl * sinDeg(a)
+            );
+            Fill.quad(
+                x + vec1.x, y + vec1.y,
+                x + vec2.x, y + vec2.y,
+                x + vec3.x, y + vec3.y,
+                x + vec4.x, y + vec4.y
+            );
         }
     }
 }

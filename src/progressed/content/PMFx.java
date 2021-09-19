@@ -578,15 +578,17 @@ public class PMFx{
     }),
 
     apotheosisBlast = new Effect(300f, e -> {
-        float fin = Interp.pow5Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
+        float fin = Interp.pow3Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
         float fade = 1f - Interp.pow2Out.apply(Mathf.curve(e.fin(), 0.6f, 1f));
         color(PMPal.apotheosisLaser);
-        stroke(fin * 4f * fade);
-        for(int dir : Mathf.signs){
-            PMDrawf.ellipse(e.x, e.y, fin * 64f, 1f - 0.75f * fin, 1f + fin, fin * 540 * dir + 45 * dir);
-        }
         stroke(fin * 6f * fade);
-        Lines.circle(e.x, e.y, fin * 100f);
+        for(int dir : Mathf.signs){
+            for(int i = 0; i < 3; i++){
+                PMDrawf.ellipse(e.x, e.y, fin * 64f, 1f - 0.75f * fin, 1f + fin, fin * (375f + (i * 240f)) * dir);
+            }
+        }
+        stroke(fin * 8f * fade);
+        Lines.circle(e.x, e.y, fin * 80f);
     }),
 
     apotheosisDamage = new Effect(30f, e -> {
