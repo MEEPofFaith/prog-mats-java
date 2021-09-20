@@ -580,6 +580,8 @@ public class PMFx{
     apotheosisBlast = new Effect(300f, e -> {
         float fin = Interp.pow3Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
         float fade = 1f - Interp.pow2Out.apply(Mathf.curve(e.fin(), 0.6f, 1f));
+
+        z(Layer.effect - 0.0005f);
         color(PMPal.apotheosisLaser);
         stroke(fin * 6f * fade);
         for(int dir : Mathf.signs){
@@ -589,6 +591,29 @@ public class PMFx{
         }
         stroke(fin * 8f * fade);
         Lines.circle(e.x, e.y, fin * 80f);
+    }),
+
+    apotheosisClouds = new Effect(360f, e -> {
+        float intensity = 2f;
+        e.lifetime = 300f + intensity * 25f;
+
+        z(Layer.effect - 0.001f);
+        color(PMPal.apotheosisLaserDark);
+        alpha(0.9f);
+        for(int i = 0; i < 12; i++){
+            rand.setSeed(e.id * 2L + i);
+            float lenScl = rand.random(0.25f, 1f);
+            int fi = i;
+            e.scaled(e.lifetime * lenScl, s -> {
+                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(7.3f * intensity), 60f * intensity, (x, y, in, out) -> {
+                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+                    float rad = fout * ((2f + intensity) * 3.52f);
+
+                    Fill.circle(s.x + x, s.y + y, rad);
+                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
+                });
+            });
+        }
     }),
 
     apotheosisDamage = new Effect(30f, e -> {

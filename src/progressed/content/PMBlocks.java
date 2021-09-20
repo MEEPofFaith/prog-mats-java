@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -912,7 +913,7 @@ public class PMBlocks implements ContentList{
             duration = 3f * 60f;
 
             laserRadius = tilesize / 2f;
-            fireEffect = PMFx.apotheosisBlast;
+            fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
