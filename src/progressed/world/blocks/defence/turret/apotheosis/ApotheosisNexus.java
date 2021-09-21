@@ -49,6 +49,8 @@ public class ApotheosisNexus extends ReloadTurret{
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
+    public float rotateSpeed = 12f, spinUpSpeed = 0.005f, spinDownSpeed = 0.005f;
+    public float ringExpand1 = 24f, ringExpand2 = 64f;
 
     public int lights = 7;
     public float lightInterval = 300f;
@@ -69,7 +71,9 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public Sortf unitSort = Unit::dst2;
 
-    public TextureRegion[] lightRegions, spin1 = new TextureRegion[2], spin2 = new TextureRegion[2];
+    protected Vec2 tr = new Vec2();
+
+    public TextureRegion[] lightRegions, lightSpinRegions = new TextureRegion[2], darkSpinRegions = new TextureRegion[2];
 
     public ApotheosisNexus(String name){
         super(name);
@@ -96,13 +100,17 @@ public class ApotheosisNexus extends ReloadTurret{
         for(int i = 0; i < lights; i++){
             lightRegions[i] = Core.atlas.find(name + "-lights" + i);
         }
+        for(int i = 0; i < 2; i++){
+            lightSpinRegions[i] = Core.atlas.find(name + "-spinner-light-" + i);
+            darkSpinRegions[i] = Core.atlas.find(name + "-spinner-dark-" + i);
+        }
 
         clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
     }
 
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
         public IntSeq chargers = new IntSeq(), connectedChargers = new IntSeq();
-        public float heat, warmup, logicControlTime = -1;
+        public float heat, warmup, spinUp, rotation = 90f, logicControlTime = -1;
         public float charge, arc, fade, activeTime;
         public float realDamage, realRadius, realSpeed, realDuration;
         public int shotCounter;
@@ -163,11 +171,13 @@ public class ApotheosisNexus extends ReloadTurret{
         public void draw(){
             super.draw();
 
+            Draw.z(Layer.blockOver);
             if(warmup > 0.001f){
                 for(int i = 0; i < lights; i++){
                     Draw.color(PMPal.apotheosisLaser, (0.25f + Mathf.absin(Time.time - i * (lightInterval / lights), lightInterval / 8, 0.75f)) * warmup);
                     Draw.rect(lightRegions[i], x, y);
                 }
+                Draw.color();
             }
 
             if(arc > 0){
@@ -201,6 +211,16 @@ public class ApotheosisNexus extends ReloadTurret{
                     PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, c, laserLightColor, fadef());
                 }
             }
+
+            Draw.z(Layer.bullet - 1); //Can this by simplified? Probably.
+            tr.trns(rotation, ringExpand1 * spinUp);
+            PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation);
+            tr.rotate(180f);
+            PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation + 180f);
+            tr.trns(rotation - 90f, ringExpand2 * spinUp);
+            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, rotation - 90f);
+            tr.rotate(180f);
+            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, rotation + 90f);
         }
 
         @Override
@@ -253,6 +273,8 @@ public class ApotheosisNexus extends ReloadTurret{
 
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
             warmup = Mathf.lerpDelta(warmup, consValid() ? 1 : 0, 0.1f);
+            rotation -= rotateSpeed * spinUp * delta();
+            if(!charging && !arcing && !shooting || fading) spinUp = Mathf.lerp(spinUp, 0f, spinDownSpeed);
 
             if(unit != null){
                 unit.health(health);
@@ -332,6 +354,7 @@ public class ApotheosisNexus extends ReloadTurret{
             if(charging){
                 if(consValid()){
                     charge += delta();
+                    spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
                     if(charge >= chargeTime){
                         charge = chargeTime;
                         charging = false;
@@ -346,6 +369,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
             if(arcing){
                 arc += delta();
+                spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
                 if(arc >= arcTime){
                     arc = arcTime;
                     arcing = false;
@@ -378,6 +402,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     });
                     effect(damageEffect);
                 }
+                if(!fading) spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
 
                 if(timer.get(pulseTimer, pulseInterval)){
                     effect(pulseEffect);

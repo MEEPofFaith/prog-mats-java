@@ -132,6 +132,7 @@ public class PMDrawf{
     /** Draws a sprite that should be light-wise correct, Provided sprites myst be similar ins shape */
     public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
         float mr = mod(r, 90f);
+        alpha(1f);
         rect(dark, x, y, r);
         alpha(mr / 90f);
         rect(light, x, y, r);
