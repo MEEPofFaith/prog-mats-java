@@ -49,10 +49,11 @@ public class ApotheosisNexus extends ReloadTurret{
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
-    public float rotateSpeed = 12f, spinUpSpeed = 0.005f, spinDownSpeed = 0.005f;
-    public float ringExpand1 = 24f, ringExpand2 = 64f;
+    public float baseRotateSpeed = 1f, rotateSpeed = 12f, spinUpSpeed = 0.005f, spinDownSpeed = 0.005f;
+    public float ringExpand1 = 12f, ringExpand2 = 32f;
 
-    public int lights = 7;
+    public int lights = 9;
+    public Color lightsBase = Color.valueOf("252835"), lightsDark = PMPal.apotheosisLaserDark, lightsLight = PMPal.apotheosisLaser;
     public float lightInterval = 300f;
     public float laserRadius;
     public float hight = 150f * tilesize;
@@ -60,7 +61,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
-    public float[] pullLengths = {0f, 1.75f, 2.5f, 4f};
+    public float[] pullLengths = {0f, 2.25f, 3.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
     public float pissChance = 0.01f;
@@ -72,7 +73,9 @@ public class ApotheosisNexus extends ReloadTurret{
     public Sortf unitSort = Unit::dst2;
 
     protected Vec2 tr = new Vec2();
+    protected Color tc = new Color();
 
+    public TextureRegion spinners;
     public TextureRegion[] lightRegions, lightSpinRegions = new TextureRegion[2], darkSpinRegions = new TextureRegion[2];
 
     public ApotheosisNexus(String name){
@@ -80,6 +83,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
         hasPower = true;
         canOverdrive = false;
+        outlineIcon = false;
     }
 
     @Override
@@ -100,12 +104,21 @@ public class ApotheosisNexus extends ReloadTurret{
         for(int i = 0; i < lights; i++){
             lightRegions[i] = Core.atlas.find(name + "-lights" + i);
         }
+        spinners = Core.atlas.find(name + "-spinners");
         for(int i = 0; i < 2; i++){
             lightSpinRegions[i] = Core.atlas.find(name + "-spinner-light-" + i);
             darkSpinRegions[i] = Core.atlas.find(name + "-spinner-dark-" + i);
         }
 
         clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{
+            region,
+            spinners
+        };
     }
 
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
@@ -171,14 +184,16 @@ public class ApotheosisNexus extends ReloadTurret{
         public void draw(){
             super.draw();
 
-            Draw.z(Layer.blockOver);
-            if(warmup > 0.001f){
-                for(int i = 0; i < lights; i++){
-                    Draw.color(PMPal.apotheosisLaser, (0.25f + Mathf.absin(Time.time - i * (lightInterval / lights), lightInterval / 8, 0.75f)) * warmup);
-                    Draw.rect(lightRegions[i], x, y);
-                }
-                Draw.color();
+            for(int i = 0; i < lights; i++){
+                float lerp = (0.25f + Mathf.absin(Time.time - i * (lightInterval / lights), lightInterval / 8, 0.75f)) * warmup;
+                tc.set(lightsBase).lerp(lightsDark, lerp);
+                Draw.color(tc);
+                Draw.rect(lightRegions[i], x, y);
+                tc.set(lightsBase).lerp(lightsLight, lerp);
+                Draw.color(tc);
+                Draw.rect(lightRegions[i], x, y, 180f);
             }
+            Draw.color();
 
             if(arc > 0){
                 Color[] c = Core.settings.getBool("pm-farting") || piss ? PMPal.piss : colors;
@@ -212,15 +227,15 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
             }
 
-            Draw.z(Layer.bullet - 1); //Can this by simplified? Probably.
+            Draw.z(Layer.blockOver); //Can this by simplified? Probably.
             tr.trns(rotation, ringExpand1 * spinUp);
             PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation);
             tr.rotate(180f);
             PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation + 180f);
-            tr.trns(rotation - 90f, ringExpand2 * spinUp);
-            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, rotation - 90f);
+            tr.trns(-rotation - 90f, ringExpand2 * spinUp);
+            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, -rotation - 90f);
             tr.rotate(180f);
-            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, rotation + 90f);
+            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, -rotation + 90f);
         }
 
         @Override
@@ -272,8 +287,8 @@ public class ApotheosisNexus extends ReloadTurret{
             wasShooting = false;
 
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
-            warmup = Mathf.lerpDelta(warmup, consValid() ? 1 : 0, 0.1f);
-            rotation -= rotateSpeed * spinUp * delta();
+            warmup = Mathf.lerpDelta(warmup, consValid() ? 1 : 0, 0.01f);
+            rotation += Mathf.lerp(baseRotateSpeed, rotateSpeed, spinUp) * delta();
             if(!charging && !arcing && !shooting || fading) spinUp = Mathf.lerp(spinUp, 0f, spinDownSpeed);
 
             if(unit != null){
@@ -316,6 +331,8 @@ public class ApotheosisNexus extends ReloadTurret{
                         updateShooting();
                     }
                 }
+            }else{
+                reload = 0;
             }
 
             updateFiring();

@@ -303,8 +303,7 @@ public class PayloadCrafter extends BlockProducer{
                     i.setScaling(Scaling.fit);
                     i.setColor(recipe == null ? Color.lightGray : Color.white);
                 }).size(32).padBottom(-4).padRight(2);
-                t.label(() -> recipe == null ? "@none" : recipe.localizedName).wrap().width(230f).color(Color.lightGray);
-            }).left();
+            }).left().get().label(() -> recipe == null ? "@none" : recipe.localizedName).wrap().width(230f).color(Color.lightGray);
         }
 
         @Override
