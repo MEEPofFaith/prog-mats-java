@@ -22,7 +22,7 @@ import progressed.util.*;
 public class AimLaserTurret extends PowerTurret{
     public float aimStroke = 2f, aimRnd;
     public float chargeVolume = 1f, minPitch = 1f, maxPitch = 1f, shootSoundVolume = 1f;
-    public float warningDelay;
+    public float warningDelay, warningVolume = 1f;
     public Sound warningSound = Sounds.none;
 
     public AimLaserTurret(String name){
@@ -164,7 +164,7 @@ public class AimLaserTurret extends PowerTurret{
 
             charging = true;
 
-            Time.run(chargeTime - warningDelay, () -> warningSound.at(this));
+            Time.run(chargeTime - warningDelay, () -> warningSound.at(x, y, 1f, warningVolume));
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
                 tr.trns(rotation, shootLength);

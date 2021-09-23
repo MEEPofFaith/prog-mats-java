@@ -732,6 +732,9 @@ public class PMBlocks implements ContentList{
             minPitch = 0.75f;
             maxPitch = 1.5f;
             shootSoundVolume = 1f;
+            warningDelay = 33f;
+            warningVolume = 3f;
+            warningSound = PMSounds.sentinelWarning;
 
             recoilAmount = 3f;
             restitution = 0.02f;
