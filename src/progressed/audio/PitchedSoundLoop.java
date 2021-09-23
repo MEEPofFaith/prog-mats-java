@@ -2,6 +2,7 @@ package progressed.audio;
 
 import arc.*;
 import arc.audio.*;
+import arc.util.*;
 
 /** @author GlennFolker */
 public class PitchedSoundLoop{
@@ -17,9 +18,9 @@ public class PitchedSoundLoop{
     public void update(float x, float y, float volume, float pitch){
         if(baseVolume <= 0f) return;
 
-        if(id < 0){
+        if(id < 0 && volume > 0.001f){
             id = sound.loop(sound.calcVolume(x, y) * volume * baseVolume, 1f, sound.calcPan(x, y));
-        }else{
+        }else if(id >= 0){
             if(volume <= 0.001f){
                 Core.audio.stop(id);
                 id = -1;

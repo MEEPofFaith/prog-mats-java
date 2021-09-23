@@ -164,7 +164,10 @@ public class AimLaserTurret extends PowerTurret{
 
             charging = true;
 
-            Time.run(chargeTime - warningDelay, () -> warningSound.at(x, y, 1f, warningVolume));
+            Time.run(chargeTime - warningDelay, () -> {
+                if(!isValid()) return;
+                warningSound.at(x, y, 1f, warningVolume);
+            });
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
                 tr.trns(rotation, shootLength);
