@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -13,14 +14,16 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import progressed.audio.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
 public class AimLaserTurret extends PowerTurret{
     public float aimStroke = 2f, aimRnd;
-    public float chargeSoundVolume = 1f, minPitch = 1f, maxPitch = 1f, shootSoundVolume = 1f;
-    public int chargeSounds = 20;
+    public float chargeVolume = 1f, minPitch = 1f, maxPitch = 1f, shootSoundVolume = 1f;
+    public float warningDelay;
+    public Sound warningSound = Sounds.none;
 
     public AimLaserTurret(String name){
         super(name);
@@ -58,6 +61,7 @@ public class AimLaserTurret extends PowerTurret{
 
     public class AimLaserTurretBuild extends PowerTurretBuild{
         protected float charge, drawCharge, alpha;
+        protected PitchedSoundLoop sound = new PitchedSoundLoop(chargeSound, chargeVolume);
         
         public boolean isAI(){
             return !(isControlled() || (logicControlled() && logicShooting));
@@ -124,6 +128,9 @@ public class AimLaserTurret extends PowerTurret{
                 alpha = Math.max(alpha, charge);
                 drawCharge = charge;
             }
+
+            sound.update(x, y, chargeVolume * charge, Mathf.lerp(minPitch, maxPitch, charge));
+
             super.updateTile();
         }
 
@@ -146,15 +153,6 @@ public class AimLaserTurret extends PowerTurret{
             tr.trns(rotation, shootLength);
             drawCharge = 0;
             chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, team.color, self());
-            for(int i = 0; i < chargeSounds; i++){
-                float ii = (float)i / ((float)chargeSounds - 1f);
-                float j = (float)i / (float)chargeSounds;
-                Time.run(chargeTime * j, () -> {
-                    if(!isValid()) return;
-                    tr.trns(rotation, shootLength);
-                    chargeSound.at(x + tr.x, y + tr.y, Mathf.lerp(minPitch, maxPitch, ii), chargeSoundVolume);
-                });
-            }
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
@@ -166,6 +164,7 @@ public class AimLaserTurret extends PowerTurret{
 
             charging = true;
 
+            Time.run(chargeTime - warningDelay, () -> warningSound.at(this));
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
                 tr.trns(rotation, shootLength);
@@ -197,6 +196,12 @@ public class AimLaserTurret extends PowerTurret{
         @Override
         public boolean shouldTurn(){
             return true;
+        }
+
+        @Override
+        public void remove(){
+            sound.stop();
+            super.remove();
         }
     }
 }

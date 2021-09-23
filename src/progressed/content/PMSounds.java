@@ -2,7 +2,6 @@ package progressed.content;
 
 import arc.*;
 import arc.assets.*;
-import arc.assets.loaders.*;
 import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
 import mindustry.*;
@@ -20,7 +19,6 @@ public class PMSounds{
         popeshadowCharge = new Sound(),
         popeshadowBlast = new Sound(),
         swordStab = new Sound(),
-        sentenelCharge = new Sound(),
         nuclearExplosion = new Sound(),
         moonPiss = new Sound(),
         loudMoonPiss = new Sound();
@@ -28,17 +26,16 @@ public class PMSounds{
     public static void load() {
         if(Vars.headless) return;
 
-        pixelShoot = loadSound("pixelShoot");
-        pixelHit = loadSound("pixelHit");
-        harbingerCharge = loadSound("harbingerCharge");
-        harbingerBlast = loadSound("harbingerBlast");
-        popeshadowCharge = loadSound("popeshadowCharge");
-        popeshadowBlast = loadSound("popeshadowBlast");
-        swordStab = loadSound("swordStab");
-        sentenelCharge = loadSound("sentenelCharge");
-        nuclearExplosion = loadSound("nuclearExplosion");
-        moonPiss = loadSound("moonPiss");
-        loudMoonPiss = loadSound("extraLoudMoonPiss");
+        pixelShoot = loadSound("pixel-shoot");
+        pixelHit = loadSound("pixel-hit");
+        harbingerCharge = loadSound("harbinger-charge");
+        harbingerBlast = loadSound("harbinger-blast");
+        popeshadowCharge = loadSound("popeshadow-charge");
+        popeshadowBlast = loadSound("popeshadow-blast");
+        swordStab = loadSound("sword-stab");
+        nuclearExplosion = loadSound("nuclear-explosion");
+        moonPiss = loadSound("piss");
+        loudMoonPiss = loadSound("piss-loud");
     }
 
     protected static Sound loadSound(String soundName) {

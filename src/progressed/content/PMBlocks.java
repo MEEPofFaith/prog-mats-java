@@ -726,11 +726,12 @@ public class PMBlocks implements ContentList{
             chargeEffects = 30;
             chargeMaxDelay = PMFx.aimChargeBegin.lifetime - PMFx.aimCharge.lifetime;
 
-            chargeSound = PMSounds.sentenelCharge; //Note so I don't forget: Sound is made with AnaloguePiano2 in LMMS
+            chargeSound = Sounds.techloop;
             shootSound = Sounds.laserblast;
-            chargeSoundVolume = 2f;
-            minPitch = 0.7f;
-            shootSoundVolume = 0.75f;
+            chargeVolume = 2f;
+            minPitch = 0.75f;
+            maxPitch = 1.5f;
+            shootSoundVolume = 1f;
 
             recoilAmount = 3f;
             restitution = 0.02f;
