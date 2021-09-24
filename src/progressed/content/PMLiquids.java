@@ -15,6 +15,7 @@ public class PMLiquids implements ContentList{
                 flammability = temperature = 1000f;
                 viscosity = 0.8f;
                 color = lightColor = Color.valueOf("F58859");
+                hideDetails = false;
             }
 
             @Override

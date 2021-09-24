@@ -53,6 +53,7 @@ public class PMStatusEffects implements ContentList{
             speedMultiplier = 0.8f;
             reloadMultiplier = 0.8f;
             damage = 8f;
+            hideDetails = false;
         }};
 
         afterLoad();

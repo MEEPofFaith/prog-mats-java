@@ -215,6 +215,7 @@ public class PMBlocks implements ContentList{
                 Items.thorium, PMBullets.standardThoriumMini
             );
             size = 4;
+            hideDetails = false;
             range = 255f;
             maxSpeed = 0.71f;
             health = 160 * size * size;
@@ -598,6 +599,7 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, PMBullets.sniperBoltSurge
             );
             size = 3;
+            hideDetails = false;
             health = 120 * size * size;
             reloadTime = 450f;
             inaccuracy = 0f;
@@ -648,6 +650,7 @@ public class PMBlocks implements ContentList{
             );
 
             size = 3;
+            hideDetails = false;
             health = 140 * size * size;
             minRange = 5f * tilesize;
             range = 40 * tilesize;
@@ -675,6 +678,7 @@ public class PMBlocks implements ContentList{
                 );
 
                 size = 2;
+                hideDetails = false;
                 health = 80 * size * size;
                 range = 17f * 8f;
                 shootLength = 21f / 4f;
@@ -708,6 +712,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 4;
+            hideDetails = false;
             health = 120 * size * size;
             
             shootLength = 11f;
@@ -767,6 +772,7 @@ public class PMBlocks implements ContentList{
                 PMItems.fusium, 500
             ));
             size = 4;
+            hideDetails = false;
             health = 230 * size * size;
             canOverdrive = false;
             reloadTime = 520f;
@@ -800,6 +806,7 @@ public class PMBlocks implements ContentList{
                     PMItems.fusium, 800
                 ));
                 size = 6;
+                hideDetails = false;
                 health = 140 * size * size;
                 reloadTime = 450f;
                 range = 740f;
@@ -835,6 +842,7 @@ public class PMBlocks implements ContentList{
                 Items.blastCompound, PMBullets.firestormMissile
             );
             size = 3;
+            hideDetails = false;
             health = 120 * size * size;
             range = 160f;
             reloadTime = 75f;
@@ -873,6 +881,7 @@ public class PMBlocks implements ContentList{
                 PMPayloads.recursiveMissile, PMBullets.strikedownRecursive
             );
             size = 4;
+            hideDetails = false;
             health = 160 * size * size;
             range = 330f;
             shootSound = Sounds.artillery;
@@ -897,6 +906,7 @@ public class PMBlocks implements ContentList{
                 PMPayloads.clusterNuke, PMBullets.arbiterCluster
             );
             size = 7;
+            hideDetails = false;
             health = 170 * size * size;
             range = 4400f;
             shootSound = Sounds.explosionbig;
@@ -1058,6 +1068,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 5;
+            hideDetails = false;
             ambientSound = Sounds.machine;
             products = Seq.with(PMPayloads.basicMissile, PMPayloads.empMissile, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
         }};
@@ -1113,6 +1124,7 @@ public class PMBlocks implements ContentList{
                 PMItems.fusium, 125
             ));
             size = 4;
+            hideDetails = false;
             radius = 88f;
             shieldHealth = 2600f;
             phaseShieldBoost = 1800f;

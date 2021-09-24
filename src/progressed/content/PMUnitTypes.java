@@ -156,6 +156,7 @@ public class PMUnitTypes implements ContentList{
             final float len = 56f, rangeMul = 16f;
             {
                 health = 800f;
+                hideDetails = false;
                 duration = 25f * 60f;
 
                 rotateSpeed = 30f;
@@ -192,6 +193,7 @@ public class PMUnitTypes implements ContentList{
         EntityMapping.nameMap.put("small-flare", FlareUnitEntity::new);
         flareSmall = new FlareUnitType("small-flare"){{
             health = 300f;
+            hideDetails = false;
             attraction = 800f;
             flareY = 29f / 4f;
         }};
@@ -199,6 +201,7 @@ public class PMUnitTypes implements ContentList{
         EntityMapping.nameMap.put("medium-flare", FlareUnitEntity::new);
         flareMedium = new FlareUnitType("medium-flare", 360f){{
             health = 900f;
+            hideDetails = false;
             attraction = 11000f;
             flareY = 45f / 4f;
             flareEffectSize = 1.5f;
@@ -207,6 +210,7 @@ public class PMUnitTypes implements ContentList{
         EntityMapping.nameMap.put("large-flare", FlareUnitEntity::new);
         flareLarge = new FlareUnitType("large-flare", 420f){{
             health = 2700f;
+            hideDetails = false;
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;

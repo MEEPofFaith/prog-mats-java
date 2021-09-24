@@ -49,8 +49,8 @@ public class ApotheosisNexus extends ReloadTurret{
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
-    public float baseRotateSpeed = 1f, rotateSpeed = 12f, spinUpSpeed = 0.005f, spinDownSpeed = 0.005f;
-    public float ringExpand1 = 12f, ringExpand2 = 32f;
+    public float baseRotateSpeed = 0.2f, rotateSpeed = 16f, spinUpSpeed = 0.004f, spinDownSpeed = 0.004f;
+    public float ringExpand1 = 16f, ringExpand2 = 44f;
 
     public int lights = 9;
     public Color lightsBase = Color.valueOf("252835"), lightsDark = PMPal.apotheosisLaserDark, lightsLight = PMPal.apotheosisLaser;
@@ -289,7 +289,11 @@ public class ApotheosisNexus extends ReloadTurret{
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
             warmup = Mathf.lerpDelta(warmup, consValid() ? 1 : 0, 0.01f);
             rotation += Mathf.lerp(baseRotateSpeed, rotateSpeed, spinUp) * delta();
-            if(!charging && !arcing && !shooting || fading) spinUp = Mathf.lerp(spinUp, 0f, spinDownSpeed);
+            if(!charging && !arcing && (!shooting || fading)){
+                spinUp = Mathf.lerp(spinUp, 0f, spinDownSpeed);
+            }else{
+                spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
+            }
 
             if(unit != null){
                 unit.health(health);
@@ -371,7 +375,6 @@ public class ApotheosisNexus extends ReloadTurret{
             if(charging){
                 if(consValid()){
                     charge += delta();
-                    spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
                     if(charge >= chargeTime){
                         charge = chargeTime;
                         charging = false;
@@ -386,7 +389,6 @@ public class ApotheosisNexus extends ReloadTurret{
 
             if(arcing){
                 arc += delta();
-                spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
                 if(arc >= arcTime){
                     arc = arcTime;
                     arcing = false;
@@ -419,7 +421,6 @@ public class ApotheosisNexus extends ReloadTurret{
                     });
                     effect(damageEffect);
                 }
-                if(!fading) spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
 
                 if(timer.get(pulseTimer, pulseInterval)){
                     effect(pulseEffect);
