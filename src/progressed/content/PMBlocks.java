@@ -927,6 +927,8 @@ public class PMBlocks implements ContentList{
             duration = 3f * 60f;
 
             laserRadius = tilesize / 2f;
+            baseDst = new float[]{11f, 19f};
+            spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
         }};
 

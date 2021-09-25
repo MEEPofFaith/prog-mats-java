@@ -50,7 +50,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
     public float baseRotateSpeed = 0.2f, rotateSpeed = 16f, spinUpSpeed = 0.004f, spinDownSpeed = 0.004f;
-    public float ringExpand1 = 16f, ringExpand2 = 44f;
+    public float[] ringExpand = {16f, 44f}, baseDst = {0f, 0f}, spinnerWidth = {0f, 0f};
 
     public int lights = 9;
     public Color lightsBase = Color.valueOf("252835"), lightsDark = PMPal.apotheosisLaserDark, lightsLight = PMPal.apotheosisLaser;
@@ -73,6 +73,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public Sortf unitSort = Unit::dst2;
 
     protected Vec2 tr = new Vec2();
+    protected Vec2 tr2 = new Vec2();
     protected Color tc = new Color();
 
     public TextureRegion spinners;
@@ -212,7 +213,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, 0f, c, laserLightColor, 1f / 3f * fadef());
                 }
 
-                Draw.z(Layer.effect + (curPos.y < y ? 0.003f : 0.001f));
+                Draw.z(Layer.effect + (curPos.y < y ? 0.0021f : 0.0019f));
                 float d1 = Mathf.curve((arc - arcTime / 2f) * 2f, 0f, arcTime / 6f),
                     d2 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 6f, arcTime / 2f),
                     d3 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 2f, arcTime);
@@ -227,15 +228,42 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
             }
 
-            Draw.z(Layer.blockOver); //Can this by simplified? Probably.
-            tr.trns(rotation, ringExpand1 * spinUp);
-            PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation);
-            tr.rotate(180f);
-            PMDrawf.spinSprite(lightSpinRegions[0], darkSpinRegions[0], x + tr.x, y + tr.y, rotation + 180f);
-            tr.trns(-rotation - 90f, ringExpand2 * spinUp);
-            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, -rotation - 90f);
-            tr.rotate(180f);
-            PMDrawf.spinSprite(lightSpinRegions[1], darkSpinRegions[1], x + tr.x, y + tr.y, -rotation + 90f);
+            Draw.z(Layer.blockOver);
+            for(int i = 0; i < 2; i++){
+                float s = Mathf.signs[i];
+                tr.trns(rotation * s, ringExpand[i] * spinUp);
+                PMDrawf.spinSprite(lightSpinRegions[i], darkSpinRegions[i], x + tr.x, y + tr.y, rotation * s);
+                tr.rotate(180f);
+                PMDrawf.spinSprite(lightSpinRegions[i], darkSpinRegions[i], x + tr.x, y + tr.y, rotation * s + 180f);
+            }
+
+            Draw.z(Layer.effect); //S e n d   h e l p
+            for(int i = 0; i < 2; i++){
+                float s = Mathf.signs[i];
+                ApotheosisChargeTower ct = chargeTower;
+                tr.trns(rotation * s, baseDst[i] + ringExpand[i] * spinUp);
+                for(int j = 0; j < 2; j++){
+                    tr2.trns(rotation * s + 90f * Mathf.signs[j], spinnerWidth[i]);
+                    tr2.add(tr).add(this);
+                    PMDrawf.laser(team, tr2.x, tr2.y,
+                        (dst(tr2) - laserRadius) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
+                        ct.width, tr2.angleTo(this),
+                        (1f + (ct.activeScl - 1f) * Mathf.clamp((chargef() - (1f / 3f)) * 1.5f)) * fadef() * efficiency(),
+                        ct.tscales, ct.strokes, ct.lenscales, ct.oscScl, ct.oscMag, ct.spaceMag, ct.colors, ct.laserLightColor
+                    );
+                }
+                tr.rotate(180f);
+                for(int j = 0; j < 2; j++){
+                    tr2.trns(rotation * s + 180f + 90f * Mathf.signs[j], spinnerWidth[i]);
+                    tr2.add(tr).add(this);
+                    PMDrawf.laser(team, tr2.x, tr2.y,
+                        (dst(tr2) - laserRadius) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
+                        ct.width, tr2.angleTo(this),
+                        (1f + (ct.activeScl - 1f) * Mathf.clamp((chargef() - (1f / 3f)) * 1.5f)) * fadef() * efficiency(),
+                        ct.tscales, ct.strokes, ct.lenscales, ct.oscScl, ct.oscMag, ct.spaceMag, ct.colors, ct.laserLightColor
+                    );
+                }
+            }
         }
 
         @Override

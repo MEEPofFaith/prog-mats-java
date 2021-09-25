@@ -154,8 +154,11 @@ public class ApotheosisChargeTower extends Block{
 
             if(getNexus() != null){
                 Tmp.v1.trns(rotation, startLength);
-                Draw.z(Layer.effect);
-                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y, fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)), width, rotation, (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency(), tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
+                Draw.z(Layer.effect + 0.0005f);
+                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y,
+                    fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
+                    width, rotation, (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency(),
+                    tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
             }
         }
 

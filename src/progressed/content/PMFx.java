@@ -591,7 +591,7 @@ public class PMFx{
         }
         stroke(fin * 8f * fade);
         Lines.circle(e.x, e.y, fin * 80f);
-    }),
+    }).layer(Layer.effect + 0.001f),
 
     apotheosisClouds = new Effect(360f, e -> {
         float intensity = 2f;
