@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.apotheosis;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -37,6 +38,7 @@ public class ApotheosisChargeTower extends Block{
     public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float activeScl = 4f;
     public Effect activateEffect = PMFx.apotheosisChargerBlast;
+    public Sound shootSound = Sounds.laser;
 
     public TextureRegion baseRegion;
 
@@ -234,6 +236,7 @@ public class ApotheosisChargeTower extends Block{
                 fullLaser = true;
                 Tmp.v1.trns(rotation, effectLength);
                 activateEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+                shootSound.at(x + Tmp.v1.x, y + Tmp.v1.y, Mathf.random(0.8f, 1.2f), 0.5f);
             }
         }
 

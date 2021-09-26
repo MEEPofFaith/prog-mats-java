@@ -23,6 +23,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.*;
+import progressed.audio.*;
 import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
@@ -74,7 +75,9 @@ public class ApotheosisNexus extends ReloadTurret{
         touchdownEffect = PMFx.apotheosisTouchdown,
         damageEffect = PMFx.apotheosisDamage,
         pulseEffect = PMFx.apotheosisPulse;
-    public Sound fireSound = Sounds.none;
+    public Sound fireSound = Sounds.laserblast;
+    public Sound chargeSound = Sounds.techloop, beamSound = PMSounds.pulseBeam;
+    public float chargeVolume = 1f, beamVolume = 1f;
     public float fireSoundPitch = 1f, fireSoundVolume = 1f;
 
     public Sortf unitSort = Unit::dst2;
@@ -84,7 +87,7 @@ public class ApotheosisNexus extends ReloadTurret{
     protected Color tc = new Color();
 
     public TextureRegion spinners;
-    public TextureRegion[] lightRegions, lightSpinRegions = new TextureRegion[2], darkSpinRegions = new TextureRegion[2];
+    public TextureRegion[] lightRegions, spinnerRegionsLight = new TextureRegion[2], spinnerRegionsDark = new TextureRegion[2];
 
     public ApotheosisNexus(String name){
         super(name);
@@ -114,8 +117,8 @@ public class ApotheosisNexus extends ReloadTurret{
         }
         spinners = Core.atlas.find(name + "-spinners");
         for(int i = 0; i < 2; i++){
-            lightSpinRegions[i] = Core.atlas.find(name + "-spinner-light-" + i);
-            darkSpinRegions[i] = Core.atlas.find(name + "-spinner-dark-" + i);
+            spinnerRegionsLight[i] = Core.atlas.find(name + "-spinner-light-" + i);
+            spinnerRegionsDark[i] = Core.atlas.find(name + "-spinner-dark-" + i);
         }
 
         clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
@@ -154,6 +157,8 @@ public class ApotheosisNexus extends ReloadTurret{
         public Posc target;
         public Vec2 targetPos = new Vec2(), curPos = new Vec2();
         public boolean wasShooting, damaging, charging, arcing, fading, piss;
+        protected PitchedSoundLoop chargeSoundLoop = new PitchedSoundLoop(chargeSound, chargeVolume);
+        protected PitchedSoundLoop beamSoundLoop = new PitchedSoundLoop(beamSound, beamVolume);
         public BlockUnitc unit;
 
         @Override
@@ -254,9 +259,9 @@ public class ApotheosisNexus extends ReloadTurret{
             for(int i = 0; i < 2; i++){
                 float s = Mathf.signs[i];
                 tr.trns(rotation * s, ringExpand[i] * spinUp);
-                PMDrawf.spinSprite(lightSpinRegions[i], darkSpinRegions[i], x + tr.x, y + tr.y, rotation * s);
+                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + tr.x, y + tr.y, rotation * s);
                 tr.rotate(180f);
-                PMDrawf.spinSprite(lightSpinRegions[i], darkSpinRegions[i], x + tr.x, y + tr.y, rotation * s + 180f);
+                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + tr.x, y + tr.y, rotation * s + 180f);
             }
 
             Draw.z(Layer.effect); //S e n d   h e l p
@@ -344,6 +349,8 @@ public class ApotheosisNexus extends ReloadTurret{
             }else{
                 spinUp = Mathf.lerp(spinUp, 1f, spinUpSpeed);
             }
+            chargeSoundLoop.update(x, y, charging ? chargef() : 0f, 1f);
+            beamSoundLoop.update(x, y, arcing || damaging ? fadef() : 0f, 1f);
 
             if(unit != null){
                 unit.health(health);
@@ -512,6 +519,8 @@ public class ApotheosisNexus extends ReloadTurret{
             reload = 0;
             charge = 0f;
             arc = 0f;
+            chargeSoundLoop.update(x, y, 0f, 1f);
+            beamSoundLoop.update(x, y, 0f, 1f);
             chargers.each(i -> ((ApotheosisChargeTowerBuild)(world.build(i))).fullLaser = false);
         }
 
@@ -590,6 +599,13 @@ public class ApotheosisNexus extends ReloadTurret{
             realRadius += damageRadius;
             realSpeed += speed;
             realDuration += duration;
+        }
+
+        @Override
+        public void remove(){
+            chargeSoundLoop.stop();
+            beamSoundLoop.stop();
+            super.remove();
         }
 
         @Override

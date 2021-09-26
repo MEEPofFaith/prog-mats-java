@@ -21,6 +21,7 @@ public class PMSounds{
         swordStab = new Sound(),
         nuclearExplosion = new Sound(),
         sentinelWarning = new Sound(),
+        pulseBeam = new Sound(),
         moonPiss = new Sound(),
         loudMoonPiss = new Sound();
 
@@ -36,6 +37,7 @@ public class PMSounds{
         swordStab = loadSound("sword-stab");
         nuclearExplosion = loadSound("nuclear-explosion");
         sentinelWarning = loadSound("sentinel-warning");
+        pulseBeam = loadSound("pulse-beam");
         moonPiss = loadSound("piss");
         loudMoonPiss = loadSound("piss-loud");
     }
