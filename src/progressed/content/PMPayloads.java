@@ -14,7 +14,7 @@ public class PMPayloads implements ContentList{
 
     emptyMissile,
 
-    basicMissile, empMissile, recursiveMissile,
+    basicMissile, recursiveMissile,
 
     //Region Nukes
 
@@ -29,7 +29,7 @@ public class PMPayloads implements ContentList{
     @Override
     public void load(){
         emptyMissile = new Missile("empty-missile"){{
-            requirements = with(Items.copper, 5, Items.lead, 5, Items.titanium, 5);
+            requirements = with(Items.copper, 12, Items.lead, 10, Items.titanium, 15);
 
             size = 2;
             powerUse = 3f;
@@ -37,7 +37,7 @@ public class PMPayloads implements ContentList{
         }};
 
         basicMissile = new Missile("basic-missile"){{
-            requirements = with(Items.thorium, 3, Items.blastCompound, 6);
+            requirements = with(Items.titanium, 12, Items.blastCompound, 8);
 
             prev = emptyMissile;
             size = 2;
@@ -47,20 +47,8 @@ public class PMPayloads implements ContentList{
             explosion = PMBullets.strikedownBasic;
         }};
 
-        empMissile = new Missile("emp-missile"){{
-            requirements = with(Items.lead, 12, Items.titanium, 10, Items.silicon, 10);
-
-            prev = emptyMissile;
-            size = 2;
-            powerUse = 4f;
-            constructTime = 60f * 21f;
-            requiresUnlock = true;
-
-            explosion = PMBullets.strikedownEmp;
-        }};
-
         recursiveMissile = new Missile("recursive-missile"){{
-            requirements = with(Items.copper, 30, Items.lead, 15, Items.titanium, 15, Items.plastanium, 10, Items.silicon, 10);
+            requirements = with(Items.titanium, 8, Items.plastanium, 10, Items.silicon, 8, Items.blastCompound, 12);
 
             prev = emptyMissile;
             size = 2;
@@ -75,7 +63,7 @@ public class PMPayloads implements ContentList{
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
-            requirements = with(Items.titanium, 10, Items.surgeAlloy, 10, PMItems.fusium, 10);
+            requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.valexitite, 20);
 
             size = 3;
             powerUse = 5f;
@@ -85,7 +73,7 @@ public class PMPayloads implements ContentList{
         }};
 
         basicNuke = new Missile("basic-nuke"){{
-            requirements = with(Items.titanium, 25, Items.thorium, 35, Items.blastCompound, 25);
+            requirements = with(Items.lead, 40,Items.titanium, 30, Items.thorium, 35);
 
             prev = emptyNuke;
             size = 3;
@@ -98,7 +86,7 @@ public class PMPayloads implements ContentList{
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
-            requirements = with(Items.titanium, 30, Items.plastanium, 15, PMItems.fusium, 10, Items.silicon, 20, Items.thorium, 15);
+            requirements = with(Items.titanium, 35, Items.plastanium, 25, PMItems.valexitite, 15, Items.silicon, 30, Items.blastCompound, 25);
 
             prev = emptyNuke;
             size = 3;
@@ -114,7 +102,7 @@ public class PMPayloads implements ContentList{
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
-            requirements = with(Items.copper, 30, Items.lead, 35, Items.titanium, 15, Items.silicon, 25);
+            requirements = with(Items.copper, 20, Items.lead, 25, Items.titanium, 10, Items.silicon, 20);
 
             size = 2;
             powerUse = 4f;
@@ -123,7 +111,7 @@ public class PMPayloads implements ContentList{
         }};
 
         strikeSentry = new Sentry("strike-sentry"){{
-            requirements = with(Items.copper, 40, Items.lead, 40, Items.titanium, 20, Items.silicon, 30, Items.blastCompound, 10);
+            requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 15, Items.silicon, 25, Items.blastCompound, 15);
 
             size = 2;
             powerUse = 4.5f;
@@ -132,7 +120,7 @@ public class PMPayloads implements ContentList{
         }};
 
         dashSentry = new Sentry("dash-sentry"){{
-            requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 30, Items.graphite, 15, Items.silicon, 35);
+            requirements = with(Items.copper, 20, Items.lead, 20, Items.titanium, 25, Items.graphite, 20, Items.silicon, 25);
 
             size = 2;
             powerUse = 5.25f;

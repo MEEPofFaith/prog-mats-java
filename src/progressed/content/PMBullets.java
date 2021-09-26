@@ -313,13 +313,6 @@ public class PMBullets implements ContentList{
                 //Do nothing
             }
         };
-
-        empParticle = new ParticleBulletType(){{
-            particleSound = Sounds.spark;
-            hitColor = trailColor = Pal.lancerLaser;
-            status = PMStatusEffects.emp;
-            statusDuration = 60f * 10f;
-        }};
         
         firestormMissile = new StrikeBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
             splashDamage = 72f;
@@ -375,36 +368,6 @@ public class PMBullets implements ContentList{
             fallSpin = 135f;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
-        }};
-
-        strikedownEmp = new StrikeBulletType(3f, 80f, "prog-mats-emp-missile"){{
-            splashDamage = 235f;
-            splashDamageRadius = 48f;
-            reloadMultiplier = 0.75f;
-            homingPower = 0.075f;
-            homingRange = 330f;
-            lifetime = 120f;
-            hitSound = Sounds.explosionbig;
-            hitShake = 5f;
-            despawnEffect = PMFx.missileExplosion;
-            blockEffect = PMFx.missileBlocked;
-
-            fragBullets = 360;
-            fragVelocityMin = 0.5f;
-            fragBullet = empParticle;
-
-            targetColor = PMPal.missileEmp;
-
-            autoDropRadius = 35f;
-            stopRadius = 10f;
-            riseEngineSize = 16f;
-            fallEngineSize = 8f;
-            elevation = 300f;
-            riseTime = 35f;
-            fallTime = 15f;
-            trailSize = 0.7f;
-            riseSpin = 270f;
-            fallSpin = 90f;
         }};
 
         recursionTwo = new StrikeBulletType(4f, 80f, "prog-mats-recursive-missile"){{

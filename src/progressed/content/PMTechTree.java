@@ -6,7 +6,6 @@ import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import progressed.util.*;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
@@ -59,7 +58,6 @@ public class PMTechTree implements ContentList{
                         node(missileFactory, Seq.with(new Research(strikedown)), () -> {
                             //Missile
                             node(basicMissile, Seq.with(new Research(strikedown)), () -> {
-                                node(empMissile);
                                 node(recursiveMissile);
                             });
                             //Nuke
@@ -160,7 +158,7 @@ public class PMTechTree implements ContentList{
 
         // Items
         vanillaNode(surgeAlloy, () -> {
-            nodeProduce(fusium);
+            nodeProduce(valexitite);
         });
     }
 
