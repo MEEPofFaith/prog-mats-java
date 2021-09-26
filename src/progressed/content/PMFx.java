@@ -565,6 +565,34 @@ public class PMFx{
         });
     }),
 
+    apotheosisCharge = new Effect(5f * 60f, e -> {
+        color(PMPal.apotheosisLaserDark);
+        stroke(e.fin() * 6f);
+        Lines.circle(e.x, e.y, 2f + 100f * e.fout());
+        Lines.circle(e.x, e.y, 5f + 120f * e.fout(Interp.pow3Out));
+        Lines.circle(e.x, e.y, 8f + 150f * e.fout(Interp.pow5Out));
+
+        Fill.circle(e.x, e.y, e.fin() * 26);
+
+        randLenVectors(e.id, 14, 92f * e.fout(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
+            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+        });
+        randLenVectors(e.id + 1, 17,116f * e.fout(Interp.pow3Out), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
+            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+        });
+        randLenVectors(e.id + 2, 20,146f * e.fout(Interp.pow5Out), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
+            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+        });
+
+        color(PMPal.apotheosisLaser);
+
+        Fill.circle(e.x, e.y, e.fin() * 14);
+        Drawf.light(e.x, e.y, e.fin() * 36f, PMPal.apotheosisLaserDark, 0.7f);
+    }),
+
     apotheosisChargerBlast = new Effect(30f, e -> {
         stroke(0.5f + 0.5f*e.fout(), PMPal.apotheosisLaser);
         float spread = 3f;
@@ -653,13 +681,24 @@ public class PMFx{
         });
     }),
 
-    apotheosisPulse = new Effect(120f, e -> {
+    apotheosisPulse = new Effect(120f, 20f * tilesize, e -> {
         if(!(e.data instanceof float[] f)) return;
         z(f[0]);
 
         color(PMPal.apotheosisLaser, 0.7f);
         stroke(32f * f[1] * e.fout(Interp.pow5In));
         Lines.circle(e.x, e.y, 16f * tilesize * f[1] * e.fin(Interp.pow5Out));
+    }),
+
+    apotheosisTouchdown = new Effect(720f, 200f * tilesize, e -> {
+        if(!(e.data instanceof float[] f)) return;
+        z(f[0]);
+
+        color(PMPal.apotheosisLaser, 0.7f);
+        stroke(64f * f[1] * e.fout(Interp.pow5In));
+        Lines.circle(e.x, e.y, 148f * tilesize * e.fin(Interp.pow3Out) * f[1]);
+        Lines.circle(e.x, e.y, (10f + 162f * tilesize * e.fin(Interp.pow5Out)) * f[1]);
+        Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * f[1]);
     }),
     
     staticSpark = new Effect(10f, e -> {

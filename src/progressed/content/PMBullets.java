@@ -505,7 +505,7 @@ public class PMBullets implements ContentList{
             splashDamageRadius = 240f;
             homingPower = 0.05f;
             homingRange = 2200f;
-            lifetime = 5500f;
+            lifetime = 3000f;
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
             fartVolume = 200f;
@@ -549,10 +549,10 @@ public class PMBullets implements ContentList{
             fallSpin = 135f;
         }};
 
-        arbiterCluster = new StrikeBulletType(1f, 0f, "prog-mats-cluster-nuke"){{
+        arbiterCluster = new StrikeBulletType(1.25f, 0f, "prog-mats-cluster-nuke"){{
             homingPower = 0.05f;
             homingRange = 2200f;
-            lifetime = 5500f;
+            lifetime = 2400f;
             hitSound = Sounds.none;
             hitShake = 0f;
             despawnEffect = hitEffect = Fx.none;

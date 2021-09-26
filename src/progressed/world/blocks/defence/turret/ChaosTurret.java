@@ -43,7 +43,6 @@ public class ChaosTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        
         bars.add("pm-reload", (ChaosTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
             () -> entity.team.color,

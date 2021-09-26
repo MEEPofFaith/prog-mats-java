@@ -908,7 +908,7 @@ public class PMBlocks implements ContentList{
             size = 7;
             hideDetails = false;
             health = 170 * size * size;
-            range = 4400f;
+            range = 2800f;
             shootSound = Sounds.explosionbig;
             cooldown = 0.005f;
             shootShake = 10f;
@@ -918,15 +918,14 @@ public class PMBlocks implements ContentList{
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 9;
-            reloadTime = 60f * 5f;
+            reloadTime = 60f * 15f;
             range = 200f * tilesize;
             powerUse = 1000f;
-            damage = 2000f / 12f;
+            damage = 10000f / 12f;
             damageRadius = 6f * tilesize;
-            speed = 2f;
-            duration = 3f * 60f;
+            speed = 4f;
+            duration = 4f * 60f;
 
-            laserRadius = tilesize / 2f;
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
@@ -936,11 +935,11 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 7;
             range = 60f;
-            damageBoost = 150f / 12f;
-            radiusBoost = tilesize / 8f;
-            speedBoost = 1f / tilesize / 2f;
+            damageBoost = 5000f / 12f;
+            radiusBoost = 2f;
+            speedBoost = 1f / 8f;
             durationBoost = 5f;
-            powerUse = 200f;
+            powerUse = 400f;
             outlineColor = Color.valueOf("2e3142");
 
             startLength = size * tilesize / -4f - 5f;

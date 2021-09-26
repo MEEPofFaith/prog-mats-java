@@ -102,7 +102,6 @@ public class EverythingTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        
         bars.add("pm-everything-strength", (EverythingTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-everything-strength", PMUtls.stringsFixed(entity.bias / maxBias * 100f)),
             () -> entity.team.color,

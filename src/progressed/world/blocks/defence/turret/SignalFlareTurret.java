@@ -35,7 +35,6 @@ public class SignalFlareTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-
         bars.add("pm-reload", (SignalFlareTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
             () -> entity.team.color,

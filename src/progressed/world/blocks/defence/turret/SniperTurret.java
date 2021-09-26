@@ -60,7 +60,6 @@ public class SniperTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        
         bars.add("pm-reload", (SniperTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
             () -> entity.team.color,

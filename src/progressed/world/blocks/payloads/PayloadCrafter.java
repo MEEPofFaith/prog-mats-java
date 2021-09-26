@@ -97,7 +97,6 @@ public class PayloadCrafter extends BlockProducer{
     @Override
     public void setBars(){
         super.setBars();
-
         bars.remove("progress");
         bars.add("progress", (PayloadCrafterBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe() == null ? 0f : (entity.progress / ((Missile)(entity.recipe())).constructTime)));
     }

@@ -56,12 +56,8 @@ public class PMUtls{
         return stacks.toArray(ItemStack.class);
     }
     
-    public static int statPrecision(float value){
-        return Math.abs((int)value - value) <= 0.001f ? 0 : Math.abs((int)(value * 10) - value * 10) <= 0.001f ? 1 : 2;
-    }
-
     public static String stringsFixed(float value){
-        return Strings.fixed(value, statPrecision(value));
+        return Strings.autoFixed(value, 2);
     }
 
     /** Research costs for anything that isn't a block or unit */

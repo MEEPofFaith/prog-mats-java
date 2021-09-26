@@ -52,7 +52,6 @@ public class MinigunTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        
         bars.add("pm-minigun-speed", (MinigunTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-minigun-speed", PMUtls.stringsFixed(entity.speedf() * 100f + entity.speedf() * 0.01f)),
             () -> entity.speedf() > minFiringSpeed ? entity.team.color : Tmp.c1.set(c1).lerp(entity.team.color, Mathf.curve(entity.frameSpeed, 0f, minFiringSpeed) / 2f),

@@ -110,16 +110,15 @@ public class EruptorTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        
         bars.add("pm-reload", (EruptorTurretBuild entity) -> new Bar(
             () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp((reloadTime - entity.reload) / reloadTime) * 100f)),
             () -> entity.team.color,
             () -> 1f - Mathf.clamp(entity.reload / reloadTime)
         ));
         bars.add("pm-shoot-duration", (EruptorTurretBuild entity) -> new Bar(
-            () -> bundle.format("bar.pm-shoot-duration", PMUtls.stringsFixed(Mathf.clamp((entity.bulletLife <= 0 ? shootDuration : entity.bulletLife) / shootDuration) * 100f)),
+            () -> bundle.format("bar.pm-shoot-duration", PMUtls.stringsFixed(Mathf.clamp((entity.bulletLife / shootDuration) * 100f))),
             () -> lightningColor,
-            () -> (entity.bulletLife <= 0 ? shootDuration : entity.bulletLife) / shootDuration
+            () -> Mathf.clamp(entity.bulletLife / shootDuration)
         ));
     }
 

@@ -45,7 +45,6 @@ public class ShieldProjector extends ForceProjector{
     @Override
     public void setBars(){
         super.setBars();
-
         bars.remove("shield");
         bars.add("shield", (ShieldBuild entity) -> new Bar(
             () -> Core.bundle.get("stat.shieldhealth"),
