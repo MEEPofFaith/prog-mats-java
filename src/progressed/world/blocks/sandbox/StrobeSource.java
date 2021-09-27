@@ -4,8 +4,6 @@ import arc.*;
 import arc.flabel.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.util.*;

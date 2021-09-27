@@ -10,7 +10,6 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import progressed.content.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;

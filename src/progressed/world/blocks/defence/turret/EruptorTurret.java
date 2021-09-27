@@ -16,8 +16,8 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
-import progressed.entities.bullet.*;
 import progressed.content.PMFx.*;
+import progressed.entities.bullet.*;
 import progressed.util.*;
 
 import static arc.Core.*;

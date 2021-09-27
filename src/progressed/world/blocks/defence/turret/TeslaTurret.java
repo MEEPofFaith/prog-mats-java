@@ -18,8 +18,8 @@ import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
-import progressed.entities.*;
 import progressed.content.PMFx.*;
+import progressed.entities.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;

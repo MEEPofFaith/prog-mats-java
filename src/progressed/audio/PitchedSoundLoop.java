@@ -2,7 +2,6 @@ package progressed.audio;
 
 import arc.*;
 import arc.audio.*;
-import arc.util.*;
 
 /** @author GlennFolker */
 public class PitchedSoundLoop{

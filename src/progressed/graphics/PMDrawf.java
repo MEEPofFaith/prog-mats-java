@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 
+import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Mathf.*;
