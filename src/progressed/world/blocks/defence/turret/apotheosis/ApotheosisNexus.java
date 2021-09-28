@@ -53,7 +53,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
-    public float baseRotateSpeed = 0.2f, rotateSpeed = 16f, spinUpSpeed = 0.005f, spinDownSpeed = 0.004f;
+    public float baseRotateSpeed = 0.2f, rotateSpeed = 20f, spinUpSpeed = 0.01f, spinDownSpeed = 0.006f;
     public float[] ringExpand = {16f, 44f}, baseDst = {0f, 0f}, spinnerWidth = {0f, 0f};
 
     public int lights = 9;
