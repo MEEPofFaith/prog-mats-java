@@ -49,12 +49,12 @@ public class ApotheosisNexus extends ReloadTurret{
     public float damage, damageRadius = tilesize;
     public float chargeTime = 5f * 60f;
     public float arcTime = 30f;
-    public float fadeTime = 60f;
+    public float fadeTime = 120f;
     public StatusEffect status;
     public float statusDuration = 6f * 10f;
     public float cooldown = 0.02f;
     public float baseRotateSpeed = 0.2f, rotateSpeed = 20f, spinUpSpeed = 0.01f, spinDownSpeed = 0.006f;
-    public float[] ringExpand = {16f, 44f}, baseDst = {0f, 0f}, spinnerWidth = {0f, 0f};
+    public float[] ringExpand = {20f, 44f}, baseDst = {0f, 0f}, spinnerWidth = {0f, 0f};
 
     public int lights = 9;
     public Color lightsBase = Color.valueOf("252835"), lightsDark = PMPal.apotheosisLaserDark, lightsLight = PMPal.apotheosisLaser;
