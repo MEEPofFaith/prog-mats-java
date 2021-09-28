@@ -22,6 +22,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.audio.*;
@@ -96,6 +97,10 @@ public class ApotheosisNexus extends ReloadTurret{
         hasPower = true;
         canOverdrive = false;
         outlineIcon = false;
+        acceptCoolant = true;
+
+        consumes.add(new ConsumeCoolant(0.01f)).update(false);
+        coolantMultiplier = 1f;
     }
 
     @Override
@@ -128,6 +133,7 @@ public class ApotheosisNexus extends ReloadTurret{
     @Override
     public void setStats(){
         super.setStats();
+
         stats.add(Stat.ammo, s -> {
             s.row();
             s.table(st -> {
@@ -137,6 +143,9 @@ public class ApotheosisNexus extends ReloadTurret{
                 st.add(Core.bundle.format("bullet.pm-flare-lifetime", Strings.fixed(duration / 60f, 2)));
             }).padTop(-9).left().get().background(Tex.underline);
         });
+
+        stats.remove(Stat.booster);
+        stats.add(Stat.input, StatValues.boosters(reloadTime, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, false, l -> consumes.liquidfilters.get(l.id)));
     }
 
     @Override
@@ -357,7 +366,7 @@ public class ApotheosisNexus extends ReloadTurret{
             wasShooting = false;
 
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
-            warmup = Mathf.lerpDelta(warmup, consValid() ? 1 : 0, 0.01f);
+            warmup = Mathf.lerpDelta(warmup, power.status, 0.01f);
             rotation += Mathf.lerp(baseRotateSpeed, rotateSpeed, spinUp) * delta();
             if(!charging && !arcing && (!damaging || fading)){
                 spinUp = Mathf.lerp(spinUp, 0f, spinDownSpeed);
@@ -413,7 +422,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
             updateFiring();
 
-            if(acceptCoolant && notFiring()){
+            if(notFiring()){
                 updateCooling();
             }
 
@@ -424,8 +433,6 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         protected void updateShooting(){
-            reload += delta() * baseReloadSpeed();
-
             if(notFiring()){
                 if(reload >= reloadTime){
                     connectChargers();
@@ -446,6 +453,20 @@ public class ApotheosisNexus extends ReloadTurret{
                 }else{
                     activeTime = realDuration;
                 }
+            }
+        }
+
+        @Override
+        protected void updateCooling(){
+            Liquid liquid = liquids.current();
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+
+            float used = (cheating() ? maxUsed : Math.min(liquids.get(liquid), maxUsed)) * Time.delta;
+            reload += used * liquid.heatCapacity * coolantMultiplier;
+            liquids.remove(liquid, used);
+
+            if(Mathf.chance(0.06 * used)){
+                coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
             }
         }
 

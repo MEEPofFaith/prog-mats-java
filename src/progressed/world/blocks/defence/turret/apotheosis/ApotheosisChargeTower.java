@@ -180,8 +180,8 @@ public class ApotheosisChargeTower extends Block{
 
         @Override
         public void drawConfigure(){
-            Drawf.circles(x, y, tile.block().size * tilesize / 2f + 1f + Mathf.absin(Time.time, 4f, 1f));
-            Drawf.circles(x, y, range * tilesize);
+            Drawf.circles(x, y, tile.block().size * tilesize / 2f + 1f + Mathf.absin(Time.time, 4f, 1f), PMPal.apotheosisLaser);
+            Drawf.circles(x, y, range * tilesize, PMPal.apotheosisLaser);
 
             for(int x = (int)(tile.x - range - 2); x <= tile.x + range + 2; x++){
                 for(int y = (int)(tile.y - range - 2); y <= tile.y + range + 2; y++){
@@ -189,7 +189,7 @@ public class ApotheosisChargeTower extends Block{
 
                     if(link instanceof ApotheosisNexusBuild){
                         if(getNexus() == link){
-                            Drawf.square(link.x, link.y, link.block.size * tilesize / 2f + 1f, Pal.place);
+                            Drawf.square(link.x, link.y, link.block.size * tilesize / 2f + 1f, PMPal.apotheosisLaserDark);
                             Drawf.dashLine(placeLine, this.x, this.y, link.x, link.y);
                         }
                     }
@@ -201,7 +201,7 @@ public class ApotheosisChargeTower extends Block{
 
         @Override
         public void drawSelect(){
-            Drawf.circles(x, y, range * tilesize);
+            Drawf.circles(x, y, range * tilesize, PMPal.apotheosisLaser);
         }
 
         @Override

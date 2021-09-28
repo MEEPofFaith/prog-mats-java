@@ -928,12 +928,15 @@ public class PMBlocks implements ContentList{
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
+
+            coolantMultiplier = 1f / (8f * Liquids.water.heatCapacity);
+            consumes.add(new ConsumeCoolant(8f)).update(false);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 7;
-            range = 60f;
+            range = 30f;
             damageBoost = 5000f / 12f;
             radiusBoost = 2f;
             speedBoost = 1f / 8f;
