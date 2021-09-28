@@ -22,6 +22,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.meta.*;
 import progressed.*;
 import progressed.audio.*;
 import progressed.content.*;
@@ -122,6 +123,20 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.ammo, s -> {
+            s.row();
+            s.table(st -> {
+                st.left().defaults().padRight(3).left();
+                st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", damage * 12, Strings.fixed(damageRadius / tilesize, 1)));
+                st.row();
+                st.add(Core.bundle.format("bullet.pm-flare-lifetime", Strings.fixed(duration / 60f, 2)));
+            }).padTop(-9).left().get().background(Tex.underline);
+        });
     }
 
     @Override
@@ -255,7 +270,7 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
             }
 
-            Draw.z(Layer.blockOver);
+            Draw.z(Layer.turret + 1);
             for(int i = 0; i < 2; i++){
                 float s = Mathf.signs[i];
                 tr.trns(rotation * s, ringExpand[i] * spinUp);

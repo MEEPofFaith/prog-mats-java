@@ -95,6 +95,20 @@ public class ApotheosisChargeTower extends Block{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.ammo, s -> {
+            s.row();
+            s.table(st -> {
+                st.left().defaults().padRight(3).left();
+                st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", "+" + damageBoost * 12, "+" + Strings.fixed(radiusBoost / tilesize, 1)));
+                st.row();
+                st.add(Core.bundle.format("bullet.pm-flare-lifetime", "+" + Strings.fixed(durationBoost / 60f, 2)));
+            }).padTop(-9).left().get().background(Tex.underline);
+        });
+    }
+
+    @Override
     public void init(){
         consumes.powerCond(powerUse, ApotheosisChargeTowerBuild::isActive);
         super.init();
@@ -108,7 +122,7 @@ public class ApotheosisChargeTower extends Block{
     }
 
     @Override
-    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawRequestConfigTop(BuildPlan req, Eachable<BuildPlan> list){
         otherReq = null;
         list.each(other -> {
             if(other.block instanceof ApotheosisNexus && req != other && req.config instanceof Point2 p && p.equals(other.x - req.x, other.y - req.y)){
