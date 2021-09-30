@@ -48,6 +48,8 @@ public class ApotheosisNexus extends ReloadTurret{
     public float powerUse = 1f;
     public float speed, duration = 60f;
     public float damage, damageRadius = tilesize;
+    public float buildingDamageMultiplier = 1f;
+    public float boostFalloff = 0.1f;
     public float chargeTime = 5f * 60f;
     public float arcTime = 30f;
     public float fadeTime = 120f;
@@ -139,8 +141,16 @@ public class ApotheosisNexus extends ReloadTurret{
             s.table(st -> {
                 st.left().defaults().padRight(3).left();
                 st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", damage * 12, Strings.fixed(damageRadius / tilesize, 1)));
+                if(buildingDamageMultiplier != 1){
+                    st.row();
+                    st.add(Core.bundle.format("bullet.buildingdamage", (int)(buildingDamageMultiplier * 100)));
+                }
                 st.row();
                 st.add(Core.bundle.format("bullet.pm-flare-lifetime", Strings.fixed(duration / 60f, 2)));
+                if(boostFalloff < 1){
+                    st.row();
+                    st.add(Core.bundle.format("pm-apotheosis-falloff", (int)(boostFalloff * 100)));
+                }
             }).padTop(-9).left().get().background(Tex.underline);
         });
 
@@ -175,7 +185,7 @@ public class ApotheosisNexus extends ReloadTurret{
         public IntSeq chargers = new IntSeq(), connectedChargers = new IntSeq();
         public float heat, warmup, spinUp, rotation = 90f, logicControlTime = -1;
         public float charge, arc, fade, activeTime = 80000f;
-        public float realDamage, realRadius, realSpeed, realDuration;
+        public float falloff, realDamage, realRadius, realSpeed, realDuration;
         public int shotCounter;
         public boolean logicShooting = false;
         public Posc target;
@@ -509,7 +519,7 @@ public class ApotheosisNexus extends ReloadTurret{
                 if(timer.get(damageTimer, damageInterval)){
                     PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius * fadef(), other -> {
                         if(other instanceof Building b){
-                            b.damage(team, realDamage * fadef());
+                            b.damage(team, realDamage * buildingDamageMultiplier * fadef());
                         }else{
                             other.damage(realDamage * fadef());
                         }
@@ -590,7 +600,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     i.setScaling(Scaling.fit);
                     i.setColor(chargeTower.unlockedNow() ? Color.white : Color.lightGray);
                 }).size(32).padBottom(-4).padRight(2);
-                t.label(() -> Core.bundle.format("pm-apotheosis-chargers", chargeTower.unlockedNow() ? chargers.size : Core.bundle.get("pm-missing-research"))).wrap().width(230f).color(Color.lightGray);
+                t.label(() -> " " + Core.bundle.format("pm-apotheosis-chargers", chargeTower.unlockedNow() ? chargers.size : Core.bundle.get("pm-missing-research"))).wrap().width(230f).color(Color.lightGray);
             });
         }
 
@@ -618,15 +628,17 @@ public class ApotheosisNexus extends ReloadTurret{
         }
         
         protected void calc(){
+            falloff = 1f;
             realDamage = realRadius = realSpeed = realDuration = 0;
             chargers.each(i -> {
                 ApotheosisChargeTowerBuild other = (ApotheosisChargeTowerBuild)world.build(i);
                 if(other.consValid() && other.connected){
                     ApotheosisChargeTower b = ((ApotheosisChargeTower)(other.block()));
-                    realDamage += b.damageBoost * other.efficiency();
-                    realRadius += b.radiusBoost * other.efficiency();
-                    realSpeed += b.speedBoost * other.efficiency();
-                    realDuration += b.durationBoost * other.efficiency();
+                    realDamage += b.damageBoost * falloff * other.efficiency();
+                    realRadius += b.radiusBoost * falloff * other.efficiency();
+                    realSpeed += b.speedBoost * falloff * other.efficiency();
+                    realDuration += b.durationBoost * falloff * other.efficiency();
+                    falloff *= 1f - boostFalloff;
                 }else{
                     other.connected = false;
                 }

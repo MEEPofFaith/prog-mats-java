@@ -919,9 +919,10 @@ public class PMBlocks implements ContentList{
             size = 9;
             reloadTime = 60f * 15f;
             range = 200f * tilesize;
-            powerUse = 1000f;
-            damage = 10000f / 12f;
+            powerUse = 655f;
+            damage = 12000f / 12f;
             damageRadius = 6f * tilesize;
+            buildingDamageMultiplier = 0.25f;
             speed = 4f;
             duration = 4f * 60f;
 
@@ -937,11 +938,11 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 7;
             range = 30f;
-            damageBoost = 5000f / 12f;
-            radiusBoost = 2f;
+            powerUse = 163f;
+            damageBoost = 6000f / 12f;
+            radiusBoost = 1f;
             speedBoost = 1f / 8f;
             durationBoost = 5f;
-            powerUse = 400f;
             outlineColor = Color.valueOf("2e3142");
 
             startLength = size * tilesize / -4f - 5f;
