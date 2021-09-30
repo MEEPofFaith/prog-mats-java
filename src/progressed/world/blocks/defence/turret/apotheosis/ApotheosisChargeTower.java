@@ -26,6 +26,7 @@ public class ApotheosisChargeTower extends Block{
 
     public float range = 10f;
     public float damageBoost, radiusBoost, speedBoost, durationBoost;
+    public float boostFalloff = 1f;
     public float powerUse = 1f;
 
     public float startLength, effectLength, endLength;
@@ -97,6 +98,8 @@ public class ApotheosisChargeTower extends Block{
     @Override
     public void setStats(){
         super.setStats();
+
+        stats.add(Stat.range, range, StatUnit.blocks);
         stats.add(Stat.ammo, s -> {
             s.row();
             s.table(st -> {
@@ -104,6 +107,12 @@ public class ApotheosisChargeTower extends Block{
                 st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", "+" + damageBoost * 12, "+" + Strings.fixed(radiusBoost / tilesize, 1)));
                 st.row();
                 st.add(Core.bundle.format("bullet.pm-flare-lifetime", "+" + Strings.fixed(durationBoost / 60f, 2)));
+                if(boostFalloff < 1){
+                    st.row();
+                    st.add(Core.bundle.format("pm-apotheosis-falloff", (int)(boostFalloff * 100)));
+                    st.row();
+                    st.add(Core.bundle.get("pm-apotheosis-falloff-notice")).padLeft(12);
+                }
             }).padTop(-9).left().get().background(Tex.underline);
         });
     }
@@ -118,7 +127,7 @@ public class ApotheosisChargeTower extends Block{
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
-        Drawf.circles(x * tilesize + offset, y * tilesize + offset, range * tilesize);
+        Drawf.circles(x * tilesize + offset, y * tilesize + offset, range * tilesize, PMPal.apotheosisLaser);
     }
 
     @Override

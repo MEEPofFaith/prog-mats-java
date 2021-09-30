@@ -71,6 +71,7 @@ public class SandboxWall extends Wall{
     public void setStats(){
         super.setStats();
         stats.remove(Stat.health);
+
         stats.add(Stat.health, t -> t.add(new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-infinity"))));
     }
 

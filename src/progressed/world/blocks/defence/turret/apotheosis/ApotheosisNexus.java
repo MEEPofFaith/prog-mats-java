@@ -71,6 +71,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float[] pullLengths = {0f, 2.25f, 3.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
+    public float shake = 2f, laserShake = 2f;
     public float pissChance = 0.01f;
 
     public Effect
@@ -103,6 +104,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
         consumes.add(new ConsumeCoolant(0.01f)).update(false);
         coolantMultiplier = 1f;
+        liquidCapacity = 20f;
     }
 
     @Override
@@ -147,10 +149,6 @@ public class ApotheosisNexus extends ReloadTurret{
                 }
                 st.row();
                 st.add(Core.bundle.format("bullet.pm-flare-lifetime", Strings.fixed(duration / 60f, 2)));
-                if(boostFalloff < 1){
-                    st.row();
-                    st.add(Core.bundle.format("pm-apotheosis-falloff", (int)(boostFalloff * 100)));
-                }
             }).padTop(-9).left().get().background(Tex.underline);
         });
 
@@ -371,7 +369,6 @@ public class ApotheosisNexus extends ReloadTurret{
         public void updateTile(){
             if(!validateTarget()) target = null;
             checkConnections();
-            calc();
 
             wasShooting = false;
 
@@ -432,7 +429,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
             updateFiring();
 
-            if(notFiring()){
+            if(notFiring() && reload < reloadTime){
                 updateCooling();
             }
 
@@ -488,7 +485,10 @@ public class ApotheosisNexus extends ReloadTurret{
                         charge = chargeTime;
                         charging = false;
                         arcing = true;
-                        getSound().at(x, y, fireSoundPitch, fireSoundVolume);
+                        fireSound.at(x, y, fireSoundPitch, fireSoundVolume);
+                        if(Core.settings.getBool("pm-farting") || piss){
+                            (Core.settings.getBool("pm-farting") && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
+                        }
                         fireEffect.at(x, y);
                     }
                 }else{
@@ -498,6 +498,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
             if(arcing){
                 arc += delta();
+                Effect.shake(shake * (arc / arcTime), shake * (arc / arcTime), this);
                 if(arc >= arcTime){
                     arc = arcTime;
                     arcing = false;
@@ -516,6 +517,9 @@ public class ApotheosisNexus extends ReloadTurret{
 
             if(damaging){
                 activeTime += Time.delta / Math.max(efficiency(), 0.00001f);
+                calc();
+                Effect.shake(shake * fadef(), shake * fadef(), this);
+                Effect.shake(laserShake * fadef() * radscl(), laserShake * fadef() * radscl(), curPos);
                 if(timer.get(damageTimer, damageInterval)){
                     PMDamage.allNearbyEnemies(team, curPos.x, curPos.y, realRadius * fadef(), other -> {
                         if(other instanceof Building b){
@@ -572,10 +576,6 @@ public class ApotheosisNexus extends ReloadTurret{
 
         public void effect(Effect eff){
             eff.at(curPos.x, curPos.y, 0f, new float[]{Layer.effect + (curPos.y < y ? 0.0029f : 0.0009f), radscl() * fadef()}); //Layer data to draw properly close to the beam [layer, scl])
-        }
-
-        public Sound getSound(){
-            return Core.settings.getBool("pm-farting") ? (piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss) : (piss ? PMSounds.moonPiss : fireSound);
         }
 
         protected boolean validateTarget(){

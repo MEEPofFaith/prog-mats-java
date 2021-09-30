@@ -915,7 +915,15 @@ public class PMBlocks implements ContentList{
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.turret, with(
+                Items.copper, 5200,
+                Items.lead, 6400,
+                Items.silicon, 5600,
+                Items.titanium, 3100,
+                Items.thorium, 1600,
+                Items.surgeAlloy, 2000,
+                PMItems.valexitite, 3600
+            ));
             size = 9;
             reloadTime = 60f * 15f;
             range = 200f * tilesize;
@@ -935,11 +943,20 @@ public class PMBlocks implements ContentList{
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.turret, with(
+                Items.copper, 2600,
+                Items.lead, 2700,
+                Items.silicon, 3000,
+                Items.titanium, 1800,
+                Items.thorium, 1000,
+                Items.surgeAlloy, 450,
+                PMItems.valexitite, 1400
+            ));
             size = 7;
             range = 30f;
             powerUse = 163f;
             damageBoost = 6000f / 12f;
+            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
             radiusBoost = 1f;
             speedBoost = 1f / 8f;
             durationBoost = 5f;
