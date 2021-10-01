@@ -925,6 +925,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 3600
             ));
             size = 9;
+            health = 480 * size * size;
             reloadTime = 60f * 15f;
             range = 200f * tilesize;
             powerUse = 655f;
@@ -953,6 +954,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 1400
             ));
             size = 7;
+            health = 360 * size * size;
             range = 30f;
             powerUse = 163f;
             damageBoost = 6000f / 12f;
