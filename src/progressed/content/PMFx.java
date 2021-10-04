@@ -565,7 +565,7 @@ public class PMFx{
         });
     }),
 
-    apotheosisCharge = new Effect(5f * 60f, e -> {
+    apotheosisCharge = new Effect(5f * 60f, 500f, e -> {
         color(PMPal.apotheosisLaserDark);
         stroke(e.fin() * 6f);
         Lines.circle(e.x, e.y, 2f + 100f * e.fout());
@@ -605,7 +605,7 @@ public class PMFx{
         }
     }),
 
-    apotheosisBlast = new Effect(300f, e -> {
+    apotheosisBlast = new Effect(300f, 400f, e -> {
         float fin = Interp.pow3Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
         float fade = 1f - Interp.pow2Out.apply(Mathf.curve(e.fin(), 0.6f, 1f));
 
@@ -621,7 +621,7 @@ public class PMFx{
         Lines.circle(e.x, e.y, fin * 80f);
     }).layer(Layer.effect + 0.001f),
 
-    apotheosisClouds = new Effect(360f, e -> {
+    apotheosisClouds = new Effect(360f, 400f, e -> {
         float intensity = 2f;
         e.lifetime = 300f + intensity * 25f;
 
@@ -644,7 +644,7 @@ public class PMFx{
         }
     }),
 
-    apotheosisDamage = new Effect(30f, e -> {
+    apotheosisDamage = new Effect(30f, 100f * tilesize, e -> {
         if(!(e.data instanceof float[] f)) return;
         z(f[0]);
 
@@ -681,7 +681,7 @@ public class PMFx{
         });
     }),
 
-    apotheosisPulse = new Effect(120f, 20f * tilesize, e -> {
+    apotheosisPulse = new Effect(120f, 100f * tilesize, e -> {
         if(!(e.data instanceof float[] f)) return;
         z(f[0]);
 
@@ -690,7 +690,7 @@ public class PMFx{
         Lines.circle(e.x, e.y, 16f * tilesize * f[1] * e.fin(Interp.pow5Out));
     }),
 
-    apotheosisTouchdown = new Effect(720f, 200f * tilesize, e -> {
+    apotheosisTouchdown = new Effect(720f, 300f * tilesize, e -> {
         if(!(e.data instanceof float[] f)) return;
         z(f[0]);
 
