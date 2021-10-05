@@ -914,13 +914,13 @@ public class PMBlocks implements ContentList{
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
             requirements(Category.turret, with(
-                Items.copper, 5200,
-                Items.lead, 6400,
-                Items.silicon, 5600,
-                Items.titanium, 3100,
-                Items.thorium, 1600,
-                Items.surgeAlloy, 2000,
-                PMItems.valexitite, 3600
+                Items.copper, 10200,
+                Items.lead, 11600,
+                Items.silicon, 7200,
+                Items.titanium, 6300,
+                Items.thorium, 3100,
+                Items.surgeAlloy, 3600,
+                PMItems.valexitite, 5400
             ));
             size = 9;
             health = 480 * size * size;
@@ -943,13 +943,13 @@ public class PMBlocks implements ContentList{
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
             requirements(Category.turret, with(
-                Items.copper, 2600,
-                Items.lead, 2700,
-                Items.silicon, 3000,
-                Items.titanium, 1800,
-                Items.thorium, 1000,
-                Items.surgeAlloy, 450,
-                PMItems.valexitite, 1400
+                Items.copper, 3200,
+                Items.lead, 4100,
+                Items.silicon, 4600,
+                Items.titanium, 2400,
+                Items.thorium, 2300,
+                Items.surgeAlloy, 1000,
+                PMItems.valexitite, 2500
             ));
             size = 7;
             health = 360 * size * size;
