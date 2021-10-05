@@ -58,7 +58,7 @@ public class ApotheosisChargeTower extends Block{
         config(Integer.class, (ApotheosisChargeTowerBuild tile, Integer value) -> {
             Building other = world.build(value);
             int pos = tile.pos();
-            if(other instanceof ApotheosisNexusBuild o && ((ApotheosisNexus)o.block).chargeTower == tile.block && o.within(tile, range * tilesize)){
+            if(other instanceof ApotheosisNexusBuild o && o.within(tile, range * tilesize)){
                 if(o.chargers.contains(pos)){
                     o.chargers.removeValue(pos);
                     tile.nexus = -1;
@@ -159,7 +159,7 @@ public class ApotheosisChargeTower extends Block{
             super.placed();
 
             if(getNexus() == null){ //This is a mess
-                Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n && ((ApotheosisNexus)(n.block)).chargeTower == block);
+                Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n);
                 if(find != null){
                     configure(find.pos());
                 }

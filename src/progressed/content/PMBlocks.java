@@ -93,7 +93,7 @@ public class PMBlocks implements ContentList{
     // Region Sandbox
 
     //Turret
-    harbinger, everythingGun,
+    harbinger, everythingGun, omegaCharger,
 
     //Distribution
     sandDriver,
@@ -1206,6 +1206,24 @@ public class PMBlocks implements ContentList{
                 baseRegion = Core.atlas.find("prog-mats-block-" + size);
             }
         };
+
+        omegaCharger = new ApotheosisChargeTower("omega-charger"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            size = 1;
+            health = 999999999;
+            range = 60f;
+            damageBoost = 500000f / 12f;
+            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
+            radiusBoost = 5f * tilesize;
+            speedBoost = 3f;
+            durationBoost = 18f;
+            outlineColor = Color.valueOf("2e3142");
+
+            width = 0.25f;
+            startLength = -6f / 4f;
+            endLength = 4f;
+            effectLength = endLength - 1f;
+        }};
 
         /// Distribution
         sandDriver = new SandDriver("sand-driver"){{

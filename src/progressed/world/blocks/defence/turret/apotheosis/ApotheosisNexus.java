@@ -40,7 +40,7 @@ public class ApotheosisNexus extends ReloadTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
 
-    public ApotheosisChargeTower chargeTower;
+    public ApotheosisChargeTower chargeTower; //Literally just for copying the laser for the spinner chargers
 
     public final int timerTarget = timers++, damageTimer = timers++, pulseTimer = timers++;
     public int targetInterval = 20, damageInterval = 5, pulseInterval = 45;
@@ -433,7 +433,7 @@ public class ApotheosisNexus extends ReloadTurret{
             }
 
             connectedChargers.each(i -> {
-                ApotheosisChargeTowerBuild charger = (ApotheosisChargeTowerBuild)world.build(i);
+                ApotheosisChargeTowerBuild charger = getChargerPos(i);
                 if(charger != null) charger.scl = fadef();
             });
         }
@@ -450,7 +450,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     for(int i = 0; i < connectedChargers.size; i++){
                         int ii = i;
                         Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
-                            ApotheosisChargeTowerBuild charger = (ApotheosisChargeTowerBuild)world.build(connectedChargers.get(ii));
+                            ApotheosisChargeTowerBuild charger = getCharger(ii);
                             if(isValid() && charger != null){
                                 charger.activate();
                             }
@@ -589,29 +589,42 @@ public class ApotheosisNexus extends ReloadTurret{
         public void display(Table table){
             super.display(table);
 
-            TextureRegionDrawable reg = new TextureRegionDrawable();
-
             table.row();
             table.table(t -> {
-                t.left();
-                t.image().update(i -> {
-                    i.setDrawable(chargeTower.unlockedNow() ? reg.set(chargeTower.uiIcon) : Icon.lock);
-                    i.setScaling(Scaling.fit);
-                    i.setColor(chargeTower.unlockedNow() ? Color.white : Color.lightGray);
-                }).size(32).padBottom(-4).padRight(2);
-                t.label(() -> " " + Core.bundle.format("pm-apotheosis-chargers", chargeTower.unlockedNow() ? chargers.size : Core.bundle.get("pm-missing-research"))).wrap().width(230f).color(Color.lightGray);
+                Runnable rebuild = () -> {
+                    t.clearChildren();
+
+                    if(chargers.size > 0){
+                        t.left();
+                        ApotheosisChargeTower tower = (ApotheosisChargeTower)getCharger(0).block();
+                        t.image(tower.uiIcon).size(32).padBottom(-4).padRight(2);
+                        t.label(() -> " " + Core.bundle.format("pm-apotheosis-chargers", chargers.size)).wrap().width(230f).color(Color.lightGray);
+                    }else{
+                        t.label(() -> Core.bundle.get("pm-apotheosis-none"));
+                    }
+                };
+
+                t.update(rebuild);
             });
         }
 
         protected void checkConnections(){
             int index = 0;
             while(index < chargers.size){
-                if(world.build(chargers.get(index)) == null){
+                if(getCharger(index) == null){
                     chargers.removeIndex(index);
                 }else{
                     index++;
                 }
             }
+        }
+
+        protected ApotheosisChargeTowerBuild getCharger(int index){
+            return world.build(chargers.get(index)) instanceof ApotheosisChargeTowerBuild b ? b : null;
+        }
+
+        protected ApotheosisChargeTowerBuild getChargerPos(int pos){
+            return world.build(pos) instanceof ApotheosisChargeTowerBuild b ? b : null;
         }
 
         protected void connectChargers(){
