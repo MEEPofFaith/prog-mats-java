@@ -15,6 +15,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -26,12 +27,11 @@ import static mindustry.Vars.*;
 
 public class SandboxWall extends Wall{
     public float rotateSpeed = 6f, rotateRadius = 2.5f, iconSize = 3f;
-    public float resetTime = 180f;
+    public float resetTime = 120f;
 
-    protected Item[] iconItems = {Items.surgeAlloy,  Items.phaseFabric, Items.plastanium};
-    protected String[] labels = {"Sparking", "Reflecting", "Insulation", "DPS Testing"};
+    protected String[] buttonLabels = {"Sparking", "Reflecting", "Insulation", "DPS Testing"};
     public TextureRegion colorRegion;
-    public TextureRegion[] colorVariantRegions;
+    public TextureRegion[] colorVariantRegions, icons = new TextureRegion[4];
 
     private final Font font = Fonts.outline;
     private final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
@@ -73,6 +73,13 @@ public class SandboxWall extends Wall{
             }
             colorRegion = colorVariantRegions[0];
         }
+
+        icons[0] = Items.surgeAlloy.fullIcon;
+        icons[1] = Items.phaseFabric.fullIcon;
+        icons[2] = Items.plastanium.fullIcon;
+        icons[3] = Core.atlas.white();
+        //Icons are null at this point, load it later.
+        Events.on(ClientLoadEvent.class, e -> icons[3] = Icon.modePvp.getRegion());
     }
 
     @Override
@@ -88,11 +95,17 @@ public class SandboxWall extends Wall{
         if(req.config instanceof byte[] b){
             //draw floating items to represent active mode
             int num = 0;
-            int amount = b[0] + b[1] + b[2];
-            for(int i = 0; i < 3; i++){
+            int amount = b[0] + b[1] + b[2] + b[3];
+
+            for(int i = 0; i < 4; i++){
                 if(b[i] == 1){
                     float rot = 90f + 360f / amount * num;
-                    Draw.rect(iconItems[i].fullIcon, req.drawx() + Angles.trnsx(rot, rotateRadius), req.drawy() + Angles.trnsy(rot, rotateRadius), iconSize, iconSize, 0f);
+                    Draw.rect(
+                        icons[i],
+                        req.drawx() + Angles.trnsx(rot, rotateRadius),
+                        req.drawy() + Angles.trnsy(rot, rotateRadius),
+                        iconSize, iconSize, 0f
+                    );
                     num++;
                 }
             }
@@ -147,16 +160,20 @@ public class SandboxWall extends Wall{
             //draw floating items to represent active mode
             int num = 0;
             int amount = modes.amount();
-            for(int i = 0; i < 3; i++){
+            for(int i = 0; i < 4; i++){
                 if(modes.active(i)){
                     float rot = Time.time * rotateSpeed % 360f + 360f / amount * num;
-                    Draw.rect(iconItems[i].fullIcon, x + Angles.trnsx(rot, rotateRadius), y + Angles.trnsy(rot, rotateRadius), iconSize, iconSize, 0f);
+                    Draw.rect(
+                        icons[i],
+                        x + Angles.trnsx(rot, rotateRadius),
+                        y + Angles.trnsy(rot, rotateRadius),
+                        iconSize, iconSize, 0f);
                     num++;
                 }
             }
 
             if(modes.dpsTesting && time > 0){
-                Draw.z(Layer.overlayUI);
+                Draw.z(Layer.max);
                 Color color = team.color;
                 String text = Strings.autoFixed((total / time) * 60f, 2) + " DPS";
                 boolean ints = font.usesIntegerPositions();
@@ -246,16 +263,20 @@ public class SandboxWall extends Wall{
             Table cont = new Table();
             cont.defaults().size(40);
 
-            for(int i = 0; i < 3; i++){
-                addButton(cont, group, iconItems[i].fullIcon, i);
+            for(int i = 0; i < 4; i++){
+                addButton(cont, group, icons[i], i);
             }
-            addButton(cont, group, Icon.settings.getRegion(), 3);
 
             table.add(cont);
         }
 
         public void addButton(Table t, ButtonGroup<ImageButton> group, TextureRegion icon, int index){
-            ImageButton button = t.button(new TextureRegionDrawable(icon, 8f * 3f), Styles.clearToggleTransi, 40, () -> {}).group(group).tooltip(labels[index]).get();
+            ImageButton button = t.button(
+                new TextureRegionDrawable(icon),
+                Styles.clearToggleTransi,
+                40, () -> {}
+            ).group(group).tooltip(buttonLabels[index]).get();
+            button.getImageCell().size(32f);
             button.changed(() -> configure(index));
             button.update(() -> button.setChecked(modes.active(index)));
         }
@@ -355,7 +376,7 @@ public class SandboxWall extends Wall{
         }
 
         public int amount(){
-            return (surge ? 1 : 0) + (phase ? 1 : 0) + (plast ? 1 : 0);
+            return (surge ? 1 : 0) + (phase ? 1 : 0) + (plast ? 1 : 0) + (dpsTesting ? 1 : 0);
         }
 
         public byte[] toByteArray(){

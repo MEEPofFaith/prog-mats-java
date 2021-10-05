@@ -12,7 +12,6 @@ public class PMPal{
     pixelBack = valueOf("EF4A9D"),
 
     missileBasic = valueOf("D4816B"),
-    missileEmp = valueOf("5757C1"),
     missileFrag = valueOf("9CB664"),
 
     apotheosisLaser = valueOf("CE5EE5"),
