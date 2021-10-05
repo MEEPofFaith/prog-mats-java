@@ -181,7 +181,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public class ApotheosisNexusBuild extends ReloadTurretBuild implements ControlBlock{
         public IntSeq chargers = new IntSeq(), connectedChargers = new IntSeq();
-        public float heat, warmup, spinUp, rotation = 90f, logicControlTime = -1;
+        public float heat, warmup, spinUp, rotation, logicControlTime = -1;
         public float charge, arc, fade, activeTime = 80000f;
         public float falloff, realDamage, realRadius, realSpeed, realDuration;
         public int shotCounter;
@@ -227,7 +227,6 @@ public class ApotheosisNexus extends ReloadTurret{
         @Override
         public double sense(LAccess sensor){
             return switch(sensor){
-                case rotation -> rotation;
                 case shootX -> World.conv(targetPos.x);
                 case shootY -> World.conv(targetPos.y);
                 case shooting -> isShooting() ? 1 : 0;
@@ -679,10 +678,7 @@ public class ApotheosisNexus extends ReloadTurret{
             realDuration = read.f();
 
             for(int i = 0, n = read.i(); i < n; i++){
-                int build = read.i();
-                chargers.add(build);
-                ((ApotheosisChargeTowerBuild)(world.build(build))).nexus = pos();
-                ProgMats.print(self(), i);
+                chargers.add(read.i());
             }
         }
     }

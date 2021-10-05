@@ -1235,10 +1235,7 @@ public class PMBlocks implements ContentList{
         }};
 
         //Wall
-        sandboxWall = new SandboxWall("sandbox-wall"){{
-            iconSize = 3f;
-            rotateRadius = 2.5f;
-        }};
+        sandboxWall = new SandboxWall("sandbox-wall");
 
         sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
             size = 2;

@@ -280,6 +280,7 @@ public class ApotheosisChargeTower extends Block{
 
             write.i(nexus);
             write.bool(connected);
+            write.f(rotation);
         }
 
         @Override
@@ -288,6 +289,7 @@ public class ApotheosisChargeTower extends Block{
 
             nexus = read.i();
             connected = read.bool();
+            rotation = read.f();
         }
     }
 }
