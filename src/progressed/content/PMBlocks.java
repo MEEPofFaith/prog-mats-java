@@ -114,9 +114,7 @@ public class PMBlocks implements ContentList{
 
     @Override
     public void load(){
-
         // Region Turrets
-
         minigun = new MinigunTurret("minigun"){{
             requirements(Category.turret, with(
                 Items.copper, 200,
@@ -970,10 +968,9 @@ public class PMBlocks implements ContentList{
         }};
 
         ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
-        
         // endregion
-        // Region Distribution
 
+        // Region Distribution
         floatingConveyor = new FloatingConveyor("floating-conveyor"){{
             requirements(Category.distribution, with(
                 Items.lead, 3,
@@ -1004,10 +1001,9 @@ public class PMBlocks implements ContentList{
             range = 560f;
             consumes.power(2.75f);
         }};
-
         // endregion
-        // Region Crafting
 
+        // Region Crafting
         mindronCollider = new ColliderCrafter("mindron-collider"){{
             requirements(Category.crafting, with(
                 Items.silicon, 150,
@@ -1108,10 +1104,9 @@ public class PMBlocks implements ContentList{
             build = false;
             products = Seq.with(PMPayloads.basicSentry, PMPayloads.strikeSentry, PMPayloads.dashSentry);
         }};
-
         // endregion
-        // Region Effect
 
+        // Region Effect
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(
                 Items.copper, 60,
@@ -1156,11 +1151,10 @@ public class PMBlocks implements ContentList{
             consumes.items(with(Items.phaseFabric, 1, PMItems.valexitite, 1)).boost();
             consumes.power(7f);
         }};
-
         // endregion
-        // Region Sandbox
 
-        //Turret
+        // Region Sandbox
+        /// Turret
         harbinger = new ChaosTurret("harbinger"){
             {
                 size = 8;
@@ -1212,7 +1206,7 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        // Distribution
+        /// Distribution
         sandDriver = new SandDriver("sand-driver"){{
             size = 3;
             itemCapacity = 180;
@@ -1223,7 +1217,7 @@ public class PMBlocks implements ContentList{
             consumes.power(0.1f);
         }};
 
-        //Power
+        /// Power
         strobeNode = new StrobeNode("rainbow-power-node");
 
         strobeInf = new StrobeSource("rainbow-power-source");
@@ -1234,7 +1228,7 @@ public class PMBlocks implements ContentList{
             speedBoost = 100f;
         }};
 
-        //Wall
+        /// Wall
         sandboxWall = new SandboxWall("sandbox-wall");
 
         sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
@@ -1243,7 +1237,7 @@ public class PMBlocks implements ContentList{
             rotateRadius = 5f;
         }};
 
-        //Unit
+        /// Unit
         godFactory = new UnitFactory("god-factory"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, empty);
             alwaysUnlocked = true;
@@ -1262,11 +1256,10 @@ public class PMBlocks implements ContentList{
             unitCapModifier = 25;
         }};
 
-        //Effect
+        /// Effect
         multiSource = new MultiSource("multi-source");
         multiVoid = new MultiVoid("multi-void");
         multiSourceVoid = new MultiSourceVoid("multi-source-void");
-
         // endregion
     }
 }
