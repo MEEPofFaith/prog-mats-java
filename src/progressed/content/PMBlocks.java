@@ -937,8 +937,9 @@ public class PMBlocks implements ContentList{
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
 
-            coolantMultiplier = 1f / (8f * Liquids.water.heatCapacity);
-            consumes.add(new ConsumeCoolant(8f)).update(false);
+            float cooleantUse = 8f;
+            coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
+            consumes.add(new ConsumeCoolant(cooleantUse)).update(false);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
