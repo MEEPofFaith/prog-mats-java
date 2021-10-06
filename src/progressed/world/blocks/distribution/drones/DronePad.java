@@ -123,41 +123,8 @@ public class DronePad extends Block{
                 int ii = i;
                 table.add(bundle.format("pm-drone-route", i + 1)).left();
                 table.table(d -> {
-                    ImageButton originButton = d.button(
-                        Icon.upload, Styles.clearToggleTransi, () -> {}
-                    ).size(40).tooltip(t -> {
-                        t.setBackground(Styles.black5);
-                        t.label(() -> bundle.format("pm-drone-select-origin", getStationName(ii, 0)));
-                    }).get();
-                    originButton.getImageCell().size(32);
-                    originButton.changed(() -> {
-                        if(selRoute == ii && selEnd == 0){
-                            selRoute = -1;
-                            selEnd = -1;
-                        }else{
-                            selRoute = ii;
-                            selEnd = 0;
-                        }
-                    });
-                    originButton.update(() -> originButton.setChecked(selRoute == ii && selEnd == 0));
-
-                    ImageButton destinationButton = d.button(
-                        Icon.download, Styles.clearToggleTransi, () -> {}
-                    ).size(40).tooltip(t -> {
-                        t.setBackground(Styles.black5);
-                        t.label(() -> bundle.format("pm-drone-select-origin", getStationName(ii, 1)));
-                    }).get();
-                    destinationButton.getImageCell().size(32);
-                    destinationButton.changed(() -> {
-                        if(selRoute == ii && selEnd == 1){
-                            selRoute = -1;
-                            selEnd = -1;
-                        }else{
-                            selRoute = ii;
-                            selEnd = 1;
-                        }
-                    });
-                    destinationButton.update(() -> destinationButton.setChecked(selRoute == ii && selEnd == 1));
+                    routeSelectionButton(d, "pm-drone-select-origin", ii, 0);
+                    routeSelectionButton(d, "pm-drone-select-destination", ii, 1);
 
                     ImageButton deleteButton = d.button(
                         Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
@@ -166,6 +133,26 @@ public class DronePad extends Block{
                 }).top().padLeft(6);
                 table.row();
             }
+        }
+
+        public void routeSelectionButton(Table d, String key, int route, int end){
+            ImageButton destinationButton = d.button(
+                Icon.download, Styles.clearToggleTransi, () -> {}
+            ).size(40).tooltip(t -> {
+                t.setBackground(Styles.black5);
+                t.label(() -> bundle.format(key, getStationName(route, end)));
+            }).get();
+            destinationButton.getImageCell().size(32);
+            destinationButton.changed(() -> {
+                if(selRoute == route && selEnd == end){
+                    selRoute = -1;
+                    selEnd = -1;
+                }else{
+                    selRoute = route;
+                    selEnd = end;
+                }
+            });
+            destinationButton.update(() -> destinationButton.setChecked(selRoute == route && selEnd == end));
         }
 
         @Override
