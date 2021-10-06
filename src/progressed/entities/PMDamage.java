@@ -15,12 +15,12 @@ import mindustry.world.*;
 import static mindustry.Vars.*;
 
 public class PMDamage{
+    private static final Rect rect = new Rect();
+    private static final Rect hitrect = new Rect();
+    private static final Vec2 tr = new Vec2();
+    private static final Seq<Unit> units = new Seq<>();
+    private static final IntSet collidedBlocks = new IntSet();
     private static Tile furthest;
-    private static Rect rect = new Rect();
-    private static Rect hitrect = new Rect();
-    private static Vec2 tr = new Vec2();
-    private static Seq<Unit> units = new Seq<>();
-    private static IntSet collidedBlocks = new IntSet();
     private static Building tmpBuilding;
     private static Unit tmpUnit;
     private static boolean check;
@@ -64,34 +64,26 @@ public class PMDamage{
             }
         }
     }
-    
-    public static Seq<Healthc> allNearbyEnemies(Team team, float x, float y, float radius){
-        Seq<Healthc> targets = new Seq<>();
-
-        Units.nearbyEnemies(team, x - radius, y - radius, radius * 2f, radius * 2f, unit -> {
-            if(Mathf.within(x, y, unit.x, unit.y, radius) && !unit.dead){
-                targets.add(unit);
-            }
-        });
-        
-        trueEachBlock(x, y, radius, build -> {
-            if(build.team != team && !build.dead && build.block != null){
-                targets.add(build);
-            }
-        });
-
-        return targets;
-    }
 
     public static void allNearbyEnemies(Team team, float x, float y, float radius, Cons<Healthc> cons){
-        allNearbyEnemies(team, x, y, radius).each(cons);
+        Units.nearbyEnemies(team, x - radius, y - radius, radius * 2f, radius * 2f, unit -> {
+            if(unit.within(x, y, radius + unit.hitSize / 2f) && !unit.dead){
+                cons.get(unit);
+            }
+        });
+
+        trueEachBlock(x, y, radius, build -> {
+            if(build.team != team && !build.dead && build.block != null){
+                cons.get(build);
+            }
+        });
     }
 
     public static boolean checkForTargets(Team team, float x, float y, float radius){
         check = false;
 
         Units.nearbyEnemies(team, x - radius, y - radius, radius * 2f, radius * 2f, unit -> {
-            if(Mathf.within(x, y, unit.x, unit.y, radius) && !unit.dead){
+            if(unit.within(x, y, radius + unit.hitSize / 2f) && !unit.dead){
                 check = true;
             }
         });
@@ -173,8 +165,7 @@ public class PMDamage{
     }
 
     public static void completeDamage(Team team, float x, float y, float radius, float damage, float buildDmbMult, boolean air, boolean ground){
-        Seq<Healthc> targets = allNearbyEnemies(team, x, y, radius);
-        targets.each(t -> {
+        allNearbyEnemies(team, x, y, radius, t -> {
             if(t instanceof Unit u){
                 if(u.isFlying() && air || u.isGrounded() && ground){
                     u.damage(damage);
