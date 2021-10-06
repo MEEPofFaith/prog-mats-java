@@ -41,7 +41,7 @@ public class BlackHoleCataclysmType extends BulletType{
 
         if(b.timer(1, 2f)){
             Units.nearbyEnemies(null, b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, unit -> {
-                if(unit.within(b.x, b.y, suctionRadius)){
+                if(unit.within(b.x, b.y, suctionRadius + unit.hitSize / 2f)){
                     float angle = b.angleTo(unit);
                     Tmp.v2.set(b.x + Angles.trnsx(angle, data.r), b.y + Angles.trnsy(angle, data.r));
                     float dist = !unit.within(b.x, b.y, data.r) ? unit.dst(Tmp.v2) : 0f;
@@ -77,9 +77,7 @@ public class BlackHoleCataclysmType extends BulletType{
                 }
             });
 
-            PMDamage.trueEachBlock(b.x, b.y, data.r * scl, other -> {
-                other.kill();
-            });
+            PMDamage.trueEachBlock(b.x, b.y, data.r * scl, Building::kill);
         }
 
         if(b.time < growTime * 2f){ //*inhales* SPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACE
