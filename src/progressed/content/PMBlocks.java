@@ -25,6 +25,8 @@ import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.distribution.*;
+import progressed.world.blocks.distribution.drones.*;
+import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.sandbox.*;
 import progressed.world.meta.*;
@@ -75,8 +77,15 @@ public class PMBlocks implements ContentList{
 
     // endregion
     // Region Distribution
-    
-    floatingConveyor, burstDriver,
+
+    //Conveyor
+    floatingConveyor,
+
+    //Drone
+    dronePad, itemDroneStation,
+
+    //Misc
+    burstDriver,
 
     // endregion
     // Region Crafting
@@ -984,6 +993,16 @@ public class PMBlocks implements ContentList{
             displayedSpeed = 8.4f;
             buildCostMultiplier = 0.25f;
             researchCostMultiplier = 300f;
+        }};
+
+        dronePad = new DronePad("drone-pad"){{
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            size = 3;
+        }};
+
+        itemDroneStation = new ItemDroneStation("drone-station-items"){{
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            size = 3;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{

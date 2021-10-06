@@ -242,16 +242,17 @@ public class PayloadCrafter extends BlockProducer{
 
             for(Block b : content.blocks()){
                 if(b instanceof Missile m && products.contains(m)){
-                    ImageButton button = cont.button(Tex.whiteui, Styles.clearToggleTransi, 24, () -> {}).group(group).get();
+                    Cell<ImageButton> cell = cont.button(Tex.whiteui, Styles.clearToggleTransi, 24, () -> {}).group(group);
+                    ImageButton button = cell.get();
                     button.update(() -> button.setChecked(recipe == m));
 
                     if(m.requiresUnlock && !m.unlockedNow()){
                         button.getStyle().imageUp = new TextureRegionDrawable(Core.atlas.find("clear"));
                         button.replaceImage(PMElements.imageStack(m.uiIcon, Icon.tree.getRegion(), Color.red));
-                        button.getImageCell().tooltip("@pm-missing-research");
+                        cell.tooltip("@pm-missing-research");
                     }else{
                         button.getStyle().imageUp = new TextureRegionDrawable(m.uiIcon);
-                        button.getImageCell().tooltip(m.localizedName);
+                        cell.tooltip(m.localizedName);
                     }
                     button.changed(() -> configure(button.isChecked() ? m : null));
 
