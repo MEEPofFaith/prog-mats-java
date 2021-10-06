@@ -2,6 +2,7 @@ package progressed.world.blocks.distribution.drones;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -11,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 import java.util.*;
@@ -87,7 +89,7 @@ public class DronePad extends Block{
             Groups.build.each(b -> b instanceof DroneStationBuild, b -> {
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
-                Drawf.select(s.x, s.y, drawSize, team.color);
+                Drawf.select(s.x, s.y, drawSize, ((DroneStation)(s.block())).selectColor);
                 if(s.connected){
                     if(s.accepting()){
                         Draw.rect(Icon.upload.getRegion(), s.x, s.y, drawSize, drawSize);
@@ -123,8 +125,8 @@ public class DronePad extends Block{
                 int ii = i;
                 table.add(bundle.format("pm-drone-route", i + 1)).left();
                 table.table(d -> {
-                    routeSelectionButton(d, "pm-drone-select-origin", ii, 0);
-                    routeSelectionButton(d, "pm-drone-select-destination", ii, 1);
+                    routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
+                    routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
 
                     ImageButton deleteButton = d.button(
                         Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
@@ -135,9 +137,9 @@ public class DronePad extends Block{
             }
         }
 
-        public void routeSelectionButton(Table d, String key, int route, int end){
+        public void routeSelectionButton(Table d, TextureRegionDrawable icon, String key, int route, int end){
             ImageButton destinationButton = d.button(
-                Icon.download, Styles.clearToggleTransi, () -> {}
+                icon, Styles.clearToggleTransi, () -> {}
             ).size(40).tooltip(t -> {
                 t.setBackground(Styles.black5);
                 t.label(() -> bundle.format(key, getStationName(route, end)));
@@ -159,11 +161,14 @@ public class DronePad extends Block{
         public boolean onConfigureTileTapped(Building other){
             if(other instanceof DroneStationBuild s && selRoute >= 0 && selEnd >= 0 && s.canConnect(selEnd)){
                 DroneStationBuild sel = getStation(selRoute, selEnd);
-                if(sel != null){
-                    disconnectStation(selRoute, selEnd);
-                }
-                if(sel != other){
-                    connectStation(selRoute, selEnd, other.pos());
+                DroneStationBuild otherEnd = getStation(selRoute, 1 - selEnd);
+                if(otherEnd == null || otherEnd.block() == other.block()){
+                    if(sel != null){
+                        disconnectStation(selRoute, selEnd);
+                    }
+                    if(sel != other){
+                        connectStation(selRoute, selEnd, other.pos());
+                    }
                 }
                 return false;
             }

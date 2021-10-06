@@ -82,7 +82,7 @@ public class PMBlocks implements ContentList{
     floatingConveyor,
 
     //Drone
-    dronePad, itemDroneStation,
+    dronePad, itemDroneStation, liquidDroneStation, payloadDroneStation,
 
     //Misc
     burstDriver,
@@ -1003,6 +1003,16 @@ public class PMBlocks implements ContentList{
         itemDroneStation = new ItemDroneStation("drone-station-items"){{
             requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
             size = 3;
+        }};
+
+        liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            size = 3;
+        }};
+
+        payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            size = 5;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{

@@ -11,6 +11,7 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
@@ -19,6 +20,7 @@ import static mindustry.Vars.*;
 
 public class DroneStation extends Block{
     public int maxTextLength = 220;
+    public Color selectColor = Color.white;
 
     public DroneStation(String name){
         super(name);
@@ -57,6 +59,16 @@ public class DroneStation extends Block{
 
         public boolean accepting(){
             return acceptEnd == 0;
+        }
+
+        @Override
+        public boolean canDump(Building to, Item item){
+            return !accepting();
+        }
+
+        @Override
+        public boolean canDumpLiquid(Building to, Liquid liquid){
+            return !accepting();
         }
 
         //This is all stolen from message block
