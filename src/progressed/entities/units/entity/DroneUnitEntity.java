@@ -1,7 +1,6 @@
 package progressed.entities.units.entity;
 
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -24,7 +23,7 @@ public class DroneUnitEntity extends UnitEntity{
         super.update();
 
         if(getPad() == null){
-            kill();
+            kill(); //No pad, nothing to do.
         }
     }
 
@@ -77,13 +76,17 @@ public class DroneUnitEntity extends UnitEntity{
         write.f(charge);
         write.bool(stopped);
         write.bool(arrived);
-        write.f(target.x());
-        write.f(target.y());
         write.b((byte)state.ordinal());
 
         write.i(routes.size);
         for(int i = 0; i < routes.size; i++){
             write.i(routes.get(i));
+        }
+
+        write.bool(target != null);
+        if(target != null){
+            write.f(target.x());
+            write.f(target.y());
         }
     }
 
@@ -96,7 +99,6 @@ public class DroneUnitEntity extends UnitEntity{
         charge = read.f();
         stopped = read.bool();
         arrived = read.bool();
-        target = world.buildWorld(read.f(), read.f());
         state = DroneState.all[read.b()];
 
         int len = read.i();
@@ -104,6 +106,10 @@ public class DroneUnitEntity extends UnitEntity{
         routes.setSize(len);
         for(int i = 0; i < len; i++){
             routes.set(i, read.i());
+        }
+
+        if(read.bool()){
+            target = world.buildWorld(read.f(), read.f());
         }
     }
 

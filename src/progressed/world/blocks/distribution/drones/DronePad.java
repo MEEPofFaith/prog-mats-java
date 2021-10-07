@@ -8,7 +8,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -16,7 +15,6 @@ import mindustry.world.*;
 import mindustry.world.consumers.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
-import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 import java.util.*;
@@ -28,7 +26,7 @@ public class DronePad extends Block{
     public int maxRoutes = 5;
     public float constructTime = 180f;
     public float constructPowerUse = 1f;
-    public float chargeRate = 6f;
+    public float chargeRate = 12f;
     public DroneUnitType droneType;
 
     public DronePad(String name){
@@ -147,7 +145,7 @@ public class DronePad extends Block{
         public void drawConfigure(){
             Drawf.select(x, y, size * tilesize / 2f + 2f + Mathf.absin(Time.time, 4f, 1f), team.color);
 
-            Groups.build.each(b -> b instanceof DroneStationBuild, b -> {
+            Groups.build.each(b -> b instanceof DroneStationBuild s && (!s.connected || routes.contains(s.pos())), b -> {
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
@@ -223,7 +221,7 @@ public class DronePad extends Block{
             if(other instanceof DroneStationBuild s && selRoute >= 0 && selEnd >= 0 && s.canConnect(selEnd)){
                 DroneStationBuild sel = getStation(selRoute, selEnd);
                 DroneStationBuild otherEnd = getStation(selRoute, 1 - selEnd);
-                if(otherEnd == null || otherEnd.block() == other.block()){
+                if((otherEnd == null || otherEnd.block() == other.block()) && (!s.connected || routes.contains(s.pos()))){
                     if(sel != null){
                         disconnectStation(selRoute, selEnd);
                     }

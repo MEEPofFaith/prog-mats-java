@@ -17,9 +17,8 @@ public class DroneAI extends AIController{
             }else{
                 if(d.within(d.target, 1f)){
                     d.arrived = true;
-                }else if(!d.stopped){
-                    moveTo(d.target, 0.002f, 20f);
                 }
+                moveTo(d.target, 0.002f, 50f);
                 if(d.arrived){
                     switch(d.state){
                         case charging -> {
