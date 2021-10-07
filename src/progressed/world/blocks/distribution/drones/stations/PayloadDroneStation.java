@@ -102,15 +102,15 @@ public class PayloadDroneStation extends DroneStation{
             if(accepting()){
                 boolean fallback = true;
                 for(int i = 0; i < 4; i++){
-                    if(blends(i) && i != rotation){
+                    if(blends(i)){
                         Draw.rect(inRegion, x, y, (i * 90) - 180);
                         fallback = false;
                     }
                 }
                 if(fallback) Draw.rect(inRegion, x, y, rotation * 90);
+            }else{
+                Draw.rect(outRegion, x, y, rotdeg());
             }
-
-            Draw.rect(outRegion, x, y, rotdeg());
 
             Draw.z(Layer.blockOver);
             drawPayload();

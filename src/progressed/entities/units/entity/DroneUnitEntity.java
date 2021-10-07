@@ -111,6 +111,8 @@ public class DroneUnitEntity extends UnitEntity{
         if(read.bool()){
             target = world.buildWorld(read.f(), read.f());
         }
+
+        ((DronePadBuild)(world.build(pad))).drone = this;
     }
 
     @Override

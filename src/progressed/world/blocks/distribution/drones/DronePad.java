@@ -49,8 +49,6 @@ public class DronePad extends Block{
     public class DronePadBuild extends Building{
         public int selRoute = -1, selEnd = -1;
         public float progress, warmup, totalProgress;
-        public boolean loadUnit;
-        public float ux, uy;
         public boolean constructing, charging;
         public IntSeq routes;
         public DroneUnitEntity drone;
@@ -79,11 +77,6 @@ public class DronePad extends Block{
                         disconnectStation(i, j);
                     }
                 }
-            }
-
-            if(loadUnit){
-                drone = (DroneUnitEntity)Groups.unit.find(e -> Mathf.equal(e.x, ux) && Mathf.equal(e.y, uy));
-                loadUnit = false;
             }
 
             if(drone != null && drone.dead){
@@ -306,10 +299,6 @@ public class DronePad extends Block{
             for(int i = 0; i < routes.size; i++){
                 write.i(routes.get(i));
             }
-
-            write.bool(drone != null);
-            write.f(drone.x);
-            write.f(drone.y);
         }
 
         @Override
@@ -325,12 +314,6 @@ public class DronePad extends Block{
             routes.setSize(len);
             for(int i = 0; i < len; i++){
                 routes.set(i, read.i());
-            }
-
-            loadUnit = read.bool();
-            if(loadUnit){
-                ux = read.f();
-                uy = read.f();
             }
         }
     }
