@@ -18,6 +18,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
@@ -998,6 +999,7 @@ public class PMBlocks implements ContentList{
         dronePad = new DronePad("drone-pad"){{
             requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
             size = 3;
+            droneType = (DroneUnitType)PMUnitTypes.transportDrone;
         }};
 
         itemDroneStation = new ItemDroneStation("drone-station-items"){{

@@ -29,8 +29,6 @@ public class DroneStation extends Block{
         update = true;
         configurable = saveConfig = true;
 
-        config(Boolean.class, (DroneStationBuild b, Boolean bool) -> b.connected = bool);
-        config(Integer.class, (DroneStationBuild build, Integer i) -> build.acceptEnd = i);
         config(String.class, (DroneStationBuild tile, String text) -> { //If you couldn't guess, this was stolen from message blocks
             if(text.length() > maxTextLength){
                 return; //no
@@ -46,10 +44,12 @@ public class DroneStation extends Block{
                 tile.stationName.append(c);
             }
         });
+        config(Boolean.class, (DroneStationBuild b, Boolean bool) -> b.connected = bool);
+        config(Integer.class, (DroneStationBuild build, Integer i) -> build.acceptEnd = i);
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected;
+        public boolean connected = false;
         public int acceptEnd = -1;
         public StringBuilder stationName = new StringBuilder("Station Frog");
 
@@ -59,6 +59,10 @@ public class DroneStation extends Block{
 
         public boolean accepting(){
             return acceptEnd == 0;
+        }
+
+        public Color selectColor(){
+            return selectColor;
         }
 
         @Override
@@ -146,6 +150,13 @@ public class DroneStation extends Block{
         @Override
         public Object config(){
             return stationName.toString();
+        }
+
+        @Override
+        public void configure(Object value){
+            //save last used config (Only save name changes, do not save state changes)
+            if(value instanceof String) block.lastConfig = value;
+            Call.tileConfig(player, self(), value);
         }
 
         @Override

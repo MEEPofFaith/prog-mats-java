@@ -1,4 +1,4 @@
-package progressed.entities.units;
+package progressed.entities.units.entity;
 
 import arc.math.*;
 import arc.math.geom.*;
@@ -6,6 +6,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.content.*;
+import progressed.entities.units.*;
 
 public class FlareUnitEntity extends SentryUnitEntity{
     public float animation = 1f, height = 0f;

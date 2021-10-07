@@ -17,6 +17,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
+import progressed.entities.units.entity.*;
 import progressed.util.*;
 
 public class SentryUnitType extends UnitType{

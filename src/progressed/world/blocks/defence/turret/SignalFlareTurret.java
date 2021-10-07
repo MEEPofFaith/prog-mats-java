@@ -13,7 +13,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
-import progressed.entities.units.*;
+import progressed.entities.units.entity.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 

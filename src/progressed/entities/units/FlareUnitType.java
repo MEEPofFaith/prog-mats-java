@@ -17,6 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.content.*;
+import progressed.entities.units.entity.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 

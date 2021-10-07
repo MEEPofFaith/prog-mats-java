@@ -54,7 +54,7 @@ public class PayloadCrafter extends BlockProducer{
 
     @Override
     public void init(){
-        consumes.add(new DynamicConsumePower());
+        consumes.add(new PayloadCrafterConsumePower());
 
         capacities = new int[content.items().size];
         products.each(r -> {
@@ -332,8 +332,8 @@ public class PayloadCrafter extends BlockProducer{
         }
     }
 
-    protected class DynamicConsumePower extends ConsumePower{
-        public DynamicConsumePower(){
+    protected class PayloadCrafterConsumePower extends ConsumePower{
+        public PayloadCrafterConsumePower(){
             super();
         }
 

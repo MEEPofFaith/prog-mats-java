@@ -7,7 +7,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import progressed.entities.units.*;
+import progressed.entities.units.entity.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
 
