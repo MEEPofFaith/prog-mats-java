@@ -16,10 +16,10 @@ public class DroneAI extends AIController{
             if(d.target == null || d.state == DroneState.idle){
                 findDestination(d);
             }else{
-                if(d.within(d.target, 1f)){
+                if(d.within(d.target, 4f)){
                     d.arrived = true;
                 }
-                moveTo(d.target, 0.002f, 50f);
+                moveTo(d.target, 2f, 50f);
                 if(d.arrived){
                     switch(d.state){
                         case charging, idle -> {

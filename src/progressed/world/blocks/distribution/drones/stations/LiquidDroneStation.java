@@ -2,6 +2,7 @@ package progressed.world.blocks.distribution.drones.stations;
 
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.scene.ui.layout.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -80,6 +81,13 @@ public class LiquidDroneStation extends DroneStation{
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
             return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && drone == null;
+        }
+
+        @Override
+        public void buildConfiguration(Table table){
+            super.buildConfiguration(table);
+
+            table.button(Icon.trash, () -> liquids.clear()).tooltip("@pm-drone-dump-liquid").size(40);
         }
     }
 }

@@ -28,6 +28,7 @@ public class DroneStation extends Block{
 
         solid = true;
         update = true;
+        displayFlow = false;
         configurable = saveConfig = true;
 
         config(String.class, (DroneStationBuild tile, String text) -> { //If you couldn't guess, this was stolen from message blocks
@@ -157,7 +158,7 @@ public class DroneStation extends Block{
                     dialog.show();
                 }
                 deselect();
-            }).size(40f);
+            }).tooltip("@pm-drone-editname").size(40f);
         }
 
         @Override
