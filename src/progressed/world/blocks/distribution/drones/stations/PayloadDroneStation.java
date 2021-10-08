@@ -95,7 +95,7 @@ public class PayloadDroneStation extends DroneStation{
         public void updateTile(){
             super.updateTile();
 
-            if(accepting()){
+            if(isOrigin()){
                 moveInPayload();
             }else{
                 moveOutPayload();
@@ -103,11 +103,16 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         @Override
+        public boolean ready(){
+            return isOrigin() ? payload != null && hasArrived() : payload == null;
+        }
+
+        @Override
         public void draw(){
             Draw.rect(region, x, y);
 
             //draw input
-            if(accepting()){
+            if(isOrigin()){
                 boolean fallback = true;
                 for(int i = 0; i < 4; i++){
                     if(blends(i)){
@@ -142,7 +147,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return accepting() && this.payload == null && payload.fits(payloadLimit);
+            return isOrigin() && this.payload == null && payload.fits(payloadLimit) && drone == null;
         }
 
         @Override

@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
+import progressed.entities.units.entity.*;
 
 import static mindustry.Vars.*;
 
@@ -52,12 +53,13 @@ public class DroneStation extends Block{
         public boolean connected = false;
         public int acceptEnd = -1;
         public StringBuilder stationName = new StringBuilder("Station Frog");
+        public DroneUnitEntity drone;
 
         public boolean canConnect(int end){
             return !connected || end == acceptEnd;
         }
 
-        public boolean accepting(){
+        public boolean isOrigin(){
             return acceptEnd == 0;
         }
 
@@ -67,12 +69,21 @@ public class DroneStation extends Block{
 
         @Override
         public boolean canDump(Building to, Item item){
-            return !accepting();
+            return !isOrigin();
         }
 
         @Override
         public boolean canDumpLiquid(Building to, Liquid liquid){
-            return !accepting();
+            return !isOrigin();
+        }
+
+        public boolean ready(){
+            return false;
+        }
+
+        public void disconnect(){
+            configure(false); //Unlock
+            configure(-1); //Disable acceptance
         }
 
         //This is all stolen from message block
@@ -101,6 +112,10 @@ public class DroneStation extends Block{
             font.getData().setScale(1f);
 
             Pools.free(l);
+        }
+
+        public void drawLoad(){
+
         }
 
         @Override
@@ -162,6 +177,7 @@ public class DroneStation extends Block{
         @Override
         public void remove(){
             connected = false;
+            drone = null;
             acceptEnd = -1;
 
             super.remove();

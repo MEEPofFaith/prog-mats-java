@@ -20,6 +20,7 @@ import static mindustry.Vars.state;
 
 public class DroneUnitType extends UnitType{
     public float powerUse = 2f, chargeCapacity = 600f;
+    public float loadSpeed = 1f / 60f;
 
     public DroneUnitType(String name){
         super(name);
@@ -27,6 +28,7 @@ public class DroneUnitType extends UnitType{
         defaultController = DroneAI::new;
 
         flying = true;
+        lowAltitude = false;
         speed = 3f;
     }
 

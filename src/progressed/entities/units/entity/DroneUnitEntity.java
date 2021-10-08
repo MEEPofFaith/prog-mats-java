@@ -8,16 +8,17 @@ import mindustry.gen.*;
 import progressed.content.*;
 import progressed.entities.units.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
+import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 import static mindustry.Vars.*;
 
 public class DroneUnitEntity extends UnitEntity{
     public int pad, curRoute;
-    public float charge;
+    public float charge, load;
     public boolean stopped, arrived;
     public IntSeq routes;
     public Teamc target;
-    public DroneState state = DroneState.charging;
+    public DroneState state = DroneState.idle;
 
     @Override
     public void update(){
@@ -38,6 +39,10 @@ public class DroneUnitEntity extends UnitEntity{
 
     public DroneUnitType getType(){
         return (DroneUnitType)type;
+    }
+
+    public float loadSpeed(){
+        return getType().loadSpeed;
     }
 
     public float chargeCapacity(){
@@ -75,7 +80,19 @@ public class DroneUnitEntity extends UnitEntity{
     }
 
     public boolean checkCompleteRoute(int route){
-        return routes.get(route * 2) != -1 && routes.get(route * 2 + 1) != -1;
+        return (routes.get(route * 2) != -1 && getStation(route, 0).ready()) && (routes.get(route * 2 + 1) != -1 && getStation(route, 1).ready());
+    }
+
+    public DroneStationBuild getStation(int route, int end){
+        return (DroneStationBuild)(world.build(routes.get(route * 2 + end)));
+    }
+
+    public DroneStationBuild getStation(){
+        return switch(state){
+            case pickup -> (DroneStationBuild)(world.build(routes.get(curRoute * 2)));
+            case dropoff -> (DroneStationBuild)(world.build(routes.get(curRoute * 2 + 1)));
+            default -> null;
+        };
     }
 
     @Override
@@ -96,6 +113,7 @@ public class DroneUnitEntity extends UnitEntity{
         write.i(pad);
         write.i(curRoute);
         write.f(charge);
+        write.f(load);
         write.bool(stopped);
         write.bool(arrived);
         write.b((byte)state.ordinal());
@@ -119,6 +137,7 @@ public class DroneUnitEntity extends UnitEntity{
         pad = read.i();
         curRoute = read.i();
         charge = read.f();
+        load = read.f();
         stopped = read.bool();
         arrived = read.bool();
         state = DroneState.all[read.b()];
@@ -143,12 +162,14 @@ public class DroneUnitEntity extends UnitEntity{
     }
 
     public enum DroneState{
-        /** Heading to drone pad to charge */
+        /** 0 - Heading to drone pad to charge */
         charging,
-        /** Heading to order origin station */
+        /** 1 - Heading to order origin station */
         pickup,
-        /** Heading to order drop off station */
-        dropoff;
+        /** 2 - Heading to order drop off station */
+        dropoff,
+        /** 3 - No routes are ready; return to pad to charge */
+        idle;
 
         public static final DroneState[] all = values();
     }

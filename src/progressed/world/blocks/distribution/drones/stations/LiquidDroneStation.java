@@ -8,6 +8,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class LiquidDroneStation extends DroneStation{
+    public float transportThreshold = 0.25f;
+
     public TextureRegion liquidRegion, topRegion;
 
     public LiquidDroneStation(String name){
@@ -36,25 +38,35 @@ public class LiquidDroneStation extends DroneStation{
     public class LiquidDroneStationBuild extends DroneStationBuild{
         @Override
         public void updateTile(){
+
             if(liquids.total() > 0.01f){
                 dumpLiquid(liquids.current());
             }
         }
 
         @Override
+        public boolean ready(){
+            return isOrigin() ? liquids.total() >= liquidCapacity * transportThreshold : liquids.total() <= liquidCapacity;
+        }
+
+        @Override
         public void draw(){
             super.draw();
 
-            if(liquids.total() > 0.01f){
-                Drawf.liquid(liquidRegion, x, y, liquids.total() / liquidCapacity, liquids.current().color);
-            }
+            if(drone != null){
+                drawLoad();
+            }else{
+                if(liquids.total() > 0.01f){
+                    Drawf.liquid(liquidRegion, x, y, liquids.total() / liquidCapacity, liquids.current().color);
+                }
 
-            Draw.rect(topRegion, x, y);
+                Draw.rect(topRegion, x, y);
+            }
         }
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return accepting() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f);
+            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && drone == null;
         }
     }
 }

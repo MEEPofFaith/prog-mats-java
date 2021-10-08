@@ -1,9 +1,11 @@
 package progressed.ai;
 
+import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import progressed.entities.units.entity.*;
 import progressed.entities.units.entity.DroneUnitEntity.*;
+import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 import static mindustry.Vars.*;
 
@@ -11,7 +13,7 @@ public class DroneAI extends AIController{
     @Override
     public void updateMovement(){
         if(unit instanceof DroneUnitEntity d){
-            if(d.target == null){
+            if(d.target == null || d.state == DroneState.idle){
                 findDestination(d);
             }else{
                 if(d.within(d.target, 1f)){
@@ -20,7 +22,7 @@ public class DroneAI extends AIController{
                 moveTo(d.target, 0.002f, 50f);
                 if(d.arrived){
                     switch(d.state){
-                        case charging -> {
+                        case charging, idle -> {
                             d.stopped = true;
                             d.getPad().charging = true;
                             if(d.charged()){
@@ -29,11 +31,23 @@ public class DroneAI extends AIController{
                             }
                         }
                         case pickup -> {
-                            reset(d);
+                            d.getStation().drone = d;
+                            d.load += d.loadSpeed() * Time.delta;
+                            if(d.load >= 1){
+                                d.getStation().drone = null;
+                                d.load = 1;
+                                reset(d);
+                            }
                         }
                         case dropoff -> {
-                            reset(d);
-                            updateRoutes(d);
+                            d.getStation().drone = d;
+                            d.load -= d.loadSpeed() * Time.delta;
+                            if(d.load <= 0){
+                                d.getStation().drone = null;
+                                d.load = 0;
+                                reset(d);
+                                updateRoutes(d);
+                            }
                         }
                     }
                 }
@@ -45,14 +59,13 @@ public class DroneAI extends AIController{
         if(d.hasRoutes()){
             if(d.checkCompleteRoute(d.curRoute)){
                 switch(d.state){
-                    case charging -> setTarget(d, world.build(d.routes.get(d.curRoute * 2)), 1);
-                    case pickup -> setTarget(d, world.build(d.routes.get(d.curRoute * 2 + 1)), 2);
+                    case charging, idle -> setTarget(d, d.getStation(d.curRoute, 0), 1);
+                    case pickup -> setTarget(d, d.getStation(d.curRoute, 1), 2);
                     case dropoff -> {
-                        int next = d.routes.get(d.curRoute * 2);
                         if(d.estimateUse(d.curRoute) > d.charge){
                             setTarget(d, d.getPad(), 0);
                         }else{
-                            setTarget(d, world.build(next), 1);
+                            setTarget(d, d.getStation(d.curRoute, 0), 1);
                         }
                     }
                 }
@@ -61,6 +74,7 @@ public class DroneAI extends AIController{
             }
         }else{
             d.updateRoutes();
+            setTarget(d, d.getPad(), 3);
         }
     }
 

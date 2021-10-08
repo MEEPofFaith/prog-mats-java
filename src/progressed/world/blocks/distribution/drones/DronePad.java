@@ -132,7 +132,7 @@ public class DronePad extends Block{
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
                     if(s.connected){
-                        if(s.accepting()){
+                        if(s.isOrigin()){
                             Draw.rect(Icon.upload.getRegion(), s.x, s.y, drawSize, drawSize);
                         }else{
                             Draw.rect(Icon.download.getRegion(), s.x, s.y, drawSize, drawSize);
@@ -166,7 +166,7 @@ public class DronePad extends Block{
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
                 if(s.connected){
-                    if(s.accepting()){
+                    if(s.isOrigin()){
                         Draw.rect(Icon.upload.getRegion(), s.x, s.y, drawSize, drawSize);
                     }else{
                         Draw.rect(Icon.download.getRegion(), s.x, s.y, drawSize, drawSize);
@@ -283,8 +283,7 @@ public class DronePad extends Block{
         public void disconnectStation(int route, int end){
             DroneStationBuild s = getStation(route, end);
             if(s != null && routes.count(s.pos()) == 1){
-                s.configure(false); //Unlock
-                s.configure(-1); //Disable acceptance
+                s.disconnect();
             }
             routes.set(route * 2 + end, -1);
             configure(routes);
