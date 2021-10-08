@@ -160,6 +160,14 @@ public class DroneStation extends Block{
         }
 
         @Override
+        public void remove(){
+            connected = false;
+            acceptEnd = -1;
+
+            super.remove();
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 
