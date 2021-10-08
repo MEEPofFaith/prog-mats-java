@@ -14,6 +14,7 @@ import static mindustry.Vars.*;
 
 public class PayloadDroneStation extends DroneStation{
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
+    public float payloadLimit = -1f;
 
     public TextureRegion topRegion, inRegion, outRegion;
 
@@ -24,6 +25,13 @@ public class PayloadDroneStation extends DroneStation{
         acceptsPayload = outputsPayload = true;
         rotate = true;
         selectColor = Pal.lightOrange;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(payloadLimit < 0) payloadLimit = size;
     }
 
     @Override
@@ -134,7 +142,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return accepting() && this.payload == null;
+            return accepting() && this.payload == null && payload.fits(payloadLimit);
         }
 
         @Override
