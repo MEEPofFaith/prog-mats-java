@@ -6,11 +6,12 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import progressed.entities.units.entity.*;
 
 public class LiquidDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
 
-    public TextureRegion liquidRegion, topRegion;
+    public TextureRegion liquidRegion, tankRegion;
 
     public LiquidDroneStation(String name){
         super(name);
@@ -27,12 +28,12 @@ public class LiquidDroneStation extends DroneStation{
         super.load();
 
         liquidRegion = Core.atlas.find(name + "-liquid");
-        topRegion = Core.atlas.find(name + "-top");
+        tankRegion = Core.atlas.find("pm-liquid-cargo");
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[]{region, topRegion};
+        return new TextureRegion[]{region, tankRegion};
     }
 
     public class LiquidDroneStationBuild extends DroneStationBuild{
@@ -45,8 +46,20 @@ public class LiquidDroneStation extends DroneStation{
         }
 
         @Override
+        public void loadCargo(DroneUnitEntity d){
+            d.cargo.load(new LiquidStack(liquids.current(), liquids.currentAmount()));
+            liquids.clear();
+        }
+
+        @Override
+        public void takeCargo(DroneUnitEntity d){
+            liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
+            drone.cargo.empty();
+        }
+
+        @Override
         public boolean ready(){
-            return isOrigin() ? liquids.total() >= liquidCapacity * transportThreshold : liquids.total() <= liquidCapacity;
+            return active || connected && (isOrigin() ? liquids.total() >= liquidCapacity * transportThreshold : liquids.total() <= liquidCapacity);
         }
 
         @Override
@@ -60,7 +73,7 @@ public class LiquidDroneStation extends DroneStation{
                     Drawf.liquid(liquidRegion, x, y, liquids.total() / liquidCapacity, liquids.current().color);
                 }
 
-                Draw.rect(topRegion, x, y);
+                Draw.rect(tankRegion, x, y);
             }
         }
 

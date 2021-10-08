@@ -23,7 +23,6 @@ public class DroneAI extends AIController{
                 if(d.arrived){
                     switch(d.state){
                         case charging, idle -> {
-                            d.stopped = true;
                             d.getPad().charging = true;
                             if(d.charged()){
                                 d.getPad().charging = false;
@@ -32,8 +31,10 @@ public class DroneAI extends AIController{
                         }
                         case pickup -> {
                             d.getStation().drone = d;
+                            d.getStation().active = true;
                             d.load += d.loadSpeed() * Time.delta;
                             if(d.load >= 1){
+                                d.getStation().loadCargo(d);
                                 d.getStation().drone = null;
                                 d.load = 1;
                                 reset(d);
@@ -41,9 +42,14 @@ public class DroneAI extends AIController{
                         }
                         case dropoff -> {
                             d.getStation().drone = d;
+                            d.getStation().active = true;
                             d.load -= d.loadSpeed() * Time.delta;
                             if(d.load <= 0){
+                                d.getStation().takeCargo(d);
                                 d.getStation().drone = null;
+                                d.getStation(d.curRoute, 0).active = false;
+                                d.getStation().active = false;
+                                if(!d.getStation().connected) d.getStation().configure(-1);
                                 d.load = 0;
                                 reset(d);
                                 updateRoutes(d);
@@ -86,7 +92,6 @@ public class DroneAI extends AIController{
     public void reset(DroneUnitEntity d){
         d.target = null;
         d.arrived = false;
-        d.stopped = false;
     }
 
     public void setTarget(DroneUnitEntity d, Teamc t, int state){

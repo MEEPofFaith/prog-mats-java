@@ -9,6 +9,7 @@ import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.payloads.*;
+import progressed.entities.units.entity.*;
 
 import static mindustry.Vars.*;
 
@@ -103,8 +104,19 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         @Override
+        public void loadCargo(DroneUnitEntity d){
+            d.addPayload(takePayload());
+        }
+
+        @Override
+        public void takeCargo(DroneUnitEntity d){
+            payload = d.payloads().first();
+            d.payloads().clear();
+        }
+
+        @Override
         public boolean ready(){
-            return isOrigin() ? payload != null && hasArrived() : payload == null;
+            return active || connected && (isOrigin() ? payload != null && hasArrived() : payload == null);
         }
 
         @Override

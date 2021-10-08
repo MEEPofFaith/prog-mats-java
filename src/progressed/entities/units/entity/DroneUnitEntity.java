@@ -5,20 +5,24 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import progressed.content.*;
 import progressed.entities.units.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
-public class DroneUnitEntity extends UnitEntity{
+public class DroneUnitEntity extends PayloadUnit{
     public int pad, curRoute;
     public float charge, load;
-    public boolean stopped, arrived;
+    public boolean arrived;
     public IntSeq routes;
     public Teamc target;
     public DroneState state = DroneState.idle;
+    public DroneCargo cargo = new DroneCargo();
 
     @Override
     public void update(){
@@ -31,6 +35,8 @@ public class DroneUnitEntity extends UnitEntity{
         if(getPad() == null){
             kill(); //No pad, nothing to do.
         }
+
+        Log.info(state);
     }
 
     public float chargef(){
@@ -114,7 +120,6 @@ public class DroneUnitEntity extends UnitEntity{
         write.i(curRoute);
         write.f(charge);
         write.f(load);
-        write.bool(stopped);
         write.bool(arrived);
         write.b((byte)state.ordinal());
 
@@ -128,6 +133,8 @@ public class DroneUnitEntity extends UnitEntity{
             write.f(target.x());
             write.f(target.y());
         }
+
+        cargo.write(write);
     }
 
     @Override
@@ -138,7 +145,6 @@ public class DroneUnitEntity extends UnitEntity{
         curRoute = read.i();
         charge = read.f();
         load = read.f();
-        stopped = read.bool();
         arrived = read.bool();
         state = DroneState.all[read.b()];
 
@@ -153,12 +159,74 @@ public class DroneUnitEntity extends UnitEntity{
             target = world.buildWorld(read.f(), read.f());
         }
 
+        cargo.read(read);
+
         ((DronePadBuild)(world.build(pad))).drone = this;
     }
 
     @Override
     public int classId(){
         return PMUnitTypes.classID(DroneUnitEntity.class);
+    }
+
+    public static class DroneCargo{
+        public int[] itemCargo = new int[content.items().size];
+        public LiquidStack liquidCargo;
+
+        public DroneCargo(){}
+
+        public void load(int[] items){
+            itemCargo = items.clone();
+        }
+
+        public void load(LiquidStack liquid){
+            liquidCargo = liquid;
+        }
+
+        public void empty(){
+            itemCargo = new int[content.items().size];
+            liquidCargo = null;
+        }
+
+        public void write(Writes write){
+            int amount = 0;
+            for(int item : itemCargo){
+                if(item > 0) amount++;
+            }
+
+            write.s(amount); //amount of items
+
+            for(int i = 0; i < itemCargo.length; i++){
+                if(itemCargo[i] > 0){
+                    write.s(i); //item ID
+                    write.i(itemCargo[i]); //item amount
+                }
+            }
+
+            write.bool(liquidCargo != null);
+            if(liquidCargo != null){
+                write.s(liquidCargo.liquid.id);
+                write.f(liquidCargo.amount);
+            }
+        }
+
+        public void read(Reads read){
+            //just in case, reset items
+            Arrays.fill(itemCargo, 0);
+            int count = read.s();
+
+            for(int j = 0; j < count; j++){
+                int itemid = read.s();
+                int itemamount = read.i();
+                itemCargo[content.item(itemid).id] = itemamount;
+            }
+
+            if(read.bool()){
+                int liquidId = read.s();
+                float liquidAmount = read.f();
+                liquidCargo = new LiquidStack(content.liquid(liquidId), liquidAmount);
+            }
+        }
     }
 
     public enum DroneState{

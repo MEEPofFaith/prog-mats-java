@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import progressed.entities.units.entity.*;
 
 public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
@@ -24,7 +25,7 @@ public class ItemDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        containerRegion = Core.atlas.find(name + "-container");
+        containerRegion = Core.atlas.find("pm-item-cargo");
     }
 
     public class ItemDroneStationBuild extends DroneStationBuild{
@@ -37,8 +38,20 @@ public class ItemDroneStation extends DroneStation{
         }
 
         @Override
+        public void loadCargo(DroneUnitEntity d){
+            //d.cargo.load(items.items);
+            items.clear();
+        }
+
+        @Override
+        public void takeCargo(DroneUnitEntity d){
+            //items.items = d.cargo.itemCargo.clone();
+            drone.cargo.empty();
+        }
+
+        @Override
         public boolean ready(){
-            return isOrigin() ? items.total() >= itemCapacity * transportThreshold : items.total() <= itemCapacity;
+            return active || connected && (isOrigin() ? items.total() >= itemCapacity * transportThreshold : items.total() <= itemCapacity);
         }
 
         @Override

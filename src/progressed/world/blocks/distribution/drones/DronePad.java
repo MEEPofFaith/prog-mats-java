@@ -78,9 +78,7 @@ public class DronePad extends Block{
             for(int i = 0; i < maxRoutes; i++){
                 for(int j = 0; j < 2; j++){
                     DroneStationBuild o = getStation(i, j);
-                    if(o != null){
-                        o.configure(true); //Keep locked as long as at least 1 controller uses it.
-                    }else{
+                    if(o == null){
                         disconnectStation(i, j);
                     }
                 }
@@ -161,7 +159,7 @@ public class DronePad extends Block{
         public void drawConfigure(){
             Drawf.select(x, y, size * tilesize / 2f + 2f + Mathf.absin(Time.time, 4f, 1f), team.color);
 
-            Groups.build.each(b -> b instanceof DroneStationBuild s && (!s.connected || routes.contains(s.pos())), b -> {
+            Groups.build.each(b -> b instanceof DroneStationBuild s && (!(s.connected || s.active) || routes.contains(s.pos())), b -> {
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
@@ -268,8 +266,7 @@ public class DronePad extends Block{
         public void connectStation(int route, int end, int pos){
             DroneStationBuild s = getStation(pos);
             if(s != null){
-                s.configure(true); //Lock
-                s.configure(end); //Enable acceptance for origin
+                s.connect(end);
                 routes.set(route * 2 + end, pos);
                 configure(routes);
             }
@@ -284,6 +281,7 @@ public class DronePad extends Block{
             DroneStationBuild s = getStation(route, end);
             if(s != null && routes.count(s.pos()) == 1){
                 s.disconnect();
+                if(drone == null || drone.curRoute != route) s.configure(-1);
             }
             routes.set(route * 2 + end, -1);
             configure(routes);
