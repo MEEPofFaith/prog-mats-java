@@ -17,7 +17,7 @@ public class LiquidDroneStation extends DroneStation{
         hasLiquids = true;
         liquidCapacity = 300;
         outputsLiquid = true;
-        selectColor = Liquids.water.color;
+        selectColor = Liquids.cryofluid.color;
     }
 
     @Override

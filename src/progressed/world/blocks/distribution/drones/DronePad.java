@@ -26,7 +26,7 @@ public class DronePad extends Block{
     public int maxRoutes = 5;
     public float constructTime = 180f;
     public float constructPowerUse = 1f;
-    public float chargeRate = 12f;
+    public float chargeRate = 3f;
     public DroneUnitType droneType;
 
     public DronePad(String name){
@@ -44,6 +44,13 @@ public class DronePad extends Block{
         consumes.add(new DronePadConsumePower());
 
         super.init();
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        bars.add("drone-charge", (DronePadBuild entity) -> new Bar("pm-drone-pad-charge", Pal.powerBar, entity::chargef));
     }
 
     public class DronePadBuild extends Building{
@@ -104,6 +111,10 @@ public class DronePad extends Block{
             }
         }
 
+        public float chargef(){
+            return drone != null ? drone.chargef() : 0f;
+        }
+
         @Override
         public void draw(){
             super.draw();
@@ -132,6 +143,18 @@ public class DronePad extends Block{
             });
 
             drawConnections();
+
+            if(drone != null){
+                Draw.z(Layer.overlayUI);
+                Draw.mixcol(Pal.accent, 1f);
+                Draw.rect(drone.type.fullIcon, drone.x, drone.y, drone.rotation - 90);
+                for(int i = 0; i < 4; i++){
+                    float rot = i * 90f + 45f + (-Time.time) % 360f;
+                    float length = drone.hitSize() * 1.5f + 2.5f;
+                    Draw.rect("select-arrow", drone.getX() + Angles.trnsx(rot, length), drone.getY() + Angles.trnsy(rot, length), length / 1.9f, length / 1.9f, rot - 135f);
+                }
+                Draw.reset();
+            }
         }
 
         @Override
@@ -161,10 +184,11 @@ public class DronePad extends Block{
                 DroneStationBuild o = getStation(i, 0);
                 DroneStationBuild d = getStation(i, 1);
                 if(o != null && d != null){
-                    Drawf.dashLine(team.color, o.x, o.y, d.x, d.y);
+                    Drawf.dashLine(o.selectColor(), o.x, o.y, d.x, d.y);
                     float dist = o.dst(d);
-                    for(int j = 0; j < 3; j++){
-                        Drawf.arrow(o.x, o.y, d.x, d.y, dist / 4f * (j + 1), 3f, team.color);
+                    int arrows = Math.max((int)(dist / (8 * tilesize)), 1);
+                    for(int j = 0; j < arrows; j++){
+                        Drawf.arrow(o.x, o.y, d.x, d.y, dist / (arrows + 1) * (j + 1), 3f, o.selectColor());
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package progressed.ai;
 
-import arc.struct.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import progressed.entities.units.entity.*;
@@ -29,10 +28,10 @@ public class DroneAI extends AIController{
                                 reset(d);
                             }
                         }
-                        case origin -> {
+                        case pickup -> {
                             reset(d);
                         }
-                        case destination -> {
+                        case dropoff -> {
                             reset(d);
                             updateRoutes(d);
                         }
@@ -43,21 +42,25 @@ public class DroneAI extends AIController{
     }
 
     public void findDestination(DroneUnitEntity d){
-        if(checkCompleteRoute(d.routes, d.curRoute)){
-            switch(d.state){
-                case charging -> setTarget(d, world.build(d.routes.get(d.curRoute * 2)), 1);
-                case origin -> setTarget(d, world.build(d.routes.get(d.curRoute * 2 + 1)), 2);
-                case destination -> {
-                    int next = d.routes.get(d.curRoute * 2);
-                    if(d.estimateUse(d.curRoute) > d.charge){
-                        setTarget(d, d.getPad(), 0);
-                    }else{
-                        setTarget(d, world.build(next), 1);
+        if(d.hasRoutes()){
+            if(d.checkCompleteRoute(d.curRoute)){
+                switch(d.state){
+                    case charging -> setTarget(d, world.build(d.routes.get(d.curRoute * 2)), 1);
+                    case pickup -> setTarget(d, world.build(d.routes.get(d.curRoute * 2 + 1)), 2);
+                    case dropoff -> {
+                        int next = d.routes.get(d.curRoute * 2);
+                        if(d.estimateUse(d.curRoute) > d.charge){
+                            setTarget(d, d.getPad(), 0);
+                        }else{
+                            setTarget(d, world.build(next), 1);
+                        }
                     }
                 }
+            }else{
+                d.nextRoute();
             }
         }else{
-            d.nextRoute();
+            d.updateRoutes();
         }
     }
 
@@ -75,9 +78,5 @@ public class DroneAI extends AIController{
     public void setTarget(DroneUnitEntity d, Teamc t, int state){
         d.target = t;
         d.state = DroneState.all[state];
-    }
-
-    public boolean checkCompleteRoute(IntSeq routes, int route){
-        return routes.get(route * 2) != -1 && routes.get(route * 2 + 1) != -1;
     }
 }

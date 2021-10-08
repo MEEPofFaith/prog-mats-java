@@ -2,6 +2,7 @@ package progressed.entities.units.entity;
 
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import progressed.content.*;
@@ -22,13 +23,25 @@ public class DroneUnitEntity extends UnitEntity{
     public void update(){
         super.update();
 
+        if(state == DroneState.dropoff && vel.len() > 0.01f){
+            charge -= Time.delta * getType().powerUse * (vel.len() / type.speed);
+        }
+
         if(getPad() == null){
             kill(); //No pad, nothing to do.
         }
     }
 
+    public float chargef(){
+        return charge / chargeCapacity();
+    }
+
+    public DroneUnitType getType(){
+        return (DroneUnitType)type;
+    }
+
     public float chargeCapacity(){
-        return ((DroneUnitType)type).chargeCapacity;
+        return getType().chargeCapacity;
     }
 
     public void recharge(float amount){
@@ -54,6 +67,17 @@ public class DroneUnitEntity extends UnitEntity{
         }
     }
 
+    public boolean hasRoutes(){
+        for(int i = 0; i < getPad().maxRoutes(); i++){
+            if(checkCompleteRoute(i)) return true;
+        }
+        return false;
+    }
+
+    public boolean checkCompleteRoute(int route){
+        return routes.get(route * 2) != -1 && routes.get(route * 2 + 1) != -1;
+    }
+
     @Override
     public boolean isAI(){
         return false; //Make game think it's not an AI so that players can't control it.
@@ -62,9 +86,7 @@ public class DroneUnitEntity extends UnitEntity{
     public float estimateUse(int route){
         Building origin = world.build(routes.get(route * 2));
         Building destination = world.build(routes.get(route * 2 + 1));
-        float toOrigin = dst(origin);
-        float toDestination = origin.dst(destination);
-        return ((toOrigin + toDestination) / type.speed) * ((DroneUnitType)(type)).powerUse;
+        return (origin.dst(destination) / type.speed) * ((DroneUnitType)(type)).powerUse;
     }
 
     @Override
@@ -121,9 +143,12 @@ public class DroneUnitEntity extends UnitEntity{
     }
 
     public enum DroneState{
-        charging, //Heading to pad
-        origin, //Heading to start point
-        destination; //Heading to end point
+        /** Heading to drone pad to charge */
+        charging,
+        /** Heading to order origin station */
+        pickup,
+        /** Heading to order drop off station */
+        dropoff;
 
         public static final DroneState[] all = values();
     }

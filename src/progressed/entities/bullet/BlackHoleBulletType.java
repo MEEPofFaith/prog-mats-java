@@ -141,10 +141,8 @@ public class BlackHoleBulletType extends BulletType{
         if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
             if(other.trail instanceof PMTrail t){
                 PMFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
-                Log.info("Absorbed PMTrail Bullet");
             }else{
                 Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
-                Log.info("Absorbed Trail Bullet");
             }
         }
         other.type = PMBullets.absorbed;

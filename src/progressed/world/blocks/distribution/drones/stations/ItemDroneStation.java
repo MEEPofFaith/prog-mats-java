@@ -1,7 +1,7 @@
 package progressed.world.blocks.distribution.drones.stations;
 
+import arc.graphics.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class ItemDroneStation extends DroneStation{
@@ -11,7 +11,7 @@ public class ItemDroneStation extends DroneStation{
         hasLiquids = false;
         hasItems = true;
         itemCapacity = 100;
-        selectColor = Pal.heal;
+        selectColor = Color.yellow;
     }
 
     public class ItemDroneStationBuild extends DroneStationBuild{
