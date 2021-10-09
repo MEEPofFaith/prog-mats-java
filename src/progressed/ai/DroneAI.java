@@ -79,7 +79,6 @@ public class DroneAI extends AIController{
             d.updateRoutes();
             setTarget(d, d.getPad(), 3);
         }
-        Log.info("------");
     }
 
     public void updateRoutes(DroneUnitEntity d){

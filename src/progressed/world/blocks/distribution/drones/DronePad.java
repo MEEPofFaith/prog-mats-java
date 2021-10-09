@@ -2,6 +2,7 @@ package progressed.world.blocks.distribution.drones;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -16,6 +17,9 @@ import mindustry.world.consumers.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
+import progressed.world.blocks.distribution.drones.stations.ItemDroneStation.*;
+import progressed.world.blocks.distribution.drones.stations.LiquidDroneStation.*;
+import progressed.world.blocks.distribution.drones.stations.PayloadDroneStation.*;
 
 import java.util.*;
 
@@ -28,6 +32,10 @@ public class DronePad extends Block{
     public float constructPowerUse = 1f;
     public float chargeRate = 3f;
     public DroneUnitType droneType;
+
+    public TextureRegion arrowRegion;
+
+    protected Vec2 tr = new Vec2(), tr2 = new Vec2();
 
     public DronePad(String name){
         super(name);
@@ -42,8 +50,14 @@ public class DronePad extends Block{
     @Override
     public void init(){
         consumes.add(new DronePadConsumePower());
-
         super.init();
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        arrowRegion = atlas.find(name + "-arrow", "bridge-arrow");
     }
 
     @Override
@@ -178,16 +192,42 @@ public class DronePad extends Block{
 
         public void drawConnections(){
             Draw.z(Layer.power);
+            float aw = arrowRegion.width / 4f + 3f,
+                ah = arrowRegion.height / 4f + 3f;
+            float p1 = (Time.time % 100f) / 100f, p2 = (p1 + 0.5f) % 1;
             for(int i = 0; i < maxRoutes; i++){
                 DroneStationBuild o = getStation(i, 0);
                 DroneStationBuild d = getStation(i, 1);
                 if(o != null && d != null){
-                    Drawf.dashLine(o.selectColor(), o.x, o.y, d.x, d.y);
-                    float dist = o.dst(d);
-                    int arrows = Math.max((int)(dist / (8 * tilesize)), 1);
-                    for(int j = 0; j < arrows; j++){
-                        Drawf.arrow(o.x, o.y, d.x, d.y, dist / (arrows + 1) * (j + 1), 3f, o.selectColor());
-                    }
+                    float oRad = o.block().size * 2;
+                    float dRad = d.block().size * 2;
+                    float ang = o.angleTo(d);
+
+                    tr.trns(ang, oRad);
+                    tr2.trns(ang + 180, dRad);
+
+                    float ox = o.x + tr.x, oy = o.y + tr.y,
+                        dx = d.x + tr2.x, dy = d.y + tr2.y;
+
+                    float ax1 = Mathf.lerp(ox, dx, p1), ay1 = Mathf.lerp(oy, dy, p1),
+                        ax2 = Mathf.lerp(ox, dx, p2), ay2 = Mathf.lerp(oy, dy, p2);
+
+
+                    Lines.stroke(2.5f, Pal.gray);
+                    Lines.square(o.x, o.y, oRad, 45f);
+                    Lines.square(d.x, d.y, dRad, 45f);
+                    Lines.line(ox, oy, dx, dy);
+                    Draw.rect(arrowRegion, ax1, ay1, aw, ah, ang);
+                    Draw.rect(arrowRegion, ax2, ay2, aw, ah, ang);
+
+                    Lines.stroke(1f, o.selectColor());
+                    Lines.square(o.x, o.y, oRad, 45f);
+                    Lines.square(d.x, d.y, dRad, 45f);
+                    Lines.line(ox, oy, dx, dy);
+                    Draw.rect(arrowRegion, ax1, ay1, ang);
+                    Draw.rect(arrowRegion, ax2, ay2, ang);
+
+                    Draw.reset();
                 }
             }
         }
@@ -201,6 +241,23 @@ public class DronePad extends Block{
                 table.table(d -> {
                     routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
                     routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
+                    d.image(() -> {
+                        if(hasConnection(ii)){
+                            DroneStationBuild s = getStation(ii, 0);
+                            if(s == null) s = getStation(ii, 1);
+
+                            if(s instanceof ItemDroneStationBuild){
+                                return ui.getIcon("item").getRegion(); //TODO why don't you exist
+                            }
+                            if(s instanceof LiquidDroneStationBuild){
+                                return Icon.liquid.getRegion();
+                            }
+                            if(s instanceof PayloadDroneStationBuild){
+                                return Icon.units.getRegion();
+                            }
+                        }
+                        return atlas.find("clear");
+                    }).size(32);
 
                     ImageButton deleteButton = d.button(
                         Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
@@ -216,7 +273,7 @@ public class DronePad extends Block{
                 icon, Styles.clearToggleTransi, () -> {}
             ).size(40).tooltip(t -> {
                 t.setBackground(Styles.black5);
-                t.label(() -> bundle.format(key, getStationName(route, end)));
+                t.label(() -> bundle.format(key, getStationName(route, end))).pad(8f);
             }).get();
             destinationButton.getImageCell().size(32);
             destinationButton.changed(() -> {
@@ -285,6 +342,10 @@ public class DronePad extends Block{
             }
             routes.set(route * 2 + end, -1);
             configure(routes);
+        }
+
+        public boolean hasConnection(int route){
+            return routes.get(route * 2) != -1 || routes.get(route * 2 + 1) != -1;
         }
 
         public DroneStationBuild getStation(int route, int end){
