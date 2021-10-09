@@ -41,6 +41,7 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
+            super.loadCargo(d);
             int[] it = new int[content.items().size];
             for(int i = 0; i < content.items().size; i++){
                 it[i] = items.get(content.items().get(i));
@@ -51,10 +52,11 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
+            super.takeCargo(d);
             for(int i = 0; i < content.items().size; i++){
-                items.set(content.items().get(i), d.cargo.itemCargo[i]);
+                items.add(content.items().get(i), d.cargo.itemCargo[i]);
             }
-            drone.cargo.empty();
+            d.cargo.empty();
         }
 
         @Override
@@ -66,7 +68,7 @@ public class ItemDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
-            if(drone != null){
+            if(loading){
                 drawLoad();
             }else{
                 Draw.rect(containerRegion, x, y);
@@ -75,7 +77,7 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return isOrigin() && items.total() + 1 <= itemCapacity && drone == null;
+            return isOrigin() && items.total() + 1 <= itemCapacity && !loading;
         }
     }
 }

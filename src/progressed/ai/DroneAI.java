@@ -19,42 +19,50 @@ public class DroneAI extends AIController{
                 if(d.arrived){
                     switch(d.state){
                         case charging, idle -> {
-                            d.getPad().charging = true;
-                            if(d.charged()){
-                                d.getPad().charging = false;
-                                reset(d);
+                            if(d.getPad() != null){
+                                d.getPad().charging = true;
+                                if(d.charged()){
+                                    d.getPad().charging = false;
+                                    reset(d);
+                                }
+                            }else{
+                                fail(d);
                             }
                         }
                         case pickup -> {
-                            d.getStation().drone = d;
-                            d.getStation().active = true;
-                            d.load += d.loadSpeed() * Time.delta;
-                            if(d.load >= 1){
-                                d.getStation().loadCargo(d);
-                                d.getStation().drone = null;
-                                d.load = 1;
-                                reset(d);
+                            if(d.getStation() != null){
+                                d.getStation().setTranfering();
+                                d.load += d.loadSpeed() * Time.delta;
+                                if(d.load >= 1){
+                                    d.getStation().loadCargo(d);
+                                    d.load = 1;
+                                    reset(d);
+                                }
+                            }else{
+                                fail(d);
                             }
                         }
                         case dropoff -> {
-                            d.getStation().drone = d;
-                            d.getStation().active = true;
-                            d.load -= d.loadSpeed() * Time.delta;
-                            if(d.load <= 0){
-                                d.getStation().takeCargo(d);
-                                d.getStation().drone = null;
-                                d.getStation(d.curRoute, 0).active = false;
-                                d.getStation().active = false;
-                                if(!d.getStation().connected) d.getStation().configure(-1);
-                                d.load = 0;
-                                reset(d);
-                                updateRoutes(d);
+                            if(d.getStation() != null){
+                                d.getStation().setTranfering();
+                                d.load -= d.loadSpeed() * Time.delta;
+                                if(d.load <= 0){
+                                    d.getStation(d.curRoute, 0).active = false;
+                                    d.getStation().active = false;
+                                    d.getStation().takeCargo(d);
+                                    if(!d.getStation().connected) d.getStation().configure(-1);
+                                    d.load = 0;
+                                    reset(d);
+                                    updateRoutes(d);
+                                }
+                            }else{
+                                fail(d);
                             }
                         }
                     }
                 }
             }
-            moveTo(d.target, 2f, 50f);
+            moveTo(d.target, 1f, 50f);
         }
     }
 
@@ -86,6 +94,15 @@ public class DroneAI extends AIController{
         d.nextRoute();
     }
 
+    public void fail(DroneUnitEntity d){
+        if(!d.dead){
+            reset(d);
+            updateRoutes(d);
+            d.load = 0;
+            d.cargo.empty();
+        }
+    }
+
     public void reset(DroneUnitEntity d){
         d.target = null;
         d.arrived = false;
@@ -95,4 +112,7 @@ public class DroneAI extends AIController{
         d.target = t;
         d.state = DroneState.all[state];
     }
+
+    @Override
+    public void command(UnitCommand command){}
 }

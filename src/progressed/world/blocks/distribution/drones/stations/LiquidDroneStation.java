@@ -48,14 +48,16 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
+            super.loadCargo(d);
             d.cargo.load(new LiquidStack(liquids.current(), liquids.currentAmount()));
             liquids.clear();
         }
 
         @Override
         public void takeCargo(DroneUnitEntity d){
+            super.takeCargo(d);
             liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
-            drone.cargo.empty();
+            d.cargo.empty();
         }
 
         @Override
@@ -67,7 +69,7 @@ public class LiquidDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
-            if(drone != null){
+            if(loading){
                 drawLoad();
             }else{
                 if(liquids.total() > 0.01f){
@@ -80,7 +82,7 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && drone == null;
+            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && !loading;
         }
 
         @Override

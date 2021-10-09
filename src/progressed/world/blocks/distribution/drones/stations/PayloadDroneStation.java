@@ -105,11 +105,13 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
+            super.loadCargo(d);
             d.addPayload(takePayload());
         }
 
         @Override
         public void takeCargo(DroneUnitEntity d){
+            super.takeCargo(d);
             payVector.set(0, 0);
             payload = d.payloads().first();
             d.payloads().clear();
@@ -160,7 +162,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return isOrigin() && this.payload == null && payload.fits(payloadLimit) && drone == null;
+            return isOrigin() && this.payload == null && payload.fits(payloadLimit);
         }
 
         @Override

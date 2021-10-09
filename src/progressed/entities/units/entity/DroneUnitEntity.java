@@ -26,8 +26,6 @@ public class DroneUnitEntity extends PayloadUnit{
 
     @Override
     public void update(){
-        super.update();
-
         if(state == DroneState.dropoff && vel.len() > 0.01f){
             charge -= Time.delta * getType().powerUse * (vel.len() / type.speed);
         }
@@ -35,6 +33,8 @@ public class DroneUnitEntity extends PayloadUnit{
         if(getPad() == null){
             kill(); //No pad, nothing to do.
         }
+
+        super.update();
     }
 
     public float chargef(){
@@ -93,8 +93,8 @@ public class DroneUnitEntity extends PayloadUnit{
 
     public DroneStationBuild getStation(){
         return switch(state){
-            case pickup -> (DroneStationBuild)(world.build(routes.get(curRoute * 2)));
-            case dropoff -> (DroneStationBuild)(world.build(routes.get(curRoute * 2 + 1)));
+            case pickup -> getStation(curRoute, 0);
+            case dropoff -> getStation(curRoute, 1);
             default -> null;
         };
     }

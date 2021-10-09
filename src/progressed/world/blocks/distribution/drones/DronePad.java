@@ -1,10 +1,12 @@
 package progressed.world.blocks.distribution.drones;
 
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -90,11 +92,10 @@ public class DronePad extends Block{
             warmup = Mathf.lerpDelta(warmup, Mathf.num(constructing), 0.15f);
 
             for(int i = 0; i < maxRoutes; i++){
-                for(int j = 0; j < 2; j++){
-                    DroneStationBuild o = getStation(i, j);
-                    if(o == null){
-                        disconnectStation(i, j);
-                    }
+                DroneStationBuild o = getStation(i, 0);
+                DroneStationBuild d = getStation(i, 0);
+                if(o != null && d != null && d.getClass() != o.getClass()){
+                    disconnectStation(i, 1);
                 }
             }
 
@@ -143,13 +144,6 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                    if(s.connected){
-                        if(s.isOrigin()){
-                            Draw.rect(Icon.upload.getRegion(), s.x, s.y, drawSize, drawSize);
-                        }else{
-                            Draw.rect(Icon.download.getRegion(), s.x, s.y, drawSize, drawSize);
-                        }
-                    }
                     s.drawSelect();
                 }
             });
@@ -177,13 +171,6 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                if(s.connected){
-                    if(s.isOrigin()){
-                        Draw.rect(Icon.upload.getRegion(), s.x, s.y, drawSize, drawSize);
-                    }else{
-                        Draw.rect(Icon.download.getRegion(), s.x, s.y, drawSize, drawSize);
-                    }
-                }
                 s.drawSelect();
             });
 
@@ -241,26 +228,20 @@ public class DronePad extends Block{
                     t.table(d -> {
                         routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
                         routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
-                        d.image(() -> {
-                            if(hasConnection(ii)){
-                                DroneStationBuild s = getStation(ii, 0);
-                                if(s == null) s = getStation(ii, 1);
-
-                                if(s instanceof ItemDroneStationBuild){
-                                    return Icon.distribution.getRegion();
-                                }
-                                if(s instanceof LiquidDroneStationBuild){
-                                    return Icon.liquid.getRegion();
-                                }
-                                if(s instanceof PayloadDroneStationBuild){
-                                    return Icon.units.getRegion();
-                                }
-                            }
-                            return atlas.find("clear");
-                        }).size(32);
+                        Image img = d.image(getIcon(ii)).size(32).get();
+                        img.update(() -> {
+                            TextureRegion icon = getIcon(ii);
+                            ((TextureRegionDrawable)img.getDrawable()).setRegion(icon);
+                            img.layout();
+                            DroneStationBuild s = getEithor(ii);
+                            img.setColor(s != null ? s.selectColor() : Color.white);
+                        });
 
                         ImageButton deleteButton = d.button(
-                            Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
+                            Icon.trash, Styles.clearTransi, () -> {
+                                disconnectRoute(ii);
+                                deselect();
+                            }
                         ).size(40).tooltip("@pm-drone-clear-route").get();
                         deleteButton.getImageCell().size(32);
                     }).top().padLeft(6);
@@ -270,23 +251,28 @@ public class DronePad extends Block{
         }
 
         public void routeSelectionButton(Table d, TextureRegionDrawable icon, String key, int route, int end){
-            ImageButton destinationButton = d.button(
+            ImageButton destButton = d.button(
                 icon, Styles.clearToggleTransi, () -> {}
             ).size(40).tooltip(t -> {
                 t.setBackground(Styles.black5);
                 t.label(() -> bundle.format(key, getStationName(route, end))).pad(4f);
             }).get();
-            destinationButton.getImageCell().size(32);
-            destinationButton.changed(() -> {
+            destButton.getImageCell().size(32);
+            destButton.changed(() -> {
                 if(selRoute == route && selEnd == end){
-                    selRoute = -1;
-                    selEnd = -1;
+                    deselect();
                 }else{
                     selRoute = route;
                     selEnd = end;
                 }
             });
-            destinationButton.update(() -> destinationButton.setChecked(selRoute == route && selEnd == end));
+            destButton.update(() -> {
+                destButton.setChecked(selRoute == route && selEnd == end);
+                DroneStationBuild s = getStation(route, end);
+                ImageButtonStyle is = destButton.getStyle();
+                is.imageUpColor = is.imageDownColor = is.imageOverColor = s != null ? s.selectColor() : Color.white;
+                destButton.layout();
+            });
         }
 
         @Override
@@ -300,11 +286,12 @@ public class DronePad extends Block{
                     }
                     if(sel != other){
                         connectStation(selRoute, selEnd, other.pos());
-                        selEnd = -1;
                     }
+                    selEnd = -1;
                 }
                 return false;
             }
+            deselect();
             return true;
         }
 
@@ -320,6 +307,10 @@ public class DronePad extends Block{
             }
 
             super.remove();
+        }
+
+        public void deselect(){
+            selRoute = selEnd = -1;
         }
 
         public void connectStation(int route, int end, int pos){
@@ -356,6 +347,29 @@ public class DronePad extends Block{
 
         public DroneStationBuild getStation(int pos){
             return world.build(pos) instanceof DroneStationBuild s ? s : null;
+        }
+
+        public DroneStationBuild getEithor(int route){
+            DroneStationBuild s = getStation(route, 0);
+            if(s == null) s = getStation(route, 1);
+            return s;
+        }
+
+        public TextureRegion getIcon(int route){
+            if(hasConnection(route)){
+                DroneStationBuild s = getEithor(route);
+
+                if(s instanceof ItemDroneStationBuild){
+                    return Icon.distribution.getRegion();
+                }
+                if(s instanceof LiquidDroneStationBuild){
+                    return Icon.liquid.getRegion();
+                }
+                if(s instanceof PayloadDroneStationBuild){
+                    return Icon.units.getRegion();
+                }
+            }
+            return atlas.find("clear");
         }
 
         public String getStationName(int route, int end){

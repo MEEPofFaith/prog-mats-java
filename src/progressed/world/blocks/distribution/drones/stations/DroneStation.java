@@ -51,10 +51,9 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active;
+        public boolean connected = false, active, loading;
         public int acceptEnd = -1;
         public StringBuilder stationName = new StringBuilder("Station Frog");
-        public DroneUnitEntity drone;
 
         public boolean canConnect(int end){
             return !(connected || active) || end == acceptEnd;
@@ -92,9 +91,16 @@ public class DroneStation extends Block{
         }
 
         public void loadCargo(DroneUnitEntity d){
+            loading = false;
         }
 
         public void takeCargo(DroneUnitEntity d){
+            loading = false;
+        }
+
+        public void setTranfering(){
+            active = true;
+            loading = true;
         }
 
         //This is all stolen from message block
@@ -187,8 +193,7 @@ public class DroneStation extends Block{
 
         @Override
         public void remove(){
-            connected = false;
-            drone = null;
+            connected = active = loading = false;
             acceptEnd = -1;
 
             super.remove();
@@ -200,6 +205,7 @@ public class DroneStation extends Block{
 
             write.bool(connected);
             write.bool(active);
+            write.bool(loading);
             write.i(acceptEnd);
             write.str(stationName.toString());
         }
@@ -210,6 +216,7 @@ public class DroneStation extends Block{
 
             connected = read.bool();
             active = read.bool();
+            loading = read.bool();
             acceptEnd = read.i();
             stationName = new StringBuilder(read.str());
         }
