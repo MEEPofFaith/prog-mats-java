@@ -7,6 +7,8 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import progressed.entities.units.entity.*;
 
+import static mindustry.Vars.*;
+
 public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
 
@@ -39,13 +41,19 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
-            //d.cargo.load(items.items);
+            int[] it = new int[content.items().size];
+            for(int i = 0; i < content.items().size; i++){
+                it[i] = items.get(content.items().get(i));
+            }
+            d.cargo.load(it);
             items.clear();
         }
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            //items.items = d.cargo.itemCargo.clone();
+            for(int i = 0; i < content.items().size; i++){
+                items.set(content.items().get(i), d.cargo.itemCargo[i]);
+            }
             drone.cargo.empty();
         }
 

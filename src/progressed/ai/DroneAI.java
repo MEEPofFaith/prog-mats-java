@@ -5,21 +5,17 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import progressed.entities.units.entity.*;
 import progressed.entities.units.entity.DroneUnitEntity.*;
-import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
-
-import static mindustry.Vars.*;
 
 public class DroneAI extends AIController{
     @Override
     public void updateMovement(){
         if(unit instanceof DroneUnitEntity d){
-            if(d.target == null || d.state == DroneState.idle){
+            if(d.target == null){
                 findDestination(d);
             }else{
                 if(d.within(d.target, 4f)){
                     d.arrived = true;
                 }
-                moveTo(d.target, 2f, 50f);
                 if(d.arrived){
                     switch(d.state){
                         case charging, idle -> {
@@ -58,6 +54,7 @@ public class DroneAI extends AIController{
                     }
                 }
             }
+            moveTo(d.target, 2f, 50f);
         }
     }
 
@@ -82,6 +79,7 @@ public class DroneAI extends AIController{
             d.updateRoutes();
             setTarget(d, d.getPad(), 3);
         }
+        Log.info("------");
     }
 
     public void updateRoutes(DroneUnitEntity d){

@@ -110,6 +110,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
+            payVector.set(0, 0);
             payload = d.payloads().first();
             d.payloads().clear();
         }

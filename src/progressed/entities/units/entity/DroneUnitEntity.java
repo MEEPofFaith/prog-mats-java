@@ -35,8 +35,6 @@ public class DroneUnitEntity extends PayloadUnit{
         if(getPad() == null){
             kill(); //No pad, nothing to do.
         }
-
-        Log.info(state);
     }
 
     public float chargef(){
@@ -176,7 +174,7 @@ public class DroneUnitEntity extends PayloadUnit{
         public DroneCargo(){}
 
         public void load(int[] items){
-            itemCargo = items.clone();
+            itemCargo = items;
         }
 
         public void load(LiquidStack liquid){
