@@ -4,6 +4,7 @@ import arc.*;
 import arc.Input.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -21,6 +22,7 @@ import static mindustry.Vars.*;
 
 public class DroneStation extends Block{
     public int maxTextLength = 220;
+    public float loadSpeed = 1f / 30f;
     public Color selectColor = Color.white;
 
     public TextureRegion input, output;
@@ -61,10 +63,11 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active, loading;
+        public boolean connected = false, active, loading, loaded;
+        public float load;
         public int acceptEnd = -1;
         public StringBuilder stationName = new StringBuilder("Station Frog");
-        public Vec2 loadVector = new Vec2();
+        public Vec2 loadPoint = new Vec2(), loadVector = new Vec2();
 
         public boolean canConnect(int end){
             return !(connected || active) || end == acceptEnd;
@@ -101,20 +104,43 @@ public class DroneStation extends Block{
             configure(false);
         }
 
+        public void updateLoading(){
+            if(loading){
+                load = Mathf.approachDelta(load, isOrigin() ? 1 : 0, loadSpeed);
+                if(load == (isOrigin() ? 1f : 0f)){
+                    loading = false;
+                    loaded = true;
+                }
+
+                loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
+            }else{
+                resetLoading();
+            }
+        }
+
+        public void resetLoading(){
+            loadVector.set(0, 0);
+            loaded = false;
+        }
+
         public void updateCargo(DroneUnitEntity d){
-            loadVector.trns(angleTo(d), dst(d) * d.load);
+            if(isOrigin()) loadPoint.set(d);
         }
 
         public void loadCargo(DroneUnitEntity d){
-            loadVector.set(0, 0);
+            load = 0;
         }
 
         public void takeCargo(DroneUnitEntity d){
+            load = 1;
+            loadPoint.set(d);
         }
 
-        public void setTranfering(){
-            active = true;
-            loading = true;
+        public void setLoading(){
+            if(!loaded){
+                active = true;
+                loading = true;
+            }
         }
 
         //This is all stolen from message block
@@ -216,10 +242,14 @@ public class DroneStation extends Block{
             write.bool(connected);
             write.bool(active);
             write.bool(loading);
+            write.bool(loaded);
             write.i(acceptEnd);
             write.str(stationName.toString());
+
             write.f(loadVector.x);
             write.f(loadVector.y);
+            write.f(loadPoint.x);
+            write.f(loadPoint.y);
         }
 
         @Override
@@ -229,9 +259,12 @@ public class DroneStation extends Block{
             connected = read.bool();
             active = read.bool();
             loading = read.bool();
+            loaded = read.bool();
             acceptEnd = read.i();
             stationName = new StringBuilder(read.str());
+
             loadVector.set(read.f(), read.f());
+            loadPoint.set(read.f(), read.f());
         }
     }
 }

@@ -107,9 +107,16 @@ public class DronePad extends Block{
 
             for(int i = 0; i < maxRoutes; i++){
                 DroneStationBuild o = getStation(i, 0);
-                DroneStationBuild d = getStation(i, 0);
-                if(o != null && d != null && d.getClass() != o.getClass()){
-                    disconnectStation(i, 1);
+                DroneStationBuild d = getStation(i, 1);
+                if(o != null && !o.connected){
+                    o.connect(0);
+                }
+                if(o != null && d != null){
+                    if(d.getClass() != o.getClass()){
+                        disconnectStation(i, 1);
+                    }else if(!d.connected){
+                        d.connect(1);
+                    }
                 }
             }
 

@@ -93,7 +93,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void updateTile(){
-            super.updateTile();
+            updateLoading();
 
             if(!loading){
                 if(isOrigin()){
@@ -105,6 +105,11 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         @Override
+        public void resetLoading(){
+            loaded = false;
+        }
+
+        @Override
         public void loadCargo(DroneUnitEntity d){
             super.loadCargo(d);
             d.addPayload(takePayload());
@@ -112,7 +117,9 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            payload = d.payloads().first();
+            super.takeCargo(d);
+            loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
+            if(d.payloads().any()) payload = d.payloads().first();
             d.payloads().clear();
         }
 

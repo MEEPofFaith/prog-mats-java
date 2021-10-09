@@ -16,7 +16,7 @@ public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
 
-    public TextureRegion containerRegion;
+    public TextureRegion container;
 
     public ItemDroneStation(String name){
         super(name);
@@ -31,30 +31,40 @@ public class ItemDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        containerRegion = Core.atlas.find("pm-item-cargo");
+        container = Core.atlas.find("prog-mats-item-cargo");
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{region, container};
     }
 
     public class ItemDroneStationBuild extends DroneStationBuild{
-        public boolean constructing;
+        public boolean constructing, open;
         public float build, totalBuild, buildup;
 
         @Override
         public void updateTile(){
+            updateLoading();
+
             if(timer(timerDump, dumpTime / timeScale)){
                 dump();
             }
 
-            if(isOrigin()){
-                build += edelta();
-                totalBuild += edelta();
-                constructing = build < constructTime;
-            }else{
-                if(items.empty()){
-                    build -= edelta();
+            if(!loading){
+                if(isOrigin()){
+                    build = Mathf.approach(build, constructTime, edelta());
                     totalBuild += edelta();
+                    constructing = build < constructTime;
+                }else{
+                    if(items.empty()){
+                        build = Mathf.approach(build, 0f, edelta());
+                        totalBuild += edelta();
+                        constructing = build > 0f;
+                    }
                 }
-                constructing = build > 0f;
             }
+            open = isOrigin() ? build >= constructTime : build <= 0;
             buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
         }
 
@@ -67,11 +77,12 @@ public class ItemDroneStation extends DroneStation{
             }
             d.cargo.load(it);
             items.clear();
-            build = 0f;
+            build = 0;
         }
 
         @Override
         public void takeCargo(DroneUnitEntity d){
+            super.takeCargo(d);
             for(int i = 0; i < content.items().size; i++){
                 items.add(content.items().get(i), d.cargo.itemCargo[i]);
             }
@@ -81,7 +92,7 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public boolean ready(){
-            return active || connected && !constructing && (isOrigin() ? items.total() >= itemCapacity * transportThreshold : items.total() <= itemCapacity);
+            return active || connected && open && (isOrigin() ? items.total() >= itemCapacity * transportThreshold : items.total() <= itemCapacity);
         }
 
         @Override
@@ -89,18 +100,20 @@ public class ItemDroneStation extends DroneStation{
             super.draw();
 
             if(buildup > 0.01){
-                Draw.draw(Layer.blockOver, () -> {
-                    Drawf.construct(x, y, containerRegion, team.color, 0f, build / constructTime, buildup, totalBuild);
+                Draw.draw(Layer.blockOver + 1, () -> {
+                    Drawf.construct(x, y, container, team.color, 0f, build / constructTime, buildup, totalBuild);
                 });
             }
 
-            Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
-            Draw.rect(containerRegion, x + loadVector.x, y + loadVector.y);
+            if(build >= constructTime){
+                Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
+                Draw.rect(container, x + loadVector.x, y + loadVector.y);
+            }
         }
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return isOrigin() && items.total() + 1 <= itemCapacity && !loading;
+            return isOrigin() && items.total() + 1 <= itemCapacity && !loading && !constructing;
         }
 
         @Override
@@ -109,6 +122,7 @@ public class ItemDroneStation extends DroneStation{
 
             write.f(build);
             write.bool(constructing);
+            write.bool(open);
         }
 
         @Override
@@ -117,6 +131,7 @@ public class ItemDroneStation extends DroneStation{
 
             build = read.f();
             constructing = read.bool();
+            open = read.bool();
         }
     }
 }

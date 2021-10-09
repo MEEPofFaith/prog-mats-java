@@ -17,7 +17,7 @@ import static mindustry.Vars.*;
 
 public class DroneUnitEntity extends PayloadUnit{
     public int pad, curRoute;
-    public float charge, load;
+    public float charge;
     public boolean arrived;
     public IntSeq routes;
     public Teamc target;
@@ -43,10 +43,6 @@ public class DroneUnitEntity extends PayloadUnit{
 
     public DroneUnitType getType(){
         return (DroneUnitType)type;
-    }
-
-    public float loadSpeed(){
-        return getType().loadSpeed;
     }
 
     public float chargeCapacity(){
@@ -84,11 +80,13 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public boolean checkCompleteRoute(int route){
-        return (routes.get(route * 2) != -1 && getStation(route, 0).ready()) && (routes.get(route * 2 + 1) != -1 && getStation(route, 1).ready());
+        DroneStationBuild o = getStation(route, 0);
+        DroneStationBuild d = getStation(route, 1);
+        return (o != null && o.ready()) && (d != null && d.ready());
     }
 
     public DroneStationBuild getStation(int route, int end){
-        return (DroneStationBuild)(world.build(routes.get(route * 2 + end)));
+        return world.build(routes.get(route * 2 + end)) instanceof DroneStationBuild s ? s : null;
     }
 
     public DroneStationBuild getStation(){
@@ -117,7 +115,6 @@ public class DroneUnitEntity extends PayloadUnit{
         write.i(pad);
         write.i(curRoute);
         write.f(charge);
-        write.f(load);
         write.bool(arrived);
         write.b((byte)state.ordinal());
 
@@ -142,7 +139,6 @@ public class DroneUnitEntity extends PayloadUnit{
         pad = read.i();
         curRoute = read.i();
         charge = read.f();
-        load = read.f();
         arrived = read.bool();
         state = DroneState.all[read.b()];
 

@@ -21,9 +21,8 @@ import static mindustry.Vars.state;
 
 public class DroneUnitType extends UnitType{
     public float powerUse = 2f, chargeCapacity = 600f;
-    public float loadSpeed = 1f / 30f;
 
-    public TextureRegion container, tank, liquid;
+    public TextureRegion container, liquid, tankBase, tankTop;
 
     public DroneUnitType(String name){
         super(name);
@@ -39,9 +38,10 @@ public class DroneUnitType extends UnitType{
     public void load(){
         super.load();
 
-        container = Core.atlas.find("pm-item-cargo");
-        tank = Core.atlas.find("pm-liquid-cargo");
-        liquid = Core.atlas.find("pm-liquid-cargo-liquid");
+        container = Core.atlas.find("prog-mats-item-cargo");
+        tankBase = Core.atlas.find("prog-mats-liquid-cargo-bottom");
+        tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
+        liquid = Core.atlas.find("prog-mats-liquid-cargo-liquid");
     }
 
     public void display(Unit unit, Table table){
@@ -71,7 +71,9 @@ public class DroneUnitType extends UnitType{
                 Draw.rect(container, unit.x, unit.y);
             }
             if(s.cargo.hasLiquid()){
+                Draw.rect(tankBase, unit.x, unit.y);
                 Drawf.liquid(liquid, unit.x, unit.y, s.cargo.liquidCargo.amount / s.cargo.liquidCapacity, s.cargo.liquidCargo.liquid.color);
+                Draw.rect(tankTop, unit.x, unit.y);
             }
         }
 

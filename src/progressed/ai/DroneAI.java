@@ -33,10 +33,8 @@ public class DroneAI extends AIController{
                         case pickup -> {
                             if(d.getStation() != null){
                                 loading(d);
-                                d.load += d.loadSpeed() * Time.delta;
-                                if(d.load >= 1){
+                                if(!d.getStation().loading){
                                     d.getStation().loadCargo(d);
-                                    d.load = 1;
                                     reset(d);
                                 }
                             }else{
@@ -47,12 +45,8 @@ public class DroneAI extends AIController{
                             if(d.getStation() != null){
                                 if(!d.getStation().loading) d.getStation().takeCargo(d);
                                 loading(d);
-                                d.load -= d.loadSpeed() * Time.delta;
-                                if(d.load <= 0){
-                                    d.getStation(d.curRoute, 0).active = false;
-                                    d.getStation().active = false;
-                                    if(!d.getStation().connected) d.getStation().configure(-1);
-                                    d.load = 0;
+                                if(!d.getStation().loading){
+                                    deactivate(d);
                                     reset(d);
                                     updateRoutes(d);
                                 }
@@ -99,17 +93,11 @@ public class DroneAI extends AIController{
         if(!d.dead){
             reset(d);
             updateRoutes(d);
-            d.load = 0;
             d.cargo.empty();
         }
     }
 
     public void reset(DroneUnitEntity d){
-        DroneStationBuild s = d.getStation();
-        if(s != null){
-            s.loading = false;
-        }
-
         d.target = null;
         d.arrived = false;
     }
@@ -120,8 +108,14 @@ public class DroneAI extends AIController{
     }
 
     public void loading(DroneUnitEntity d){
-        d.getStation().setTranfering();
+        d.getStation().setLoading();
         d.getStation().updateCargo(d);
+    }
+
+    public void deactivate(DroneUnitEntity d){
+        d.getStation(d.curRoute, 0).active = false;
+        d.getStation().active = false;
+        if(!d.getStation().connected) d.getStation().configure(-1);
     }
 
     @Override

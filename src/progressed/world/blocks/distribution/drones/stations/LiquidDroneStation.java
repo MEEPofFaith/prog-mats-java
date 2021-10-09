@@ -15,7 +15,7 @@ public class LiquidDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
 
-    public TextureRegion liquidRegion, tankRegion;
+    public TextureRegion liquidRegion, tankBase, tankTop, tankFull;
 
     public LiquidDroneStation(String name){
         super(name);
@@ -31,36 +31,43 @@ public class LiquidDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        liquidRegion = Core.atlas.find(name + "-liquid");
-        tankRegion = Core.atlas.find("pm-liquid-cargo");
+        tankBase = Core.atlas.find("prog-mats-liquid-cargo-bottom");
+        tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
+        tankFull = Core.atlas.find("prog-mats-liquid-cargo-full");
+        liquidRegion = Core.atlas.find("prog-mats-liquid-cargo-liquid");
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[]{region, tankRegion};
+        return new TextureRegion[]{region, tankFull};
     }
 
     public class LiquidDroneStationBuild extends DroneStationBuild{
-        public boolean constructing;
+        public boolean constructing, open;
         public float build, totalBuild, buildup;
 
         @Override
         public void updateTile(){
+            updateLoading();
+
             if(liquids.total() > 0.01f){
                 dumpLiquid(liquids.current());
             }
 
-            if(isOrigin()){
-                build += edelta();
-                totalBuild += edelta();
-                constructing = build < constructTime;
-            }else{
-                if(liquids.total() < 0.01){
-                    build -= edelta();
+            if(!loading){
+                if(isOrigin()){
+                    build = Mathf.approach(build, constructTime, edelta());
                     totalBuild += edelta();
+                    constructing = build < constructTime;
+                }else{
+                    if(liquids.total() <= 0.01f){
+                        build = Mathf.approach(build, 0f, edelta());
+                        totalBuild += edelta();
+                        constructing = build > 0f;
+                    }
                 }
-                constructing = build > 0f;
             }
+            open = isOrigin() ? build >= constructTime : build <= 0;
             buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
         }
 
@@ -75,14 +82,15 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
+            super.takeCargo(d);
+            if(d.cargo.hasLiquid()) liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
             d.cargo.empty();
             build = constructTime;
         }
 
         @Override
         public boolean ready(){
-            return active || connected && !constructing && (isOrigin() ? liquids.total() >= liquidCapacity * transportThreshold : liquids.total() <= liquidCapacity);
+            return active || connected && open && (isOrigin() ? liquids.total() >= liquidCapacity * transportThreshold : liquids.total() <= liquidCapacity);
         }
 
         @Override
@@ -90,22 +98,26 @@ public class LiquidDroneStation extends DroneStation{
             super.draw();
 
             if(buildup > 0.01){
-                Draw.draw(Layer.blockOver, () -> {
-                    Drawf.construct(x, y, tankRegion, team.color, 0f, build / constructTime, buildup, totalBuild);
+                Draw.draw(Layer.blockOver + 1, () -> {
+                    Drawf.construct(x, y, tankFull, team.color, 0f, build / constructTime, buildup, totalBuild);
                 });
             }
 
-            Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
-            if(liquids.total() > 0.01f){
-                Drawf.liquid(liquidRegion, x + loadVector.x, y + loadVector.y, liquids.total() / liquidCapacity, liquids.current().color);
-            }
+            if(build >= constructTime){
+                Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
+                Draw.rect(tankBase, x + loadVector.x, y + loadVector.y);
 
-            Draw.rect(tankRegion, x + loadVector.x, y + loadVector.y);
+                if(liquids.total() > 0.01f){
+                    Drawf.liquid(liquidRegion, x + loadVector.x, y + loadVector.y, liquids.total() / liquidCapacity, liquids.current().color);
+                }
+
+                Draw.rect(tankTop, x + loadVector.x, y + loadVector.y);
+            }
         }
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && !loading;
+            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && !loading && !constructing;
         }
 
         @Override
@@ -121,6 +133,7 @@ public class LiquidDroneStation extends DroneStation{
 
             write.f(build);
             write.bool(constructing);
+            write.bool(open);
         }
 
         @Override
@@ -129,6 +142,7 @@ public class LiquidDroneStation extends DroneStation{
 
             build = read.f();
             constructing = read.bool();
+            open = read.bool();
         }
     }
 }
