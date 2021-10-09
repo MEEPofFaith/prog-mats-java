@@ -999,6 +999,8 @@ public class PMBlocks implements ContentList{
         dronePad = new DronePad("drone-pad"){{
             requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
             size = 4;
+            chargeX = chargeY = 10;
+            beamWidth = 0.5f;
             droneType = (DroneUnitType)PMUnitTypes.transportDrone;
         }};
 

@@ -29,13 +29,21 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class DronePad extends Block{
+    static final Rand rand = new Rand();
+
     public int maxRoutes = 5;
     public float constructTime = 180f;
     public float constructPowerUse = 1f;
     public float chargeRate = 3f;
+
+    public Color laserColor = Pal.powerLight, laserColorTop = Color.white;
+    public float chargeX, chargeY;
+    public float beamWidth = 1f;
+
     public DroneUnitType droneType;
 
     public TextureRegion arrowRegion;
+    public TextureRegion laser, laserEnd, laserTop, laserTopEnd;
 
     protected Vec2 tr = new Vec2(), tr2 = new Vec2();
 
@@ -60,6 +68,10 @@ public class DronePad extends Block{
         super.load();
 
         arrowRegion = atlas.find(name + "-arrow", "bridge-arrow");
+        laser = atlas.find("laser-white");
+        laserEnd = atlas.find("laser-white-end");
+        laserTop = atlas.find("laser-top");
+        laserTopEnd = atlas.find("laser-top-end");
     }
 
     @Override
@@ -71,8 +83,9 @@ public class DronePad extends Block{
 
     public class DronePadBuild extends Building{
         public int selRoute = -1, selEnd = -1;
-        public float progress, warmup, totalProgress;
+        public float progress, warmup, chargeup, totalProgress;
         public boolean constructing, charging;
+        public Vec2[] lastEnds = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
         public IntSeq routes;
         public DroneUnitEntity drone;
 
@@ -90,6 +103,7 @@ public class DronePad extends Block{
             super.updateTile();
 
             warmup = Mathf.lerpDelta(warmup, Mathf.num(constructing), 0.15f);
+            chargeup = Mathf.lerpDelta(chargeup, Mathf.num(charging), 0.15f);
 
             for(int i = 0; i < maxRoutes; i++){
                 DroneStationBuild o = getStation(i, 0);
@@ -135,6 +149,42 @@ public class DronePad extends Block{
             Draw.draw(Layer.blockOver, () -> {
                 Drawf.construct(x, y, droneType.fullIcon, team.color, 0f, progress, 1f, totalProgress);
             });
+
+            if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
+                Draw.z(Layer.flyingUnit + 1);
+                for(int i = 0; i < 2; i++){
+                    int j = 0;
+                    for(int xflip: Mathf.signs){
+                        for(int yflip: Mathf.signs){
+                            float originX = x + chargeX * xflip, originY = y + chargeY * yflip; //A casual yoink from repair points later...
+
+                            if(charging && drone != null){
+                                rand.setSeed(id + drone.id() + j);
+
+                                lastEnds[j].set(drone).sub(originX, originY);
+                                lastEnds[j].setLength(Math.max(2f, lastEnds[j].len()));
+
+                                lastEnds[j].add(tr.trns(
+                                    rand.random(360f) + Time.time / 2f,
+                                    Mathf.sin(Time.time + rand.random(200f), 55f, rand.random(drone.hitSize() * 0.2f, drone.hitSize() * 0.45f))
+                                ).rotate(drone.rotation()));
+
+                                lastEnds[j].add(originX, originY);
+                            }
+
+                            if(i == 0){
+                                Draw.color(laserColor);
+                                Drawf.laser(team, laser, laserEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
+                            }else{
+                                Draw.color(laserColorTop);
+                                Drawf.laser(team, laserTop, laserTopEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
+                            }
+
+                            j++;
+                        }
+                    }
+                }
+            }
         }
 
         @Override
