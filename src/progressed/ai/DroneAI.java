@@ -5,6 +5,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import progressed.entities.units.entity.*;
 import progressed.entities.units.entity.DroneUnitEntity.*;
+import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 public class DroneAI extends AIController{
     @Override
@@ -13,7 +14,7 @@ public class DroneAI extends AIController{
             if(d.target == null){
                 findDestination(d);
             }else{
-                if(d.within(d.target, 4f)){
+                if(d.within(d.target, 8f)){
                     d.arrived = true;
                 }
                 if(d.arrived){
@@ -31,7 +32,7 @@ public class DroneAI extends AIController{
                         }
                         case pickup -> {
                             if(d.getStation() != null){
-                                d.getStation().setTranfering();
+                                loading(d);
                                 d.load += d.loadSpeed() * Time.delta;
                                 if(d.load >= 1){
                                     d.getStation().loadCargo(d);
@@ -44,12 +45,12 @@ public class DroneAI extends AIController{
                         }
                         case dropoff -> {
                             if(d.getStation() != null){
-                                d.getStation().setTranfering();
+                                if(!d.getStation().loading) d.getStation().takeCargo(d);
+                                loading(d);
                                 d.load -= d.loadSpeed() * Time.delta;
                                 if(d.load <= 0){
                                     d.getStation(d.curRoute, 0).active = false;
                                     d.getStation().active = false;
-                                    d.getStation().takeCargo(d);
                                     if(!d.getStation().connected) d.getStation().configure(-1);
                                     d.load = 0;
                                     reset(d);
@@ -104,6 +105,11 @@ public class DroneAI extends AIController{
     }
 
     public void reset(DroneUnitEntity d){
+        DroneStationBuild s = d.getStation();
+        if(s != null){
+            s.loading = false;
+        }
+
         d.target = null;
         d.arrived = false;
     }
@@ -111,6 +117,11 @@ public class DroneAI extends AIController{
     public void setTarget(DroneUnitEntity d, Teamc t, int state){
         d.target = t;
         d.state = DroneState.all[state];
+    }
+
+    public void loading(DroneUnitEntity d){
+        d.getStation().setTranfering();
+        d.getStation().updateCargo(d);
     }
 
     @Override

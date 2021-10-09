@@ -2,6 +2,7 @@ package progressed.entities.units;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
@@ -20,7 +21,9 @@ import static mindustry.Vars.state;
 
 public class DroneUnitType extends UnitType{
     public float powerUse = 2f, chargeCapacity = 600f;
-    public float loadSpeed = 1f / 60f;
+    public float loadSpeed = 1f / 30f;
+
+    public TextureRegion container, tank, liquid;
 
     public DroneUnitType(String name){
         super(name);
@@ -30,6 +33,15 @@ public class DroneUnitType extends UnitType{
         flying = true;
         lowAltitude = false;
         speed = 3f;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        container = Core.atlas.find("pm-item-cargo");
+        tank = Core.atlas.find("pm-liquid-cargo");
+        liquid = Core.atlas.find("pm-liquid-cargo-liquid");
     }
 
     public void display(Unit unit, Table table){
@@ -50,6 +62,20 @@ public class DroneUnitType extends UnitType{
 
             table.row();
         }
+    }
+
+    @Override
+    public <T extends Unit & Payloadc> void drawPayload(T unit){
+        if(unit instanceof DroneUnitEntity s){
+            if(s.cargo.hasItems()){
+                Draw.rect(container, unit.x, unit.y);
+            }
+            if(s.cargo.hasLiquid()){
+                Drawf.liquid(liquid, unit.x, unit.y, s.cargo.liquidCargo.amount / s.cargo.liquidCapacity, s.cargo.liquidCargo.liquid.color);
+            }
+        }
+
+        super.drawPayload(unit);
     }
 
     @Override

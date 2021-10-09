@@ -170,6 +170,7 @@ public class DroneUnitEntity extends PayloadUnit{
     public static class DroneCargo{
         public int[] itemCargo = new int[content.items().size];
         public LiquidStack liquidCargo;
+        public float liquidCapacity;
 
         public DroneCargo(){}
 
@@ -181,9 +182,21 @@ public class DroneUnitEntity extends PayloadUnit{
             liquidCargo = liquid;
         }
 
+        public boolean hasItems(){
+            for(int item : itemCargo){
+                if(item > 0) return true;
+            }
+            return false;
+        }
+
+        public boolean hasLiquid(){
+            return liquidCargo != null;
+        }
+
         public void empty(){
-            itemCargo = new int[content.items().size];
+            Arrays.fill(itemCargo, 0);
             liquidCargo = null;
+            liquidCapacity = 0;
         }
 
         public void write(Writes write){
@@ -206,6 +219,7 @@ public class DroneUnitEntity extends PayloadUnit{
                 write.s(liquidCargo.liquid.id);
                 write.f(liquidCargo.amount);
             }
+            write.f(liquidCapacity);
         }
 
         public void read(Reads read){
@@ -224,6 +238,7 @@ public class DroneUnitEntity extends PayloadUnit{
                 float liquidAmount = read.f();
                 liquidCargo = new LiquidStack(content.liquid(liquidId), liquidAmount);
             }
+            liquidCapacity = read.f();
         }
     }
 

@@ -83,7 +83,7 @@ public class DronePad extends Block{
 
     public class DronePadBuild extends Building{
         public int selRoute = -1, selEnd = -1;
-        public float progress, warmup, chargeup, totalProgress;
+        public float progress, buildup, chargeup, totalProgress;
         public boolean constructing, charging;
         public Vec2[] lastEnds = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
         public IntSeq routes;
@@ -102,7 +102,7 @@ public class DronePad extends Block{
         public void updateTile(){
             super.updateTile();
 
-            warmup = Mathf.lerpDelta(warmup, Mathf.num(constructing), 0.15f);
+            buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
             chargeup = Mathf.lerpDelta(chargeup, Mathf.num(charging), 0.15f);
 
             for(int i = 0; i < maxRoutes; i++){
@@ -146,9 +146,11 @@ public class DronePad extends Block{
         public void draw(){
             super.draw();
 
-            Draw.draw(Layer.blockOver, () -> {
-                Drawf.construct(x, y, droneType.fullIcon, team.color, 0f, progress, 1f, totalProgress);
-            });
+            if(buildup > 0.01){
+                Draw.draw(Layer.blockOver, () -> {
+                    Drawf.construct(x, y, droneType.fullIcon, team.color, 0f, progress / constructTime, buildup, totalProgress);
+                });
+            }
 
             if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
                 Draw.z(Layer.flyingUnit + 1);
@@ -201,7 +203,7 @@ public class DronePad extends Block{
             drawConnections();
 
             if(drone != null){
-                Draw.z(Layer.overlayUI);
+                Draw.z(Layer.flyingUnit + 0.5f);
                 Draw.mixcol(Pal.accent, 1f);
                 Draw.rect(drone.type.fullIcon, drone.x, drone.y, drone.rotation - 90);
                 for(int i = 0; i < 4; i++){

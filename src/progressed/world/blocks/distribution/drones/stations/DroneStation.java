@@ -23,6 +23,8 @@ public class DroneStation extends Block{
     public int maxTextLength = 220;
     public Color selectColor = Color.white;
 
+    public TextureRegion input, output;
+
     public DroneStation(String name){
         super(name);
 
@@ -50,10 +52,19 @@ public class DroneStation extends Block{
         config(Integer.class, (DroneStationBuild build, Integer i) -> build.acceptEnd = i);
     }
 
+    @Override
+    public void load(){
+        super.load();
+
+        input = Core.atlas.find(name + "-input");
+        output = Core.atlas.find(name + "-output");
+    }
+
     public class DroneStationBuild extends Building{
         public boolean connected = false, active, loading;
         public int acceptEnd = -1;
         public StringBuilder stationName = new StringBuilder("Station Frog");
+        public Vec2 loadVector = new Vec2();
 
         public boolean canConnect(int end){
             return !(connected || active) || end == acceptEnd;
@@ -69,12 +80,12 @@ public class DroneStation extends Block{
 
         @Override
         public boolean canDump(Building to, Item item){
-            return !isOrigin();
+            return !isOrigin() && !loading;
         }
 
         @Override
         public boolean canDumpLiquid(Building to, Liquid liquid){
-            return !isOrigin();
+            return !isOrigin() && !loading;
         }
 
         public boolean ready(){
@@ -90,12 +101,15 @@ public class DroneStation extends Block{
             configure(false);
         }
 
+        public void updateCargo(DroneUnitEntity d){
+            loadVector.trns(angleTo(d), dst(d) * d.load);
+        }
+
         public void loadCargo(DroneUnitEntity d){
-            loading = false;
+            loadVector.set(0, 0);
         }
 
         public void takeCargo(DroneUnitEntity d){
-            loading = false;
         }
 
         public void setTranfering(){
@@ -129,10 +143,6 @@ public class DroneStation extends Block{
             font.getData().setScale(1f);
 
             Pools.free(l);
-        }
-
-        public void drawLoad(){
-
         }
 
         @Override
@@ -208,6 +218,8 @@ public class DroneStation extends Block{
             write.bool(loading);
             write.i(acceptEnd);
             write.str(stationName.toString());
+            write.f(loadVector.x);
+            write.f(loadVector.y);
         }
 
         @Override
@@ -219,6 +231,7 @@ public class DroneStation extends Block{
             loading = read.bool();
             acceptEnd = read.i();
             stationName = new StringBuilder(read.str());
+            loadVector.set(read.f(), read.f());
         }
     }
 }

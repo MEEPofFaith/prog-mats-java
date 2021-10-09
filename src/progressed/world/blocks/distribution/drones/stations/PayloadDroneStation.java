@@ -88,7 +88,6 @@ public class PayloadDroneStation extends DroneStation{
     //CODE STEALING GO BRRRRRR
     public class PayloadDroneStationBuild extends DroneStationBuild{
         public @Nullable Payload payload;
-        public Vec2 payVector = new Vec2();
         public float payRotation;
         public boolean carried;
 
@@ -96,10 +95,12 @@ public class PayloadDroneStation extends DroneStation{
         public void updateTile(){
             super.updateTile();
 
-            if(isOrigin()){
-                moveInPayload();
-            }else{
-                moveOutPayload();
+            if(!loading){
+                if(isOrigin()){
+                    moveInPayload();
+                }else{
+                    moveOutPayload();
+                }
             }
         }
 
@@ -111,8 +112,6 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            super.takeCargo(d);
-            payVector.set(0, 0);
             payload = d.payloads().first();
             d.payloads().clear();
         }
@@ -140,7 +139,7 @@ public class PayloadDroneStation extends DroneStation{
                 Draw.rect(outRegion, x, y, rotdeg());
             }
 
-            Draw.z(Layer.blockOver);
+            Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
             drawPayload();
 
             Draw.z(Layer.blockOver + 0.1f);
@@ -156,7 +155,7 @@ public class PayloadDroneStation extends DroneStation{
         public void onControlSelect(Player player){
             float x = player.x, y = player.y;
             acceptPlayerPayload(player, p -> payload = p);
-            this.payVector.set(x, y).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            this.loadVector.set(x, y).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
             this.payRotation = player.unit().rotation;
         }
 
@@ -168,7 +167,7 @@ public class PayloadDroneStation extends DroneStation{
         @Override
         public void handlePayload(Building source, Payload payload){
             this.payload = payload;
-            this.payVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            this.loadVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
             this.payRotation = payload.rotation();
 
             updatePayload();
@@ -208,7 +207,7 @@ public class PayloadDroneStation extends DroneStation{
 
         public void updatePayload(){
             if(payload != null){
-                payload.set(x + payVector.x, y + payVector.y, payRotation);
+                payload.set(x + loadVector.x, y + loadVector.y, payRotation);
             }
         }
 
@@ -226,7 +225,7 @@ public class PayloadDroneStation extends DroneStation{
             if(rotate){
                 payRotation = Angles.moveToward(payRotation, rotate ? rotdeg() : 90f, payloadRotateSpeed * edelta());
             }
-            payVector.approach(Vec2.ZERO, payloadSpeed * delta());
+            loadVector.approach(Vec2.ZERO, payloadSpeed * delta());
 
             return hasArrived();
         }
@@ -239,18 +238,18 @@ public class PayloadDroneStation extends DroneStation{
             Vec2 dest = Tmp.v1.trns(rotdeg(), size * tilesize/2f);
 
             payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed * edelta());
-            payVector.approach(dest, payloadSpeed * delta());
+            loadVector.approach(dest, payloadSpeed * delta());
 
             Building front = front();
             boolean canDump = front == null || !front.tile().solid();
             boolean canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
 
             if(canDump && !canMove){
-                pushOutput(payload, 1f - (payVector.dst(dest) / (size * tilesize / 2f)));
+                pushOutput(payload, 1f - (loadVector.dst(dest) / (size * tilesize / 2f)));
             }
 
-            if(payVector.within(dest, 0.001f)){
-                payVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            if(loadVector.within(dest, 0.001f)){
+                loadVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
 
                 if(canMove){
                     if(movePayload(payload)){
@@ -275,14 +274,12 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         public boolean hasArrived(){
-            return payVector.isZero(0.01f);
+            return loadVector.isZero(0.01f);
         }
 
         public void drawPayload(){
             if(payload != null){
                 updatePayload();
-
-                Draw.z(Layer.blockOver);
                 payload.draw();
             }
         }
@@ -291,8 +288,6 @@ public class PayloadDroneStation extends DroneStation{
         public void write(Writes write){
             super.write(write);
 
-            write.f(payVector.x);
-            write.f(payVector.y);
             write.f(payRotation);
             Payload.write(payload, write);
         }
@@ -301,7 +296,6 @@ public class PayloadDroneStation extends DroneStation{
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            payVector.set(read.f(), read.f());
             payRotation = read.f();
             payload = Payload.read(read);
         }
