@@ -234,38 +234,39 @@ public class DronePad extends Block{
 
         @Override
         public void buildConfiguration(Table table){
-            table.setBackground(Styles.black5);
-            for(int i = 0; i < maxRoutes; i++){
-                int ii = i;
-                table.add(bundle.format("pm-drone-route", i + 1)).left();
-                table.table(d -> {
-                    routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
-                    routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
-                    d.image(() -> {
-                        if(hasConnection(ii)){
-                            DroneStationBuild s = getStation(ii, 0);
-                            if(s == null) s = getStation(ii, 1);
+            table.table(Styles.black5, t -> {
+                for(int i = 0; i < maxRoutes; i++){
+                    int ii = i;
+                    t.add(bundle.format("pm-drone-route", i + 1)).left();
+                    t.table(d -> {
+                        routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
+                        routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
+                        d.image(() -> {
+                            if(hasConnection(ii)){
+                                DroneStationBuild s = getStation(ii, 0);
+                                if(s == null) s = getStation(ii, 1);
 
-                            if(s instanceof ItemDroneStationBuild){
-                                return ui.getIcon("item").getRegion(); //TODO why don't you exist
+                                if(s instanceof ItemDroneStationBuild){
+                                    return Icon.distribution.getRegion();
+                                }
+                                if(s instanceof LiquidDroneStationBuild){
+                                    return Icon.liquid.getRegion();
+                                }
+                                if(s instanceof PayloadDroneStationBuild){
+                                    return Icon.units.getRegion();
+                                }
                             }
-                            if(s instanceof LiquidDroneStationBuild){
-                                return Icon.liquid.getRegion();
-                            }
-                            if(s instanceof PayloadDroneStationBuild){
-                                return Icon.units.getRegion();
-                            }
-                        }
-                        return atlas.find("clear");
-                    }).size(32);
+                            return atlas.find("clear");
+                        }).size(32);
 
-                    ImageButton deleteButton = d.button(
-                        Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
-                    ).size(40).tooltip("@pm-drone-clear-route").get();
-                    deleteButton.getImageCell().size(32);
-                }).top().padLeft(6);
-                table.row();
-            }
+                        ImageButton deleteButton = d.button(
+                            Icon.trash, Styles.clearTransi, () -> disconnectRoute(ii)
+                        ).size(40).tooltip("@pm-drone-clear-route").get();
+                        deleteButton.getImageCell().size(32);
+                    }).top().padLeft(6);
+                    t.row();
+                }
+            });
         }
 
         public void routeSelectionButton(Table d, TextureRegionDrawable icon, String key, int route, int end){
@@ -273,7 +274,7 @@ public class DronePad extends Block{
                 icon, Styles.clearToggleTransi, () -> {}
             ).size(40).tooltip(t -> {
                 t.setBackground(Styles.black5);
-                t.label(() -> bundle.format(key, getStationName(route, end))).pad(8f);
+                t.label(() -> bundle.format(key, getStationName(route, end))).pad(4f);
             }).get();
             destinationButton.getImageCell().size(32);
             destinationButton.changed(() -> {
@@ -299,6 +300,7 @@ public class DronePad extends Block{
                     }
                     if(sel != other){
                         connectStation(selRoute, selEnd, other.pos());
+                        selEnd = -1;
                     }
                 }
                 return false;
