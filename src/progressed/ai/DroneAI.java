@@ -43,7 +43,7 @@ public class DroneAI extends AIController{
                         }
                         case dropoff -> {
                             if(d.getStation() != null){
-                                if(!d.getStation().loading) d.getStation().takeCargo(d);
+                                d.getStation().takeCargo(d);
                                 loading(d);
                                 if(!d.getStation().loading){
                                     deactivate(d);

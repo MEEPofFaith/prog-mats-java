@@ -58,8 +58,8 @@ public class DroneStation extends Block{
     public void load(){
         super.load();
 
-        input = Core.atlas.find(name + "-input");
-        output = Core.atlas.find(name + "-output");
+        input = Core.atlas.find(name + "-input", "prog-mats-drone-station-input");
+        output = Core.atlas.find(name + "-output", "prog-mats-drone-station-output");
     }
 
     public class DroneStationBuild extends Building{
@@ -132,8 +132,11 @@ public class DroneStation extends Block{
         }
 
         public void takeCargo(DroneUnitEntity d){
-            load = 1;
-            loadPoint.set(d);
+            if(!loading){
+                load = 1;
+                loadPoint.set(d);
+                loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
+            }
         }
 
         public void setLoading(){

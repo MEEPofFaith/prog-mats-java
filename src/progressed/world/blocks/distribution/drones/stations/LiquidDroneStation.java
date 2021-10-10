@@ -57,15 +57,14 @@ public class LiquidDroneStation extends DroneStation{
             if(!loading){
                 if(isOrigin()){
                     build = Mathf.approach(build, constructTime, edelta());
-                    totalBuild += edelta();
                     constructing = build < constructTime;
                 }else{
                     if(liquids.total() <= 0.01f){
                         build = Mathf.approach(build, 0f, edelta());
-                        totalBuild += edelta();
                         constructing = build > 0f;
                     }
                 }
+                totalBuild += edelta() * buildup;
             }
             open = isOrigin() ? build >= constructTime : build <= 0;
             buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
@@ -99,7 +98,7 @@ public class LiquidDroneStation extends DroneStation{
 
             if(buildup > 0.01){
                 Draw.draw(Layer.blockOver + 1, () -> {
-                    Drawf.construct(x, y, tankFull, team.color, 0f, build / constructTime, buildup, totalBuild);
+                    Drawf.construct(x, y, tankFull, isOrigin() ? Pal.accent : Pal.remove, 0f, Math.max(build / constructTime, 0.02f), buildup, totalBuild);
                 });
             }
 
