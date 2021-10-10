@@ -25,6 +25,7 @@ public class ItemDroneStation extends DroneStation{
         hasLiquids = false;
         hasItems = true;
         itemCapacity = 100;
+        acceptsItems = true;
         selectColor = Color.yellow;
     }
 
