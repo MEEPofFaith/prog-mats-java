@@ -4,7 +4,6 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -17,7 +16,8 @@ public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
 
-    public TextureRegion container;
+    public TextureRegion fullContainer;
+    public TextureRegion[] containerRegions = new TextureRegion[2];
 
     public ItemDroneStation(String name){
         super(name);
@@ -33,17 +33,19 @@ public class ItemDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        container = Core.atlas.find("prog-mats-item-cargo");
+        fullContainer = Core.atlas.find("prog-mats-item-cargo-full");
+        containerRegions[0] = Core.atlas.find("prog-mats-item-cargo-base");
+        containerRegions[1] = Core.atlas.find("prog-mats-item-cargo-decal");
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[]{region, container};
+        return new TextureRegion[]{region, fullContainer};
     }
 
     public class ItemDroneStationBuild extends DroneStationBuild{
         public boolean constructing, open;
-        public float build, totalBuild, buildup;
+        public float build;
 
         @Override
         public void updateTile(){
@@ -63,10 +65,8 @@ public class ItemDroneStation extends DroneStation{
                         constructing = build > 0f;
                     }
                 }
-                totalBuild += edelta() * buildup;
             }
             open = isOrigin() ? build >= constructTime : build <= 0;
-            buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
         }
 
         @Override
@@ -100,15 +100,22 @@ public class ItemDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
-            if(buildup > 0.01){
-                Draw.draw(Layer.blockOver + 1, () -> {
-                    Drawf.construct(x, y, container, isOrigin() ? Pal.accent : Pal.remove, 0f, Math.max(build / constructTime, 0.02f), buildup, totalBuild);
+            if(constructing){
+                Draw.draw(Layer.blockBuilding, () -> {
+                    Draw.color(isOrigin() ? Pal.accent : Pal.remove);
+                    for(TextureRegion region : containerRegions){
+                        Shaders.blockbuild.region = region;
+                        Shaders.blockbuild.progress = build / constructTime;
+
+                        Draw.rect(region, x, y, 0);
+                        Draw.flush();
+                    }
                 });
             }
 
             if(build >= constructTime){
                 Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
-                Draw.rect(container, x + loadVector.x, y + loadVector.y);
+                Draw.rect(fullContainer, x + loadVector.x, y + loadVector.y);
             }
         }
 

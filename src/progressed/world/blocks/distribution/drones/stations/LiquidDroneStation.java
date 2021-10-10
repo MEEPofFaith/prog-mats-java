@@ -16,6 +16,7 @@ public class LiquidDroneStation extends DroneStation{
     public float constructTime = 60f;
 
     public TextureRegion liquidRegion, tankBase, tankTop, tankFull;
+    public TextureRegion[] tankRegions = new TextureRegion[3];
 
     public LiquidDroneStation(String name){
         super(name);
@@ -35,6 +36,10 @@ public class LiquidDroneStation extends DroneStation{
         tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
         tankFull = Core.atlas.find("prog-mats-liquid-cargo-full");
         liquidRegion = Core.atlas.find("prog-mats-liquid-cargo-liquid");
+
+        tankRegions[0] = tankBase;
+        tankRegions[1] = Core.atlas.find("prog-mats-liquid-cargo-decal");
+        tankRegions[2] = tankTop;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class LiquidDroneStation extends DroneStation{
 
     public class LiquidDroneStationBuild extends DroneStationBuild{
         public boolean constructing, open;
-        public float build, totalBuild, buildup;
+        public float build;
 
         @Override
         public void updateTile(){
@@ -64,10 +69,8 @@ public class LiquidDroneStation extends DroneStation{
                         constructing = build > 0f;
                     }
                 }
-                totalBuild += edelta() * buildup;
             }
             open = isOrigin() ? build >= constructTime : build <= 0;
-            buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
         }
 
         @Override
@@ -96,9 +99,16 @@ public class LiquidDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
-            if(buildup > 0.01){
-                Draw.draw(Layer.blockOver + 1, () -> {
-                    Drawf.construct(x, y, tankFull, isOrigin() ? Pal.accent : Pal.remove, 0f, Math.max(build / constructTime, 0.02f), buildup, totalBuild);
+            if(constructing){
+                Draw.draw(Layer.blockBuilding, () -> {
+                    Draw.color(isOrigin() ? Pal.accent : Pal.remove);
+                    for(TextureRegion region : tankRegions){
+                        Shaders.blockbuild.region = region;
+                        Shaders.blockbuild.progress = build / constructTime;
+
+                        Draw.rect(region, x, y, 0);
+                        Draw.flush();
+                    }
                 });
             }
 

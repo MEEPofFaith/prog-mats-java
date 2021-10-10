@@ -40,7 +40,7 @@ public class DroneUnitType extends UnitType{
     public void load(){
         super.load();
 
-        container = Core.atlas.find("prog-mats-item-cargo");
+        container = Core.atlas.find("prog-mats-item-cargo-full");
         tankBase = Core.atlas.find("prog-mats-liquid-cargo-bottom");
         tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
         liquid = Core.atlas.find("prog-mats-liquid-cargo-liquid");
