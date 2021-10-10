@@ -83,7 +83,7 @@ public class DronePad extends Block{
 
     public class DronePadBuild extends Building{
         public int selRoute = -1, selEnd = -1;
-        public float progress, buildup, chargeup, totalProgress;
+        public float build, buildup, chargeup, total;
         public boolean constructing, charging;
         public Vec2[] lastEnds = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
         public IntSeq routes;
@@ -131,10 +131,9 @@ public class DronePad extends Block{
 
             if(drone == null && consValid()){
                 constructing = true;
-                progress += edelta();
-                totalProgress += edelta();
-                if(progress >= constructTime){
-                    progress = 0f;
+                build += edelta();
+                if(build >= constructTime){
+                    build = 0f;
                     constructing = false;
                     drone = (DroneUnitEntity)droneType.spawn(team, this);
                     drone.rotation(90);
@@ -143,6 +142,7 @@ public class DronePad extends Block{
                     drone.charge = ((DroneUnitType)(drone.type)).chargeCapacity;
                 }
             }
+            total += edelta() * buildup;
         }
 
         public float chargef(){
@@ -155,12 +155,12 @@ public class DronePad extends Block{
 
             if(buildup > 0.01){
                 Draw.draw(Layer.blockOver, () -> {
-                    Drawf.construct(x, y, droneType.fullIcon, team.color, 0f, progress / constructTime, buildup, totalProgress);
+                    Drawf.construct(x, y, droneType.fullIcon, team.color, 0f, Math.max(build / constructTime, 0.02f), buildup, total);
                 });
             }
 
             if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
-                Draw.z(Layer.flyingUnit + 1);
+                Draw.z((droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 1);
                 for(int i = 0; i < 2; i++){
                     int j = 0;
                     for(int xflip: Mathf.signs){
@@ -450,7 +450,7 @@ public class DronePad extends Block{
 
             write.bool(constructing);
             write.bool(charging);
-            write.f(progress);
+            write.f(build);
 
             write.i(routes.size);
             for(int i = 0; i < routes.size; i++){
@@ -464,7 +464,7 @@ public class DronePad extends Block{
 
             constructing = read.bool();
             charging = read.bool();
-            progress = read.f();
+            build = read.f();
 
             int len = read.i();
             routes = new IntSeq();

@@ -146,7 +146,7 @@ public class PayloadDroneStation extends DroneStation{
                 Draw.rect(output, x, y, rotdeg());
             }
 
-            Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
+            Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
             drawPayload();
 
             Draw.z(Layer.blockOver + 0.1f);

@@ -103,7 +103,7 @@ public class LiquidDroneStation extends DroneStation{
             }
 
             if(build >= constructTime){
-                Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);
+                Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
                 Draw.rect(tankBase, x + loadVector.x, y + loadVector.y);
 
                 if(liquids.total() > 0.01f){

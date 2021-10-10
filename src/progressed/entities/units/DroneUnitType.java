@@ -3,12 +3,14 @@ package progressed.entities.units;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -21,6 +23,7 @@ import static mindustry.Vars.state;
 
 public class DroneUnitType extends UnitType{
     public float powerUse = 2f, chargeCapacity = 600f;
+    public float riseSpeed = 0.025f;
 
     public TextureRegion container, liquid, tankBase, tankTop;
 
@@ -29,8 +32,7 @@ public class DroneUnitType extends UnitType{
         constructor = DroneUnitEntity::new;
         defaultController = DroneAI::new;
 
-        flying = true;
-        lowAltitude = false;
+        flying = lowAltitude = true;
         speed = 3f;
     }
 
@@ -42,6 +44,20 @@ public class DroneUnitType extends UnitType{
         tankBase = Core.atlas.find("prog-mats-liquid-cargo-bottom");
         tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
         liquid = Core.atlas.find("prog-mats-liquid-cargo-liquid");
+    }
+
+    @Override
+    public void update(Unit unit){
+        super.update(unit);
+
+        if(unit.elevation < 1 && !unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
+    }
+
+    @Override
+    public Unit create(Team team){
+        Unit unit = super.create(team);
+        unit.elevation = 0;
+        return unit;
     }
 
     public void display(Unit unit, Table table){

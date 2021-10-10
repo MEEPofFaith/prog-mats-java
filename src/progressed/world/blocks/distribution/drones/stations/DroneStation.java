@@ -23,6 +23,7 @@ import static mindustry.Vars.*;
 public class DroneStation extends Block{
     public int maxTextLength = 220;
     public float loadSpeed = 1f / 30f;
+    public boolean lowFlier = true;
     public Color selectColor = Color.white;
 
     public TextureRegion input, output;

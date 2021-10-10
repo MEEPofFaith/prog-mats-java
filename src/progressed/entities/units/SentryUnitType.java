@@ -80,7 +80,7 @@ public class SentryUnitType extends UnitType{
 
     @Override
     public void update(Unit unit){
-        if(!unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
+        if(unit.elevation < 1 && !unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
 
         if(unit.health < Float.POSITIVE_INFINITY){ //I want my invincibility to work.
             SentryUnitEntity sentry = ((SentryUnitEntity)unit);
@@ -96,10 +96,7 @@ public class SentryUnitType extends UnitType{
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
-        unit.team = team;
-        unit.setType(this);
-        unit.ammo = ammoCapacity; //fill up on ammo upon creation
+        Unit unit = super.create(team);
         unit.elevation = 0;
         unit.health = unit.maxHealth;
         ((SentryUnitEntity)unit).duration = duration;
