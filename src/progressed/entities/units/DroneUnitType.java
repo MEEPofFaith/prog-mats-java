@@ -7,9 +7,6 @@ import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.ai.types.*;
-import mindustry.content.*;
-import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -18,8 +15,7 @@ import mindustry.ui.*;
 import progressed.ai.*;
 import progressed.entities.units.entity.*;
 
-import static mindustry.Vars.iconMed;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class DroneUnitType extends UnitType{
     public float powerUse = 2f, chargeCapacity = 600f;
