@@ -17,7 +17,7 @@ public class PayloadDroneStation extends DroneStation{
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
     public float payloadLimit = -1f;
 
-    public TextureRegion topRegion, inRegion, outRegion;
+    public TextureRegion topRegion;
 
     public PayloadDroneStation(String name){
         super(name);
@@ -40,8 +40,8 @@ public class PayloadDroneStation extends DroneStation{
         super.load();
 
         topRegion = Core.atlas.find(name + "-top", "factory-top-" + size);
-        inRegion = Core.atlas.find(name + "-in", "factory-in-" + size);
-        outRegion = Core.atlas.find(name + "-out", "factory-out-" + size);
+        input = Core.atlas.find(name + "-in", "factory-in-" + size);
+        output = Core.atlas.find(name + "-out", "factory-out-" + size);
     }
 
     //Time to yoink PayloadBlock code
@@ -137,13 +137,13 @@ public class PayloadDroneStation extends DroneStation{
                 boolean fallback = true;
                 for(int i = 0; i < 4; i++){
                     if(blends(i)){
-                        Draw.rect(inRegion, x, y, (i * 90) - 180);
+                        Draw.rect(input, x, y, (i * 90) - 180);
                         fallback = false;
                     }
                 }
-                if(fallback) Draw.rect(inRegion, x, y, rotation * 90);
+                if(fallback) Draw.rect(input, x, y, rotation * 90);
             }else{
-                Draw.rect(outRegion, x, y, rotdeg());
+                Draw.rect(output, x, y, rotdeg());
             }
 
             Draw.z(loading ? Layer.flyingUnit - 1 : Layer.blockOver);

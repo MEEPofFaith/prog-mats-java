@@ -143,6 +143,19 @@ public class DroneStation extends Block{
             }
         }
 
+        @Override
+        public void draw(){
+            Draw.rect(region, x, y);
+
+            drawTeamTop();
+
+            if(isOrigin()){
+                Draw.rect(input, x, y);
+            }else{
+                Draw.rect(output, x, y);
+            }
+        }
+
         //This is all stolen from message block
         @Override
         public void drawSelect(){
