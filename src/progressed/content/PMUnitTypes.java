@@ -222,7 +222,12 @@ public class PMUnitTypes implements ContentList{
         }};
 
         EntityMapping.nameMap.put("drone", DroneUnitEntity::new);
-        transportDrone = new DroneUnitType("drone");
+        transportDrone = new DroneUnitType("drone"){{
+            health = 475;
+            hitSize = 12f;
+            engineOffset = 7f;
+            engineSize = 2f;
+        }};
 
         everythingUnit = new UnitType("god"){
             {
