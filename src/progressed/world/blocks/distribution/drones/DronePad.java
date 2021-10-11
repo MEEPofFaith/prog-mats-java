@@ -393,21 +393,38 @@ public class DronePad extends Block{
         @Override
         public boolean onConfigureTileTapped(Building other){
             if(other instanceof DroneStationBuild s && selRoute >= 0 && s.canConnect(selState)){
-                DroneStationBuild sel = getStation(selRoute, selState.ordinal());
-                DroneStationBuild otherEnd = getStation(selRoute, 1 - selState.ordinal());
-                if((otherEnd == null || otherEnd.block() == other.block()) && (!s.connected || routes.contains(s.pos()))){
-                    if(sel != null){
-                        disconnectStation(selRoute, selState.ordinal());
+                DroneStationBuild s2 = switch(selState){
+                    case origin -> getStation(selRoute, 1);
+                    case destination -> getStation(selRoute, 0);
+                    default -> null;
+                };
+                if(s2 != null){
+                    if((s.dst(s2) / droneType.speed) * droneType.powerUse >= droneType.chargeCapacity){
+                        ui.announce(bundle.format("pm-drone-station-toofar", s.selectColor()));
+                    }else{
+                        select(s);
                     }
-                    if(sel != other){
-                        connectStation(selRoute, selState.ordinal(), other.pos());
-                    }
-                    selState = StationState.disconnected;
+                }else{
+                    select(s);
                 }
                 return false;
             }
             deselect();
             return true;
+        }
+
+        public void select(DroneStationBuild s){
+            DroneStationBuild sel = getStation(selRoute, selState.ordinal());
+            DroneStationBuild otherEnd = getStation(selRoute, 1 - selState.ordinal());
+            if((otherEnd == null || otherEnd.block() == s.block()) && (!s.connected || routes.contains(s.pos()))){
+                if(sel != null){
+                    disconnectStation(selRoute, selState.ordinal());
+                }
+                if(sel != s){
+                    connectStation(selRoute, selState.ordinal(), s.pos());
+                }
+                selState = StationState.disconnected;
+            }
         }
 
         @Override
