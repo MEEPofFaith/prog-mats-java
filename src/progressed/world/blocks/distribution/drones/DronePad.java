@@ -82,7 +82,8 @@ public class DronePad extends Block{
     }
 
     public class DronePadBuild extends Building{
-        public int selRoute = -1, selEnd = -1;
+        public int selRoute = -1;
+        public StationState selState = StationState.disconnected;
         public float build, buildup, chargeup, total;
         public boolean constructing, charging;
         public Vec2[] lastEnds = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
@@ -206,7 +207,7 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                    if(s.acceptEnd != -1) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
+                    if(s.state != StationState.disconnected) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
                 }
             });
 
@@ -240,7 +241,7 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                if(s.acceptEnd != -1) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
+                if(s.state != StationState.disconnected) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
             });
 
             drawConnections();
@@ -321,8 +322,8 @@ public class DronePad extends Block{
                     int ii = i;
                     t.add(bundle.format("pm-drone-route", i + 1)).left();
                     t.table(d -> {
-                        routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, 0);
-                        routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, 1);
+                        routeSelectionButton(d, Icon.upload, "pm-drone-select-origin", ii, StationState.origin);
+                        routeSelectionButton(d, Icon.download, "pm-drone-select-destination", ii, StationState.destination);
                         Image img = d.image(getIcon(ii)).size(32).get();
                         img.update(() -> {
                             TextureRegion icon = getIcon(ii);
@@ -345,25 +346,25 @@ public class DronePad extends Block{
             });
         }
 
-        public void routeSelectionButton(Table d, TextureRegionDrawable icon, String key, int route, int end){
+        public void routeSelectionButton(Table d, TextureRegionDrawable icon, String key, int route, StationState state){
             ImageButton destButton = d.button(
                 icon, Styles.clearToggleTransi, () -> {}
             ).size(40).tooltip(t -> {
                 t.setBackground(Styles.black5);
-                t.label(() -> bundle.format(key, getStationName(route, end))).pad(4f);
+                t.label(() -> bundle.format(key, getStationName(route, state.ordinal()))).pad(4f);
             }).get();
             destButton.getImageCell().size(32);
             destButton.changed(() -> {
-                if(selRoute == route && selEnd == end){
+                if(selRoute == route && selState == state){
                     deselect();
                 }else{
                     selRoute = route;
-                    selEnd = end;
+                    selState = state;
                 }
             });
             destButton.update(() -> {
-                destButton.setChecked(selRoute == route && selEnd == end);
-                DroneStationBuild s = getStation(route, end);
+                destButton.setChecked(selRoute == route && selState == state);
+                DroneStationBuild s = getStation(route, state.ordinal());
                 ImageButtonStyle is = destButton.getStyle();
                 is.imageUpColor = is.imageDownColor = is.imageOverColor = s != null ? s.selectColor() : Color.white;
                 destButton.layout();
@@ -372,17 +373,17 @@ public class DronePad extends Block{
 
         @Override
         public boolean onConfigureTileTapped(Building other){
-            if(other instanceof DroneStationBuild s && selRoute >= 0 && selEnd >= 0 && s.canConnect(selEnd)){
-                DroneStationBuild sel = getStation(selRoute, selEnd);
-                DroneStationBuild otherEnd = getStation(selRoute, 1 - selEnd);
+            if(other instanceof DroneStationBuild s && selRoute >= 0 && s.canConnect(selState)){
+                DroneStationBuild sel = getStation(selRoute, selState.ordinal());
+                DroneStationBuild otherEnd = getStation(selRoute, 1 - selState.ordinal());
                 if((otherEnd == null || otherEnd.block() == other.block()) && (!s.connected || routes.contains(s.pos()))){
                     if(sel != null){
-                        disconnectStation(selRoute, selEnd);
+                        disconnectStation(selRoute, selState.ordinal());
                     }
                     if(sel != other){
-                        connectStation(selRoute, selEnd, other.pos());
+                        connectStation(selRoute, selState.ordinal(), other.pos());
                     }
-                    selEnd = -1;
+                    selState = StationState.disconnected;
                 }
                 return false;
             }
@@ -405,7 +406,8 @@ public class DronePad extends Block{
         }
 
         public void deselect(){
-            selRoute = selEnd = -1;
+            selRoute = -1;
+            selState = StationState.disconnected;
         }
 
         public void connectStation(int route, int end, int pos){
@@ -426,7 +428,7 @@ public class DronePad extends Block{
             DroneStationBuild s = getStation(route, end);
             if(s != null && routes.count(s.pos()) == 1){
                 s.disconnect();
-                if(drone == null || drone.curRoute != route) s.configure(-1);
+                if(drone == null || drone.curRoute != route) s.configure(2);
             }
             routes.set(route * 2 + end, -1);
             configure(routes);

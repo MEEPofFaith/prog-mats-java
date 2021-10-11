@@ -52,7 +52,7 @@ public class DroneStation extends Block{
             }
         });
         config(Boolean.class, (DroneStationBuild b, Boolean bool) -> b.connected = bool);
-        config(Integer.class, (DroneStationBuild build, Integer i) -> build.acceptEnd = i);
+        config(Integer.class, (DroneStationBuild build, Integer i) -> build.state = StationState.all[i]);
     }
 
     @Override
@@ -66,16 +66,16 @@ public class DroneStation extends Block{
     public class DroneStationBuild extends Building{
         public boolean connected = false, active, loading, loaded;
         public float load;
-        public int acceptEnd = -1;
+        public StationState state = StationState.disconnected;
         public StringBuilder stationName = new StringBuilder("Station Frog");
         public Vec2 loadPoint = new Vec2(), loadVector = new Vec2();
 
-        public boolean canConnect(int end){
-            return !(connected || active) || end == acceptEnd;
+        public boolean canConnect(StationState state){
+            return !(connected || active) || state == this.state;
         }
 
         public boolean isOrigin(){
-            return acceptEnd == 0;
+            return state == StationState.origin;
         }
 
         public Color selectColor(){
@@ -247,7 +247,7 @@ public class DroneStation extends Block{
         @Override
         public void remove(){
             connected = active = loading = false;
-            acceptEnd = -1;
+            state = StationState.disconnected;
 
             super.remove();
         }
@@ -260,7 +260,7 @@ public class DroneStation extends Block{
             write.bool(active);
             write.bool(loading);
             write.bool(loaded);
-            write.i(acceptEnd);
+            write.i(state.ordinal());
             write.str(stationName.toString());
 
             write.f(loadVector.x);
@@ -277,11 +277,19 @@ public class DroneStation extends Block{
             active = read.bool();
             loading = read.bool();
             loaded = read.bool();
-            acceptEnd = read.i();
+            state = StationState.all[read.i()];
             stationName = new StringBuilder(read.str());
 
             loadVector.set(read.f(), read.f());
             loadPoint.set(read.f(), read.f());
         }
+    }
+
+    public enum StationState{
+        origin,
+        destination,
+        disconnected;
+
+        public static final StationState[] all = values();
     }
 }
