@@ -4,6 +4,7 @@ import arc.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -42,7 +43,7 @@ public class SignalFlareTurret extends ItemTurret{
         ));
 
         bars.add("pm-flare-limit", (SignalFlareTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-flare-limit", entity.flares.size, flareLimit),
+            () -> Core.bundle.format("bar.pm-flare-limit", entity.flares, flareLimit),
             () -> entity.team.color,
             entity::countf
         ));
@@ -51,9 +52,9 @@ public class SignalFlareTurret extends ItemTurret{
     public class SignalFlareTurretBuild extends ItemTurretBuild{
         public float tX, tY;
         public int count, amount;
+        public int flares;
         public boolean targetFound;
         public Bullet bullet;
-        public Seq<FlareUnitEntity> flares = new Seq<>();
 
         @Override
         public boolean canControl(){
@@ -86,12 +87,6 @@ public class SignalFlareTurret extends ItemTurret{
                 logicControlTime -= Time.delta;
             }
 
-            flares.each(b -> {
-                if(!b.isValid()){
-                    flares.remove(b);
-                }
-            });
-
             if(bullet != null && !bullet.isAdded()){
                 bullet = null;
             }
@@ -122,7 +117,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(flares.size < flareLimit && bullet == null){
+            if(flares < flareLimit && bullet == null){
                 if(reload >= reloadTime && !charging){
                     BulletType type = peekAmmo();
 
@@ -139,7 +134,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void updateCooling(){
-            if(flares.size < flareLimit && bullet == null){
+            if(flares < flareLimit && bullet == null){
                 super.updateCooling();
             }
         }
@@ -154,7 +149,7 @@ public class SignalFlareTurret extends ItemTurret{
                 if(b.team != team && within(b, range) && !checkType(b.type) && b.type().speed > 0.01f){
                     tX += b.x;
                     tY += b.y;
-                    count ++;
+                    count++;
                 }
             });
 
@@ -174,16 +169,17 @@ public class SignalFlareTurret extends ItemTurret{
         protected void bullet(BulletType type, float angle){
             float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
+            flares++;
             bullet = type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
         }
 
         @Override
         public BlockStatus status(){
-            return (flares.size >= flareLimit || bullet != null) ? BlockStatus.noOutput : super.status();
+            return (flares >= flareLimit || bullet != null) ? BlockStatus.noOutput : super.status();
         }
 
         public float countf(){
-            return (float)(flares.size + (bullet != null ? 1 : 0)) / (float)flareLimit;
+            return (flares / (float)flareLimit);
         }
 
         @Override
@@ -212,6 +208,25 @@ public class SignalFlareTurret extends ItemTurret{
                 }
             });
             return amount;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.i(flares);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision >= 4) flares = read.i();
+        }
+
+        @Override
+        public byte version(){
+            return 4;
         }
     }
 }

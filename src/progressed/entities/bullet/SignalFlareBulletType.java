@@ -31,7 +31,7 @@ public class SignalFlareBulletType extends BulletType{
     public void despawned(Bullet b){
         FlareUnitEntity flare = (FlareUnitEntity)spawn.spawn(b.team, b.x, b.y);
         if(b.owner instanceof SignalFlareTurretBuild build){
-            build.flares.add(flare);
+            flare.parent = build.pos();
         }
 
         super.despawned(b);

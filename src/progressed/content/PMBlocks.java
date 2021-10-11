@@ -62,7 +62,7 @@ public class PMBlocks implements ContentList{
     caliber,
 
     //Misc
-    signal, tinker, vaccinator,
+    allure, tinker, vaccinator,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -619,7 +619,7 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.railgun;
         }};
 
-        signal = new SignalFlareTurret("signal"){{
+        allure = new SignalFlareTurret("signal"){{
             requirements(Category.turret, with(
                 Items.lead, 80,
                 Items.silicon, 130,

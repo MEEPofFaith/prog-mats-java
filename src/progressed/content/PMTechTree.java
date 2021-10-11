@@ -119,7 +119,7 @@ public class PMTechTree implements ContentList{
 
         vanillaNode(segment, () -> {
             //Signal flare
-            node(signal);
+            node(allure);
         });
 
         // Distribution

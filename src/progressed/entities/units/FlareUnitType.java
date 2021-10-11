@@ -130,9 +130,7 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
-        unit.team = team;
-        unit.setType(this);
+        Unit unit = super.create(team);
         unit.health = health;
         unit.maxHealth = attraction;
         unit.rotation = 90f;
