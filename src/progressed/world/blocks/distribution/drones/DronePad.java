@@ -1,5 +1,6 @@
 package progressed.world.blocks.distribution.drones;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -11,6 +12,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import arc.util.pooling.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -207,7 +209,7 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                    if(s.state != StationState.disconnected) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
+                    if(s.state != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(r) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
                 }
             });
 
@@ -241,7 +243,7 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                if(s.state != StationState.disconnected) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
+                if(s.state != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(s.pos()) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
             });
 
             drawConnections();
@@ -252,25 +254,42 @@ public class DronePad extends Block{
             });
         }
 
-        public void drawArrow(float x, float y, boolean up, float size, Color color){
+        public void drawArrow(float x, float y, int route, boolean up, float size, Color color){
             int s = Mathf.sign(up);
             float sh = size / 2f;
 
             Lines.stroke(2.5f, Pal.gray);
             for(int side : Mathf.signs){
                 Lines.line(
-                    x - sh * side, y - sh * s / 2f,
-                    x, y + sh * s / 2f
+                    x - sh * side, y,
+                    x, y + sh * s
                 );
             }
             Lines.stroke(1f, color);
             for(int side : Mathf.signs){
                 Lines.line(
-                    x - sh * side, y - sh * s / 2f,
-                    x, y + sh * s / 2f
+                    x - sh * side, y,
+                    x, y + sh * s
                 );
             }
             Draw.reset();
+
+            Font font = Fonts.outline;
+            GlyphLayout l = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+            boolean ints = font.usesIntegerPositions();
+            font.getData().setScale(sh / 10f);
+            font.setUseIntegerPositions(false);
+
+            CharSequence text = String.valueOf(route);
+            l.setText(font, text);
+
+            font.setColor(color);
+            font.draw(text, x - l.width/2f, y + l.height/2f - sh * s, Align.left);
+
+            font.setUseIntegerPositions(ints);
+            font.setColor(Color.white);
+            font.getData().setScale(1f);
+            Pools.free(l);
         }
 
         public void drawConnections(){

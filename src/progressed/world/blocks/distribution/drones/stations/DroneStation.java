@@ -12,6 +12,7 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -166,26 +167,27 @@ public class DroneStation extends Block{
             if(renderer.pixelator.enabled()) return;
 
             Font font = Fonts.outline;
-            GlyphLayout l = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
-            boolean ints = font.usesIntegerPositions();
-            font.getData().setScale(1 / 4f / Scl.scl(1f));
-            font.setUseIntegerPositions(false);
-
+            GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
             CharSequence text = stationName == null || stationName.length() == 0 ? "[lightgray]" + Core.bundle.get("empty") : stationName;
+            boolean ints = font.usesIntegerPositions();
+            font.setUseIntegerPositions(false);
+            font.getData().setScale(1f / 4f);
+            layout.setText(font, text);
 
-            l.setText(font, text, Color.white, 90f, Align.left, true);
-            float offset = 1f;
+            font.setColor(selectColor);
+            float dx = x + offset, dy = y + offset + size * tilesize / 2f + 3;
+            font.draw(text, dx, dy + layout.height + 1, Align.center);
+            dy -= 1f;
+            Lines.stroke(2f, Color.darkGray);
+            Lines.line(dx - layout.width / 2f - 2f, dy, dx + layout.width / 2f + 1.5f, dy);
+            Lines.stroke(1f, selectColor);
+            Lines.line(dx - layout.width / 2f - 2f, dy, dx + layout.width / 2f + 1.5f, dy);
 
-            Draw.color(0f, 0f, 0f, 0.2f);
-            Fill.rect(x, y - tilesize/2f - l.height/2f - offset, l.width + offset*2f, l.height + offset*2f);
-            Draw.color();
-            font.setColor(Color.white);
-            font.draw(text, x - l.width/2f, y - tilesize/2f - offset, 90f, Align.left, true);
             font.setUseIntegerPositions(ints);
-
+            font.setColor(Color.white);
             font.getData().setScale(1f);
-
-            Pools.free(l);
+            Draw.reset();
+            Pools.free(layout);
         }
 
         @Override
