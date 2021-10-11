@@ -203,6 +203,7 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
+                    if(s.acceptEnd != -1) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
                 }
             });
 
@@ -236,6 +237,7 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
+                if(s.acceptEnd != -1) drawArrow(s.x, s.y, s.isOrigin(), drawSize / 2f, s.selectColor());
             });
 
             drawConnections();
@@ -244,6 +246,27 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 s.drawSelect();
             });
+        }
+
+        public void drawArrow(float x, float y, boolean up, float size, Color color){
+            int s = Mathf.sign(up);
+            float sh = size / 2f;
+
+            Lines.stroke(2.5f, Pal.gray);
+            for(int side : Mathf.signs){
+                Lines.line(
+                    x - sh * side, y - sh * s / 2f,
+                    x, y + sh * s / 2f
+                );
+            }
+            Lines.stroke(1f, color);
+            for(int side : Mathf.signs){
+                Lines.line(
+                    x - sh * side, y - sh * s / 2f,
+                    x, y + sh * s / 2f
+                );
+            }
+            Draw.reset();
         }
 
         public void drawConnections(){
