@@ -160,7 +160,7 @@ public class DronePad extends Block{
             }
 
             if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
-                Draw.z((droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 1);
+                Draw.z((droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 0.5f);
                 for(int i = 0; i < 2; i++){
                     int j = 0;
                     for(int xflip: Mathf.signs){
@@ -203,14 +203,20 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                    s.drawSelect();
                 }
             });
 
             drawConnections();
 
+            routes.each(r -> {
+                DroneStationBuild s = getStation(r);
+                if(s != null){
+                    s.drawSelect();
+                }
+            });
+
             if(drone != null){
-                Draw.z(Layer.flyingUnit + 0.5f);
+                Draw.z((droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 1f);
                 Draw.mixcol(Pal.accent, 1f);
                 Draw.rect(drone.type.fullIcon, drone.x, drone.y, drone.rotation - 90);
                 for(int i = 0; i < 4; i++){
@@ -230,14 +236,17 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                s.drawSelect();
             });
 
             drawConnections();
+
+            Groups.build.each(b -> b instanceof DroneStationBuild s && (!(s.connected || s.active) || routes.contains(s.pos())), b -> {
+                DroneStationBuild s = (DroneStationBuild)b;
+                s.drawSelect();
+            });
         }
 
         public void drawConnections(){
-            Draw.z(Layer.power);
             float aw = arrowRegion.width / 4f + 3f,
                 ah = arrowRegion.height / 4f + 3f;
             float p1 = (Time.time % 100f) / 100f, p2 = (p1 + 0.5f) % 1;
@@ -245,12 +254,13 @@ public class DronePad extends Block{
                 DroneStationBuild o = getStation(i, 0);
                 DroneStationBuild d = getStation(i, 1);
                 if(o != null && d != null){
-                    float oRad = o.block().size * 2;
-                    float dRad = d.block().size * 2;
+                    float oRad = o.block().size * 4f - 2f;
+                    float dRad = d.block().size * 4f - 2f;
                     float ang = o.angleTo(d);
 
-                    tr.trns(ang, oRad);
-                    tr2.trns(ang + 180, dRad);
+                    float calc = 1f + (1f - Mathf.sinDeg(Mathf.mod(ang, 90f) * 2)) * (Mathf.sqrt2 - 1f);
+                    tr.trns(ang, (oRad / Mathf.sqrt2) * calc);
+                    tr2.trns(ang + 180, (dRad / Mathf.sqrt2) * calc);
 
                     float ox = o.x + tr.x, oy = o.y + tr.y,
                         dx = d.x + tr2.x, dy = d.y + tr2.y;
