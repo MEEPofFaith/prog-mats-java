@@ -109,6 +109,11 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     @Override
+    public int cap(){
+        return count() + 1;
+    }
+
+    @Override
     public void write(Writes write){
         super.write(write);
 

@@ -39,7 +39,7 @@ public class SentryUnitEntity extends UnitEntity{
 
     @Override
     public int cap(){
-        return count() + 5;
+        return count() + 1;
     }
 
     @Override
