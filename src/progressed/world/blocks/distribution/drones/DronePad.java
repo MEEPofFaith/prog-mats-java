@@ -114,6 +114,9 @@ public class DronePad extends Block{
                 if(o != null && d != null){
                     if(d.getClass() != o.getClass()){
                         disconnectStation(i, 1);
+                        if(!o.connected){
+                            o.connect(0);
+                        }
                     }else if(!d.connected){
                         d.connect(1);
                     }
