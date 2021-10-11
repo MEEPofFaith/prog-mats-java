@@ -1,6 +1,5 @@
 package progressed.world.blocks.distribution.drones;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -399,7 +398,7 @@ public class DronePad extends Block{
                     default -> null;
                 };
                 if(s2 != null){
-                    if((s.dst(s2) / droneType.speed) * droneType.powerUse >= droneType.chargeCapacity){
+                    if((s.dst(s2) / droneType.speed) * droneType.powerUse >= droneType.chargeCapacity * droneType.checkMultiplier){
                         ui.announce(bundle.format("pm-drone-station-toofar", s.selectColor()));
                     }else{
                         select(s);

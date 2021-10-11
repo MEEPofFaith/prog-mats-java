@@ -34,6 +34,9 @@ public class DroneUnitEntity extends PayloadUnit{
             elevation = 0;
             kill(); //No pad or pad taken, cast Spontanium Combustum
         }
+        if(charge < 0f && !dead){
+            kill();
+        }
 
         super.update();
     }

@@ -66,7 +66,7 @@ public class DroneAI extends AIController{
                     case charging, idle -> setTarget(d, d.getStation(d.curRoute, 0), 1);
                     case pickup -> setTarget(d, d.getStation(d.curRoute, 1), 2);
                     case dropoff -> {
-                        if(d.estimateUse(d.curRoute) > d.charge){
+                        if(d.estimateUse(d.curRoute) > d.charge * d.getType().checkMultiplier){
                             setTarget(d, d.getPad(), 0);
                         }else{
                             setTarget(d, d.getStation(d.curRoute, 0), 1);
