@@ -18,7 +18,7 @@ import progressed.entities.units.entity.*;
 import static mindustry.Vars.*;
 
 public class DroneUnitType extends UnitType{
-    public float powerUse = 2f, chargeCapacity = 600f;
+    public float powerUse = 1f, powerCapacity = 1000f;
     public float checkMultiplier = 0.875f;
     public float riseSpeed = 0.025f;
 

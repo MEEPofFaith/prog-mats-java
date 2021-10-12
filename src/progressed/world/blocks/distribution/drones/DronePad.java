@@ -33,9 +33,9 @@ public class DronePad extends Block{
     static final Rand rand = new Rand();
 
     public int maxRoutes = 5;
-    public float constructTime = 180f;
+    public float constructTime = 60f;
     public float constructPowerUse = 1f;
-    public float chargeRate = 3f;
+    public float chargeRate = 1f;
 
     public Color laserColor = Pal.powerLight, laserColorTop = Color.white;
     public float chargeX, chargeY;
@@ -144,7 +144,7 @@ public class DronePad extends Block{
                     drone.rotation(90);
                     drone.pad = pos();
                     drone.updateRoutes();
-                    drone.charge = ((DroneUnitType)(drone.type)).chargeCapacity;
+                    drone.charge = ((DroneUnitType)(drone.type)).powerCapacity;
                 }
             }
             total += edelta() * buildup;
@@ -398,7 +398,7 @@ public class DronePad extends Block{
                     default -> null;
                 };
                 if(s2 != null){
-                    if((s.dst(s2) / droneType.speed) * droneType.powerUse >= droneType.chargeCapacity * droneType.checkMultiplier){
+                    if((s.dst(s2) / droneType.speed) * droneType.powerUse >= droneType.powerCapacity * droneType.checkMultiplier){
                         ui.announce(bundle.format("pm-drone-station-toofar", s.selectColor()));
                     }else{
                         select(s);

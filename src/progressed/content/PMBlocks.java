@@ -1002,6 +1002,9 @@ public class PMBlocks implements ContentList{
             chargeX = chargeY = 10;
             beamWidth = 0.5f;
             droneType = (DroneUnitType)PMUnitTypes.transportDrone;
+            chargeRate = 16f; //5 second charge time
+            constructTime = 10f * 60f; 
+            constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
         }};
 
         itemDroneStation = new ItemDroneStation("drone-station-items"){{

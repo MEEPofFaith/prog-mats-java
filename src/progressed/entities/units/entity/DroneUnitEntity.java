@@ -50,7 +50,7 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public float chargeCapacity(){
-        return getType().chargeCapacity;
+        return getType().powerCapacity;
     }
 
     public void recharge(float amount){

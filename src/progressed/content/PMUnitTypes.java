@@ -227,6 +227,8 @@ public class PMUnitTypes implements ContentList{
             hitSize = 12f;
             engineOffset = 7f;
             engineSize = 2f;
+            powerUse = 4f;
+            powerCapacity = 4800f;
         }};
 
         everythingUnit = new UnitType("god"){
