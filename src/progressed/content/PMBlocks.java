@@ -1003,7 +1003,7 @@ public class PMBlocks implements ContentList{
             beamWidth = 0.5f;
             droneType = (DroneUnitType)PMUnitTypes.transportDrone;
             chargeRate = 16f; //5 second charge time
-            constructTime = 10f * 60f; 
+            constructTime = 10f * 60f;
             constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
         }};
 
@@ -1013,12 +1013,12 @@ public class PMBlocks implements ContentList{
         }};
 
         liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
-            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, empty);
             size = 3;
         }};
 
         payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
-            requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.units, BuildVisibility.sandboxOnly, empty);
             size = 5;
         }};
 
