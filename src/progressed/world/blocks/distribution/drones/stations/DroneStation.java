@@ -12,7 +12,6 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -54,6 +53,7 @@ public class DroneStation extends Block{
         });
         config(Boolean.class, (DroneStationBuild b, Boolean bool) -> b.connected = bool);
         config(Integer.class, (DroneStationBuild build, Integer i) -> build.state = StationState.all[i]);
+        config(Byte.class, (DroneStationBuild build, Byte hhhhh) -> build.dumpCargo()); //ALL IN THE NAME OF SYNCING
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active, loading, loaded;
+        public boolean connected = false, active, loading, loaded, dumping;
         public float load;
         public StationState state = StationState.disconnected;
         public StringBuilder stationName = new StringBuilder("Station Frog");
@@ -83,14 +83,8 @@ public class DroneStation extends Block{
             return selectColor;
         }
 
-        @Override
-        public boolean canDump(Building to, Item item){
-            return !isOrigin() && !loading;
-        }
-
-        @Override
-        public boolean canDumpLiquid(Building to, Liquid liquid){
-            return !isOrigin() && !loading;
+        public void dumpCargo(){
+            dumping = !dumping;
         }
 
         public boolean ready(){
@@ -220,6 +214,12 @@ public class DroneStation extends Block{
                 }
                 deselect();
             }).tooltip("@pm-drone-editname").size(40f);
+
+            ImageButton dump = table.button(Icon.trash, Styles.defaulti, () -> configure((byte)0)).tooltip("@pm-drone-dump").size(40).get();
+            dump.getStyle().checked = Tex.buttonDown;
+            dump.update(() -> {
+                dump.setChecked(dumping);
+            });
         }
 
         @Override
@@ -262,6 +262,7 @@ public class DroneStation extends Block{
             write.bool(active);
             write.bool(loading);
             write.bool(loaded);
+            write.bool(dumping);
             write.i(state.ordinal());
             write.str(stationName.toString());
 
@@ -279,6 +280,7 @@ public class DroneStation extends Block{
             active = read.bool();
             loading = read.bool();
             loaded = read.bool();
+            dumping = read.bool();
             state = StationState.all[read.i()];
             stationName = new StringBuilder(read.str());
 

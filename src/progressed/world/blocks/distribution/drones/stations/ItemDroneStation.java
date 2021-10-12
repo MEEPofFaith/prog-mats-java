@@ -53,6 +53,9 @@ public class ItemDroneStation extends DroneStation{
 
             if(timer(timerDump, dumpTime / timeScale)){
                 dump();
+                if(dumping && items.empty()){
+                    dumping = false;
+                }
             }
 
             if(!loading){
@@ -85,10 +88,17 @@ public class ItemDroneStation extends DroneStation{
         public void takeCargo(DroneUnitEntity d){
             super.takeCargo(d);
             for(int i = 0; i < content.items().size; i++){
-                items.add(content.items().get(i), d.cargo.itemCargo[i]);
+                for(int j = 0; j < d.cargo.itemCargo[i]; j++){
+                    offload(content.item(i));
+                }
             }
             d.cargo.empty();
             build = constructTime;
+        }
+
+        @Override
+        public boolean canDump(Building to, Item item){
+            return (!isOrigin() || dumping) && !loading;
         }
 
         @Override
@@ -121,7 +131,7 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return isOrigin() && items.total() + 1 <= itemCapacity && !loading && !constructing;
+            return isOrigin() && items.total() + 1 <= itemCapacity && !loading && !constructing && !dumping;
         }
 
         @Override

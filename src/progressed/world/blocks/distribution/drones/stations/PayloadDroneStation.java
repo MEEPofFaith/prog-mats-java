@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -96,10 +97,13 @@ public class PayloadDroneStation extends DroneStation{
             updateLoading();
 
             if(!loading){
-                if(isOrigin()){
-                    moveInPayload();
-                }else{
+                if(dumping || !isOrigin()){
                     moveOutPayload();
+                    if(dumping && payload == null){
+                        dumping = false;
+                    }
+                }else if(isOrigin()){
+                    moveInPayload();
                 }
             }
         }
@@ -142,7 +146,8 @@ public class PayloadDroneStation extends DroneStation{
                     }
                 }
                 if(fallback) Draw.rect(input, x, y, rotation * 90);
-            }else{
+            }
+            if(!isOrigin() || dumping){
                 Draw.rect(output, x, y, rotdeg());
             }
 

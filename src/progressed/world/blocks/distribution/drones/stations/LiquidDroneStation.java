@@ -57,6 +57,9 @@ public class LiquidDroneStation extends DroneStation{
 
             if(liquids.total() > 0.01f){
                 dumpLiquid(liquids.current());
+                if(dumping && liquids.total() <= 0.01f){
+                    dumping = false;
+                }
             }
 
             if(!loading){
@@ -88,6 +91,11 @@ public class LiquidDroneStation extends DroneStation{
             if(d.cargo.hasLiquid()) liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
             d.cargo.empty();
             build = constructTime;
+        }
+
+        @Override
+        public boolean canDumpLiquid(Building to, Liquid liquid){
+            return (!isOrigin() || dumping) && !loading;
         }
 
         @Override
@@ -126,14 +134,7 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && !loading && !constructing;
-        }
-
-        @Override
-        public void buildConfiguration(Table table){
-            super.buildConfiguration(table);
-
-            table.button(Icon.trash, () -> liquids.clear()).tooltip("@pm-drone-dump-liquid").size(40);
+            return isOrigin() && (liquids.current() == liquid || liquids.currentAmount() < 0.2f) && !loading && !constructing && !dumping;
         }
 
         @Override
