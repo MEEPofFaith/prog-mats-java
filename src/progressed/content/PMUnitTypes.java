@@ -224,9 +224,11 @@ public class PMUnitTypes implements ContentList{
         EntityMapping.nameMap.put("drone", DroneUnitEntity::new);
         transportDrone = new DroneUnitType("drone"){{
             health = 475;
-            hitSize = 12f;
-            engineOffset = 7f;
-            engineSize = 2f;
+            hitSize = 17f;
+            engineOffset = 40f / 4f;
+            engineSize = 1.5f;
+            engineSpread = 5f;
+            trailLength = 6;
             powerUse = 4f;
             powerCapacity = 4800f;
         }};

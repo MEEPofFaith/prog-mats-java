@@ -999,7 +999,7 @@ public class PMBlocks implements ContentList{
         dronePad = new DronePad("drone-pad"){{
             requirements(Category.distribution, BuildVisibility.sandboxOnly, empty);
             size = 4;
-            chargeX = chargeY = 10;
+            chargeX = chargeY = 41f / 4f;
             beamWidth = 0.5f;
             droneType = (DroneUnitType)PMUnitTypes.transportDrone;
             chargeRate = 16f; //5 second charge time

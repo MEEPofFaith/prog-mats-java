@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import progressed.ai.*;
 import progressed.entities.units.entity.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -21,6 +22,7 @@ public class DroneUnitType extends UnitType{
     public float powerUse = 1f, powerCapacity = 1000f;
     public float checkMultiplier = 0.875f;
     public float riseSpeed = 0.025f;
+    public float engineSpread;
 
     public TextureRegion container, liquid, tankBase, tankTop;
 
@@ -30,6 +32,7 @@ public class DroneUnitType extends UnitType{
         defaultController = DroneAI::new;
 
         flying = lowAltitude = true;
+        isCounted = false;  
         speed = 3f;
     }
 
@@ -55,6 +58,38 @@ public class DroneUnitType extends UnitType{
         Unit unit = super.create(team);
         unit.elevation = 0;
         return unit;
+    }
+
+    @Override
+    public void drawEngine(Unit unit){
+        if(!unit.isFlying()) return;
+
+        float scale = unit.elevation;
+        float offset = engineOffset / 2f + engineOffset / 2f * scale;
+
+        for(int i : Mathf.zeroOne){
+            if(unit instanceof DroneUnitEntity d){
+                PMTrail t = i == 0 ? d.tleft : d.tright;
+                t.draw(unit.team.color, (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * scale) * trailScl);
+            }
+
+            int side = Mathf.signs[i];
+            float sideOffset =  engineSpread * side;
+
+            Draw.color(unit.team.color);
+            Fill.circle(
+                unit.x + Angles.trnsx(unit.rotation + 90, sideOffset, offset),
+                unit.y + Angles.trnsy(unit.rotation + 90, sideOffset, offset),
+                (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f)) * scale
+            );
+            Draw.color(Color.white);
+            Fill.circle(
+                unit.x + Angles.trnsx(unit.rotation + 90, sideOffset, offset - 1f),
+                unit.y + Angles.trnsy(unit.rotation + 90, sideOffset, offset - 1f),
+                (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f)) / 2f * scale
+            );
+            Draw.color();
+        }
     }
 
     public void display(Unit unit, Table table){

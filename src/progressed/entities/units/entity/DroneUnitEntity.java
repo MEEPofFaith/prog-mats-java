@@ -5,9 +5,11 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.*;
 import progressed.entities.units.*;
+import progressed.graphics.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
@@ -21,6 +23,7 @@ public class DroneUnitEntity extends PayloadUnit{
     public boolean arrived;
     public IntSeq routes;
     public Teamc target;
+    public PMTrail tleft = new PMTrail(1), tright = new PMTrail(1);
     public DroneState state = DroneState.idle;
     public DroneCargo cargo = new DroneCargo();
 
@@ -34,8 +37,22 @@ public class DroneUnitEntity extends PayloadUnit{
             elevation = 0;
             kill(); //No pad or pad taken, cast Spontanium Combustum
         }
-        if(charge < 0f && !dead){
+        if(!dead && charge < 0f){
             kill();
+        }
+
+        for(int i : Mathf.zeroOne){
+            PMTrail t = i == 0 ? tleft : tright;
+            t.length = type.trailLength;
+
+            float scale = elevation();
+            int side = Mathf.signs[i];
+            float offset = type.engineOffset / 2f + type.engineOffset / 2f * scale;
+            float sideOffset = getType().engineSpread * side;
+
+            float cx = x + Angles.trnsx(rotation + 90, sideOffset, offset),
+                cy = y + Angles.trnsy(rotation + 90, sideOffset, offset);
+            t.update(cx, cy);
         }
 
         super.update();
