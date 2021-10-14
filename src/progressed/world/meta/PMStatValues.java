@@ -180,7 +180,8 @@ public class PMStatValues{
                             bt.table(ut -> {
                                 ut.add("@bullet.pm-sentry-spawn");
                                 ut.image(icon(stype.unit)).size(3 * 8);
-                                ut.add("[lightgray] " + stype.unit.localizedName);
+                                ut.add("[lightgray]" + stype.unit.localizedName).padLeft(6);
+                                infoButton(ut, stype.unit, 4 * 8).padLeft(6);
                             });
                         }
 
@@ -439,10 +440,16 @@ public class PMStatValues{
         return table -> {
             table.table(t -> {
                 t.image(icon(u)).size(3 * 8);
-                t.add(" " + u.localizedName);
-                //TODO add info button
+                t.add(u.localizedName).padLeft(8);
+                infoButton(t, u, 5 * 8).padLeft(6);
             });
         };
+    }
+
+    private static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
+        return table.button("?", Styles.clearPartialt, () -> {
+            ui.content.show(content);
+        }).size(size).left().grow().name("contentinfo");
     }
 
     private static void sep(Table table, String text){
