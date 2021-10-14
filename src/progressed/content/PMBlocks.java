@@ -1221,6 +1221,14 @@ public class PMBlocks implements ContentList{
             }
 
             @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
+            }
+
+            @Override
             public void load(){
                 super.load();
                 baseRegion = Core.atlas.find("prog-mats-block-" + size);

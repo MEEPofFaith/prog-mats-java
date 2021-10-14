@@ -17,12 +17,14 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.ItemDroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.LiquidDroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.PayloadDroneStation.*;
+import progressed.world.meta.*;
 
 import java.util.*;
 
@@ -62,6 +64,15 @@ public class DronePad extends Block{
     public void init(){
         consumes.add(new DronePadConsumePower());
         super.init();
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.powerUse);
+        stats.add(Stat.powerUse, PMStatValues.dronePower(constructPowerUse, chargeRate));
+        stats.add(Stat.output, PMStatValues.unitOutput(droneType));
     }
 
     @Override

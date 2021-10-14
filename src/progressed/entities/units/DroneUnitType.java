@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.entities.units.entity.*;
 import progressed.graphics.*;
@@ -44,6 +45,14 @@ public class DroneUnitType extends UnitType{
         tankBase = Core.atlas.find("prog-mats-liquid-cargo-bottom");
         tankTop = Core.atlas.find("prog-mats-liquid-cargo-top");
         liquid = Core.atlas.find("prog-mats-liquid-cargo-liquid");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
+        stats.add(Stat.powerCapacity, powerCapacity, StatUnit.none);
     }
 
     @Override

@@ -24,6 +24,7 @@ public class DroneStation extends Block{
     public int maxTextLength = 220;
     public float loadSpeed = 1f / 30f;
     public boolean lowFlier = true;
+    public String namePref = "";
     public Color selectColor = Color.white;
 
     public TextureRegion input, output;
@@ -65,11 +66,20 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active, loading, loaded, dumping;
+        public boolean connected = false, active, loading, loaded, dumping, taken;
         public float load;
         public StationState state = StationState.disconnected;
-        public StringBuilder stationName = new StringBuilder("Station Frog");
+        public StringBuilder stationName;
         public Vec2 loadPoint = new Vec2(), loadVector = new Vec2();
+
+        @Override
+        public void created(){
+            super.created();
+
+            if(stationName == null){
+                stationName = new StringBuilder(namePref + " Station");
+            }
+        }
 
         public boolean canConnect(StationState state){
             return !(connected || active) || state == this.state;
@@ -117,6 +127,7 @@ public class DroneStation extends Block{
         public void resetLoading(){
             loadVector.set(0, 0);
             loaded = false;
+            taken = false;
         }
 
         public void updateCargo(DroneUnitEntity d){
@@ -128,10 +139,12 @@ public class DroneStation extends Block{
         }
 
         public void takeCargo(DroneUnitEntity d){
-            if(!loading){
+            if(!taken){
                 load = 1;
                 loadPoint.set(d);
                 loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
+                taken = true;
+                loading = true;
             }
         }
 
@@ -165,7 +178,7 @@ public class DroneStation extends Block{
             CharSequence text = stationName == null || stationName.length() == 0 ? "[lightgray]" + Core.bundle.get("empty") : stationName;
             boolean ints = font.usesIntegerPositions();
             font.setUseIntegerPositions(false);
-            font.getData().setScale(1f / 4f);
+            font.getData().setScale(1f / 3f);
             layout.setText(font, text);
 
             font.setColor(selectColor);
@@ -263,6 +276,7 @@ public class DroneStation extends Block{
             write.bool(loading);
             write.bool(loaded);
             write.bool(dumping);
+            write.bool(taken);
             write.i(state.ordinal());
             write.str(stationName.toString());
 
@@ -281,6 +295,7 @@ public class DroneStation extends Block{
             loading = read.bool();
             loaded = read.bool();
             dumping = read.bool();
+            taken = read.bool();
             state = StationState.all[read.i()];
             stationName = new StringBuilder(read.str());
 

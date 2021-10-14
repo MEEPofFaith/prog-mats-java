@@ -27,6 +27,12 @@ public class ItemDroneStation extends DroneStation{
         itemCapacity = 100;
         acceptsItems = true;
         selectColor = Color.yellow;
+        namePref = "Item";
+
+        config(Integer.class, (ItemDroneStationBuild build, Integer i) -> {
+            build.state = StationState.all[i];
+            build.constructing = true;
+        });
     }
 
     @Override

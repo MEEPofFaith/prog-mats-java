@@ -27,6 +27,7 @@ public class PayloadDroneStation extends DroneStation{
         acceptsPayload = outputsPayload = true;
         rotate = true;
         selectColor = Pal.lightOrange;
+        namePref = "Payload";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package progressed.world.meta;
 
 import arc.*;
+import arc.flabel.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -67,55 +68,59 @@ public class PMStatValues{
 
                         if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                             if(type instanceof BlackHoleBulletType stype){
-                                bt.add(Core.bundle.format("bullet.pm-blackhole-damage", stype.continuousDamage(), Strings.fixed(stype.damageRadius / tilesize, 1)));
-                                sep(bt, Core.bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
+                                bt.add(bundle.format("bullet.pm-blackhole-damage", stype.continuousDamage(), Strings.fixed(stype.damageRadius / tilesize, 1)));
+                                sep(bt, bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
                             }else if(type.continuousDamage() > 0){
-                                bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+                                bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                             }else{
-                                bt.add(Core.bundle.format("bullet.damage", type.damage));
+                                if(Float.isInfinite(type.damage)){
+                                    bt.add(new FLabel("{wave}{rainbow}" + bundle.format("bullet.damage", bundle.get("pm-infinity"))));
+                                }else{
+                                    bt.add(bundle.format("bullet.damage", type.damage));
+                                }
                                 if(type instanceof MagnetBulletType stype){
-                                    sep(bt, Core.bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
+                                    sep(bt, bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
                                 }
                             }
                         }
 
                         if(type instanceof CritBulletType stype){
-                            sep(bt, Core.bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
-                            sep(bt, Core.bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
+                            sep(bt, bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
+                            sep(bt, bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
                         }
 
                         if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof FlareUnitType u){
-                            sep(bt, Core.bundle.format("bullet.pm-flare-health", u.health));
-                            sep(bt, Core.bundle.format("bullet.pm-flare-attraction", u.attraction));
-                            sep(bt, Core.bundle.format("bullet.pm-flare-lifetime", (int)(u.duration / 60f)));
+                            sep(bt, bundle.format("bullet.pm-flare-health", u.health));
+                            sep(bt, bundle.format("bullet.pm-flare-attraction", u.attraction));
+                            sep(bt, bundle.format("bullet.pm-flare-lifetime", (int)(u.duration / 60f)));
                         }
 
                         if(type.buildingDamageMultiplier != 1){
-                            sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
+                            sep(bt, bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
                         }
 
                         if(type.splashDamage > 0){
-                            sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+                            sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
                         if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
-                            sep(bt, Core.bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
+                            sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 
                         if(!Mathf.equal(type.reloadMultiplier, 1f)){
-                            sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
+                            sep(bt, bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
                         }
 
                         if(type.knockback > 0){
-                            sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
+                            sep(bt, bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
                         }
 
                         if(type.healPercent > 0f){
-                            sep(bt, Core.bundle.format("bullet.healpercent", (int)type.healPercent));
+                            sep(bt, bundle.format("bullet.healpercent", (int)type.healPercent));
                         }
 
                         if(type.pierce || type.pierceCap != -1){
-                            sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+                            sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : bundle.format("bullet.pierce", type.pierceCap));
                         }
 
                         if(type.incendAmount > 0){
@@ -166,7 +171,7 @@ public class PMStatValues{
                             sep(bt, str.toString());
                             if(stype.nanomachines){
                                 bt.row();
-                                bt.image(Core.atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
+                                bt.image(atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
                             }
                         }
 
@@ -188,18 +193,18 @@ public class PMStatValues{
                         }
 
                         if(type.lightning > 0){
-                            sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+                            sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
                         }
 
                         if(type instanceof StrikeBulletType stype && stype.splitBullet != null){
-                            sep(bt, Core.bundle.format("bullet.pm-splits", stype.splitBullets));
+                            sep(bt, bundle.format("bullet.pm-splits", stype.splitBullets));
                             bt.row();
 
                             ammo(ObjectMap.of(t, stype.splitBullet), indent + 1).display(bt);
                         }
 
                         if(type.fragBullet != null){
-                            sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
+                            sep(bt, bundle.format("bullet.frags", type.fragBullets));
                             bt.row();
 
                             ammo(ObjectMap.of(t, type.fragBullet), indent + 1).display(bt);
@@ -240,11 +245,11 @@ public class PMStatValues{
                             st.clearChildren();
                             st.left().defaults().padRight(3).left();
 
-                            st.add(Core.bundle.format("pm-fuel.input", crafter.fuelPerItem));
+                            st.add(bundle.format("pm-fuel.input", crafter.fuelPerItem));
 
-                            sep(st, Core.bundle.format("pm-fuel.use", crafter.fuelPerCraft));
+                            sep(st, bundle.format("pm-fuel.use", crafter.fuelPerCraft));
 
-                            sep(st, Core.bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
+                            sep(st, bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
 
                             if(crafter.attribute != null){
                                 st.row();
@@ -353,11 +358,11 @@ public class PMStatValues{
             table.table(ht -> {
                 ht.left().defaults().padRight(3).left();
 
-                ht.add(Core.bundle.format("bullet.pm-flare-health", health));
+                ht.add(bundle.format("bullet.pm-flare-health", health));
                 ht.row();
-                ht.add(Core.bundle.format("bullet.pm-flare-attraction", attraction));
+                ht.add(bundle.format("bullet.pm-flare-attraction", attraction));
                 ht.row();
-                ht.add(Core.bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
+                ht.add(bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
             }).padTop(-9f).left().get().background(Tex.underline);
         };
     }
@@ -367,7 +372,7 @@ public class PMStatValues{
             table.table(t -> {
                 t.left().defaults().padRight(3).left();
 
-                t.add(Core.bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
+                t.add(bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
                 t.row();
 
                 if(status != StatusEffects.none){
@@ -407,13 +412,36 @@ public class PMStatValues{
             table.table(t -> {
                 t.left().defaults().padRight(3).left();
 
-                t.add(Core.bundle.format("bullet.lightning", maxTargets, damage));
+                t.add(bundle.format("bullet.lightning", maxTargets, damage));
                 t.row();
 
                 if(status != StatusEffects.none){
                     t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
                 }
             }).padTop(-9).left().get().background(Tex.underline);
+        };
+    }
+
+    public static StatValue dronePower(float buildUse, float chargeUse){
+        return table -> {
+            table.row();
+            table.table(t -> {
+                t.add("@pm-drone-use-construct").growX().left().padRight(10);
+                t.add((buildUse * 60f) + " " + StatUnit.powerSecond.localized()).growX().left();
+                t.row();
+                t.add("@pm-drone-use-recharge").growX().left().padRight(10);
+                t.add((chargeUse * 60f) + " " + StatUnit.powerSecond.localized()).growX().left();
+            }).padTop(-9).left().get().background(Tex.underline);
+        };
+    }
+
+    public static StatValue unitOutput(UnitType u){
+        return table -> {
+            table.table(t -> {
+                t.image(icon(u)).size(3 * 8);
+                t.add(" " + u.localizedName);
+                //TODO add info button
+            });
         };
     }
 
