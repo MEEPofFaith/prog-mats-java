@@ -253,7 +253,7 @@ public class ApotheosisNexus extends ReloadTurret{
             Draw.color();
 
             if(arc > 0){
-                Color[] c = Core.settings.getBool("pm-farting") || piss ? PMPal.piss : colors;
+                Color[] c = getColors();
                 //Very messy, don't know how to clean this
                 Draw.z(Layer.effect + 0.002f);
                 float u1 = Mathf.curve(arc * 2f, 0f, arcTime / 2f),
@@ -320,6 +320,10 @@ public class ApotheosisNexus extends ReloadTurret{
                     );
                 }
             }
+        }
+
+        public Color[] getColors(){
+            return Core.settings.getBool("pm-farting") || piss ? PMPal.piss : colors;
         }
 
         @Override
@@ -500,6 +504,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     arc = arcTime;
                     arcing = false;
                     damaging = true;
+                    PMDrawf.flash(getColors()[2], 1f);
                     effect(touchdownEffect);
                 }
             }
@@ -618,6 +623,7 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         protected ApotheosisChargeTowerBuild getCharger(int index){
+            if(index >= chargers.size) return null;
             return world.build(chargers.get(index)) instanceof ApotheosisChargeTowerBuild b ? b : null;
         }
 
