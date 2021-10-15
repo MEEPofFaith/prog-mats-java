@@ -1002,7 +1002,7 @@ public class PMBlocks implements ContentList{
             chargeX = chargeY = 41f / 4f;
             beamWidth = 0.5f;
             droneType = (DroneUnitType)PMUnitTypes.transportDrone;
-            chargeRate = 16f; //5 second charge time
+            chargeRate = 12f; //5 second charge time
             constructTime = 10f * 60f;
             constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
         }};

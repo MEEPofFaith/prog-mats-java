@@ -229,8 +229,8 @@ public class PMUnitTypes implements ContentList{
             engineSize = 1.5f;
             engineSpread = 5f;
             trailLength = 6;
-            powerUse = 4f;
-            powerCapacity = 4800f;
+            powerUse = 3f;
+            powerCapacity = 3600f;
         }};
 
         everythingUnit = new UnitType("god"){
