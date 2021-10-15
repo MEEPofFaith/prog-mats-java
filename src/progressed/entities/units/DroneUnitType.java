@@ -125,9 +125,11 @@ public class DroneUnitType extends UnitType{
     public <T extends Unit & Payloadc> void drawPayload(T unit){
         if(unit instanceof DroneUnitEntity s){
             if(s.cargo.hasItems()){
+                Drawf.shadow(s.x, s.y, 2f * tilesize * 2f, 1f);
                 Draw.rect(container, unit.x, unit.y);
             }
             if(s.cargo.hasLiquid()){
+                Drawf.shadow(s.x, s.y, 2f * tilesize * 2f, 1f);
                 Draw.rect(tankBase, unit.x, unit.y);
                 Drawf.liquid(liquid, unit.x, unit.y, s.cargo.liquidCargo.amount / s.cargo.liquidCapacity, s.cargo.liquidCargo.liquid.color);
                 Draw.rect(tankTop, unit.x, unit.y);

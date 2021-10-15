@@ -15,8 +15,9 @@ import static mindustry.Vars.*;
 public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
+    public int loadSize = 2;
 
-    public TextureRegion fullContainer;
+    public TextureRegion containerFull;
     public TextureRegion[] containerRegions = new TextureRegion[2];
 
     public ItemDroneStation(String name){
@@ -39,14 +40,14 @@ public class ItemDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        fullContainer = Core.atlas.find("prog-mats-item-cargo-full");
+        containerFull = Core.atlas.find("prog-mats-item-cargo-full");
         containerRegions[0] = Core.atlas.find("prog-mats-item-cargo-base");
         containerRegions[1] = Core.atlas.find("prog-mats-item-cargo-decal");
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[]{region, fullContainer};
+        return new TextureRegion[]{region, containerFull};
     }
 
     public class ItemDroneStationBuild extends DroneStationBuild{
@@ -116,12 +117,13 @@ public class ItemDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
+            float progress = build / constructTime;
             if(constructing){
                 Draw.draw(Layer.blockBuilding, () -> {
                     Draw.color(isOrigin() ? Pal.accent : Pal.remove);
                     for(TextureRegion region : containerRegions){
                         Shaders.blockbuild.region = region;
-                        Shaders.blockbuild.progress = build / constructTime;
+                        Shaders.blockbuild.progress = progress;
 
                         Draw.rect(region, x, y, 0);
                         Draw.flush();
@@ -129,10 +131,9 @@ public class ItemDroneStation extends DroneStation{
                 });
             }
 
-            if(build >= constructTime){
-                Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
-                Draw.rect(fullContainer, x + loadVector.x, y + loadVector.y);
-            }
+            Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
+            if(progress > 0.01f) Drawf.shadow(x + loadVector.x, y + loadVector.y, loadSize * tilesize * 2f, progress);
+            if(build >= constructTime) Draw.rect(containerFull, x + loadVector.x, y + loadVector.y);
         }
 
         @Override

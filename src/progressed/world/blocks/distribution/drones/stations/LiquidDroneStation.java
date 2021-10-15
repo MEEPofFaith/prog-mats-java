@@ -11,9 +11,12 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.entities.units.entity.*;
 
+import static mindustry.Vars.tilesize;
+
 public class LiquidDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
+    public int loadSize = 2;
 
     public TextureRegion liquidRegion, tankBase, tankTop, tankFull;
     public TextureRegion[] tankRegions = new TextureRegion[3];
@@ -108,12 +111,13 @@ public class LiquidDroneStation extends DroneStation{
         public void draw(){
             super.draw();
 
+            float progress = build / constructTime;
             if(constructing){
                 Draw.draw(Layer.blockBuilding, () -> {
                     Draw.color(isOrigin() ? Pal.accent : Pal.remove);
                     for(TextureRegion region : tankRegions){
                         Shaders.blockbuild.region = region;
-                        Shaders.blockbuild.progress = build / constructTime;
+                        Shaders.blockbuild.progress = progress;
 
                         Draw.rect(region, x, y, 0);
                         Draw.flush();
@@ -121,8 +125,10 @@ public class LiquidDroneStation extends DroneStation{
                 });
             }
 
+
+            Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
+            if(progress > 0.01f) Drawf.shadow(x + loadVector.x, y + loadVector.y, loadSize * tilesize * 2f, progress);
             if(build >= constructTime){
-                Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
                 Draw.rect(tankBase, x + loadVector.x, y + loadVector.y);
 
                 if(liquids.total() > 0.01f){
