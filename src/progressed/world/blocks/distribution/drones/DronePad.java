@@ -54,9 +54,21 @@ public class DronePad extends Block{
         super(name);
 
         update = true;
-        configurable = true;
+        configurable = saveConfig = true;
         hasPower = true;
 
+        config(Point2[].class, (DronePadBuild b, Point2[] points) -> {
+            int[] stations = new int[maxRoutes * 2];
+            for(int i = 0; i < maxRoutes * 2; i++){
+                Point2 point = points[i];
+                int pos = Point2.pack(point.x + b.tileX(), point.y + b.tileY());
+
+                //Prevent connecting to an already connected station
+                DroneStationBuild s = b.getStation(pos);
+                stations[i] = s != null && s.connected ? -1 : pos;
+            }
+            b.routes = IntSeq.with(stations);
+        });
         config(IntSeq.class, (DronePadBuild b, IntSeq i) -> b.routes = IntSeq.with(i.toArray()));
     }
 
@@ -418,6 +430,15 @@ public class DronePad extends Block{
             }
             deselect();
             return true;
+        }
+
+        @Override
+        public Object config(){
+            Point2[] points = new Point2[maxRoutes * 2];
+            for(int i = 0; i < maxRoutes * 2; i++){
+                points[i] = Point2.unpack(routes.get(i)).sub(tile.x, tile.y);
+            }
+            return points;
         }
 
         public void select(DroneStationBuild s){
