@@ -156,6 +156,11 @@ public class DroneStation extends Block{
         }
 
         @Override
+        public boolean canPickup(){
+            return false; //I don't want to deal with weirdness
+        }
+
+        @Override
         public void draw(){
             Draw.rect(region, x, y);
 

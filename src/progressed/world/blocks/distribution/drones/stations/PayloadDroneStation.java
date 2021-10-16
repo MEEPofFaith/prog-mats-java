@@ -18,8 +18,6 @@ public class PayloadDroneStation extends DroneStation{
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
     public float payloadLimit = -1f;
 
-    public TextureRegion topRegion;
-
     public PayloadDroneStation(String name){
         super(name);
 
@@ -41,7 +39,6 @@ public class PayloadDroneStation extends DroneStation{
     public void load(){
         super.load();
 
-        topRegion = Core.atlas.find(name + "-top", "factory-top-" + size);
         input = Core.atlas.find(name + "-in", "factory-in-" + size);
         output = Core.atlas.find(name + "-out", "factory-out-" + size);
     }
@@ -154,9 +151,6 @@ public class PayloadDroneStation extends DroneStation{
 
             Draw.z(loading ? (lowFlier ? Layer.flyingUnitLow : Layer.flyingUnit) - 1 : Layer.blockOver);
             drawPayload();
-
-            Draw.z(Layer.blockOver + 0.1f);
-            Draw.rect(topRegion, x, y);
         }
 
         @Override

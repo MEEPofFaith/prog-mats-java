@@ -58,6 +58,7 @@ public class DronePad extends Block{
         hasPower = true;
 
         config(IntSeq.class, (DronePadBuild b, IntSeq i) -> b.routes = IntSeq.with(i.toArray()));
+        config(Integer.class, (DronePadBuild b, Integer i) -> b.drone = (DroneUnitEntity)Groups.unit.find(u -> u instanceof DroneUnitEntity && u.id == i));
     }
 
     @Override
@@ -136,7 +137,7 @@ public class DronePad extends Block{
                 }
             }
 
-            if(drone != null && drone.dead){
+            if(drone != null && (drone.dead || !drone.isAdded())){
                 drone = null;
                 charging = false;
             }
@@ -156,6 +157,7 @@ public class DronePad extends Block{
                     drone.pad = pos();
                     drone.updateRoutes();
                     drone.charge = ((DroneUnitType)(drone.type)).powerCapacity;
+                    configure(drone.id);
                 }
             }
             total += edelta() * buildup;
@@ -440,6 +442,13 @@ public class DronePad extends Block{
         @Override
         public boolean canPickup(){
             return false; //no
+        }
+
+        @Override
+        public void configure(Object value){
+            //save last used config (Only save name changes, do not save state changes)
+            if(value instanceof IntSeq) block.lastConfig = value;
+            Call.tileConfig(player, self(), value);
         }
 
         @Override
