@@ -40,8 +40,8 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public ApotheosisChargeTower chargeTower; //Literally just for copying the laser for the spinner chargers
 
-    public final int timerTarget = timers++, damageTimer = timers++, pulseTimer = timers++;
-    public int targetInterval = 20, damageInterval = 5, pulseInterval = 45;
+    public final int timerTarget = timers++, damageTimer = timers++, pulseTimer = timers++, bigPulseTimer = timers++;
+    public int targetInterval = 20, damageInterval = 5, pulseInterval = 45, bigPulseInterval = 135;
 
     public float powerUse = 1f;
     public float speed, duration = 60f;
@@ -69,7 +69,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float[] pullLengths = {0f, 2.25f, 3.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f;
-    public float shake = 2f, laserShake = 2f;
+    public float shake, laserShake;
     public float pissChance = 0.01f;
 
     public Effect
@@ -78,6 +78,7 @@ public class ApotheosisNexus extends ReloadTurret{
         touchdownEffect = PMFx.apotheosisTouchdown,
         damageEffect = PMFx.apotheosisDamage,
         pulseEffect = PMFx.apotheosisPulse;
+    public float bigPulseScl = 1f;
     public Sound fireSound = Sounds.laserblast;
     public Sound chargeSound = Sounds.techloop, beamSound = PMSounds.pulseBeam;
     public float chargeVolume = 1f, beamVolume = 1f;
@@ -540,6 +541,10 @@ public class ApotheosisNexus extends ReloadTurret{
                     effect(pulseEffect);
                 }
 
+                if(timer.get(bigPulseTimer, bigPulseInterval)){
+                    effect(pulseEffect, bigPulseScl);
+                }
+
                 if(activeTime >= realDuration){
                     fading = true;
                 }
@@ -576,8 +581,13 @@ public class ApotheosisNexus extends ReloadTurret{
             chargers.each(i -> ((ApotheosisChargeTowerBuild)(world.build(i))).fullLaser = false);
         }
 
+
+        public void effect(Effect eff, float scl){
+            eff.at(curPos.x, curPos.y, 0f, new float[]{Layer.effect + (curPos.y < y ? 0.0029f : 0.0009f), radscl() * fadef() * scl}); //Layer data to draw properly close to the beam [layer, scl])
+        }
+
         public void effect(Effect eff){
-            eff.at(curPos.x, curPos.y, 0f, new float[]{Layer.effect + (curPos.y < y ? 0.0029f : 0.0009f), radscl() * fadef()}); //Layer data to draw properly close to the beam [layer, scl])
+            effect(eff, 1f);
         }
 
         protected boolean validateTarget(){

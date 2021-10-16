@@ -942,6 +942,8 @@ public class PMBlocks implements ContentList{
             buildingDamageMultiplier = 0.25f;
             speed = 4f;
             duration = 4f * 60f;
+            bigPulseScl = 2f;
+            shake = laserShake = 5f;
 
             unitSort = (u, x, y) -> -u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 
