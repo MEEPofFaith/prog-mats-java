@@ -50,7 +50,6 @@ public class ProgMats extends Mod{
 
             progM.meta.displayName = "[#FCC21B]" + progM.meta.displayName + "[]";
             progM.meta.author = stringf.get(progM.meta.name + ".author");
-            progM.meta.version = "[#FCC21B]" + progM.meta.version + "[]";
             progM.meta.description = stringf.get(progM.meta.name + ".description");
 
             Events.on(ClientLoadEvent.class, e -> {

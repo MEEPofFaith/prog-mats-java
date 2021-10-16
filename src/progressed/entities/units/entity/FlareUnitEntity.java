@@ -1,13 +1,17 @@
-package progressed.entities.units;
+package progressed.entities.units.entity;
 
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.content.*;
+import progressed.entities.units.*;
+import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
 
 public class FlareUnitEntity extends SentryUnitEntity{
+    public int parent;
     public float animation = 1f, height = 0f;
 
     @Override
@@ -50,7 +54,10 @@ public class FlareUnitEntity extends SentryUnitEntity{
     
     @Override
     public void destroy(){
-        // do nothing
+        SignalFlareTurretBuild s = findParent();
+        if(s != null){
+            s.flares--;
+        }
         remove();
     }
 
@@ -102,11 +109,16 @@ public class FlareUnitEntity extends SentryUnitEntity{
         // cannot move
     }
 
+    public SignalFlareTurretBuild findParent(){
+        return Vars.world.build(parent) instanceof SignalFlareTurretBuild s ? s : null;
+    }
+
     @Override
     public void write(Writes write){
         super.write(write);
         write.f(animation);
         write.f(height);
+        write.i(parent);
     }
 
     @Override
@@ -114,6 +126,7 @@ public class FlareUnitEntity extends SentryUnitEntity{
         super.read(read);
         animation = read.f();
         height = read.f();
+        parent = read.i();
     }
 
     @Override

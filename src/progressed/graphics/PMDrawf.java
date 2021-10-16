@@ -1,10 +1,15 @@
 package progressed.graphics;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.actions.*;
+import arc.scene.event.*;
+import arc.scene.ui.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 
@@ -12,6 +17,7 @@ import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Mathf.*;
+import static mindustry.Vars.headless;
 
 public class PMDrawf{
     private static Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
@@ -170,6 +176,26 @@ public class PMDrawf{
                 x + vec3.x, y + vec3.y,
                 x + vec4.x, y + vec4.y
             );
+        }
+    }
+
+    /**
+     * Color flash to entire screen.
+     * @author sunny
+     * */
+    public static void flash(Color color, float duration){
+        if(!headless){
+            Image white = new Image();
+            white.touchable = Touchable.disabled;
+            white.setColor(color);
+            white.setFillParent(true);
+            white.actions(Actions.fadeOut(duration), Actions.remove());
+            white.update(() -> {
+                if(!Vars.state.isGame()){
+                    white.remove();
+                }
+            });
+            Core.scene.add(white);
         }
     }
 }

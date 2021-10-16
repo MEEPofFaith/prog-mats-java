@@ -31,7 +31,7 @@ public class MinigunTurret extends ItemTurret{
     public void load(){
         super.load();
 
-        for(int i = 0; i < 3; i ++){
+        for(int i = 0; i < 3; i++){
             turretRegions[i] = Core.atlas.find(name + "-frame-" + i);
         }
         for(int i = 0; i < 12; i++){

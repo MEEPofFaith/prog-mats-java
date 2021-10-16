@@ -13,17 +13,19 @@ import mindustry.type.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.units.*;
+import progressed.entities.units.entity.*;
 import progressed.graphics.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes implements ContentList{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
-    private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
+    private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SentryUnitEntity.class, SentryUnitEntity::new),
-        prov(FlareUnitEntity.class, FlareUnitEntity::new)
+        prov(FlareUnitEntity.class, FlareUnitEntity::new),
+        prov(DroneUnitEntity.class, DroneUnitEntity::new)
     };
 
-    private static ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
+    private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
 
     /**
      * Internal function to flatmap {@code Class -> Prov} into an {@link Entry}.
@@ -75,6 +77,9 @@ public class PMUnitTypes implements ContentList{
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
+
+    //drone
+    transportDrone,
     
     //sandy
     everythingUnit;
@@ -214,6 +219,19 @@ public class PMUnitTypes implements ContentList{
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;
+        }};
+
+        EntityMapping.nameMap.put("drone", DroneUnitEntity::new);
+        transportDrone = new DroneUnitType("drone"){{
+            health = 475;
+            hitSize = 17f;
+            hideDetails = false;
+            engineOffset = 40f / 4f;
+            engineSize = 1.5f;
+            engineSpread = 5f;
+            trailLength = 6;
+            powerUse = 3f;
+            powerCapacity = 3600f;
         }};
 
         everythingUnit = new UnitType("god"){

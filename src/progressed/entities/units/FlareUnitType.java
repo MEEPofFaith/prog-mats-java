@@ -17,6 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.content.*;
+import progressed.entities.units.entity.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -129,9 +130,7 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
-        unit.team = team;
-        unit.setType(this);
+        Unit unit = super.create(team);
         unit.health = health;
         unit.maxHealth = attraction;
         unit.rotation = 90f;

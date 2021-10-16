@@ -1,9 +1,10 @@
-package progressed.entities.units;
+package progressed.entities.units.entity;
 
 import arc.math.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import progressed.content.*;
+import progressed.entities.units.*;
 
 public class SentryUnitEntity extends UnitEntity{
     public float duration;
@@ -38,7 +39,7 @@ public class SentryUnitEntity extends UnitEntity{
 
     @Override
     public int cap(){
-        return count() + 5;
+        return count() + 1;
     }
 
     @Override

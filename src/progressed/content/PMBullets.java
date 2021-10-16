@@ -31,13 +31,11 @@ public class PMBullets implements ContentList{
     
     blackHole, cataclysm, absorbed,
     
-    empParticle,
-    
     firestormMissile,
 
     recursionTwo, recursionOne,
     
-    strikedownBasic, strikedownEmp, strikedownRecursive,
+    strikedownBasic, strikedownRecursive,
     
     arbiterBasic, arbiterClusterFrag, arbiterCluster,
     
@@ -541,7 +539,7 @@ public class PMBullets implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        harbingerLaser = new LaserBulletType((float)Double.MAX_VALUE){
+        harbingerLaser = new LaserBulletType(Float.POSITIVE_INFINITY){
             {
                 colors = new Color[]{Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white};
                 length = 900f;

@@ -18,6 +18,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
@@ -25,6 +26,8 @@ import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.distribution.*;
+import progressed.world.blocks.distribution.drones.*;
+import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.sandbox.*;
 import progressed.world.meta.*;
@@ -59,7 +62,7 @@ public class PMBlocks implements ContentList{
     caliber,
 
     //Misc
-    signal, tinker, vaccinator,
+    allure, tinker, vaccinator,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -75,14 +78,21 @@ public class PMBlocks implements ContentList{
 
     // endregion
     // Region Distribution
-    
-    floatingConveyor, burstDriver,
+
+    //Conveyor
+    floatingConveyor,
+
+    //Drone
+    dronePad, itemDroneStation, liquidDroneStation, payloadDroneStation,
+
+    //Misc
+    burstDriver,
 
     // endregion
     // Region Crafting
 
     //Crafters
-    mindronCollider, forge, shellPress, missileFactory, sentryBuilder,
+    mindronCollider, pyroclastForge, shellPress, missileFactory, sentryBuilder,
 
     // endregion
     // Region Effect
@@ -609,7 +619,7 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.railgun;
         }};
 
-        signal = new SignalFlareTurret("signal"){{
+        allure = new SignalFlareTurret("signal"){{
             requirements(Category.turret, with(
                 Items.lead, 80,
                 Items.silicon, 130,
@@ -932,6 +942,10 @@ public class PMBlocks implements ContentList{
             buildingDamageMultiplier = 0.25f;
             speed = 4f;
             duration = 4f * 60f;
+            bigPulseScl = 2f;
+            shake = laserShake = 5f;
+
+            unitSort = (u, x, y) -> -u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
@@ -986,6 +1000,65 @@ public class PMBlocks implements ContentList{
             researchCostMultiplier = 300f;
         }};
 
+        dronePad = new DronePad("drone-pad"){{
+            requirements(Category.units, with(
+                Items.titanium, 600,
+                Items.thorium, 300,
+                Items.plastanium, 300,
+                Items.silicon, 550,
+                Items.lead, 500,
+                Items.surgeAlloy, 90,
+                PMItems.valexitite, 150
+            ));
+            size = 4;
+            chargeX = chargeY = 41f / 4f;
+            beamWidth = 0.5f;
+            droneType = (DroneUnitType)PMUnitTypes.transportDrone;
+            chargeRate = 12f; //5 second charge time
+            constructTime = 10f * 60f;
+            constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
+            hideDetails = false;
+        }};
+
+        itemDroneStation = new ItemDroneStation("drone-station-items"){{
+            requirements(Category.distribution, with(
+                Items.titanium, 300,
+                Items.plastanium, 150,
+                Items.silicon, 125,
+                Items.lead, 175,
+                Items.thorium, 125,
+                PMItems.valexitite, 75
+            ));
+            size = 3;
+            itemCapacity = 500;
+        }};
+
+        liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
+            requirements(Category.liquid, with(
+                Items.titanium, 250,
+                Items.plastanium, 125,
+                Items.silicon, 125,
+                Items.lead, 300,
+                Items.metaglass, 175,
+                PMItems.valexitite, 75
+            ));
+            size = 3;
+            liquidCapacity = 1000f;
+        }};
+
+        payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
+            requirements(Category.units, with(
+                Items.titanium, 300,
+                Items.plastanium, 175,
+                Items.silicon, 100,
+                Items.lead, 250,
+                Items.thorium, 125,
+                PMItems.valexitite, 100
+            ));
+            size = 5;
+            maxPayloadSize = 3.5f;
+        }};
+
         burstDriver = new BurstDriver("burst-driver"){{
             requirements(Category.distribution, with(
                 Items.titanium, 275,
@@ -1024,7 +1097,7 @@ public class PMBlocks implements ContentList{
             outputItem = new ItemStack(PMItems.valexitite, 3);
         }};
 
-        forge = new FuelCrafter("forge"){{
+        pyroclastForge = new FuelCrafter("forge"){{
             requirements(Category.crafting, with(
                 Items.titanium, 600,
                 Items.metaglass, 150,
@@ -1182,6 +1255,14 @@ public class PMBlocks implements ContentList{
             public void init(){
                 super.init();
                 shootLength -= 16f;
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
             }
 
             @Override
