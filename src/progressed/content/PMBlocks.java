@@ -1002,12 +1002,13 @@ public class PMBlocks implements ContentList{
 
         dronePad = new DronePad("drone-pad"){{
             requirements(Category.distribution, with(
-                Items.titanium, 500,
-                Items.thorium, 250,
-                Items.silicon, 400,
-                Items.lead, 450,
-                Items.surgeAlloy, 60,
-                PMItems.valexitite, 100
+                Items.titanium, 600,
+                Items.thorium, 300,
+                Items.plastanium, 300,
+                Items.silicon, 550,
+                Items.lead, 500,
+                Items.surgeAlloy, 90,
+                PMItems.valexitite, 150
             ));
             size = 4;
             chargeX = chargeY = 41f / 4f;
@@ -1020,36 +1021,37 @@ public class PMBlocks implements ContentList{
 
         itemDroneStation = new ItemDroneStation("drone-station-items"){{
             requirements(Category.distribution, with(
-                Items.titanium, 250,
-                Items.silicon, 100,
+                Items.titanium, 300,
+                Items.plastanium, 150,
+                Items.silicon, 125,
                 Items.lead, 175,
-                Items.thorium, 75,
-                PMItems.valexitite, 50
+                Items.thorium, 125,
+                PMItems.valexitite, 75
             ));
             size = 3;
-            itemCapacity = 200;
+            itemCapacity = 500;
         }};
 
         liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
             requirements(Category.liquid, with(
-                Items.titanium, 175,
-                Items.silicon, 100,
-                Items.lead, 225,
-                Items.metaglass, 125,
-                PMItems.valexitite, 50
+                Items.titanium, 250,
+                Items.plastanium, 125,
+                Items.silicon, 125,
+                Items.lead, 300,
+                Items.metaglass, 175,
+                PMItems.valexitite, 75
             ));
             size = 3;
-            liquidCapacity = 600f;
+            liquidCapacity = 1000f;
         }};
 
         payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
             requirements(Category.units, with(
                 Items.titanium, 300,
-                Items.silicon, 150,
-                Items.copper, 200,
-                Items.lead, 200,
-                Items.thorium, 100,
-                Items.surgeAlloy, 75,
+                Items.plastanium, 175,
+                Items.silicon, 100,
+                Items.lead, 250,
+                Items.thorium, 125,
                 PMItems.valexitite, 100
             ));
             size = 5;
