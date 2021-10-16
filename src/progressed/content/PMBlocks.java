@@ -1001,7 +1001,7 @@ public class PMBlocks implements ContentList{
         }};
 
         dronePad = new DronePad("drone-pad"){{
-            requirements(Category.distribution, with(
+            requirements(Category.units, with(
                 Items.titanium, 600,
                 Items.thorium, 300,
                 Items.plastanium, 300,
@@ -1017,6 +1017,7 @@ public class PMBlocks implements ContentList{
             chargeRate = 12f; //5 second charge time
             constructTime = 10f * 60f;
             constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
+            hideDetails = false;
         }};
 
         itemDroneStation = new ItemDroneStation("drone-station-items"){{
