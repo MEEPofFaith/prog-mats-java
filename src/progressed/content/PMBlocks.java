@@ -92,7 +92,7 @@ public class PMBlocks implements ContentList{
     // Region Crafting
 
     //Crafters
-    mindronCollider, forge, shellPress, missileFactory, sentryBuilder,
+    mindronCollider, pyroclastForge, shellPress, missileFactory, sentryBuilder,
 
     // endregion
     // Region Effect
@@ -1094,7 +1094,7 @@ public class PMBlocks implements ContentList{
             outputItem = new ItemStack(PMItems.valexitite, 3);
         }};
 
-        forge = new FuelCrafter("forge"){{
+        pyroclastForge = new FuelCrafter("forge"){{
             requirements(Category.crafting, with(
                 Items.titanium, 600,
                 Items.metaglass, 150,
