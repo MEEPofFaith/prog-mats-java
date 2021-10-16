@@ -31,7 +31,7 @@ public class ItemDroneStation extends DroneStation{
 
         config(Integer.class, (ItemDroneStationBuild build, Integer i) -> {
             build.state = StationState.all[i];
-            build.constructing = true;
+            build.constructing = build.state == StationState.origin;
         });
     }
 

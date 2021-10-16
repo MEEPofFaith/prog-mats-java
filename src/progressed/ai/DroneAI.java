@@ -44,7 +44,7 @@ public class DroneAI extends AIController{
                                 d.getStation().takeCargo(d);
                                 loading(d);
                                 if(!d.getStation().loading){
-                                    deactivate(d);
+                                    d.deactivate();
                                     reset(d);
                                     updateRoutes(d);
                                 }
@@ -90,8 +90,9 @@ public class DroneAI extends AIController{
     public void fail(DroneUnitEntity d){
         if(!d.dead){
             reset(d);
-            updateRoutes(d);
+            d.updateRoutes();
             d.cargo.empty();
+            d.state = DroneState.dropoff;
         }
     }
 
@@ -108,12 +109,6 @@ public class DroneAI extends AIController{
     public void loading(DroneUnitEntity d){
         d.getStation().setLoading();
         d.getStation().updateCargo(d);
-    }
-
-    public void deactivate(DroneUnitEntity d){
-        d.getStation(d.curRoute, 0).active = false;
-        d.getStation().active = false;
-        if(!d.getStation().connected) d.getStation().configure(-1);
     }
 
     @Override

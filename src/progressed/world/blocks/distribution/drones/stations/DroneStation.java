@@ -234,7 +234,8 @@ public class DroneStation extends Block{
             }).tooltip("@pm-drone-editname").size(40f);
 
             ImageButton dump = table.button(Icon.trash, Styles.defaulti, () -> configure((byte)0)).tooltip("@pm-drone-dump").size(40).get();
-            dump.getStyle().checked = Tex.buttonDown;
+            dump.getStyle().over = Tex.buttonDown;
+            dump.getStyle().checked = Tex.buttonOver;
             dump.update(() -> {
                 dump.setChecked(dumping);
             });

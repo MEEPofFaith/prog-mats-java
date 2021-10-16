@@ -135,6 +135,18 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     @Override
+    public void kill(){
+        deactivate();
+        super.kill();
+    }
+
+    public void deactivate(){
+        getStation(curRoute, 0).active = false;
+        getStation().active = false;
+        if(!getStation().connected) getStation().configure(2);
+    }
+
+    @Override
     public void write(Writes write){
         super.write(write);
 
