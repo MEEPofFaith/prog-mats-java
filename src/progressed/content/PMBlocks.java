@@ -1023,6 +1023,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 50
             ));
             size = 3;
+            itemCapacity = 200;
         }};
 
         liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
@@ -1034,6 +1035,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 50
             ));
             size = 3;
+            liquidCapacity = 600f;
         }};
 
         payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
@@ -1047,6 +1049,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 100
             ));
             size = 5;
+            maxPayloadSize = 3.5f;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{

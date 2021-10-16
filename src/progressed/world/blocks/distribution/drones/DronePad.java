@@ -58,7 +58,6 @@ public class DronePad extends Block{
         hasPower = true;
 
         config(IntSeq.class, (DronePadBuild b, IntSeq i) -> b.routes = IntSeq.with(i.toArray()));
-        config(Integer.class, (DronePadBuild b, Integer i) -> b.drone = (DroneUnitEntity)Groups.unit.find(u -> u instanceof DroneUnitEntity && u.id == i));
     }
 
     @Override
@@ -157,7 +156,6 @@ public class DronePad extends Block{
                     drone.pad = pos();
                     drone.updateRoutes();
                     drone.charge = ((DroneUnitType)(drone.type)).powerCapacity;
-                    configure(drone.id);
                 }
             }
             total += edelta() * buildup;
@@ -178,37 +176,34 @@ public class DronePad extends Block{
             }
 
             if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
-                Draw.z((droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 0.5f);
-                for(int i = 0; i < 2; i++){
-                    int j = 0;
-                    for(int xflip: Mathf.signs){
-                        for(int yflip: Mathf.signs){
-                            float originX = x + chargeX * xflip, originY = y + chargeY * yflip; //A casual yoink from repair points later...
+                float z = (droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 0.5f;
+                int j = 0;
+                for(int xflip: Mathf.signs){
+                    for(int yflip: Mathf.signs){
+                        float originX = x + chargeX * xflip, originY = y + chargeY * yflip; //A casual yoink from repair points later...
 
-                            if(charging && drone != null){
-                                rand.setSeed(id + drone.id() + j);
+                        if(charging && drone != null){
+                            rand.setSeed(id + drone.id() + j);
 
-                                lastEnds[j].set(drone).sub(originX, originY);
-                                lastEnds[j].setLength(Math.max(2f, lastEnds[j].len()));
+                            lastEnds[j].set(drone).sub(originX, originY);
+                            lastEnds[j].setLength(Math.max(2f, lastEnds[j].len()));
 
-                                lastEnds[j].add(tr.trns(
-                                    rand.random(360f) + Time.time / 2f,
-                                    Mathf.sin(Time.time + rand.random(200f), 55f, rand.random(drone.hitSize() * 0.2f, drone.hitSize() * 0.45f))
-                                ).rotate(drone.rotation()));
+                            lastEnds[j].add(tr.trns(
+                                rand.random(360f) + Time.time / 2f,
+                                Mathf.sin(Time.time + rand.random(200f), 55f, rand.random(drone.hitSize() * 0.2f, drone.hitSize() * 0.45f))
+                            ).rotate(drone.rotation()));
 
-                                lastEnds[j].add(originX, originY);
-                            }
-
-                            if(i == 0){
-                                Draw.color(laserColor);
-                                Drawf.laser(team, laser, laserEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
-                            }else{
-                                Draw.color(laserColorTop);
-                                Drawf.laser(team, laserTop, laserTopEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
-                            }
-
-                            j++;
+                            lastEnds[j].add(originX, originY);
                         }
+
+                        Draw.z(z);
+                        Draw.color(laserColor);
+                        Drawf.laser(team, laser, laserEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
+                        Draw.z(z + 0.1f);
+                        Draw.color(laserColorTop);
+                        Drawf.laser(team, laserTop, laserTopEnd, originX, originY, lastEnds[j].x, lastEnds[j].y, chargeup * beamWidth);
+
+                        j++;
                     }
                 }
             }
@@ -442,13 +437,6 @@ public class DronePad extends Block{
         @Override
         public boolean canPickup(){
             return false; //no
-        }
-
-        @Override
-        public void configure(Object value){
-            //save last used config (Only save name changes, do not save state changes)
-            if(value instanceof IntSeq) block.lastConfig = value;
-            Call.tileConfig(player, self(), value);
         }
 
         @Override

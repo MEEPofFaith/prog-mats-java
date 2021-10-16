@@ -33,7 +33,7 @@ public class DroneUnitEntity extends PayloadUnit{
             charge -= Time.delta * getType().powerUse * (vel.len() / type.speed);
         }
 
-        if(getPad() == null || getPad() != null && getPad().drone != this){
+        if(!dead && (getPad() == null || getPad() != null && getPad().drone != this)){
             elevation = 0;
             kill(); //No pad or pad taken, cast Spontanium Combustum
         }

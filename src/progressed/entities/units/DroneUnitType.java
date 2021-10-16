@@ -51,6 +51,11 @@ public class DroneUnitType extends UnitType{
     public void setStats(){
         super.setStats();
 
+        stats.remove(Stat.commandLimit);
+        stats.remove(Stat.payloadCapacity);
+        stats.remove(Stat.itemCapacity);
+        stats.remove(Stat.range);
+
         stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
         stats.add(Stat.powerCapacity, powerCapacity, StatUnit.none);
     }

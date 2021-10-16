@@ -10,13 +10,14 @@ import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.meta.*;
 import progressed.entities.units.entity.*;
 
 import static mindustry.Vars.*;
 
 public class PayloadDroneStation extends DroneStation{
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
-    public float payloadLimit = -1f;
+    public float maxPayloadSize = 3f;
 
     public PayloadDroneStation(String name){
         super(name);
@@ -32,7 +33,14 @@ public class PayloadDroneStation extends DroneStation{
     public void init(){
         super.init();
 
-        if(payloadLimit < 0) payloadLimit = size;
+        if(maxPayloadSize < 0) maxPayloadSize = size;
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.payloadCapacity, maxPayloadSize, StatUnit.blocksSquared);
     }
 
     @Override
@@ -168,7 +176,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return isOrigin() && this.payload == null && payload.fits(payloadLimit);
+            return isOrigin() && this.payload == null && payload.fits(maxPayloadSize);
         }
 
         @Override

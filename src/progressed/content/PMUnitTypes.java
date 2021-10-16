@@ -225,6 +225,7 @@ public class PMUnitTypes implements ContentList{
         transportDrone = new DroneUnitType("drone"){{
             health = 475;
             hitSize = 17f;
+            hideDetails = false;
             engineOffset = 40f / 4f;
             engineSize = 1.5f;
             engineSpread = 5f;

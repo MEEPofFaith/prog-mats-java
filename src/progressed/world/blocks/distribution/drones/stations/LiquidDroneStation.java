@@ -26,7 +26,6 @@ public class LiquidDroneStation extends DroneStation{
 
         hasItems = false;
         hasLiquids = true;
-        liquidCapacity = 300;
         outputsLiquid = true;
         selectColor = Liquids.cryofluid.color;
         namePref = "Liquid";
