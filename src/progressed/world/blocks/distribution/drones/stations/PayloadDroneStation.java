@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.payloads.*;
@@ -34,6 +35,12 @@ public class PayloadDroneStation extends DroneStation{
         super.init();
 
         if(maxPayloadSize < 0) maxPayloadSize = size;
+    }
+
+    @Override
+    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+        Draw.rect(region, req.drawx(), req.drawy());
+        Draw.rect(output, req.drawx(), req.drawy(), req.rotation * 90);
     }
 
     @Override
