@@ -943,6 +943,8 @@ public class PMBlocks implements ContentList{
             speed = 4f;
             duration = 4f * 60f;
 
+            unitSort = (u, x, y) -> -u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
