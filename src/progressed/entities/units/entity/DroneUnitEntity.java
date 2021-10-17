@@ -10,6 +10,7 @@ import mindustry.type.*;
 import progressed.content.*;
 import progressed.entities.units.*;
 import progressed.graphics.*;
+import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
@@ -33,12 +34,21 @@ public class DroneUnitEntity extends PayloadUnit{
             charge -= Time.delta * getType().powerUse * (vel.len() / type.speed);
         }
 
-        if(!dead && (getPad() == null || getPad() != null && getPad().drone != this)){
-            elevation = 0;
-            kill(); //No pad or pad taken, cast Spontanium Combustum
-        }
-        if(!dead && charge < 0f){
-            kill();
+        DronePadBuild p = getPad();
+        if(!dead){
+            if(p != null){
+                if(p.drone == null){
+                    p.drone = this;
+                }else if(p.drone != this){
+                    spontaniumCombustum();
+                }
+            }else{
+                spontaniumCombustum();
+            }
+            
+            if(charge < 0f){
+                kill();
+            }
         }
 
         for(int i : Mathf.zeroOne){
@@ -56,6 +66,11 @@ public class DroneUnitEntity extends PayloadUnit{
         }
 
         super.update();
+    }
+
+    public void spontaniumCombustum(){
+        elevation = 0;
+        kill();
     }
 
     public float chargef(){
@@ -192,8 +207,6 @@ public class DroneUnitEntity extends PayloadUnit{
         }
 
         cargo.read(read);
-
-        ((DronePadBuild)(world.build(pad))).drone = this;
     }
 
     @Override
