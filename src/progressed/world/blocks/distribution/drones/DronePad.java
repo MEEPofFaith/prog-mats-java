@@ -20,6 +20,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
+import progressed.entities.units.entity.DroneUnitEntity.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.ItemDroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.LiquidDroneStation.*;
@@ -411,7 +412,7 @@ public class DronePad extends Block{
 
         @Override
         public boolean onConfigureTileTapped(Building other){
-            if(other instanceof DroneStationBuild s && selRoute >= 0 && s.canConnect(selState)){
+            if(other instanceof DroneStationBuild s && selRoute >= 0 && selState != StationState.disconnected && s.canConnect(selState)){
                 DroneStationBuild s2 = switch(selState){
                     case origin -> getStation(selRoute, 1);
                     case destination -> getStation(selRoute, 0);
@@ -442,16 +443,18 @@ public class DronePad extends Block{
         }
 
         public void select(DroneStationBuild s){
-            DroneStationBuild sel = getStation(selRoute, selState.ordinal());
-            DroneStationBuild otherEnd = getStation(selRoute, 1 - selState.ordinal());
-            if((otherEnd == null || otherEnd.block() == s.block()) && (!s.connected || routes.contains(s.pos()))){
-                if(sel != null){
-                    disconnectStation(selRoute, selState.ordinal());
+            if(selRoute > -1 && selState != StationState.disconnected){
+                DroneStationBuild sel = getStation(selRoute, selState.ordinal());
+                DroneStationBuild otherEnd = getStation(selRoute, 1 - selState.ordinal());
+                if((otherEnd == null || otherEnd.block() == s.block()) && (!s.connected || routes.contains(s.pos()))){
+                    if(sel != null){
+                        disconnectStation(selRoute, selState.ordinal());
+                    }
+                    if(sel != s){
+                        connectStation(selRoute, selState.ordinal(), s.pos());
+                    }
+                    selState = StationState.disconnected;
                 }
-                if(sel != s){
-                    connectStation(selRoute, selState.ordinal(), s.pos());
-                }
-                selState = StationState.disconnected;
             }
         }
 
