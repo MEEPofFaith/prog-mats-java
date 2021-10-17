@@ -1,6 +1,5 @@
 package progressed.world.meta;
 
-import arc.*;
 import arc.flabel.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;

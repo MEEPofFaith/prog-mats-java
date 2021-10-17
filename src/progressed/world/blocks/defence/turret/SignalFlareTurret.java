@@ -2,7 +2,6 @@ package progressed.world.blocks.defence.turret;
 
 import arc.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -14,7 +13,6 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
-import progressed.entities.units.entity.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 

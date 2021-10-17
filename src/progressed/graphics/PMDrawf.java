@@ -17,7 +17,7 @@ import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Mathf.*;
-import static mindustry.Vars.headless;
+import static mindustry.Vars.*;
 
 public class PMDrawf{
     private static Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();

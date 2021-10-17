@@ -3,7 +3,6 @@ package progressed.world.blocks.distribution.drones.stations;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.ui.layout.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -11,7 +10,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.entities.units.entity.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class LiquidDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;

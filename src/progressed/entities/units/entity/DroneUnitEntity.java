@@ -5,12 +5,10 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.*;
 import progressed.entities.units.*;
 import progressed.graphics.*;
-import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
@@ -45,7 +43,7 @@ public class DroneUnitEntity extends PayloadUnit{
             }else{
                 spontaniumCombustum();
             }
-            
+
             if(charge < 0f){
                 kill();
             }

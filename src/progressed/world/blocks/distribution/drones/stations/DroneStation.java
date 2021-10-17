@@ -12,7 +12,6 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
-import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
