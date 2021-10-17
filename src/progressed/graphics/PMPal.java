@@ -20,6 +20,6 @@ public class PMPal{
     //Color sets
     public static Color[]
 
-    apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, Color.white},
-    piss = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), Color.white};
+    apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, white},
+    piss = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), white};
 }
