@@ -115,10 +115,9 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public boolean checkCompleteRoute(int route){
-        DronePadBuild p = getPad();
         DroneStationBuild o = getStation(route, 0);
         DroneStationBuild d = getStation(route, 1);
-        return (o != null && o.pad == p && o.ready()) && (d != null && d.pad == p && d.ready());
+        return (o != null && o.ready()) && (d != null && d.ready());
     }
 
     public DroneStationBuild getStation(int route, int end){
@@ -156,11 +155,10 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public void deactivate(){
-        DronePadBuild p = getPad();
         DroneStationBuild o = getStation(curRoute, 0);
         DroneStationBuild d = getStation(curRoute, 1);
-        if(o != null && o.pad == p) o.active = false;
-        if(d != null && d.pad == p){
+        if(o != null) o.active = false;
+        if(d != null){
             d.active = false;
             if(!d.connected) d.configure(2);
         }
