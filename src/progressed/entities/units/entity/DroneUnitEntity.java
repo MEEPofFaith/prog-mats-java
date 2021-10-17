@@ -4,6 +4,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import progressed.content.*;
@@ -37,6 +38,8 @@ public class DroneUnitEntity extends PayloadUnit{
             if(p != null){
                 if(p.drone == null){
                     p.drone = this;
+                    p.constructing = false;
+                    p.build = 0;
                 }else if(p.drone != this){
                     spontaniumCombustum();
                 }
@@ -45,6 +48,7 @@ public class DroneUnitEntity extends PayloadUnit{
             }
 
             if(charge < 0f){
+                PMFx.dronePowerKill.at(this);
                 kill();
             }
         }
@@ -68,6 +72,7 @@ public class DroneUnitEntity extends PayloadUnit{
 
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public void spontaniumCombustum(){
+        Fx.unitCapKill.at(this);
         elevation = 0;
         kill();
     }

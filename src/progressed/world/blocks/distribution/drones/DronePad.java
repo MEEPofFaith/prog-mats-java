@@ -12,6 +12,8 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import arc.util.pooling.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -39,6 +41,7 @@ public class DronePad extends Block{
     public float constructTime = 60f;
     public float constructPowerUse = 1f;
     public float chargeRate = 1f;
+    public Effect spawnEffect = Fx.spawn;
 
     public Color laserColor = Pal.powerLight, laserColorTop = Color.white;
     public float chargeX, chargeY;
@@ -103,6 +106,7 @@ public class DronePad extends Block{
     public void setBars(){
         super.setBars();
 
+        bars.add("drone-build", (DronePadBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.build / constructTime));
         bars.add("drone-charge", (DronePadBuild entity) -> new Bar("pm-drone-pad-charge", Pal.powerBar, entity::chargef));
     }
 
@@ -169,6 +173,7 @@ public class DronePad extends Block{
                     drone.pad = pos();
                     drone.updateRoutes();
                     drone.charge = ((DroneUnitType)(drone.type)).powerCapacity;
+                    spawnEffect.at(x, y);
                 }
             }
             total += edelta() * buildup;

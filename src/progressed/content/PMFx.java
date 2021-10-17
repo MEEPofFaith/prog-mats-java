@@ -35,6 +35,14 @@ public class PMFx{
         trail.draw(e.color, e.rotation);
     }),
 
+    dronePowerKill = new Effect(80f, e -> {
+        color(Color.scarlet);
+        alpha(e.fout(Interp.pow4Out));
+
+        float size = 10f + e.fout(Interp.pow10In) * 25f;
+        Draw.rect(Icon.power.getRegion(), e.x, e.y, size, size);
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

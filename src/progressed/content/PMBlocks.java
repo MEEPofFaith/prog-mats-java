@@ -1056,7 +1056,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 100
             ));
             size = 5;
-            maxPayloadSize = 3.5f;
+            maxPayloadSize = 4f;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{
