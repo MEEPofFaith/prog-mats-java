@@ -154,9 +154,13 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public void deactivate(){
-        getStation(curRoute, 0).active = false;
-        getStation().active = false;
-        if(!getStation().connected) getStation().configure(2);
+        DroneStationBuild o = getStation(curRoute, 0);
+        DroneStationBuild d = getStation(curRoute, 1);
+        if(o != null) o.active = false;
+        if(d != null){
+            d.active = false;
+            if(!d.connected) d.configure(2);
+        }
     }
 
     @Override
