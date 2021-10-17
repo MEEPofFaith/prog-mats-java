@@ -149,6 +149,11 @@ public class DronePad extends Block{
                 }
             }
 
+            routes.each(r -> {
+                DroneStationBuild s = getStation(r);
+                if(s != null) s.pad = this;
+            });
+
             if(drone != null && (drone.dead || !drone.isAdded())){
                 drone = null;
                 charging = false;

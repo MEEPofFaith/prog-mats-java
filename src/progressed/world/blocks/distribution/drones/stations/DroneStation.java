@@ -16,6 +16,7 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import progressed.entities.units.entity.*;
+import progressed.world.blocks.distribution.drones.DronePad.*;
 
 import static mindustry.Vars.*;
 
@@ -67,9 +68,18 @@ public class DroneStation extends Block{
     public class DroneStationBuild extends Building{
         public boolean connected = false, active, loading, loaded, dumping, taken;
         public float load;
+        public DronePadBuild pad;
         public StationState state = StationState.disconnected;
         public StringBuilder stationName;
         public Vec2 loadPoint = new Vec2(), loadVector = new Vec2();
+
+        @Override
+        public void updateTile(){
+            super.updateTile();
+            if(!connected){
+                pad = null;
+            }
+        }
 
         @Override
         public void created(){

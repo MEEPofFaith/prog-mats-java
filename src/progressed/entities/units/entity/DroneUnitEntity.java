@@ -66,6 +66,7 @@ public class DroneUnitEntity extends PayloadUnit{
         super.update();
     }
 
+    /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public void spontaniumCombustum(){
         elevation = 0;
         kill();
@@ -114,9 +115,10 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public boolean checkCompleteRoute(int route){
+        DronePadBuild p = getPad();
         DroneStationBuild o = getStation(route, 0);
         DroneStationBuild d = getStation(route, 1);
-        return (o != null && o.ready()) && (d != null && d.ready());
+        return (o != null && o.pad == p && o.ready()) && (d != null && d.pad == p && d.ready());
     }
 
     public DroneStationBuild getStation(int route, int end){
@@ -154,10 +156,11 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public void deactivate(){
+        DronePadBuild p = getPad();
         DroneStationBuild o = getStation(curRoute, 0);
         DroneStationBuild d = getStation(curRoute, 1);
-        if(o != null) o.active = false;
-        if(d != null){
+        if(o != null && o.pad == p) o.active = false;
+        if(d != null && d.pad == p){
             d.active = false;
             if(!d.connected) d.configure(2);
         }
