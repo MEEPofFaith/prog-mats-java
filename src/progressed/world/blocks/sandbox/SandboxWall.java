@@ -240,6 +240,16 @@ public class SandboxWall extends Wall{
         }
 
         @Override
+        public boolean absorbLasers(){
+            return modes.plast;
+        }
+
+        @Override
+        public boolean isInsulated(){
+            return modes.plast;
+        }
+
+        @Override
         public void damage(float damage){
             reset = 0f;
             total += damage;

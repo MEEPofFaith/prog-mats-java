@@ -122,6 +122,11 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         @Override
+        public boolean payloadCheck(int conveyorRotation){
+            return !isOrigin();
+        }
+
+        @Override
         public void resetLoading(){
             loaded = false;
         }
@@ -168,17 +173,21 @@ public class PayloadDroneStation extends DroneStation{
             drawPayload();
         }
 
-        @Override
-        public boolean canControlSelect(Player player){
-            return !player.unit().spawnedByCore && this.payload == null && player.tileOn() != null && player.tileOn().build == this;
+        public boolean acceptUnitPayload(Unit unit){
+            return false;
         }
 
         @Override
-        public void onControlSelect(Player player){
+        public boolean canControlSelect(Unit player){
+            return !player.spawnedByCore && this.payload == null && acceptUnitPayload(player) && player.tileOn() != null && player.tileOn().build == this;
+        }
+
+        @Override
+        public void onControlSelect(Unit player){
             float x = player.x, y = player.y;
-            acceptPlayerPayload(player, p -> payload = p);
+            handleUnitPayload(player, p -> payload = p);
             this.loadVector.set(x, y).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
-            this.payRotation = player.unit().rotation;
+            this.payRotation = player.rotation;
         }
 
         @Override
