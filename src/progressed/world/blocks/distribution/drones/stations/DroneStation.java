@@ -23,7 +23,7 @@ public class DroneStation extends Block{
     public int maxTextLength = 220;
     public float loadSpeed = 1f / 30f;
     public boolean lowFlier = true;
-    public String namePref = "";
+    public String defName = "Frog";
     public Color selectColor = Color.white;
 
     public TextureRegion input, output;
@@ -76,7 +76,16 @@ public class DroneStation extends Block{
             super.created();
 
             if(stationName == null){
-                stationName = new StringBuilder(namePref + " Station");
+                stationName = new StringBuilder(defName + " Station");
+            }
+        }
+
+        @Override
+        public void updateTile(){
+            updateLoading();
+
+            if(!active && !connected){
+                state = StationState.disconnected;
             }
         }
 

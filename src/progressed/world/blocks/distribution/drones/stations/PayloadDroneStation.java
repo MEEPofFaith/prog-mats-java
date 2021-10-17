@@ -26,7 +26,7 @@ public class PayloadDroneStation extends DroneStation{
         acceptsPayload = outputsPayload = true;
         rotate = true;
         selectColor = Pal.lightOrange;
-        namePref = "Payload";
+        defName = "Payload";
     }
 
     @Override
@@ -106,7 +106,7 @@ public class PayloadDroneStation extends DroneStation{
 
         @Override
         public void updateTile(){
-            updateLoading();
+            super.updateTile();
 
             if(!loading){
                 if(dumping || !isOrigin()){

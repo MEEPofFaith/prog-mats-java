@@ -27,7 +27,7 @@ public class ItemDroneStation extends DroneStation{
         hasItems = true;
         acceptsItems = true;
         selectColor = Color.yellow;
-        namePref = "Item";
+        defName = "Item";
 
         config(Integer.class, (ItemDroneStationBuild build, Integer i) -> {
             build.state = StationState.all[i];
@@ -55,7 +55,7 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void updateTile(){
-            updateLoading();
+            super.updateTile();
 
             if(timer(timerDump, dumpTime / timeScale)){
                 dump();

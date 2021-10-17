@@ -27,7 +27,7 @@ public class LiquidDroneStation extends DroneStation{
         hasLiquids = true;
         outputsLiquid = true;
         selectColor = Liquids.cryofluid.color;
-        namePref = "Liquid";
+        defName = "Liquid";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public void updateTile(){
-            updateLoading();
+            super.updateTile();
 
             if(liquids.total() > 0.01f){
                 dumpLiquid(liquids.current());
