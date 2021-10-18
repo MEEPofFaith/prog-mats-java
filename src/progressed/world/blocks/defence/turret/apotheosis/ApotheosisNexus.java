@@ -67,6 +67,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float[] strokes = {2f, 1.7f, 1.2f, 0.6f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
+    public float vibration = 1f;
     public float shake, laserShake;
     public float pissChance = 0.01f;
 
@@ -76,7 +77,7 @@ public class ApotheosisNexus extends ReloadTurret{
         touchdownEffect = PMFx.apotheosisTouchdown,
         damageEffect = PMFx.apotheosisDamage,
         pulseEffect = PMFx.apotheosisPulse;
-    public float bigPulseScl = 1f;
+    public float bigPulseScl = 2f;
     public Color[] flashStart = {PMPal.apotheosisLaser, PMPal.pissbeam}, flashEnd = {PMPal.apotheosisLaserDark, PMPal.pissbeamDark};
     public float flashSeconds = 1f;
     public Interp flashInterp = Interp.pow3In;
@@ -259,6 +260,7 @@ public class ApotheosisNexus extends ReloadTurret{
                 float fin = arcf();
                 float fout = fadef();
                 float rScl = radscl();
+                float rand = vibration * fin * fout;
 
                 float uFin = Mathf.curve(fin, 0f, 0.5f);
                 if(uFin > 0.01f){
@@ -266,16 +268,18 @@ public class ApotheosisNexus extends ReloadTurret{
                     for(int s = 0; s < cols.length; s++){
                         float c1 = Tmp.c1.set(cols[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)).toFloatBits();
                         float c2 = Tmp.c2.set(Tmp.c1).a(1 - uFin).toFloatBits();
+                        float rx = Mathf.range(rand);
+                        float ry = Mathf.range(rand);
                         for(int i = 0; i < tscales.length; i++){
                             float w = (width + Mathf.absin(Time.time, oscScl, oscMag)) * fout * strokes[s] * tscales[i] / 2f * fadef();
                             float b = (lenscales[i] - 1f) * spaceMag;
                             float e = height * lenscales[i] * uFin;
                             float w2 = Mathf.lerp(w, w * rScl, uFin / 2f);
                             Fill.quad(
-                                x - w, y - b, c1,
-                                x + w, y - b, c1,
-                                x + w2, y + e, c2,
-                                x - w2, y + e, c2
+                                x - w + rx, y - b + ry, c1,
+                                x + w + rx, y - b + ry, c1,
+                                x + w2 + rx, y + e + ry, c2,
+                                x - w2 + rx, y + e + ry, c2
                             );
                         }
                     }
@@ -287,6 +291,8 @@ public class ApotheosisNexus extends ReloadTurret{
                     for(int s = 0; s < cols.length; s++){
                         float c1 = Tmp.c1.set(cols[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)).toFloatBits();
                         float c2 = Tmp.c2.set(Tmp.c1).a(0).toFloatBits();
+                        float rx = Mathf.range(rand);
+                        float ry = Mathf.range(rand);
                         for(int i = 0; i < tscales.length; i++){
                             float w = (width + Mathf.absin(Time.time, oscScl, oscMag)) * fout * strokes[s] * tscales[i] / 2f * fadef();
                             float b = (lenscales[i] - 1f) * spaceMag;
@@ -296,10 +302,10 @@ public class ApotheosisNexus extends ReloadTurret{
                             float w1 = Mathf.lerp(w, w * rScl, 0.5f);
                             float w2 = Mathf.lerp(w, w * rScl, 0.5f + dFin / 2f);
                             Fill.quad(
-                                curPos.x - w2, top - h, c1,
-                                curPos.x + w2, top - h, c1,
-                                curPos.x + w1, top, c2,
-                                curPos.x - w1, top, c2
+                                curPos.x - w2 + rx, top - h + ry, c1,
+                                curPos.x + w2 + rx, top - h + ry, c1,
+                                curPos.x + w1 + rx, top + ry, c2,
+                                curPos.x - w1 + rx, top + ry, c2
                             );
                         }
                     }

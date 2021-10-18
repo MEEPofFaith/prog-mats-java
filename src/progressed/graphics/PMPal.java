@@ -16,7 +16,6 @@ public class PMPal{
 
     apotheosisLaser = valueOf("CE5EE5"),
     apotheosisLaserDark = valueOf("9A27C4"),
-
     pissbeam = valueOf("e5c85e"),
     pissbeamDark = valueOf("c4b427");
 
