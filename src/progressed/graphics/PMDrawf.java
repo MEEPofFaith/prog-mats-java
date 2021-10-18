@@ -150,22 +150,25 @@ public class PMDrawf{
     }
 
     /**
-     * Color flash to entire screen.
+     * Color flash to entire screen made by
      * @author sunny
+     * Customization with method made by
+     * @author MEEPofFaith
      * */
-    public static void flash(Color color, float duration){
+    public static void flash(Color fromColor, Color toColor, float seconds, Interp fade){
         if(!headless){
-            Image white = new Image();
-            white.touchable = Touchable.disabled;
-            white.setColor(color);
-            white.setFillParent(true);
-            white.actions(Actions.fadeOut(duration), Actions.remove());
-            white.update(() -> {
+            Image flash = new Image();
+            flash.touchable = Touchable.disabled;
+            flash.setColor(fromColor);
+            flash.setFillParent(true);
+            flash.actions(Actions.color(toColor, seconds));
+            flash.actions(Actions.fadeOut(seconds, fade), Actions.remove());
+            flash.update(() -> {
                 if(!Vars.state.isGame()){
-                    white.remove();
+                    flash.remove();
                 }
             });
-            Core.scene.add(white);
+            Core.scene.add(flash);
         }
     }
 }

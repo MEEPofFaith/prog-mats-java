@@ -63,10 +63,8 @@ public class ApotheosisNexus extends ReloadTurret{
     public float laserRadius;
     public float height = 150f * tilesize;
     public Color[] colors = PMPal.apotheosisLaserColors;
-    public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
-    public float[] pullLengths = {0f, 2.25f, 3.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float shake, laserShake;
@@ -79,6 +77,9 @@ public class ApotheosisNexus extends ReloadTurret{
         damageEffect = PMFx.apotheosisDamage,
         pulseEffect = PMFx.apotheosisPulse;
     public float bigPulseScl = 1f;
+    public Color[] flashStart = {PMPal.apotheosisLaser, PMPal.pissbeam}, flashEnd = {PMPal.apotheosisLaserDark, PMPal.pissbeamDark};
+    public float flashSeconds = 1f;
+    public Interp flashInterp = Interp.pow3In;
     public Sound fireSound = Sounds.laserblast;
     public Sound chargeSound = Sounds.techloop, beamSound = PMSounds.pulseBeam;
     public float chargeVolume = 1f, beamVolume = 1f;
@@ -344,7 +345,7 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         public Color[] getColors(){
-            return Core.settings.getBool("pm-farting") || piss ? PMPal.piss : colors;
+            return isPiss() ? PMPal.pissbeamColors : colors;
         }
 
         @Override
@@ -508,7 +509,7 @@ public class ApotheosisNexus extends ReloadTurret{
                         charging = false;
                         arcing = true;
                         fireSound.at(x, y, fireSoundPitch, fireSoundVolume);
-                        if(Core.settings.getBool("pm-farting") || piss){
+                        if(isPiss()){
                             (Core.settings.getBool("pm-farting") && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
                         }
                         fireEffect.at(x, y);
@@ -525,7 +526,7 @@ public class ApotheosisNexus extends ReloadTurret{
                     arc = arcTime;
                     arcing = false;
                     damaging = true;
-                    PMDrawf.flash(getColors()[2], 1f);
+                    PMDrawf.flash(flashStart[Mathf.num(isPiss())], flashEnd[Mathf.num(isPiss())], flashSeconds, flashInterp);
                     effect(touchdownEffect);
                 }
             }
@@ -573,6 +574,10 @@ public class ApotheosisNexus extends ReloadTurret{
 
         public boolean notFiring(){
             return !(charging || arcing || damaging || fading);
+        }
+
+        public boolean isPiss(){
+            return Core.settings.getBool("pm-farting") || piss;
         }
 
         public float chargef(){

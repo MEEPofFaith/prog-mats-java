@@ -15,11 +15,14 @@ public class PMPal{
     missileFrag = valueOf("9CB664"),
 
     apotheosisLaser = valueOf("CE5EE5"),
-    apotheosisLaserDark = valueOf("9A27C4");
+    apotheosisLaserDark = valueOf("9A27C4"),
+
+    pissbeam = valueOf("e5c85e"),
+    pissbeamDark = valueOf("c4b427");
 
     //Color sets
     public static Color[]
 
     apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, white},
-    piss = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), white};
+    pissbeamColors = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), white};
 }

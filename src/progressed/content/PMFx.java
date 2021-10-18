@@ -575,13 +575,16 @@ public class PMFx{
 
     apotheosisCharge = new Effect(5f * 60f, 500f, e -> {
         color(PMPal.apotheosisLaserDark);
-        stroke(e.fin() * 6f);
+        Fill.circle(e.x, e.y, e.fin() * 26);
+        color(PMPal.apotheosisLaser);
+        Fill.circle(e.x, e.y, e.fin() * 14);
+
+        stroke(e.fin() * 6f, PMPal.apotheosisLaserDark);
         Lines.circle(e.x, e.y, 2f + 100f * e.fout());
         Lines.circle(e.x, e.y, 5f + 120f * e.fout(Interp.pow3Out));
         Lines.circle(e.x, e.y, 8f + 150f * e.fout(Interp.pow5Out));
 
-        Fill.circle(e.x, e.y, e.fin() * 26);
-
+        color(PMPal.apotheosisLaser);
         randLenVectors(e.id, 14, 92f * e.fout(), (x, y) -> {
             Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
             Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
@@ -595,9 +598,6 @@ public class PMFx{
             Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
         });
 
-        color(PMPal.apotheosisLaser);
-
-        Fill.circle(e.x, e.y, e.fin() * 14);
         Drawf.light(e.x, e.y, e.fin() * 36f, PMPal.apotheosisLaserDark, 0.7f);
     }),
 
