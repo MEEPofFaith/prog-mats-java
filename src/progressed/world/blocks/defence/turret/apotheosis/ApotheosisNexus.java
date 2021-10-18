@@ -61,14 +61,14 @@ public class ApotheosisNexus extends ReloadTurret{
     public Color lightsBase = Color.valueOf("252835"), lightsDark = PMPal.apotheosisLaserDark, lightsLight = PMPal.apotheosisLaser;
     public float lightInterval = 300f;
     public float laserRadius;
-    public float hight = 150f * tilesize;
+    public float height = 150f * tilesize;
     public Color[] colors = PMPal.apotheosisLaserColors;
     public Color laserLightColor = PMPal.apotheosisLaser;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
     public float[] strokes = {2f, 1.5f, 1f, 0.3f};
     public float[] pullLengths = {0f, 2.25f, 3.5f, 4f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
-    public float width = -1f, oscScl = 3f, oscMag = 0.2f;
+    public float width = -1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float shake, laserShake;
     public float pissChance = 0.01f;
 
@@ -130,7 +130,7 @@ public class ApotheosisNexus extends ReloadTurret{
             spinnerRegionsDark[i] = Core.atlas.find(name + "-spinner-dark-" + i);
         }
 
-        clipSize = Math.max(clipSize, (range + hight + 4f) * 2f);
+        clipSize = Math.max(clipSize, (range + height + 4f) * 2f);
     }
 
     @Override
@@ -254,34 +254,54 @@ public class ApotheosisNexus extends ReloadTurret{
             Draw.color();
 
             if(arc > 0){
-                Color[] c = getColors();
-                //Very messy, don't know how to clean this
-                Draw.z(Layer.effect + 0.002f);
-                float u1 = Mathf.curve(arc * 2f, 0f, arcTime / 2f),
-                    u2 = Mathf.curve(arc * 2f, arcTime / 2f, arcTime / 2f + arcTime / 3f),
-                    u3 = Mathf.curve(arc * 2f, arcTime / 2f + arcTime / 3f, arcTime);
-                if(u1 > 0.01){
-                    PMDrawf.laser3(team, x, y, u1 * hight / 2f, width, 90f, fadef(), tscales, strokes, pullLengths, oscScl, oscMag, c, laserLightColor, fadef());
-                }
-                if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f, u2 * hight / 3f, width, 90f, fadef() * (1f + (radscl() - 1f) / 2f), tscales, strokes, blankscales, oscScl, oscMag, 0f, c, laserLightColor, 2f / 3f * fadef());
-                }
-                if(u2 > 0.01){
-                    PMDrawf.laser(team, x, y + hight / 2f + hight / 3f, u3 * hight / 6f, width, 90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, 0f, c, laserLightColor, 1f / 3f * fadef());
+                Color[] cols = getColors();
+                float fin = arcf();
+                float fout = fadef();
+                float rScl = radscl();
+
+                float uFin = Mathf.curve(fin, 0f, 0.5f);
+                if(uFin > 0.01f){
+                    Draw.z(Layer.effect + 0.002f);
+                    for(int s = 0; s < cols.length; s++){
+                        float c1 = Tmp.c1.set(cols[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)).toFloatBits();
+                        float c2 = Tmp.c2.set(Tmp.c1).a(1 - uFin).toFloatBits();
+                        for(int i = 0; i < tscales.length; i++){
+                            float w = (width + Mathf.absin(Time.time, oscScl, oscMag)) * fout * strokes[s] * tscales[i] / 2f * fadef();
+                            float b = (lenscales[i] - 1f) * spaceMag;
+                            float e = height * lenscales[i] * uFin;
+                            float w2 = Mathf.lerp(w, w * rScl, uFin / 2f);
+                            Fill.quad(
+                                x - w, y - b, c1,
+                                x + w, y - b, c1,
+                                x + w2, y + e, c2,
+                                x - w2, y + e, c2
+                            );
+                        }
+                    }
                 }
 
-                Draw.z(Layer.effect + (curPos.y < y ? 0.0021f : 0.0019f));
-                float d1 = Mathf.curve((arc - arcTime / 2f) * 2f, 0f, arcTime / 6f),
-                    d2 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 6f, arcTime / 2f),
-                    d3 = Mathf.curve((arc - arcTime / 2f) * 2f, arcTime / 2f, arcTime);
-                if(d1 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight, d1 * hight / 6f, width, -90f, fadef() * radscl(), tscales, strokes, lenscales, oscScl, oscMag, c, laserLightColor, 1f / 3f * fadef());
-                }
-                if(d2 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f + hight / 3f, d2 * hight / 3f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, c, laserLightColor, 2f / 3f * fadef());
-                }
-                if(d2 > 0.01){
-                    PMDrawf.laser2(team, curPos.x, curPos.y + hight / 2f, d3 * hight / 2f, width, -90f, fadef() * radscl(), tscales, strokes, blankscales, oscScl, oscMag, c, laserLightColor, fadef());
+                float dFin = Mathf.curve(fin, 0.5f, 1f);
+                if(dFin > 0.01f){
+                    Draw.z(Layer.effect + (curPos.y < y ? 0.0021f : 0.0019f));
+                    for(int s = 0; s < cols.length; s++){
+                        float c1 = Tmp.c1.set(cols[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)).toFloatBits();
+                        float c2 = Tmp.c2.set(Tmp.c1).a(0).toFloatBits();
+                        for(int i = 0; i < tscales.length; i++){
+                            float w = (width + Mathf.absin(Time.time, oscScl, oscMag)) * fout * strokes[s] * tscales[i] / 2f * fadef();
+                            float b = (lenscales[i] - 1f) * spaceMag;
+                            float e = height * lenscales[i];
+                            float top = curPos.y + e;
+                            float h = (e + b) * dFin;
+                            float w1 = Mathf.lerp(w, w * rScl, 0.5f);
+                            float w2 = Mathf.lerp(w, w * rScl, 0.5f + dFin / 2f);
+                            Fill.quad(
+                                curPos.x - w2, top - h, c1,
+                                curPos.x + w2, top - h, c1,
+                                curPos.x + w1, top, c2,
+                                curPos.x - w1, top, c2
+                            );
+                        }
+                    }
                 }
             }
 
@@ -451,9 +471,9 @@ public class ApotheosisNexus extends ReloadTurret{
                     piss = Mathf.chance(pissChance);
                     chargeEffect.at(x, y);
                     for(int i = 0; i < connectedChargers.size; i++){
-                        int ii = i;
+                        int pos = connectedChargers.get(i);
                         Time.run(i * (chargeTime / 2f / connectedChargers.size) + chargeTime / 3f, () -> {
-                            ApotheosisChargeTowerBuild charger = getCharger(ii);
+                            ApotheosisChargeTowerBuild charger = getChargerPos(pos);
                             if(isValid() && charger != null){
                                 charger.activate();
                             }
@@ -559,6 +579,10 @@ public class ApotheosisNexus extends ReloadTurret{
             return charge / chargeTime;
         }
 
+        public float arcf(){
+            return arc / arcTime;
+        }
+
         public float fadef(){
             return fade / fadeTime;
         }
@@ -611,9 +635,9 @@ public class ApotheosisNexus extends ReloadTurret{
                         t.left();
                         ApotheosisChargeTower tower = (ApotheosisChargeTower)getCharger(0).block();
                         t.image(tower.uiIcon).size(32).padBottom(-4).padRight(2);
-                        t.label(() -> " " + Core.bundle.format("pm-apotheosis-chargers", chargers.size)).wrap().width(230f).color(Color.lightGray);
+                        t.label(() -> Core.bundle.format("pm-apotheosis-chargers", chargers.size)).padLeft(6).fillX().labelAlign(Align.left).color(Color.lightGray);
                     }else{
-                        t.label(() -> Core.bundle.get("pm-apotheosis-none"));
+                        t.label(() -> Core.bundle.get("pm-apotheosis-none")).fillX().labelAlign(Align.left).color(Color.lightGray);
                     }
                 };
 
