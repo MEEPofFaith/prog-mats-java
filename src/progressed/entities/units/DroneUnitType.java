@@ -138,6 +138,7 @@ public class DroneUnitType extends UnitType{
                 Draw.rect(tankBase, unit.x, unit.y);
                 Drawf.liquid(liquid, unit.x, unit.y, s.cargo.liquidCargo.amount / s.cargo.liquidCapacity, s.cargo.liquidCargo.liquid.color);
                 Draw.rect(tankTop, unit.x, unit.y);
+                Drawf.light(s.team, s.x, s.y, 2f * 30f, s.cargo.liquidCargo.liquid.lightColor, s.cargo.liquidCargo.liquid.lightColor.a);
             }
         }
 

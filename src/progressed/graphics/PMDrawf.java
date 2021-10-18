@@ -96,7 +96,7 @@ public class PMDrawf{
 
         Tmp.v1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
         Tmp.v2.trns(angle, length * lenscales[lenscales.length - 1]);
-        Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width, lightColor, 0.7f * alpha);
+        Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width * 2f, lightColor, 0.7f * alpha);
     }
 
     public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){

@@ -269,7 +269,7 @@ public class DroneStation extends Block{
         @Override
         public void configure(Object value){
             //save last used config (Only save name changes, do not save state changes)
-            if(value instanceof String) block.lastConfig = value;
+            if(value instanceof String) block.lastConfig = value; //Only save name changes
             Call.tileConfig(player, self(), value);
         }
 

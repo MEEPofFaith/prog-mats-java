@@ -37,6 +37,7 @@ public class ApotheosisChargeTower extends Block{
     public float[] strokes = {2f, 1.7f, 1.2f, 0.6f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f};
     public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
+    public float lightStroke = 6f;
     public float activeScl = 4f;
     public Effect activateEffect = PMFx.apotheosisChargerBlast;
     public Sound shootSound = Sounds.laser;
@@ -54,6 +55,7 @@ public class ApotheosisChargeTower extends Block{
         group = BlockGroup.turrets;
         outlineIcon = true;
         schematicPriority = -1;
+        lightColor = PMPal.apotheosisLaser;
 
         config(Integer.class, (ApotheosisChargeTowerBuild tile, Integer value) -> {
             Building other = world.build(value);
@@ -178,12 +180,24 @@ public class ApotheosisChargeTower extends Block{
             Draw.rect(region, x, y, rotation - 90f);
 
             if(getNexus() != null){
-                Tmp.v1.trns(rotation, startLength);
                 Draw.z(Layer.effect + 0.0005f);
-                PMDrawf.laser(team, x + Tmp.v1.x, y + Tmp.v1.y,
-                    fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
-                    width, rotation, (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency(),
-                    tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, laserLightColor);
+                Tmp.v1.trns(rotation, startLength);
+                float baseLen = fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f));
+                float wScl = (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency();
+
+                for(int s = 0; s < colors.length; s++){
+                    Draw.color(Tmp.c1.set(colors[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+                    for(int i = 0; i < tscales.length; i++){
+                        Tmp.v2.trns(rotation + 180f, (lenscales[i] - 1f) * spaceMag);
+                        Lines.stroke((width + Mathf.absin(Time.time, oscScl, oscMag)) * wScl * strokes[s] * tscales[i]);
+                        Lines.lineAngle(x + Tmp.v1.x + Tmp.v2.x, y + Tmp.v1.y + Tmp.v2.y, rotation, baseLen * lenscales[i], false);
+                    }
+                }
+
+                Tmp.v2.trns(rotation, baseLen * 1.1f);
+
+                Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, lightStroke, lightColor, 0.7f);
+                Draw.reset();
             }
         }
 

@@ -67,6 +67,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float[] strokes = {2f, 1.7f, 1.2f, 0.6f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
+    public float lightStroke = -1f;
     public float vibration = 1f;
     public float shake, laserShake;
     public float pissChance = 0.01f;
@@ -102,6 +103,7 @@ public class ApotheosisNexus extends ReloadTurret{
         canOverdrive = false;
         outlineIcon = false;
         acceptCoolant = true;
+        lightColor = PMPal.apotheosisLaser;
 
         consumes.add(new ConsumeCoolant(0.01f)).update(false);
         coolantMultiplier = 1f;
@@ -114,6 +116,7 @@ public class ApotheosisNexus extends ReloadTurret{
         super.init();
 
         if(width < 0) width = size * tilesize / 3f;
+        if(lightStroke < 0) lightStroke = width * 2;
         blankscales = new float[lenscales.length];
         Arrays.fill(blankscales, 1f);
     }
@@ -283,6 +286,8 @@ public class ApotheosisNexus extends ReloadTurret{
                             );
                         }
                     }
+
+                    Drawf.light(team, x, y, x, y + height * uFin, lightStroke * fout, lightColor, 0.7f);
                 }
 
                 float dFin = Mathf.curve(fin, 0.5f, 1f);
@@ -309,6 +314,8 @@ public class ApotheosisNexus extends ReloadTurret{
                             );
                         }
                     }
+
+                    Drawf.light(team, curPos.x, curPos.y + height, curPos.x, curPos.y + height - (height * dFin), lightStroke * fout, lightColor, 0.7f);
                 }
             }
 
