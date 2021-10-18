@@ -64,7 +64,7 @@ public class ApotheosisNexus extends ReloadTurret{
     public float height = 150f * tilesize;
     public Color[] colors = PMPal.apotheosisLaserColors;
     public float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
-    public float[] strokes = {2f, 1.5f, 1f, 0.3f};
+    public float[] strokes = {2f, 1.7f, 1.2f, 0.6f};
     public float[] lenscales = {0.90f, 0.95f, 0.98f, 1f}, blankscales;
     public float width = -1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float shake, laserShake;
