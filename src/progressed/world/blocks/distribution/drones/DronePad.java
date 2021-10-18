@@ -153,6 +153,15 @@ public class DronePad extends Block{
                 }
             }
 
+            //make sure pos are the station's pos
+            for(int i = 0; i < maxRoutes * 2; i++){
+                int pos = routes.get(i);
+                DroneStationBuild s = getStation(pos);
+                if(s != null && s.pos() != pos){
+                    routes.set(i, s.pos());
+                }
+            }
+
             if(drone != null && (drone.dead || !drone.isAdded())){
                 drone = null;
                 charging = false;
@@ -193,7 +202,7 @@ public class DronePad extends Block{
                 });
             }
 
-            if(chargeup > 0.01f){ //Why do I feel like this'll kill low-end devices?
+            if(chargeup > 0.01f || charging){ //Why do I feel like this'll kill low-end devices?
                 float z = (droneType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) + 0.5f;
                 int j = 0;
                 for(int xflip: Mathf.signs){

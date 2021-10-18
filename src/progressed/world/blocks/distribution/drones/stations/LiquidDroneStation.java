@@ -85,6 +85,7 @@ public class LiquidDroneStation extends DroneStation{
             d.cargo.liquidCapacity = liquidCapacity;
             liquids.clear();
             build = 0f;
+            constructing = true;
         }
 
         @Override

@@ -88,6 +88,7 @@ public class ItemDroneStation extends DroneStation{
             d.cargo.load(it);
             items.clear();
             build = 0;
+            constructing = true;
         }
 
         @Override

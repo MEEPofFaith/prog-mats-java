@@ -107,7 +107,7 @@ public class DroneUnitType extends UnitType{
     }
 
     public void display(Unit unit, Table table){
-        if(unit instanceof DroneUnitEntity s){
+        if(unit instanceof DroneUnitEntity d){
             table.table(t -> {
                 t.left();
                 t.add(new Image(uiIcon)).size(iconMed).scaling(Scaling.fit);
@@ -119,7 +119,7 @@ public class DroneUnitType extends UnitType{
                 bars.defaults().growX().height(20f).pad(4);
                 bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
                 bars.row();
-                bars.add(new Bar("pm-drone-charge", Pal.powerBar, s::chargef));
+                bars.add(new Bar("pm-drone-charge", Pal.powerBar, d::chargef));
             }).growX();
 
             table.row();
@@ -128,21 +128,38 @@ public class DroneUnitType extends UnitType{
 
     @Override
     public <T extends Unit & Payloadc> void drawPayload(T unit){
-        if(unit instanceof DroneUnitEntity s){
-            if(s.cargo.hasItems()){
-                Drawf.shadow(s.x, s.y, 2f * tilesize * 2f, 1f);
-                Draw.rect(container, unit.x, unit.y);
+        if(unit instanceof DroneUnitEntity d){
+            if(d.cargo.hasItems()){
+                Drawf.shadow(d.x, d.y, 2f * tilesize * 2f, 1f);
+                Draw.rect(container, d.x, d.y);
             }
-            if(s.cargo.hasLiquid()){
-                Drawf.shadow(s.x, s.y, 2f * tilesize * 2f, 1f);
-                Draw.rect(tankBase, unit.x, unit.y);
-                Drawf.liquid(liquid, unit.x, unit.y, s.cargo.liquidCargo.amount / s.cargo.liquidCapacity, s.cargo.liquidCargo.liquid.color);
-                Draw.rect(tankTop, unit.x, unit.y);
-                Drawf.light(s.team, s.x, s.y, 2f * 30f, s.cargo.liquidCargo.liquid.lightColor, s.cargo.liquidCargo.liquid.lightColor.a);
+            if(d.cargo.hasLiquid()){
+                LiquidStack liquidCargo = d.cargo.liquidCargo;
+                Drawf.shadow(d.x, d.y, 2f * tilesize * 2f, 1f);
+                Draw.rect(tankBase, d.x, d.y);
+                Drawf.liquid(liquid, d.x, d.y, liquidCargo.amount / d.cargo.liquidCapacity, liquidCargo.liquid.color);
+                Draw.rect(tankTop, d.x, d.y);
             }
         }
 
         super.drawPayload(unit);
+    }
+
+    @Override
+    public void drawLight(Unit unit){
+        super.drawLight(unit);
+
+        if(unit instanceof DroneUnitEntity d && d.cargo.hasLiquid()){ //Can't figure out why this doesn't draw
+            LiquidStack cargo = d.cargo.liquidCargo;
+            if(cargo.amount > 0.01f){
+                Color color = cargo.liquid.lightColor;
+                float fract = 1f;
+                float opacity = color.a * fract;
+                if(opacity > 0.001f){
+                    Drawf.light(d.team, d.x, d.y, 2f * 30f * fract, color, opacity); //I've Log.info'd, the code is reaching this point but just not drawing the light
+                }
+            }
+        }
     }
 
     @Override
