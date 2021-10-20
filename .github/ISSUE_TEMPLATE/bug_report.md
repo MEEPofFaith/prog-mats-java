@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help fix an issue.
-title: *sighs* ugh a bug
+title: ''
 labels: bug
 assignees: ''
 
