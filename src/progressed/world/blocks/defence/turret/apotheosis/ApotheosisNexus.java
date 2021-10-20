@@ -651,9 +651,14 @@ public class ApotheosisNexus extends ReloadTurret{
 
                     if(chargers.size > 0){
                         t.left();
-                        ApotheosisChargeTower tower = (ApotheosisChargeTower)getCharger(0).block();
-                        t.image(tower.uiIcon).size(32).padBottom(-4).padRight(2);
-                        t.label(() -> Core.bundle.format("pm-apotheosis-chargers", chargers.size)).padLeft(6).fillX().labelAlign(Align.left).color(Color.lightGray);
+                        ApotheosisChargeTowerBuild towerBuild = getCharger(0);
+                        if(towerBuild != null){
+                            ApotheosisChargeTower tower = (ApotheosisChargeTower)towerBuild.block;
+                            t.image(tower.uiIcon).size(32).padBottom(-4).padRight(2);
+                            t.label(() -> Core.bundle.format("pm-apotheosis-chargers", chargers.size)).padLeft(6).fillX().labelAlign(Align.left).color(Color.lightGray);
+                        }else{
+                            t.label(() -> Core.bundle.get("pm-apotheosis-none")).fillX().labelAlign(Align.left).color(Color.lightGray);
+                        }
                     }else{
                         t.label(() -> Core.bundle.get("pm-apotheosis-none")).fillX().labelAlign(Align.left).color(Color.lightGray);
                     }
