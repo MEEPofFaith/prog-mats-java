@@ -226,9 +226,9 @@ public class PMUnitTypes implements ContentList{
             health = 475;
             hitSize = 17f;
             hideDetails = false;
-            engineOffset = 40f / 4f;
+            engineOffset = 26f / 4f;
             engineSize = 1.5f;
-            engineSpread = 5f;
+            engineSpread = 13f / 4f;
             trailLength = 6;
             powerUse = 3f;
             powerCapacity = 3600f;
