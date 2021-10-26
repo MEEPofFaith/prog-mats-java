@@ -11,7 +11,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.units.*;
 import mindustry.graphics.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class PayloadTurret extends PayloadMissileTurret{
     public float rotateSpeed = 5;
