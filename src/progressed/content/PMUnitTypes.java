@@ -11,7 +11,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
-import progressed.entities.bullet.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
 import progressed.graphics.*;

@@ -9,7 +9,7 @@ import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
-import progressed.entities.bullet.*;
+import progressed.entities.bullet.energy.*;
 
 import static mindustry.Vars.*;
 

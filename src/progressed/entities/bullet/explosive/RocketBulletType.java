@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.explosive;
 
 import arc.*;
 import arc.graphics.*;

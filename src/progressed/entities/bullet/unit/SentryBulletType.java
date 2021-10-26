@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.unit;
 
 import arc.graphics.g2d.*;
 import mindustry.content.*;

@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.energy;
 
 import arc.*;
 import arc.graphics.*;
@@ -14,7 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
-import progressed.entities.bullet.BlackHoleBulletType.*;
+import progressed.entities.bullet.energy.BlackHoleBulletType.*;
 import progressed.graphics.*;
 
 public class BlackHoleCataclysmType extends BulletType{

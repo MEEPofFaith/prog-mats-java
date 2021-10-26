@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.physical;
 
 import arc.math.*;
 import arc.util.*;

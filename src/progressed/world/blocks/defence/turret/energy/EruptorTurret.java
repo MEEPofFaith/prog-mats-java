@@ -17,7 +17,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
-import progressed.entities.bullet.*;
+import progressed.entities.bullet.energy.*;
 import progressed.util.*;
 
 import static arc.Core.*;

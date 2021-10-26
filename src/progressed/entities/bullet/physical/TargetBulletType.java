@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.physical;
 
 import mindustry.content.*;
 import mindustry.entities.bullet.*;

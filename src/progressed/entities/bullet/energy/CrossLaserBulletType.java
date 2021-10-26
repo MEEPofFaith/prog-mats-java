@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.energy;
 
 import arc.graphics.g2d.*;
 import arc.math.*;

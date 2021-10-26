@@ -1,4 +1,4 @@
-package progressed.entities.bullet;
+package progressed.entities.bullet.energy;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
@@ -129,7 +130,6 @@ public class BlackHoleBulletType extends BulletType{
 
     public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.
         return (type instanceof StrikeBulletType) ||
-            (type instanceof ParticleBulletType) ||
             (type instanceof BlackHoleCataclysmType) ||
             (type instanceof MagmaBulletType);
     }
