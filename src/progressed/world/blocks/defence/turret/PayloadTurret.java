@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.units.*;
 import mindustry.graphics.*;
@@ -293,6 +294,36 @@ public class PayloadTurret extends PayloadMissileTurret{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);
                 }
             }
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.f(rotation);
+            write.f(payLength);
+            write.f(charge);
+            write.bool(loaded);
+            write.bool(charging);
+            write.bool(shooting);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision >= 1){
+                rotation = read.f();
+                payLength = read.f();
+                charge = read.f();
+                loaded = read.bool();
+                charging = read.bool();
+                shooting = read.bool();
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 1;
         }
     }
 }
