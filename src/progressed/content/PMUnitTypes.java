@@ -131,10 +131,10 @@ public class PMUnitTypes implements ContentList{
                 inaccuracy = 15f;
                 shootSound = Sounds.missile;
 
-                bullet = new StrikeBulletType(2.4f, 15f, "prog-mats-storm-missile"){{
+                bullet = new StrikeBulletType(2.4f, 23f, "prog-mats-storm-missile"){{
                     lifetime = 90f;
 
-                    splashDamage = 75f;
+                    splashDamage = 125f;
                     splashDamageRadius = 42f;
                     homingPower = 0.035f;
                     homingRange = 200f;
@@ -165,13 +165,15 @@ public class PMUnitTypes implements ContentList{
                 reload = 60f;
                 shootCone = 5f;
 
-                bullet = new RocketBulletType(5f, 36f, name){{
-                    lifetime = 75f;
+                bullet = new RocketBulletType(4.5f, 36f, name){{
+                    lifetime = 60f;
                     backSpeed = 0.25f;
                     splashDamage = 200f;
                     splashDamageRadius = 18f;
                     thrusterOffset = 15f / 4f;
                     thrusterSize = 0.75f;
+                    homingPower = 0.15f;
+                    homingRange = 48f * 8f;
                     layer = Layer.flyingUnitLow - 1f;
                 }};
             }});

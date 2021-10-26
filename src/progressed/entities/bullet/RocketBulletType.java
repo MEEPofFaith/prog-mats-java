@@ -11,11 +11,12 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
+/** @author MEEP */
 public class RocketBulletType extends BasicBulletType{
     public float backSpeed = 1f;
     public float fallDrag = 0.05f, thrustDelay = 20f;
     public float thrusterSize = 4f, thrusterOffset = 8f, thrusterGrowth = 5f;
-    public float acceleration = 0.15f;
+    public float acceleration = 0.03f;
 
     public RocketBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite); //Speed means nothing
@@ -23,6 +24,12 @@ public class RocketBulletType extends BasicBulletType{
         keepVelocity = false;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = hitEffect = Fx.explosion;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        if(homingDelay < 0) homingDelay = thrustDelay;
     }
 
     @Override
@@ -47,6 +54,7 @@ public class RocketBulletType extends BasicBulletType{
                 if(!r.thrust){
                     b.vel.setAngle(r.angle);
                     b.vel.setLength(speed);
+                    r.thrust = true;
                 }
                 b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
             }
@@ -56,29 +64,31 @@ public class RocketBulletType extends BasicBulletType{
     @Override
     public void draw(Bullet b){
         if(b.data instanceof RocketData r){
+            float angle = r.thrust ? b.rotation() : r.angle;
+
             if(b.time >= thrustDelay || thrustDelay <= 0){ //Engine draw code stolen from units
                 float scale = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
                 float offset = thrusterOffset / 2f + thrusterOffset / 2f * scale;
 
                 Draw.color(b.team.color);
                 Fill.circle(
-                    b.x + Angles.trnsx(r.angle + 180, offset),
-                    b.y + Angles.trnsy(r.angle + 180, offset),
+                    b.x + Angles.trnsx(angle + 180, offset),
+                    b.y + Angles.trnsy(angle + 180, offset),
                     (thrusterSize + Mathf.absin(Time.time, 2f, thrusterSize / 4f)) * scale
                 );
                 Draw.color(Color.white);
                 Fill.circle(
-                    b.x + Angles.trnsx(r.angle + 180, offset - thrusterSize / 2f),
-                    b.y + Angles.trnsy(r.angle + 180, offset - thrusterSize / 2f),
+                    b.x + Angles.trnsx(angle + 180, offset - thrusterSize / 2f),
+                    b.y + Angles.trnsy(angle + 180, offset - thrusterSize / 2f),
                     (thrusterSize + Mathf.absin(Time.time, 2f, thrusterSize / 4f)) / 2f  * scale
                 );
                 Draw.color();
             }
 
             Draw.z(layer - 0.01f);
-            Draw.rect(backRegion, b.x, b.y, r.angle - 90f);
+            Draw.rect(backRegion, b.x, b.y, angle - 90f);
             Draw.z(layer);
-            Draw.rect(frontRegion, b.x, b.y, r.angle - 90f);
+            Draw.rect(frontRegion, b.x, b.y, angle - 90f);
             Draw.reset();
         }
     }
