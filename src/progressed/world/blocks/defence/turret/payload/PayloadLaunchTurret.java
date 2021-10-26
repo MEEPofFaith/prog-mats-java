@@ -15,20 +15,10 @@ import progressed.world.blocks.defence.turret.payload.PayloadTurret.*;
 import static mindustry.Vars.*;
 
 public class PayloadLaunchTurret extends PayloadTurret{
-    public float rotateSpeed = 5;
-
     public float uncharge = 0.25f;
     public float loadLength = -1f, width = -1f;
     public float lineStart = -1f, lineLength = -1f;
     public int arrows = 2;
-
-    public float chargeTime = 60f;
-
-    protected Vec2 tr = new Vec2();
-    protected Vec2 tr2 = new Vec2();
-
-    public TextureRegion baseRegion;
-    public float elevation = -1f;
 
     public PayloadLaunchTurret(String name){
         super(name);
