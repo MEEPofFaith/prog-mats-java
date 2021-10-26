@@ -9,6 +9,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import progressed.content.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -30,11 +31,13 @@ public class ProgMats extends Mod{
 
     public ProgMats(){
         super();
-        PMSounds.load();
-
-        Events.on(FileTreeInitEvent.class, e -> PMSounds.load());
-
         Events.on(ClientLoadEvent.class, e -> settingAdder.init());
+
+        // Load all assets once they're added into Vars.tree
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
+            PMShaders.load();
+            PMSounds.load();
+        }));
     }
 
     @Override

@@ -5,7 +5,7 @@ import arc.struct.*;
 import mindustry.ctype.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import progressed.type.*;
+import progressed.type.statuseffects.*;
 
 public class PMStatusEffects implements ContentList{
     public static StatusEffect

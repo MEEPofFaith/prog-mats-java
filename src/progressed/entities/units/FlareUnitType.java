@@ -21,7 +21,7 @@ import progressed.entities.units.entity.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
-public class FlareUnitType extends UnitType{
+public class FlareUnitType extends PMUnitType{
     public Effect flareEffect = PMFx.flare;
     public float flareX, flareY;
     public float flareEffectChance = 0.5f, flareEffectSize = 1f;

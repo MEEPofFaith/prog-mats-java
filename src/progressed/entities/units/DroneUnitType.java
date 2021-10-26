@@ -19,7 +19,7 @@ import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
-public class DroneUnitType extends UnitType{
+public class DroneUnitType extends PMUnitType{
     public float powerUse = 1f, powerCapacity = 1000f;
     public float checkMultiplier = 0.875f;
     public float riseSpeed = 0.025f;

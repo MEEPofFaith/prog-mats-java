@@ -20,7 +20,7 @@ import progressed.ai.*;
 import progressed.entities.units.entity.*;
 import progressed.util.*;
 
-public class SentryUnitType extends UnitType{
+public class SentryUnitType extends PMUnitType{
     public int engines = 4;
     public float engineRotOffset = 45f, duration = 600f, riseSpeed = 0.125f;
 

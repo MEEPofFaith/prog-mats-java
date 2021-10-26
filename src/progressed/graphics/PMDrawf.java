@@ -107,6 +107,24 @@ public class PMDrawf{
         laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
     }
 
+    public static void vertConstruct(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time){
+        vertConstruct(x, y, region, Pal.accent, rotation, progress, speed, time);
+    }
+
+    public static void vertConstruct(float x, float y, TextureRegion region, Color color, float rotation, float progress, float speed, float time){
+        PMShaders.vertBuild.region = region;
+        PMShaders.vertBuild.progress = progress;
+        PMShaders.vertBuild.color.set(color);
+        PMShaders.vertBuild.color.a = speed;
+        PMShaders.vertBuild.time = -time / 20f;
+
+        shader(PMShaders.vertBuild);
+        rect(region, x, y, rotation);
+        shader();
+
+        reset();
+    }
+
     /** Draws a sprite that should be light-wise correct, Provided sprites myst be similar in shape */
     public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
         float mr = mod(r, 360f);

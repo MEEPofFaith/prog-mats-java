@@ -1,4 +1,4 @@
-package progressed.type;
+package progressed.type.statuseffects;
 
 import arc.struct.*;
 import mindustry.type.*;
