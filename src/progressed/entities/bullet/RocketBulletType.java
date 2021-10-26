@@ -22,6 +22,7 @@ public class RocketBulletType extends BasicBulletType{
         layer = Layer.bullet - 1; //Don't bloom
         keepVelocity = false;
         shootEffect = smokeEffect = Fx.none;
+        despawnEffect = hitEffect = Fx.explosion;
     }
 
     @Override

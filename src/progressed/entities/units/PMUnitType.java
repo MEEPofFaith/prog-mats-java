@@ -14,6 +14,20 @@ public class PMUnitType extends UnitType{
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        Seq<Weapon> addBottoms = new Seq<>();
+        for(Weapon w : weapons){
+            if(bottomWeapons.contains(w) && w.otherSide != -1){
+                addBottoms.add(weapons.get(w.otherSide));
+            }
+        }
+
+        bottomWeapons.addAll(addBottoms.distinct());
+    }
+
+    @Override
     public void drawWeapons(Unit unit){
         float z = Draw.z();
 

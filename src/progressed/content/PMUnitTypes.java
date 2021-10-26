@@ -15,6 +15,7 @@ import progressed.entities.bullet.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
 import progressed.graphics.*;
+import progressed.type.weapons.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes implements ContentList{
@@ -129,10 +130,11 @@ public class PMUnitTypes implements ContentList{
                 shootCone = 360f;
                 inaccuracy = 15f;
                 shootSound = Sounds.missile;
-                bullet = new StrikeBulletType(2.4f, 40f, "prog-mats-storm-missile"){{
+
+                bullet = new StrikeBulletType(2.4f, 15f, "prog-mats-storm-missile"){{
                     lifetime = 90f;
 
-                    splashDamage = 250f;
+                    splashDamage = 75f;
                     splashDamageRadius = 42f;
                     homingPower = 0.035f;
                     homingRange = 200f;
@@ -152,6 +154,25 @@ public class PMUnitTypes implements ContentList{
 
                     trailSize = 0.2f;
                     targetRadius = 0.5f;
+                }};
+            }}, new RocketWeapon(name + "-rocket"){{
+                bottomWeapons.add(this);
+
+                x = 18f / 4f;
+                y = 0f;
+                mirror = true;
+                alternate = false;
+                reload = 60f;
+                shootCone = 5f;
+
+                bullet = new RocketBulletType(5f, 36f, name){{
+                    lifetime = 75f;
+                    backSpeed = 0.25f;
+                    splashDamage = 200f;
+                    splashDamageRadius = 18f;
+                    thrusterOffset = 15f / 4f;
+                    thrusterSize = 0.75f;
+                    layer = Layer.flyingUnitLow - 1f;
                 }};
             }});
         }};

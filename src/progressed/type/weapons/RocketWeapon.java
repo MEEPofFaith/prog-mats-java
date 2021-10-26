@@ -25,7 +25,7 @@ public class RocketWeapon extends Weapon{
         super.update(unit, mount);
 
         RocketMount rMount = (RocketMount)mount;
-        rMount.total += Time.delta * unit.reloadMultiplier;
+        if(loadf(mount) > 0.01f) rMount.total += Time.delta * unit.reloadMultiplier;
         rMount.warmup = Mathf.lerpDelta(rMount.warmup, Mathf.num(mount.reload / reload > 0.001), 0.15f);
     }
 
