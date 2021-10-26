@@ -23,8 +23,11 @@ import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
-import progressed.world.blocks.defence.turret.EruptorTurret.*;
+import progressed.world.blocks.defence.turret.energy.*;
+import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.apotheosis.*;
+import progressed.world.blocks.defence.turret.payload.*;
+import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.stations.*;
@@ -62,7 +65,7 @@ public class PMBlocks implements ContentList{
     caliber,
 
     //Misc
-    allure, tinker, vaccinator,
+    allure, sergeant, vaccinator,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -644,7 +647,7 @@ public class PMBlocks implements ContentList{
             ammoPerShot = 10;
         }};
 
-        tinker = new PayloadTurret("tinker"){{
+        sergeant = new PayloadLaunchTurret("tinker"){{
             requirements(Category.turret, with(
                 Items.copper, 125,
                 Items.lead, 75,

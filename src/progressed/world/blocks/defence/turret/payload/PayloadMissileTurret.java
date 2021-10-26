@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret;
+package progressed.world.blocks.defence.turret.payload;
 
 import arc.*;
 import arc.audio.*;

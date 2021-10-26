@@ -11,8 +11,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.*;
 import progressed.graphics.*;
-import progressed.world.blocks.defence.turret.*;
-import progressed.world.blocks.defence.turret.AimLaserTurret.*;
+import progressed.world.blocks.defence.turret.energy.*;
+import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;

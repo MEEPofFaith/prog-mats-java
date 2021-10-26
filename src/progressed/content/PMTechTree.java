@@ -73,7 +73,7 @@ public class PMTechTree implements ContentList{
             });
 
             //Tinker
-            node(tinker, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
+            node(sergeant, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
                 node(sentryBuilder, () -> {
                     node(basicSentry, () -> {
                         node(barrage, ItemStack.empty, Seq.with(new Research(basicSentry)));

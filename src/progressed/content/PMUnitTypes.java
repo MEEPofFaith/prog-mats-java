@@ -173,7 +173,7 @@ public class PMUnitTypes implements ContentList{
                     splashDamageRadius = 18f;
                     thrusterOffset = 15f / 4f;
                     thrusterSize = 0.75f;
-                    homingPower = 0.15f;
+                    homingPower = 0.25f;
                     homingRange = 48f * 8f;
                     layer = Layer.flyingUnitLow - 1f;
                 }};
