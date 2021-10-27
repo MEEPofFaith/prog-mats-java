@@ -86,55 +86,76 @@ public class StrikeBulletType extends BasicBulletType{
     @Override
     public void update(Bullet b){
         if(b.data instanceof StrikeBulletData data){
-            float x = data.x;
-            float y = data.y;
-
             float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
-            if(rise < 0.9999f && Mathf.chanceDelta(smokeTrailChance)){
+            if(rise < 0.99f && Mathf.chanceDelta(smokeTrailChance)){
+                float x = data.x;
+                float y = data.y;
                 float rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
                 float weave = weaveWidth > 0f ? Mathf.sin(b.time * weaveSpeed) * weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1f))] * rise : 0f;
                 rocketEffect.at(x + weave + Mathf.range(trailRnd * rRocket), y + rise * elevation + Mathf.range(trailRnd * rRocket), trailSize * rRocket);
             }
 
-            Teamc target = Units.bestTarget(b.team, b.x, b.y, homingRange, e -> !e.dead() && e.checkTarget(collidesAir, collidesGround), build -> !build.dead() && collidesGround, unitSort);
-
             //Instant drop
-            float dropTime = (1f - Mathf.curve(b.time, 0, riseTime)) + Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime);
-            if(autoDropRadius > 0f && b.time >= dropDelay && dropTime == 0 && target != null && Mathf.within(b.x, b.y, target.x(), target.y(), autoDropRadius)){
-                b.time = b.lifetime - fallTime;
+            data.canDrop = riseTime < b.time && b.time < (b.lifetime - fallTime);
+            if(autoDropRadius > 0f && data.canDrop && b.time >= dropDelay){
+                Teamc dTarget = Units.bestTarget(b.team, b.x, b.y, autoDropRadius,
+                    e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
+                    t -> !t.dead() && collidesGround,
+                    unitSort
+                );
+                if(dTarget != null){
+                    b.time = b.lifetime - fallTime;
+                }
             }
 
             //Start and stop
-            if(target != null && stopRadius > 0f && b.time >= stopDelay){
-                boolean inRange = Mathf.within(b.x, b.y, target.x(), target.y(), stopRadius);
-                if(inRange && !data.stopped){
-                    data.setVel(b.vel);
-                    data.stopped = true;
-                    b.vel.trns(b.vel.angle(), 0.001f);
-                }else if(resumeSeek && (!inRange || ((Healthc)target).dead() || ((Healthc)target).health() < 0f) && data.stopped){
+            if(stopRadius > 0f && b.time >= stopDelay){
+                Teamc sTarget = Units.bestTarget(b.team, b.x, b.y, stopRadius,
+                    e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
+                    t -> !t.dead() && collidesGround,
+                    unitSort
+                );
+                if(sTarget != null){
+                    if(!data.stopped){
+                        data.setVel(b.vel);
+                        data.stopped = true;
+                        b.vel.trns(b.vel.angle(), 0.001f);
+                    }else if(resumeSeek && (((Healthc)sTarget).dead() || ((Healthc)sTarget).health() < 0f) && data.stopped){
+                        b.vel.set(data.vel);
+                        data.stopped = false;
+                    }
+                }else if(resumeSeek && data.stopped){
                     b.vel.set(data.vel);
                     data.stopped = false;
                 }
-            }else if((resumeSeek || target == null) && data.stopped){
-                b.vel.set(data.vel);
-                data.stopped = false;
             }
 
             if(!data.stopped){
                 if(homingPower > 0.0001f && b.time >= homingDelay){
-                    if(target != null){
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
+                    Teamc hTarget = Units.bestTarget(b.team, b.x, b.y, homingRange,
+                        e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
+                        t -> collidesGround && !b.hasCollided(t.id),
+                        unitSort
+                    );
+
+                    if(hTarget != null){
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(hTarget), homingPower * Time.delta * 50f));
                     }
                 }
 
                 if(weaveMag > 0){
-                    float scl = Mathf.randomSeed(b.id, 0.9f, 1.1f);
-                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale / 2f * scl, weaveScale * scl, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
+                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
                 }
 
                 if(trailChance > 0){
                     if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(b.x, b.y, trailParam, trailColor);
+                        trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
+                    }
+                }
+
+                if(trailInterval > 0f){
+                    if(b.timer(0, trailInterval)){
+                        trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
                     }
                 }
             }
@@ -325,7 +346,7 @@ public class StrikeBulletType extends BasicBulletType{
     public static class StrikeBulletData{
         public float x, y;
         public Vec2 vel;
-        public boolean stopped, blocked, split;
+        public boolean stopped, blocked, split, canDrop;
         public ShieldBuild shield;
 
         public StrikeBulletData(float x, float y){
@@ -345,9 +366,9 @@ public class StrikeBulletType extends BasicBulletType{
         public String toString(){
             return "x : " + x +
             "\ny: " + y +
-                "\nstopped: " + stopped +
-                "\nblocked: " + blocked +
-                "\nsplit: " + split;
+            "\nstopped: " + stopped +
+            "\nblocked: " + blocked +
+            "\nsplit: " + split;
         }
     }
 }
