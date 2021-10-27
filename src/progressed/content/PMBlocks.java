@@ -937,6 +937,7 @@ public class PMBlocks implements ContentList{
             shootLength = doorOffset = 6f / 4f;
             doorWidth = 24f / 4f;
             doorLength = 116f / 4f;
+            rotOffset = 90f;
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{

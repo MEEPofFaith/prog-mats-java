@@ -21,6 +21,7 @@ public class PayloadTurret extends PayloadMissileTurret{
     public float restitution = 0.02f;
     public float shootCone = 8f;
     public float shootLength = -1;
+    public float rotOffset = 0f;
 
     public float chargeTime = -1f;
     public float loadTime = 20f;
@@ -99,7 +100,7 @@ public class PayloadTurret extends PayloadMissileTurret{
                 updatePayload();
 
                 if(loaded){
-                    payRotation = rotation - 90f;
+                    payRotation = rotation - 90f + rotOffset;
                 }
 
                 Draw.z(hasArrived() ? Layer.turret + 0.01f : Layer.blockOver);
@@ -218,8 +219,8 @@ public class PayloadTurret extends PayloadMissileTurret{
         }
 
         public void rotatePayload(){
-            if(!Angles.within(payRotation, rotation - 90f, 0.01f)){
-                payRotation = Angles.moveToward(payRotation, rotation - 90f, payloadRotateSpeed * edelta());
+            if(!Angles.within(payRotation, rotation - 90f + rotOffset, 0.01f)){
+                payRotation = Angles.moveToward(payRotation, rotation - 90f + rotOffset, payloadRotateSpeed * edelta());
                 rotating = true;
             }else{
                 rotating = false;

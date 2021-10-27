@@ -44,7 +44,7 @@ public class PayloadRocketTurret extends PayloadTurret{
                 updatePayload();
 
                 if(loaded){
-                    payRotation = rotation - 90f;
+                    payRotation = rotation - 90f + rotOffset;
                 }
 
                 boolean ready = hasArrived() && loaded;
