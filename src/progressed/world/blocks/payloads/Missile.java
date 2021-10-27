@@ -53,12 +53,13 @@ public class Missile extends NuclearWarhead{
     public void load(){
         super.load();
 
-        topRegion = Core.atlas.find(name + "-top");
+        region = Core.atlas.find(name + "-outline", name);
+        topRegion = Core.atlas.find(name + "-top", region);
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return Core.atlas.isFound(topRegion) ? new TextureRegion[]{region, topRegion} : super.icons();
+        return new TextureRegion[]{region, topRegion};
     }
 
     public void drawBase(Tile tile){
