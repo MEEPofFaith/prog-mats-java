@@ -11,8 +11,7 @@ import static mindustry.Vars.*;
 
 public class PayloadLaunchTurret extends PayloadTurret{
     public float uncharge = 0.25f;
-    public float loadLength = -1f, width = -1f;
-    public float lineStart = -1f, lineLength = -1f;
+    public float lineSpacing = -1f, lineStart = -1f, lineLength = -1f;
     public int arrows = 2;
 
     public PayloadLaunchTurret(String name){
@@ -23,10 +22,10 @@ public class PayloadLaunchTurret extends PayloadTurret{
 
     @Override
     public void init(){
-        if(loadLength < 0) loadLength = size * tilesize / 4f;
+        if(loadTime < 0) loadTime = size * tilesize / 4f;
         if(lineStart < 0) lineStart = shootLength + 1.5f;
-        if(lineLength < 0) lineLength = loadLength + shootLength;
-        if(width < 0) width = size * tilesize / 4f;
+        if(lineLength < 0) lineLength = loadTime + shootLength;
+        if(lineSpacing < 0) lineSpacing = size * tilesize / 4f;
         clipSize = Math.max(clipSize, size * tilesize + (lineLength + lineStart) * 2f);
 
         super.init();
@@ -43,7 +42,7 @@ public class PayloadLaunchTurret extends PayloadTurret{
                 Draw.z(Layer.effect);
 
                 float fin = Interp.pow2Out.apply(charge / chargeTime);
-                float w = width + width * (1f - fin);
+                float w = lineSpacing + lineSpacing * (1f - fin);
 
                 Tmp.v1.trns(rotation, lineStart, -w);
                 Tmp.v2.trns(rotation, lineStart, w);

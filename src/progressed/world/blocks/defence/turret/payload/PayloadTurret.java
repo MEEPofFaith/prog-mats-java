@@ -9,6 +9,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.units.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 
 import static mindustry.Vars.*;
@@ -34,6 +35,7 @@ public class PayloadTurret extends PayloadMissileTurret{
         super(name);
 
         outlineIcon = true;
+        shootSound = Sounds.artillery;
     }
 
     @Override
@@ -78,6 +80,22 @@ public class PayloadTurret extends PayloadMissileTurret{
                 }
             }
 
+            drawPayload();
+
+            tr2.trns(rotation, -recoil);
+
+            Draw.z(Layer.blockOver + 0.1f);
+            Draw.rect(topRegion, x, y);
+
+            drawTurret();
+
+            drawHeat();
+
+            Draw.reset();
+        }
+
+        @Override
+        public void drawPayload(){
             if(payload != null){
                 updatePayload();
 
@@ -90,17 +108,16 @@ public class PayloadTurret extends PayloadMissileTurret{
                 Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f);
                 Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
             }
+        }
 
-            tr2.trns(rotation, -recoil);
-
-            Draw.z(Layer.blockOver + 0.1f);
-            Draw.rect(topRegion, x, y);
-
+        public void drawTurret(){
             Draw.z(Layer.turret);
             Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
             Draw.z(Layer.turret + 0.02f);
             Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
+        }
 
+        public void drawHeat(){
             if(heat >= 0.001f && heatRegion.found()){
                 Draw.color(heatColor, heat);
                 Draw.blend(Blending.additive);
@@ -108,8 +125,6 @@ public class PayloadTurret extends PayloadMissileTurret{
                 Draw.blend();
                 Draw.color();
             }
-
-            Draw.reset();
         }
 
         @Override
@@ -178,7 +193,9 @@ public class PayloadTurret extends PayloadMissileTurret{
 
                     float targetRot = angleTo(targetPos);
 
-                    turnToTarget(targetRot);
+                    if(shouldTurn()){
+                        turnToTarget(targetRot);
+                    }
 
                     if(Angles.angleDist(rotation, targetRot) < shootCone && canShoot){
                         wasShooting = true;
@@ -196,6 +213,10 @@ public class PayloadTurret extends PayloadMissileTurret{
             if(acceptCoolant){
                 updateCooling();
             }
+        }
+
+        public boolean shouldTurn(){
+            return loaded;
         }
 
         protected void turnToTarget(float targetRot){

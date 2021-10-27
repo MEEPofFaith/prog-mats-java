@@ -671,9 +671,9 @@ public class PMBlocks implements ContentList{
             restitution = 0.02f;
             shootShake = 2f;
 
-            loadLength = 4f;
+            loadTime = 4f; //In LaunchTurret, this determines how far back the payload is shifted
             shootLength = 11f;
-            width = 3.5f;
+            lineSpacing = 3.5f;
         }};
 
         vaccinator = new ItemTurret("vaccinator"){
