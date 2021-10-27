@@ -53,7 +53,7 @@ public class PMBlocks implements ContentList{
     flame, blaze, inferno,
     
     //Swords
-    masquerade, violet,
+    ball, masquerade,
 
     //Pixel Turrets
     bit,
@@ -474,7 +474,7 @@ public class PMBlocks implements ContentList{
             consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f)).update(false);
         }};
 
-        masquerade = new SwordTurret("masquerade"){{
+        ball = new SwordTurret("masquerade"){{
             requirements(Category.turret, with(
                 Items.copper, 500,
                 Items.graphite, 250,
@@ -484,6 +484,7 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 150
             ));
             size = 3;
+            hideDetails = false;
             health = 340 * size * size;
             range = 180f;
             powerUse = 6.5f;
@@ -492,7 +493,7 @@ public class PMBlocks implements ContentList{
             trailWidth = 30f / 4f;
         }};
 
-        violet = new SwordTurret("violet"){
+        masquerade = new SwordTurret("violet"){
             {
                 requirements(Category.turret, with(
                     Items.copper, 1400,
@@ -503,6 +504,7 @@ public class PMBlocks implements ContentList{
                     PMItems.valexitite, 450
                 ));
                 size = 5;
+                hideDetails = false;
                 health = 230 * size * size;
                 range = 260f;
                 powerUse = 13.5f;

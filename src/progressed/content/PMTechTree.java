@@ -109,8 +109,8 @@ public class PMTechTree implements ContentList{
             node(caliber);
 
             //Sword
-            node(masquerade, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
-                node(violet, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+            node(ball, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
+                node(masquerade, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
             });
         });
 

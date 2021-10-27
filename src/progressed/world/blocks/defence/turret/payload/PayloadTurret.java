@@ -103,7 +103,7 @@ public class PayloadTurret extends PayloadMissileTurret{
                     payRotation = rotation - 90f;
                 }
 
-                Draw.z((hasArrived()) ? Layer.turret + 0.01f : Layer.blockOver);
+                Draw.z(hasArrived() ? Layer.turret + 0.01f : Layer.blockOver);
                 //payload.draw() but with rotation
                 Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f);
                 Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
