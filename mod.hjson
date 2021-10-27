@@ -3,7 +3,7 @@ displayName: Progressed Materials (Java)
 author: "[accent]Creator:\n        MEEP of Faith[]\n\n[accent]Contributors:[]\n        [accent]ThirstyBoi[] (Eruptor sprite)\n        [accent]Goober[] (Kugelblitz and Popeshadow sprites)\n        [accent]VozDuh[] (Missile turret sprites, new icon)\n        [accent]Ilya246[] (Luminocity damage ramping)\n        [accent]Kapzduke[] (Tinker sprite)\n        [accent]TheMalaysianDude[] (Missile assembler resprite)\n        [accent]Flin[] (Drone resprite)\n        [accent]GlennFolker[] (The alphableeder)\n        [accent]lordReddx[] (RU Translation)\n        Some sounds from Freesound.\n        Anyone I stole code from."
 description: "Progressed Materials, but in Java. My main mod, which mostly just adds turrets. I'm just experimenting to see what I can do with the power I hold.\n\nThe name definitely isn't made of the synonyms of \"Advance\" and \"Content\"."
 version: 17.3
-minGameVersion: 133
+minGameVersion: 134
 repo: MEEPofFaith/prog-mats-java
 main: progressed.ProgMats
 java: true
