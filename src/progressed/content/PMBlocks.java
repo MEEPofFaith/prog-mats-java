@@ -74,7 +74,7 @@ public class PMBlocks implements ContentList{
     blackhole, excalibur,
 
     //Missiles
-    firestorm, strikedown, trinity,
+    firestorm, strikedown, trinity, hydra,
 
     //Apotheosis
     apotheosisNexus, apotheosisCharger,
@@ -925,6 +925,18 @@ public class PMBlocks implements ContentList{
             cooldown = 0.005f;
             shootShake = 10f;
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+        }};
+
+        hydra = new PayloadRocketTurret("hydra"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            ammo(PMPayloads.basicRocket, Bullets.standardCopper);
+            size = 5;
+            reloadTime = 3f * 60f;
+            range = 800f;
+
+            shootLength = doorOffset = 6f / 4f;
+            doorWidth = 24f / 4f;
+            doorLength = 116f / 4f;
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{

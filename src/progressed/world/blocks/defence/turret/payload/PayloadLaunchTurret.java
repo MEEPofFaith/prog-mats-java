@@ -69,6 +69,18 @@ public class PayloadLaunchTurret extends PayloadTurret{
             super.updateTile();
         }
 
+        @Override
+        public void loadPayload(){
+            if(loadProgress > -loadTime){
+                loadProgress -= payloadSpeed * delta();
+                loading = true;
+            }else{
+                loadProgress = -loadTime;
+                loading = false;
+            }
+        }
+
+        @Override
         protected void updateLaunching(){
             if(charging){
                 charge += edelta();
@@ -77,28 +89,27 @@ public class PayloadLaunchTurret extends PayloadTurret{
                     charge = chargeTime;
                 }
             }else{
-                super.updateLaunching();
+                BulletType type = peekAmmo();
+
+                if(loadProgress < shootLength){
+                    loadProgress += type.speed * delta();
+                    if(loadProgress >= shootLength){
+                        loaded = false;
+                        loadProgress = shootLength;
+                    }
+                }
+
+                if(!loaded){
+                    shoot(type);
+                    shooting = false;
+                    reload %= reloadTime;
+                }
             }
-        }
-
-        protected void bullet(BulletType type){
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
-
-            tr.trns(rotation, -recoil + loadProgress);
-            float angle = rotation + Mathf.range(inaccuracy + type.inaccuracy);
-            type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
         }
 
         @Override
-        public void updatePayload(){
-            if(payload != null){
-                if(hasArrived()){
-                    tr.trns(rotation, -recoil + loadProgress);
-                    payload.set(x + tr.x, y + tr.y, payRotation);
-                }else{
-                    payload.set(x + payVector.x, y + payVector.y, payRotation);
-                }
-            }
+        public float payloadOffset(){
+            return loadProgress;
         }
 
         @Override

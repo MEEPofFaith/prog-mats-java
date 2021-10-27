@@ -10,6 +10,12 @@ import static mindustry.type.ItemStack.*;
 public class PMPayloads implements ContentList{
     public static Missile
 
+    //Region Rockets
+
+    emptyRocket,
+
+    basicRocket,
+
     //Region Missiles
 
     emptyMissile,
@@ -28,6 +34,23 @@ public class PMPayloads implements ContentList{
 
     @Override
     public void load(){
+        emptyRocket = new Missile("empty-rocket"){{
+            requirements = with(Items.copper, 12, Items.lead, 10, Items.titanium, 15);
+
+            size = 3;
+            powerUse = 3f;
+            constructTime = 60f * 5f;
+        }};
+
+        basicRocket = new Missile("basic-rocket"){{
+            requirements = with(Items.titanium, 12, Items.blastCompound, 8);
+
+            prev = emptyMissile;
+            size = 2;
+            powerUse = 3f;
+            constructTime = 60f * 19f;
+        }};
+
         emptyMissile = new Missile("empty-missile"){{
             requirements = with(Items.copper, 12, Items.lead, 10, Items.titanium, 15);
 

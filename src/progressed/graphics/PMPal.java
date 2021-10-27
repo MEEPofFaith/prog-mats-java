@@ -8,6 +8,8 @@ public class PMPal{
     //Single colors
     public static Color
 
+    midtoneGray = valueOf("989AA4"),
+
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
 
