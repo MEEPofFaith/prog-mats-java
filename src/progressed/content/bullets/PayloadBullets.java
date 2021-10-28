@@ -33,6 +33,8 @@ public class PayloadBullets implements ContentList{
         hydraBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
             lifetime = 120f;
             backSpeed = thrustDelay = 0f;
+            thrusterSize = 6f / 4f;
+            thrusterOffset = 43f / 4f;
             rotOffset = 90f;
 
             splashDamage = 526f;

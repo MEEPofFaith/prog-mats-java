@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.io.*;
 import mindustry.graphics.*;
+import progressed.content.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -48,10 +49,11 @@ public class PayloadRocketTurret extends PayloadTurret{
                 }
 
                 boolean ready = hasArrived() && loaded;
-                Draw.z(ready ? Layer.turret + 0.02f : Layer.blockOver);
                 float a = ready ? Mathf.curve(risef(), 0.375f, 0.625f) : 1f;
+                Draw.z(Layer.blockOver);
+                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f, ready ? 1 - a : a);
+                if(ready) Draw.z(Layer.turret + 0.02f);
                 //payload.draw() but with rotation
-                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f, a);
                 Draw.alpha(a);
                 Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
                 Draw.color();

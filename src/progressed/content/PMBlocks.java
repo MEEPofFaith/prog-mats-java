@@ -932,8 +932,9 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             ammo(PMPayloads.basicRocket, PayloadBullets.hydraBasic);
             size = 5;
-            reloadTime = 3f * 60f;
+            reloadTime = 1.5f * 60f;
             range = 800f;
+            recoilAmount = 4f;
 
             shootLength = doorOffset = 6f / 4f;
             doorWidth = 32f / 4f;
