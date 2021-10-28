@@ -14,7 +14,7 @@ public class PayloadBullets implements ContentList{
 
     barrageLaunch, downpourLaunch, rapierLaunch,
 
-    hydraBasic,
+    arbalestBasic,
 
     firestormMissile, //not payload, but it fits with the other missiles so whatever
 
@@ -30,7 +30,7 @@ public class PayloadBullets implements ContentList{
         downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
         rapierLaunch = new SentryBulletType(PMUnitTypes.rapier);
 
-        hydraBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
+        arbalestBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
             lifetime = 120f;
             backSpeed = thrustDelay = 0f;
             thrusterSize = 6f / 4f;
