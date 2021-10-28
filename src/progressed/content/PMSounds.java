@@ -19,6 +19,7 @@ public class PMSounds{
         popeshadowCharge = new Sound(),
         popeshadowBlast = new Sound(),
         swordStab = new Sound(),
+        rocketLaunch = new Sound(),
         nuclearExplosion = new Sound(),
         sentinelWarning = new Sound(),
         pulseBeam = new Sound(),
@@ -36,13 +37,14 @@ public class PMSounds{
         popeshadowBlast = loadSound("popeshadow-blast");
         swordStab = loadSound("sword-stab");
         nuclearExplosion = loadSound("nuclear-explosion");
+        rocketLaunch = loadSound("rocket");
         sentinelWarning = loadSound("sentinel-warning");
         pulseBeam = loadSound("pulse-beam");
         moonPiss = loadSound("piss");
         loudMoonPiss = loadSound("piss-loud");
     }
 
-    protected static Sound loadSound(String soundName) {
+    protected static Sound loadSound(String soundName){
         String name = "sounds/" + soundName;
         String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
 

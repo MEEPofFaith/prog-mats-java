@@ -20,6 +20,8 @@ public class PayloadRocketTurret extends PayloadTurret{
 
     public PayloadRocketTurret(String name){
         super(name);
+
+        shootSound = PMSounds.rocketLaunch;
     }
 
     @Override
