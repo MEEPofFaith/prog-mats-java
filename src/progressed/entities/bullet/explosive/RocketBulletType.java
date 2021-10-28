@@ -17,6 +17,7 @@ public class RocketBulletType extends BasicBulletType{
     public float fallDrag = 0.05f, thrustDelay = 20f;
     public float thrusterSize = 4f, thrusterOffset = 8f, thrusterGrowth = 5f;
     public float acceleration = 0.03f;
+    public float rotOffset = 0f;
 
     public RocketBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite); //Speed means nothing
@@ -87,9 +88,9 @@ public class RocketBulletType extends BasicBulletType{
             }
 
             Draw.z(layer - 0.01f);
-            Draw.rect(backRegion, b.x, b.y, angle - 90f);
+            Draw.rect(backRegion, b.x, b.y, angle - 90f + rotOffset);
             Draw.z(layer);
-            Draw.rect(frontRegion, b.x, b.y, angle - 90f);
+            Draw.rect(frontRegion, b.x, b.y, angle - 90f + rotOffset);
             Draw.reset();
         }
     }
@@ -97,13 +98,15 @@ public class RocketBulletType extends BasicBulletType{
     @Override
     public Bullet create(Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data){
         Bullet bullet = super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data);
-        bullet.initVel(angle, -backSpeed * velocityScl);
-        if(backMove){
-            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-        }else{
-            bullet.set(x, y);
+        if(backSpeed != 0f){
+            bullet.initVel(angle, -backSpeed * velocityScl);
+            if(backMove){
+                bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
+            }else{
+                bullet.set(x, y);
+            }
+            if(keepVelocity && owner instanceof Velc v) bullet.vel.add(v.vel());
         }
-        if(keepVelocity && owner instanceof Velc v) bullet.vel.add(v.vel());
         bullet.data = new RocketData(angle);
         return bullet;
     }

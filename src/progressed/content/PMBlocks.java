@@ -930,7 +930,7 @@ public class PMBlocks implements ContentList{
 
         hydra = new PayloadRocketTurret("hydra"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            ammo(PMPayloads.basicRocket, Bullets.standardCopper);
+            ammo(PMPayloads.basicRocket, PayloadBullets.hydraBasic);
             size = 5;
             reloadTime = 3f * 60f;
             range = 800f;
