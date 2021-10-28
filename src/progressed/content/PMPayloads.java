@@ -2,6 +2,7 @@ package progressed.content;
 
 import mindustry.content.*;
 import mindustry.ctype.*;
+import progressed.content.bullets.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
@@ -67,7 +68,7 @@ public class PMPayloads implements ContentList{
             powerUse = 3f;
             constructTime = 60f * 19f;
 
-            explosion = PMBullets.strikedownBasic;
+            explosion = PayloadBullets.strikedownBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
@@ -80,7 +81,7 @@ public class PMPayloads implements ContentList{
             requiresUnlock = true;
 
             explosionArea = -1f;
-            explosion = PMBullets.recursionTwo;
+            explosion = PayloadBullets.recursionTwo;
             explosions = 13;
             maxDelay = 20f;
         }};
@@ -105,7 +106,7 @@ public class PMPayloads implements ContentList{
             requiresUnlock = true;
             shadowRad = size * tilesize * 2f;
 
-            explosion = PMBullets.arbiterBasic;
+            explosion = PayloadBullets.trinityBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
@@ -119,8 +120,8 @@ public class PMPayloads implements ContentList{
             shadowRad = size * tilesize * 2f;
 
             explosionArea = -1f;
-            explosion = PMBullets.arbiterClusterFrag;
-            explosions = PMBullets.arbiterCluster.fragBullets;
+            explosion = PayloadBullets.trinityClusterFrag;
+            explosions = PayloadBullets.trinityCluster.fragBullets;
             maxDelay = 20f;
         }};
 

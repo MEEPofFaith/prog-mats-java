@@ -13,6 +13,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.content.bullets.*;
 import progressed.entities.*;
 import progressed.entities.bullet.energy.BlackHoleBulletType.*;
 import progressed.graphics.*;

@@ -18,7 +18,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.MassDriver.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.bullets.*;
 
 import static mindustry.Vars.*;
 

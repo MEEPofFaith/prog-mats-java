@@ -18,6 +18,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import progressed.content.bullets.*;
 import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -136,11 +137,11 @@ public class PMBlocks implements ContentList{
                 Items.thorium, 80
             ));
             ammo(
-                Items.copper, PMBullets.standardCopperMini,
-                Items.graphite, PMBullets.standardDenseMini,
-                Items.silicon, PMBullets.standardHomingMini,
-                Items.pyratite, PMBullets.standardIncendiaryMini,
-                Items.thorium, PMBullets.standardThoriumMini
+                Items.copper, MinigunBullets.standardCopperMini,
+                Items.graphite, MinigunBullets.standardDenseMini,
+                Items.silicon, MinigunBullets.standardHomingMini,
+                Items.pyratite, MinigunBullets.standardIncendiaryMini,
+                Items.thorium, MinigunBullets.standardThoriumMini
             );
             size = 4;
             range = 255f;
@@ -177,11 +178,11 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 120
             ));
             ammo(
-                Items.copper, PMBullets.standardCopperMini,
-                Items.graphite, PMBullets.standardDenseMini,
-                Items.silicon, PMBullets.standardHomingMini,
-                Items.pyratite, PMBullets.standardIncendiaryMini,
-                Items.thorium, PMBullets.standardThoriumMini
+                Items.copper, MinigunBullets.standardCopperMini,
+                Items.graphite, MinigunBullets.standardDenseMini,
+                Items.silicon, MinigunBullets.standardHomingMini,
+                Items.pyratite, MinigunBullets.standardIncendiaryMini,
+                Items.thorium, MinigunBullets.standardThoriumMini
             );
             size = 4;
             range = 255f;
@@ -219,11 +220,11 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 270
             ));
             ammo(
-                Items.copper, PMBullets.standardCopperMini,
-                Items.graphite, PMBullets.standardDenseMini,
-                Items.silicon, PMBullets.standardHomingMini,
-                Items.pyratite, PMBullets.standardIncendiaryMini,
-                Items.thorium, PMBullets.standardThoriumMini
+                Items.copper, MinigunBullets.standardCopperMini,
+                Items.graphite, MinigunBullets.standardDenseMini,
+                Items.silicon, MinigunBullets.standardHomingMini,
+                Items.pyratite, MinigunBullets.standardIncendiaryMini,
+                Items.thorium, MinigunBullets.standardThoriumMini
             );
             size = 4;
             hideDetails = false;
@@ -605,11 +606,11 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 60
             ));
             ammo(
-                Items.titanium, PMBullets.sniperBoltTitanium,
-                Items.thorium, PMBullets.sniperBoltThorium,
-                Items.silicon, PMBullets.sniperBoltSilicon,
-                PMItems.valexitite, PMBullets.sniperBoltTechtanite,
-                Items.surgeAlloy, PMBullets.sniperBoltSurge
+                Items.titanium, SniperBullets.sniperBoltTitanium,
+                Items.thorium, SniperBullets.sniperBoltThorium,
+                Items.silicon, SniperBullets.sniperBoltSilicon,
+                PMItems.valexitite, SniperBullets.sniperBoltValexitite,
+                Items.surgeAlloy, SniperBullets.sniperBoltSurge
             );
             size = 3;
             hideDetails = false;
@@ -657,9 +658,9 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 50
             ));
             ammo(
-                PMPayloads.basicSentry, PMBullets.barrageLaunch,
-                PMPayloads.strikeSentry, PMBullets.downpourLaunch,
-                PMPayloads.dashSentry, PMBullets.rapierLaunch
+                PMPayloads.basicSentry, PayloadBullets.barrageLaunch,
+                PMPayloads.strikeSentry, PayloadBullets.downpourLaunch,
+                PMPayloads.dashSentry, PayloadBullets.rapierLaunch
             );
 
             size = 3;
@@ -852,7 +853,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 70
             ));
             ammo(
-                Items.blastCompound, PMBullets.firestormMissile
+                Items.blastCompound, PayloadBullets.firestormMissile
             );
             size = 3;
             hideDetails = false;
@@ -889,8 +890,8 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 120
             ));
             ammo(
-                PMPayloads.basicMissile, PMBullets.strikedownBasic,
-                PMPayloads.recursiveMissile, PMBullets.strikedownRecursive
+                PMPayloads.basicMissile, PayloadBullets.strikedownBasic,
+                PMPayloads.recursiveMissile, PayloadBullets.strikedownRecursive
             );
             size = 4;
             hideDetails = false;
@@ -914,8 +915,8 @@ public class PMBlocks implements ContentList{
                 PMItems.valexitite, 800
             ));
             ammo(
-                PMPayloads.basicNuke, PMBullets.arbiterBasic,
-                PMPayloads.clusterNuke, PMBullets.arbiterCluster
+                PMPayloads.basicNuke, PayloadBullets.trinityBasic,
+                PMPayloads.clusterNuke, PayloadBullets.trinityCluster
             );
             size = 7;
             hideDetails = false;

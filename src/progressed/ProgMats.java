@@ -9,6 +9,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import progressed.content.*;
+import progressed.content.bullets.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
