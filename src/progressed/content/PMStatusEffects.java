@@ -38,7 +38,7 @@ public class PMStatusEffects implements ContentList{
 
         //Anti-vaxxers are quivering in fear
         vcFrenzy = new ExclusiveStatusEffect("frenzy"){{
-            color = Pal.lightOrange;
+            color = Color.valueOf("E25656");
             damageMultiplier = 3f;
             speedMultiplier = 3f;
             reloadMultiplier = 3f;
