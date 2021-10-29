@@ -17,11 +17,8 @@ public class PayloadBullets implements ContentList{
     arbalestBasic,
 
     firestormMissile, //not payload, but it fits with the other missiles so whatever
-
     recursionTwo, recursionOne,
-
     strikedownBasic, strikedownRecursive,
-
     trinityBasic, trinityClusterFrag, trinityCluster;
 
     @Override
@@ -31,11 +28,16 @@ public class PayloadBullets implements ContentList{
         rapierLaunch = new SentryBulletType(PMUnitTypes.rapier);
 
         arbalestBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
-            lifetime = 120f;
+            lifetime = 70f;
+            acceleration = 0.03f;
             backSpeed = thrustDelay = 0f;
-            thrusterSize = 6f / 4f;
-            thrusterOffset = 43f / 4f;
+            trailWidth = trailParam = thrusterSize = 6f / 4f;
+            trailOffset = thrusterOffset = 43f / 4f;
             rotOffset = 90f;
+            hitEffect = despawnEffect = PMFx.missileExplosion;
+            trailInterval = 1f;
+            trailEffect = PMFx.smokeTrail;
+            trailLength = 6;
 
             splashDamage = 526f;
             splashDamageRadius = 52f;

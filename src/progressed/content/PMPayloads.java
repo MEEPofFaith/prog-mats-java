@@ -50,6 +50,8 @@ public class PMPayloads implements ContentList{
             size = 2;
             powerUse = 3f;
             constructTime = 60f * 19f;
+
+            explosion = PayloadBullets.arbalestBasic;
         }};
 
         emptyMissile = new Missile("empty-missile"){{

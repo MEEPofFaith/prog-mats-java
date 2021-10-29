@@ -6,16 +6,20 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+
+import static mindustry.Vars.*;
 
 /** @author MEEP */
 public class RocketBulletType extends BasicBulletType{
     public float backSpeed = 1f;
     public float fallDrag = 0.05f, thrustDelay = 20f;
     public float thrusterSize = 4f, thrusterOffset = 8f, thrusterGrowth = 5f;
+    public float trailOffset = 0f;
     public float acceleration = 0.03f;
     public float rotOffset = 0f;
 
@@ -47,8 +51,6 @@ public class RocketBulletType extends BasicBulletType{
 
     @Override
     public void update(Bullet b){
-        super.update(b);
-
         if(b.data instanceof RocketData r){
             if(b.time < thrustDelay && thrustDelay > 0){
                 b.vel.scl(Math.max(1f - fallDrag * Time.delta, 0));
@@ -59,6 +61,52 @@ public class RocketBulletType extends BasicBulletType{
                     r.thrust = true;
                 }
                 b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
+
+
+                if(homingPower > 0.0001f && b.time >= homingDelay){
+                    Teamc target;
+                    //home in on allies if possible
+                    if(healPercent > 0){
+                        target = Units.closestTarget(null, b.x, b.y, homingRange,
+                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team,
+                            t -> collidesGround && (t.team != b.team || t.damaged()));
+                    }else{
+                        target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                    }
+
+                    if(target != null){
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
+                    }
+                }
+
+                if(weaveMag > 0){
+                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
+                }
+
+                float angle = r.thrust ? b.rotation() : r.angle,
+                    x = b.x + Angles.trnsx(angle + 180, trailOffset),
+                    y = b.y + Angles.trnsy(angle + 180, trailOffset);
+
+                if(trailChance > 0){
+                    if(Mathf.chanceDelta(trailChance)){
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam, trailColor);
+                    }
+                }
+
+                if(trailInterval > 0f){
+                    if(b.timer(0, trailInterval)){
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam, trailColor);
+                    }
+                }
+
+                //updateTrail, but with the (x, y) above
+                if(!headless && trailLength > 0){
+                    if(b.trail == null){
+                        b.trail = new Trail(trailLength);
+                    }
+                    b.trail.length = trailLength;
+                    b.trail.update(x, y, trailInterp.apply(b.fin()));
+                }
             }
         }
     }
@@ -71,6 +119,15 @@ public class RocketBulletType extends BasicBulletType{
             if(b.time >= thrustDelay || thrustDelay <= 0){ //Engine draw code stolen from units
                 float scale = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
                 float offset = thrusterOffset / 2f + thrusterOffset / 2f * scale;
+
+                //drawTrail but with the above variables
+                if(trailLength > 0 && b.trail != null){
+                    //draw below bullets? TODO
+                    float z = Draw.z();
+                    Draw.z(z - 0.0001f);
+                    b.trail.draw(b.team.color, trailWidth * scale);
+                    Draw.z(z);
+                }
 
                 Draw.color(b.team.color);
                 Fill.circle(

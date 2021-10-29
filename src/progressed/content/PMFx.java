@@ -43,6 +43,11 @@ public class PMFx{
         Draw.rect(Icon.power.getRegion(), e.x, e.y, size, size);
     }),
 
+    smokeTrail = new Effect(100, e -> {
+        color(Color.gray, Pal.darkishGray, e.fin());
+        Fill.circle(e.x, e.y, (e.rotation - e.fin() * e.rotation)/2f);
+    }).layer(Layer.bullet - 1.5f),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));
