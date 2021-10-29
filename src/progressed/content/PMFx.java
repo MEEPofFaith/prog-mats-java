@@ -48,6 +48,14 @@ public class PMFx{
         Fill.circle(e.x, e.y, (e.rotation - e.fin() * e.rotation)/2f);
     }).layer(Layer.bullet - 1.5f),
 
+    incendBurning = new Effect(35f, e -> {
+        color(Pal.lightPyraFlame, Pal.darkPyraFlame, e.fin());
+
+        randLenVectors(e.id, 5, 2f + e.fin() * 12f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.1f + e.fout() * 1.9f);
+        });
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

@@ -15,7 +15,7 @@ public class PMPayloads implements ContentList{
 
     emptyRocket,
 
-    basicRocket,
+    basicRocket, incendiaryRocket,
 
     //Region Missiles
 
@@ -54,6 +54,18 @@ public class PMPayloads implements ContentList{
             elevation = 2f / 3f;
 
             explosion = PayloadBullets.arbalestBasic;
+        }};
+
+        incendiaryRocket = new Missile("incendiary-rocket"){{
+            requirements = with(Items.titanium, 4, Items.pyratite, 6);
+
+            prev = emptyRocket;
+            size = 3;
+            powerUse = 1.25f;
+            constructTime = 60f * 6.5f;
+            elevation = 2f / 3f;
+
+            explosion = PayloadBullets.arbalestIncend;
         }};
 
         emptyMissile = new Missile("empty-missile"){{

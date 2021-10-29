@@ -930,7 +930,10 @@ public class PMBlocks implements ContentList{
 
         arbalest = new PayloadRocketTurret("arbalest"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            ammo(PMPayloads.basicRocket, PayloadBullets.arbalestBasic);
+            ammo(
+                PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
+                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend
+            );
             size = 5;
             reloadTime = 1.5f * 60f;
             range = 800f;
@@ -941,6 +944,8 @@ public class PMBlocks implements ContentList{
             doorWidth = 32f / 4f;
             doorLength = 116f / 4f;
             rotOffset = 90f;
+
+            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
@@ -1183,7 +1188,7 @@ public class PMBlocks implements ContentList{
             size = 5;
             hideDetails = false;
             ambientSound = Sounds.machine;
-            products = Seq.with(PMPayloads.basicRocket, PMPayloads.basicMissile, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
+            products = Seq.with(PMPayloads.basicRocket, PMPayloads.basicMissile, PMPayloads.incendiaryRocket, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{

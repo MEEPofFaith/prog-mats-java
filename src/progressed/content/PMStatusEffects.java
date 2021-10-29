@@ -1,19 +1,41 @@
 package progressed.content;
 
 import arc.graphics.*;
+import arc.math.*;
 import arc.struct.*;
+import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.type.statuseffects.*;
 
+import static mindustry.content.StatusEffects.*;
+
 public class PMStatusEffects implements ContentList{
     public static StatusEffect
+    incendiaryBurn,
+
     //Anti-vaxxers are quivering in fear
     vcFrenzy, vcDisassembly, vcWeaken, vcCorvus;
 
     @Override
     public void load(){
+        incendiaryBurn = new StatusEffect("incend-burn"){{
+            color = Pal.lightPyraFlame;
+            damage = 3.6f;
+            effect = PMFx.incendBurning;
+            transitionDamage = 14f;
+
+            init(() -> {
+                opposite(wet, freezing);
+                affinity(tarred, (unit, result, time) -> {
+                    unit.damagePierce(transitionDamage);
+                    Fx.burning.at(unit.x + Mathf.range(unit.bounds() / 2f), unit.y + Mathf.range(unit.bounds() / 2f));
+                    result.set(incendiaryBurn, Math.min(time + result.time, 450f));
+                });
+            });
+        }};
+
         //Anti-vaxxers are quivering in fear
         vcFrenzy = new ExclusiveStatusEffect("frenzy"){{
             color = Pal.lightOrange;

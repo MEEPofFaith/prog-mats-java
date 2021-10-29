@@ -14,7 +14,7 @@ public class PayloadBullets implements ContentList{
 
     barrageLaunch, downpourLaunch, rapierLaunch,
 
-    arbalestBasic,
+    arbalestBasic, arbalestIncend,
 
     firestormMissile, //not payload, but it fits with the other missiles so whatever
     recursionTwo, recursionOne,
@@ -42,6 +42,31 @@ public class PayloadBullets implements ContentList{
 
             splashDamage = 526f;
             splashDamageRadius = 52f;
+            homingPower = 0.2f;
+            homingDelay = 5f;
+            homingRange = 100f * 8f;
+
+            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+        }};
+
+        arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){{
+            lifetime = 70f;
+            acceleration = 0.03f;
+            backSpeed = thrustDelay = 0f;
+            trailWidth = thrusterSize = 6f / 4f;
+            trailParam = thrusterSize * 2f * 1.5f;
+            trailOffset = thrusterOffset = 43f / 4f;
+            rotOffset = 90f;
+            hitEffect = despawnEffect = PMFx.missileExplosion;
+            trailInterval = 1f;
+            trailEffect = PMFx.smokeTrail;
+            trailLength = 6;
+
+            splashDamage = 276f;
+            splashDamageRadius = 88f;
+            makeFire = true;
+            status = PMStatusEffects.incendiaryBurn;
+            statusDuration = 15f * 60f;
             homingPower = 0.2f;
             homingDelay = 5f;
             homingRange = 100f * 8f;
