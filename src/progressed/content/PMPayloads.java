@@ -3,6 +3,7 @@ package progressed.content;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import progressed.content.bullets.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
@@ -15,19 +16,19 @@ public class PMPayloads implements ContentList{
 
     emptyRocket,
 
-    basicRocket, incendiaryRocket,
+    basicRocket, incendiaryRocket, //TODO third rocket
 
     //Region Missiles
 
     emptyMissile,
 
-    basicMissile, recursiveMissile,
+    basicMissile, recursiveMissile, //TODO third missile
 
     //Region Nukes
 
     emptyNuke,
 
-    basicNuke, clusterNuke,
+    basicNuke, clusterNuke, //TODO third nuke
 
     //Region Sentries
 
@@ -97,7 +98,7 @@ public class PMPayloads implements ContentList{
             requiresUnlock = true;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.recursionTwo;
+            explosion = ((StrikeBulletType)(((StrikeBulletType)(PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
             explosions = 13;
             maxDelay = 20f;
         }};
@@ -133,8 +134,9 @@ public class PMPayloads implements ContentList{
             requiresUnlock = true;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.trinityClusterFrag;
-            explosions = PayloadBullets.trinityCluster.fragBullets;
+            StrikeBulletType b = (StrikeBulletType)PayloadBullets.trinityCluster;
+            explosion = b.splitBullet;
+            explosions = b.splitBullets;
             maxDelay = 20f;
         }};
 

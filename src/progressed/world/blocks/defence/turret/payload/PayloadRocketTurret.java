@@ -27,7 +27,7 @@ public class PayloadRocketTurret extends PayloadTurret{
     public PayloadRocketTurret(String name){
         super(name);
 
-        shootSound = PMSounds.rocketLaunch;
+        shootSound = Core.settings.getBool("pm-farting") ? Sounds.wind3 : PMSounds.rocketLaunch;
     }
 
     @Override
