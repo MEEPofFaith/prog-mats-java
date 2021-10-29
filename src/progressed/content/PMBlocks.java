@@ -1167,7 +1167,7 @@ public class PMBlocks implements ContentList{
 
             size = 5;
             ambientSound = Sounds.machine;
-            products = Seq.with(PMPayloads.emptyMissile, PMPayloads.emptyNuke);
+            products = Seq.with(PMPayloads.emptyRocket, PMPayloads.emptyMissile, PMPayloads.emptyNuke);
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
@@ -1183,7 +1183,7 @@ public class PMBlocks implements ContentList{
             size = 5;
             hideDetails = false;
             ambientSound = Sounds.machine;
-            products = Seq.with(PMPayloads.basicMissile, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
+            products = Seq.with(PMPayloads.basicRocket, PMPayloads.basicMissile, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{

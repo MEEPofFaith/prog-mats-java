@@ -30,7 +30,9 @@ public class Sentry extends Missile{
 
     @Override
     public void drawBase(Tile tile){
-        Drawf.shadow(tile.drawx(), tile.drawy(), shadowRad);
+        Draw.z(Layer.blockUnder - 1f);
+        Drawf.shadow(region, tile.drawx() - elevation, tile.drawy() - elevation, tile.build.rotdeg() - 90f);
+        Draw.z(Layer.block);
         Draw.rect(region, tile.drawx(), tile.drawy(), tile.build.rotdeg() - 90f);
     }
 

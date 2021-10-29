@@ -36,50 +36,52 @@ public class PMPayloads implements ContentList{
     @Override
     public void load(){
         emptyRocket = new Missile("empty-rocket"){{
-            requirements = with(Items.copper, 12, Items.lead, 10, Items.titanium, 15);
+            requirements = with(Items.copper, 3, Items.lead, 3, Items.titanium, 4);
 
             size = 3;
-            powerUse = 3f;
-            constructTime = 60f * 5f;
+            powerUse = 0.5f;
+            constructTime = 60f * 2f;
+            elevation = 2f / 3f;
         }};
 
         basicRocket = new Missile("basic-rocket"){{
-            requirements = with(Items.titanium, 12, Items.blastCompound, 8);
+            requirements = with(Items.titanium, 3, Items.blastCompound, 4);
 
-            prev = emptyMissile;
-            size = 2;
-            powerUse = 3f;
-            constructTime = 60f * 19f;
+            prev = emptyRocket;
+            size = 3;
+            powerUse = 1f;
+            constructTime = 60f * 6f;
+            elevation = 2f / 3f;
 
             explosion = PayloadBullets.arbalestBasic;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
-            requirements = with(Items.copper, 12, Items.lead, 10, Items.titanium, 15);
+            requirements = with(Items.copper, 4, Items.lead, 4, Items.titanium, 6);
 
             size = 2;
-            powerUse = 3f;
-            constructTime = 60f * 5f;
+            powerUse = 0.75f;
+            constructTime = 60f * 2.5f;
         }};
 
         basicMissile = new Missile("basic-missile"){{
-            requirements = with(Items.titanium, 12, Items.blastCompound, 8);
+            requirements = with(Items.titanium, 4, Items.blastCompound, 6);
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 3f;
-            constructTime = 60f * 19f;
+            powerUse = 1.5f;
+            constructTime = 60f * 6f;
 
             explosion = PayloadBullets.strikedownBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
-            requirements = with(Items.titanium, 8, Items.plastanium, 10, Items.silicon, 8, Items.blastCompound, 12);
+            requirements = with(Items.titanium, 3, Items.plastanium, 4, Items.silicon, 4, Items.blastCompound, 7);
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 5f;
-            constructTime = 60f * 26f;
+            powerUse = 2f;
+            constructTime = 60f * 8f;
             requiresUnlock = true;
 
             explosionArea = -1f;
@@ -95,7 +97,6 @@ public class PMPayloads implements ContentList{
             powerUse = 5f;
             constructTime = 60f * 8f;
             requiresUnlock = true;
-            shadowRad = size * tilesize * 2f;
         }};
 
         basicNuke = new Missile("basic-nuke"){{
@@ -106,7 +107,6 @@ public class PMPayloads implements ContentList{
             powerUse = 6f;
             constructTime = 60f * 55f;
             requiresUnlock = true;
-            shadowRad = size * tilesize * 2f;
 
             explosion = PayloadBullets.trinityBasic;
         }};
@@ -119,7 +119,6 @@ public class PMPayloads implements ContentList{
             powerUse = 6.25f;
             constructTime = 60f * 60f;
             requiresUnlock = true;
-            shadowRad = size * tilesize * 2f;
 
             explosionArea = -1f;
             explosion = PayloadBullets.trinityClusterFrag;

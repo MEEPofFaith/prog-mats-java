@@ -25,7 +25,7 @@ public class Missile extends NuclearWarhead{
     public float powerUse, constructTime = -1;
     public boolean requiresUnlock;
 
-    public float shadowRad = -1f;
+    public float elevation = -1f;
 
     public TextureRegion topRegion;
 
@@ -43,7 +43,7 @@ public class Missile extends NuclearWarhead{
     @Override
     public void init(){
         if(constructTime < 0) constructTime = buildCost;
-        if(shadowRad < 0) shadowRad = size * tilesize * 1.5f;
+        if(elevation < 0) elevation = size / 3f;
         if(explosionArea < 0) explosionArea = size * tilesize;
 
         super.init();
@@ -64,7 +64,7 @@ public class Missile extends NuclearWarhead{
 
     public void drawBase(Tile tile){
         Draw.z(Layer.blockUnder - 1f);
-        Drawf.shadow(tile.drawx(), tile.drawy(), shadowRad);
+        Drawf.shadow(region, tile.drawx() - elevation, tile.drawy() - elevation);
         Draw.z(Layer.block);
         Draw.rect(region, tile.drawx(), tile.drawy());
         if(topRegion.found()) Draw.rect(topRegion, tile.drawx(), tile.drawy());
