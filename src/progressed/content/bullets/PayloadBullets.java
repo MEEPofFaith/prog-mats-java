@@ -38,6 +38,7 @@ public class PayloadBullets implements ContentList{
             trailInterval = 1f;
             trailEffect = PMFx.smokeTrail;
             trailLength = 6;
+            drawSize = 60f * 80f;
 
             splashDamage = 526f;
             splashDamageRadius = 52f;
@@ -60,6 +61,7 @@ public class PayloadBullets implements ContentList{
             trailInterval = 1f;
             trailEffect = PMFx.smokeTrail;
             trailLength = 6;
+            drawSize = 60f * 80f;
 
             splashDamage = 276f;
             splashDamageRadius = 88f;

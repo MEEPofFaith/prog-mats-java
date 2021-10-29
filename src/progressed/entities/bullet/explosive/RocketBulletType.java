@@ -12,6 +12,7 @@ import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.content.*;
 
 import static mindustry.Vars.*;
 
@@ -131,7 +132,6 @@ public class RocketBulletType extends BasicBulletType{
 
                 //drawTrail but with the above variables
                 if(trailLength > 0 && b.trail != null){
-                    //draw below bullets? TODO
                     float z = Draw.z();
                     Draw.z(z - 0.0001f);
                     b.trail.draw(b.team.color, trailWidth * scale);
@@ -158,6 +158,13 @@ public class RocketBulletType extends BasicBulletType{
             Draw.z(layer);
             Draw.rect(frontRegion, b.x, b.y, angle - 90f + rotOffset);
             Draw.reset();
+        }
+    }
+
+    @Override
+    public void removed(Bullet b){
+        if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+            PMFx.lowTrailFade.at(b.x, b.y, trailWidth, b.team.color, b.trail.copy());
         }
     }
 

@@ -35,6 +35,16 @@ public class PMFx{
         trail.draw(e.color, e.rotation);
     }),
 
+    lowTrailFade = new Effect(440f, e -> {
+        if(!(e.data instanceof Trail trail)) return;
+        //lifetime is how many frames it takes to fade out the trail
+        e.lifetime = trail.length * 1.4f;
+
+        trail.shorten();
+        trail.drawCap(e.color, e.rotation);
+        trail.draw(e.color, e.rotation);
+    }).layer(Layer.bullet - 1.0002f),
+
     dronePowerKill = new Effect(80f, e -> {
         color(Color.scarlet);
         alpha(e.fout(Interp.pow4Out));
