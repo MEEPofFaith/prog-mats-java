@@ -4,7 +4,11 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import arc.util.io.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.graphics.*;
@@ -16,6 +20,7 @@ public class PayloadRocketTurret extends PayloadTurret{
     public float riseTime = 60f;
     public float minScl = 0.875f;
     public Color doorColor = PMPal.midtoneGray;
+    public boolean leadTargets = true;
 
     public TextureRegion turretTop;
 
@@ -81,6 +86,27 @@ public class PayloadRocketTurret extends PayloadTurret{
             Draw.color();
             Draw.rect(turretTop, x + tr2.x, y + tr2.y, rotation - 90f);
         }
+
+        @Override
+        public void targetPosition(Posc pos){
+            if(!hasAmmo() || pos == null) return;
+            if(leadTargets){
+                BulletType bullet = peekAmmo();
+
+                var offset = Tmp.v1.setZero();
+
+                if(pos instanceof Hitboxc h){
+                    offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
+                }
+
+                targetPos.set(Predict.intercept(this, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
+            }
+
+            if(!leadTargets || targetPos.isZero()){
+                targetPos.set(pos);
+            }
+        }
+
 
         @Override
         public void updateLoading(){

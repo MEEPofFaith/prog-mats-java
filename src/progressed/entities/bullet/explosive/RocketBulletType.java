@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.Units.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -22,6 +23,8 @@ public class RocketBulletType extends BasicBulletType{
     public float trailOffset = 0f;
     public float acceleration = 0.03f;
     public float rotOffset = 0f;
+
+    public Sortf unitSort = Unit::dst2;
 
     public RocketBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite); //Speed means nothing
@@ -67,11 +70,17 @@ public class RocketBulletType extends BasicBulletType{
                     Teamc target;
                     //home in on allies if possible
                     if(healPercent > 0){
-                        target = Units.closestTarget(null, b.x, b.y, homingRange,
-                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team,
-                            t -> collidesGround && (t.team != b.team || t.damaged()));
+                        target = Units.bestTarget(null, b.x, b.y, homingRange,
+                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                            t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id),
+                            unitSort
+                        );
                     }else{
-                        target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                        target = Units.bestTarget(b.team, b.x, b.y, homingRange,
+                            e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
+                            t -> collidesGround && !b.hasCollided(t.id),
+                            unitSort
+                        );
                     }
 
                     if(target != null){

@@ -20,6 +20,7 @@ import progressed.world.blocks.defence.ShieldProjector.*;
 
 import static mindustry.Vars.*;
 
+/** @author MEEP */
 public class StrikeBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, snapRot, randRot;

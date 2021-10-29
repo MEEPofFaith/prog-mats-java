@@ -31,7 +31,8 @@ public class PayloadBullets implements ContentList{
             lifetime = 70f;
             acceleration = 0.03f;
             backSpeed = thrustDelay = 0f;
-            trailWidth = trailParam = thrusterSize = 6f / 4f;
+            trailWidth = thrusterSize = 6f / 4f;
+            trailParam = thrusterSize * 2f * 1.5f;
             trailOffset = thrusterOffset = 43f / 4f;
             rotOffset = 90f;
             hitEffect = despawnEffect = PMFx.missileExplosion;
@@ -41,6 +42,11 @@ public class PayloadBullets implements ContentList{
 
             splashDamage = 526f;
             splashDamageRadius = 52f;
+            homingPower = 0.2f;
+            homingDelay = 5f;
+            homingRange = 100f * 8f;
+
+            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
         firestormMissile = new StrikeBulletType(2.4f, 28f, "prog-mats-storm-missile"){{

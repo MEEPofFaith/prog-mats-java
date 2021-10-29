@@ -935,6 +935,7 @@ public class PMBlocks implements ContentList{
             reloadTime = 1.5f * 60f;
             range = 800f;
             recoilAmount = 4f;
+            leadTargets = false;
 
             shootLength = doorOffset = 6f / 4f;
             doorWidth = 32f / 4f;
