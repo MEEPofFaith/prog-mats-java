@@ -14,6 +14,7 @@ import static mindustry.Vars.*;
 public class PayloadRocketTurret extends PayloadTurret{
     public float doorOffset = 0, doorLength = -1f, doorWidth = -1f;
     public float riseTime = 60f;
+    public float minScl = 0.875f;
     public Color doorColor = PMPal.midtoneGray;
 
     public TextureRegion turretTop;
@@ -57,7 +58,9 @@ public class PayloadRocketTurret extends PayloadTurret{
                 if(ready) Draw.z(Layer.turret + 0.02f);
                 //payload.draw() but with rotation
                 Draw.alpha(a);
-                Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
+                TextureRegion pRegion = payload.block().fullIcon;
+                float scl = minScl + a * (1 - minScl);
+                Draw.rect(pRegion, payload.x(), payload.y(), pRegion.width / 4f * scl, pRegion.height / 4f * scl, payRotation);
                 Draw.color();
             }
         }
