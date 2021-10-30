@@ -80,17 +80,20 @@ public class PayloadBullets implements ContentList{
         }};
 
         carpetBomb = new BombBulletType(88f, 72f){{
-            width =  5f;
-            height = 7f;
+            lifetime = 15f;
+            width =  8f;
+            height = 10f;
             hitEffect = Fx.flakExplosion;
             status = StatusEffects.blasted;
             statusDuration = 60f;
             collidesAir = true;
+            frontColor = Pal.sapBullet;
+            backColor = Pal.sapBulletBack;
             layer = Layer.turret + 0.014f;
         }};
 
         arbalestBomber = new RocketBulletType(4f, 35f, "prog-mats-bomber-rocket"){
-            final float bombInterval = 1.5f;
+            final float bombInterval = 2f;
 
             {
                 lifetime = 70f;
@@ -100,16 +103,14 @@ public class PayloadBullets implements ContentList{
                 trailParam = thrusterSize * 2f * 1.5f;
                 trailOffset = thrusterOffset = 43f / 4f;
                 rotOffset = 90f;
-                hitEffect = despawnEffect = PMFx.missileExplosion;
+                despawnEffect = PMFx.missileExplosion;
                 trailInterval = 1f;
                 trailEffect = PMFx.rocketTrail;
                 trailLength = 6;
                 drawSize = 60f * 80f;
                 layer = Layer.turret + 0.015f;
 
-                collidesTiles = false;
-                pierce = true;
-                pierceCap = 30;
+                collides = collidesTiles = false;
                 splashDamage = 52f;
                 splashDamageRadius = 36f;
                 homingPower = 0.25f;

@@ -284,6 +284,8 @@ public class PMUnitTypes implements ContentList{
             public void setStats(){
                 super.setStats();
 
+                stats.remove(Stat.abilities);
+                stats.remove(Stat.weapons);
                 stats.add(Stat.abilities, "Everything");
                 stats.add(Stat.weapons, "Everything");
             }

@@ -23,8 +23,9 @@ import static mindustry.Vars.*;
 public class PMFx{
     private static final Rand rand = new Rand();
     private static final Vec2 v1 = new Vec2(), v2 = new Vec2();
-    static int frames = 40;
-    static TextureRegion[] fireFrames = new TextureRegion[frames];
+    //From FireComp
+    static final int frames = 40, ticksPerFrame = 90 / frames;
+    static final TextureRegion[] fireFrames = new TextureRegion[frames];
 
     public static final Effect
 
@@ -84,7 +85,7 @@ public class PMFx{
         float fin = e.fin(Interp.pow5Out);
         Draw.alpha(e.fout(Interp.pow3Out));
         for(int i = 0; i < amount; i++){
-            int frame = (int)Mathf.mod(e.time * (40f / 90f) + Mathf.randomSeed(e.id + i * 2L, 40), 40);
+            int frame = (int)Mathf.mod(e.time * ticksPerFrame + Mathf.randomSeed(e.id + i * 2L, frames), frames);
             v1.trns(i * (360f / amount) + Mathf.randomSeedRange(e.id, 180f), 88f * fin);
             Draw.rect(fireFrames[frame], e.x + v1.x, e.y + v1.y);
         }
