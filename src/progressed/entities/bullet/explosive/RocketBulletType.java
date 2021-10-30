@@ -95,17 +95,18 @@ public class RocketBulletType extends BasicBulletType{
 
                 float angle = r.thrust ? b.rotation() : r.angle,
                     x = b.x + Angles.trnsx(angle + 180, trailOffset),
-                    y = b.y + Angles.trnsy(angle + 180, trailOffset);
+                    y = b.y + Angles.trnsy(angle + 180, trailOffset),
+                    scale = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
 
                 if(trailChance > 0){
                     if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam, trailColor);
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, trailColor);
                     }
                 }
 
                 if(trailInterval > 0f){
                     if(b.timer(0, trailInterval)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam, trailColor);
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, trailColor);
                     }
                 }
 
@@ -115,7 +116,7 @@ public class RocketBulletType extends BasicBulletType{
                         b.trail = new Trail(trailLength);
                     }
                     b.trail.length = trailLength;
-                    b.trail.update(x, y, trailInterp.apply(b.fin()));
+                    b.trail.update(x, y, trailInterp.apply(b.fin()) * scale);
                 }
             }
         }

@@ -20,7 +20,7 @@ public class PayloadRocketTurret extends PayloadTurret{
     public float doorOffset = 0, doorLength = -1f, doorWidth = -1f;
     public float riseTime = 60f;
     public float minScl = 0.875f;
-    public Color[] doorColors = {PMPal.lightGray, PMPal.darkGray};
+    public Color[] doorColors = {PMPal.lightGray, PMPal.darkGray, PMPal.midGray};
     public boolean leadTargets = true;
 
     public TextureRegion turretRegion, turretTop, fullRegion;
@@ -95,7 +95,7 @@ public class PayloadRocketTurret extends PayloadTurret{
             Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
             for(int num : Mathf.zeroOne){
                 float scl = Mathf.curve(risef(), 0f, 0.375f) - Mathf.curve(risef(), 0.625f, 1f);
-                Draw.color(doorColors[num], doorColors[1 - num], Interp.pow2Out.apply(scl));
+                Draw.color(doorColors[num], doorColors[2], Interp.pow2Out.apply(scl));
                 float progress = Interp.pow3In.apply(scl);
                 tr.trns(rotation - 90f, (doorWidth / 4f + doorWidth / 4f * progress) * Mathf.signs[num], doorOffset);
                 Fill.rect(
