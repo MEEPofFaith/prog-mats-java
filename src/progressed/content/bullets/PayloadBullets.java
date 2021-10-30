@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
@@ -59,7 +60,7 @@ public class PayloadBullets implements ContentList{
             trailParam = thrusterSize * 2f * 1.5f;
             trailOffset = thrusterOffset = 43f / 4f;
             rotOffset = 90f;
-            hitEffect = despawnEffect = PMFx.missileExplosion;
+            hitEffect = despawnEffect = new MultiEffect(PMFx.flameRing, PMFx.missileExplosion);
             trailInterval = 1f;
             trailEffect = PMFx.rocketTrail;
             trailLength = 6;

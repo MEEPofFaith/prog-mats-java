@@ -1,5 +1,6 @@
 package progressed.content;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -22,6 +23,8 @@ import static mindustry.Vars.*;
 public class PMFx{
     private static final Rand rand = new Rand();
     private static final Vec2 v1 = new Vec2(), v2 = new Vec2();
+    static int frames = 40;
+    static TextureRegion[] fireFrames = new TextureRegion[frames];
 
     public static final Effect
 
@@ -68,6 +71,24 @@ public class PMFx{
         randLenVectors(e.id, 5, 2f + e.fin() * 12f, (x, y) -> {
             Fill.circle(e.x + x, e.y + y, 0.1f + e.fout() * 1.9f);
         });
+    }),
+
+    flameRing = new Effect(45f, e -> {
+        if(fireFrames[0] == null){
+            for(int i = 0; i < frames; i++){
+                fireFrames[i] = Core.atlas.find("fire" + i);
+            }
+        }
+
+        float amount = 40;
+        float fin = e.fin(Interp.pow5Out);
+        Draw.alpha(e.fout(Interp.pow3Out));
+        for(int i = 0; i < amount; i++){
+            int frame = (int)Mathf.mod(e.time * (40f / 90f) + Mathf.randomSeed(e.id + i * 2L, 40), 40);
+            v1.trns(i * (360f / amount) + Mathf.randomSeedRange(e.id, 180f), 88f * fin);
+            Draw.rect(fireFrames[frame], e.x + v1.x, e.y + v1.y);
+        }
+        Draw.color();
     }),
 
     bitTrail = new Effect(75f, e -> {
