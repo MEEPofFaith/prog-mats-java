@@ -935,7 +935,6 @@ public class PMBlocks implements ContentList{
                 PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend
             );
             size = 5;
-            reloadTime = 1.5f * 60f;
             range = 800f;
             recoilAmount = 4f;
             leadTargets = false;

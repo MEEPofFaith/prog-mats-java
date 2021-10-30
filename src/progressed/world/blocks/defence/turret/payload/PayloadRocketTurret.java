@@ -8,6 +8,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
@@ -19,21 +20,40 @@ public class PayloadRocketTurret extends PayloadTurret{
     public float doorOffset = 0, doorLength = -1f, doorWidth = -1f;
     public float riseTime = 60f;
     public float minScl = 0.875f;
-    public Color[] doorColors = {PMPal.lightGray, PMPal.darkGray, PMPal.midGray};
+    public Color[] doorColors = {PMPal.lightGray, PMPal.darkGray};
     public boolean leadTargets = true;
 
-    public TextureRegion turretTop;
+    public TextureRegion turretRegion, turretTop, fullRegion;
 
     public PayloadRocketTurret(String name){
         super(name);
 
+        outlinedIcon = 3;
         shootSound = Core.settings.getBool("pm-farting") ? Sounds.wind3 : PMSounds.rocketLaunch;
     }
 
     @Override
     public void load(){
         super.load();
+        turretRegion = Core.atlas.find(name + "-turret");
         turretTop = Core.atlas.find(name + "-turret-top");
+        fullRegion = Core.atlas.find(name + "-icon");
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{
+            baseRegion, inRegion, topRegion,
+            region, fullRegion
+        };
+    }
+
+    @Override
+    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+        Draw.rect(baseRegion, req.drawx(), req.drawy());
+        Draw.rect(topRegion, req.drawx(), req.drawy());
+        Draw.rect(region, req.drawx(), req.drawy());
+        Draw.rect(fullRegion, req.drawx(), req.drawy());
     }
 
     @Override
@@ -60,7 +80,7 @@ public class PayloadRocketTurret extends PayloadTurret{
                 float a = ready ? Mathf.curve(risef(), 0.375f, 0.625f) : 1f;
                 Draw.z(Layer.blockOver);
                 Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f, ready ? 1 - a : a);
-                if(ready) Draw.z(Layer.turret + 0.02f);
+                if(ready) Draw.z(Layer.turret + 0.01f);
                 //payload.draw() but with rotation
                 Draw.alpha(a);
                 TextureRegion pRegion = payload.block().fullIcon;
@@ -75,15 +95,18 @@ public class PayloadRocketTurret extends PayloadTurret{
             Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
             for(int num : Mathf.zeroOne){
                 float scl = Mathf.curve(risef(), 0f, 0.375f) - Mathf.curve(risef(), 0.625f, 1f);
-                Draw.color(doorColors[num], doorColors[2], Interp.pow2Out.apply(scl));
-                tr.trns(rotation - 90f, (doorWidth / 4f + doorWidth / 4f * scl) * Mathf.signs[num], doorOffset);
+                Draw.color(doorColors[num], doorColors[1 - num], Interp.pow2Out.apply(scl));
+                float progress = Interp.pow3In.apply(scl);
+                tr.trns(rotation - 90f, (doorWidth / 4f + doorWidth / 4f * progress) * Mathf.signs[num], doorOffset);
                 Fill.rect(
                     x + tr2.x + tr.x, y + tr2.y + tr.y,
-                    doorWidth / 2f * (1f - scl), doorLength,
+                    doorWidth / 2f * (1f - progress), doorLength,
                     rotation - 90f
                 );
             }
             Draw.color();
+            Draw.rect(turretRegion, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.z(Layer.turret + 0.02f);
             Draw.rect(turretTop, x + tr2.x, y + tr2.y, rotation - 90f);
         }
 

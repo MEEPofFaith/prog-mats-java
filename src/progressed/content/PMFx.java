@@ -43,7 +43,7 @@ public class PMFx{
         trail.shorten();
         trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
-    }).layer(Layer.bullet - 1.0002f),
+    }).layer(Layer.turret + 0.014f),
 
     dronePowerKill = new Effect(80f, e -> {
         color(Color.scarlet);
@@ -56,7 +56,7 @@ public class PMFx{
     smokeTrail = new Effect(100, e -> {
         color(Color.gray, Pal.darkishGray, e.fin());
         Fill.circle(e.x, e.y, (e.rotation - e.fin() * e.rotation)/2f);
-    }).layer(Layer.bullet - 1.5f),
+    }).layer(Layer.turret + 0.014f),
 
     incendBurning = new Effect(35f, e -> {
         color(Pal.lightPyraFlame, Pal.darkPyraFlame, e.fin());

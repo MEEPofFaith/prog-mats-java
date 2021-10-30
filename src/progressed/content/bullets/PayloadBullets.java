@@ -4,6 +4,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.unit.*;
@@ -39,6 +40,7 @@ public class PayloadBullets implements ContentList{
             trailEffect = PMFx.smokeTrail;
             trailLength = 6;
             drawSize = 60f * 80f;
+            layer = Layer.turret + 0.015f;
 
             splashDamage = 526f;
             splashDamageRadius = 52f;
@@ -62,6 +64,7 @@ public class PayloadBullets implements ContentList{
             trailEffect = PMFx.smokeTrail;
             trailLength = 6;
             drawSize = 60f * 80f;
+            layer = Layer.turret + 0.015f;
 
             splashDamage = 276f;
             splashDamageRadius = 88f;
