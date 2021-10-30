@@ -932,7 +932,8 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             ammo(
                 PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
-                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend
+                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend,
+                PMPayloads.bomberRocket, PayloadBullets.arbalestBomber
             );
             size = 5;
             range = 800f;
