@@ -53,9 +53,13 @@ public class PMFx{
         Draw.rect(Icon.power.getRegion(), e.x, e.y, size, size);
     }),
 
-    smokeTrail = new Effect(100, e -> {
-        color(Color.gray, Pal.darkishGray, e.fin());
-        Fill.circle(e.x, e.y, (e.rotation - e.fin() * e.rotation)/2f);
+    rocketTrail = new Effect(60, e -> {
+        if(e.data instanceof float[] f){
+            color(e.color, Pal.lightishGray, Pal.darkerGray, e.fin());
+            randLenVectors(e.id, 4, 24f * e.finpow() * f[1], f[0] + 180f, 15f * f[1], (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, (e.rotation - e.fin() * e.rotation) / 2f);
+            });
+        }
     }).layer(Layer.turret + 0.014f),
 
     incendBurning = new Effect(35f, e -> {
@@ -496,8 +500,8 @@ public class PMFx{
     everythingGunSwirl = new Effect(120f, 1600f, e -> {
         float[] data = (float[])e.data;
         color(e.color, Color.black, 0.25f + e.fin() * 0.75f);
-        Fill.circle(e.x + Angles.trnsx(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
-            e.y + Angles.trnsy(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
+        Fill.circle(e.x + trnsx(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
+            e.y + trnsy(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
             data[0] * e.fout()
         );
     }).layer(Layer.bullet - 0.00999f),

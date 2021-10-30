@@ -37,7 +37,7 @@ public class PayloadBullets implements ContentList{
             rotOffset = 90f;
             hitEffect = despawnEffect = PMFx.missileExplosion;
             trailInterval = 1f;
-            trailEffect = PMFx.smokeTrail;
+            trailEffect = PMFx.rocketTrail;
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;
@@ -61,7 +61,7 @@ public class PayloadBullets implements ContentList{
             rotOffset = 90f;
             hitEffect = despawnEffect = PMFx.missileExplosion;
             trailInterval = 1f;
-            trailEffect = PMFx.smokeTrail;
+            trailEffect = PMFx.rocketTrail;
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;

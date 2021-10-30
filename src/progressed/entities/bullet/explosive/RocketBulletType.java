@@ -100,13 +100,13 @@ public class RocketBulletType extends BasicBulletType{
 
                 if(trailChance > 0){
                     if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, trailColor);
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale});
                     }
                 }
 
                 if(trailInterval > 0f){
                     if(b.timer(0, trailInterval)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, trailColor);
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale});
                     }
                 }
 
