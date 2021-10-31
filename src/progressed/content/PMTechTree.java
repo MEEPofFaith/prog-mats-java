@@ -48,21 +48,7 @@ public class PMTechTree implements ContentList{
         vanillaNode(ripple, () -> {
             //Missile Launchers (also painful to look at)
             node(firestorm, Seq.with(new Research(launchPad), new SectorComplete(SectorPresets.impact0078)), () -> {
-                node(strikedown, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)), () -> {
-                    node(shellPress, () -> {
-                        node(emptyMissile);
-                        node(emptyNuke, Seq.with(new Research(trinity)));
-                        node(missileFactory, () -> {
-                            //Missiles
-                            node(basicMissile, () -> {
-                                node(recursiveMissile);
-                            });
-                            //Nukes
-                            node(basicNuke, Seq.with(new Research(trinity)), () -> {
-                                node(clusterNuke);
-                            });
-                        });
-                    });
+                node(strikedown, Seq.with(new Research(arbalest), new SectorComplete(SectorPresets.nuclearComplex)), () -> {
                     node(trinity, Seq.with(new Research(interplanetaryAccelerator)), () -> {
                         //Apotheosis
                         node(apotheosisNexus, Seq.with(new Research(impactReactor)), () -> {
@@ -74,6 +60,29 @@ public class PMTechTree implements ContentList{
 
             //Tinker
             node(sergeant, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
+                node(arbalest, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)), () -> {
+                    node(shellPress, () -> {
+                        node(emptyRocket);
+                        node(emptyMissile, Seq.with(new Research(strikedown)));
+                        node(emptyNuke, Seq.with(new Research(trinity)));
+                        node(missileFactory, () -> {
+                            //Rockets
+                            node(basicRocket, () -> {
+                                node(incendiaryRocket);
+                                node(bomberRocket);
+                            });
+                            //Missiles
+                            node(basicMissile, Seq.with(new Research(strikedown)), () -> {
+                                node(recursiveMissile);
+                            });
+                            //Nukes
+                            node(basicNuke, Seq.with(new Research(trinity)), () -> {
+                                node(clusterNuke);
+                            });
+                        });
+                    });
+                });
+
                 node(sentryBuilder, () -> {
                     node(basicSentry, () -> {
                         node(barrage, ItemStack.empty, Seq.with(new Research(basicSentry)));

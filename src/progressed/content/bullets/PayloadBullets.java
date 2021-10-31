@@ -11,6 +11,8 @@ import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
 
+import static mindustry.Vars.*;
+
 public class PayloadBullets implements ContentList{
     public static BulletType
 
@@ -44,10 +46,10 @@ public class PayloadBullets implements ContentList{
             layer = Layer.turret + 0.015f;
 
             splashDamage = 526f;
-            splashDamageRadius = 52f;
+            splashDamageRadius = 8f * tilesize;
             homingPower = 0.2f;
             homingDelay = 5f;
-            homingRange = 100f * 8f;
+            homingRange = 100f * tilesize;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
@@ -74,7 +76,7 @@ public class PayloadBullets implements ContentList{
             statusDuration = 15f * 60f;
             homingPower = 0.2f;
             homingDelay = 5f;
-            homingRange = 100f * 8f;
+            homingRange = 100f * tilesize;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
@@ -95,13 +97,13 @@ public class PayloadBullets implements ContentList{
             layer = Layer.turret + 0.015f;
 
             collides = collidesTiles = false;
-            splashDamage = 52f;
-            splashDamageRadius = 36f;
+            splashDamage = 142f;
+            splashDamageRadius = 6.5f * tilesize;
             homingPower = 0.25f;
             homingDelay = 5f;
-            homingRange = 100f * 8f;
+            homingRange = 100f * tilesize;
 
-            bombBullet = new BombBulletType(88f, 72f){{
+            bombBullet = new BombBulletType(74f, 4.5f * tilesize){{
                 lifetime = 15f;
                 width =  8f;
                 height = 10f;

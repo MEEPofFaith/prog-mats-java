@@ -853,7 +853,13 @@ public class PMBlocks implements ContentList{
         }};
 
         arbalest = new PayloadRocketTurret("arbalest"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.turret, with(
+                Items.copper, 150,
+                Items.graphite, 300,
+                Items.silicon, 325,
+                Items.titanium, 350,
+                PMItems.valexitite, 160
+            ));
             ammo(
                 PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
                 PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend,

@@ -110,7 +110,6 @@ public class PMPayloads implements ContentList{
             size = 2;
             powerUse = 2f;
             constructTime = 60f * 8f;
-            requiresUnlock = true;
 
             explosionArea = -1f;
             explosion = ((StrikeBulletType)(((StrikeBulletType)(PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
@@ -124,7 +123,6 @@ public class PMPayloads implements ContentList{
             size = 3;
             powerUse = 5f;
             constructTime = 60f * 8f;
-            requiresUnlock = true;
         }};
 
         basicNuke = new Missile("basic-nuke"){{
@@ -134,7 +132,6 @@ public class PMPayloads implements ContentList{
             size = 3;
             powerUse = 6f;
             constructTime = 60f * 55f;
-            requiresUnlock = true;
 
             explosion = PayloadBullets.trinityBasic;
         }};
@@ -146,7 +143,6 @@ public class PMPayloads implements ContentList{
             size = 3;
             powerUse = 6.25f;
             constructTime = 60f * 60f;
-            requiresUnlock = true;
 
             explosionArea = -1f;
             StrikeBulletType b = (StrikeBulletType)PayloadBullets.trinityCluster;

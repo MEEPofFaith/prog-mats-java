@@ -23,7 +23,7 @@ public class Missile extends NuclearWarhead{
 
     public Block prev;
     public float powerUse, constructTime = -1;
-    public boolean requiresUnlock;
+    public boolean requiresUnlock = true;
 
     public float elevation = -1f;
 
