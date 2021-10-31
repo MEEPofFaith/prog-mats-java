@@ -44,6 +44,9 @@ public class PayloadBullets implements ContentList{
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;
+            riseStart = thrusterGrowth;
+            riseEnd = thrusterGrowth + 10f;
+            targetLayer = Layer.bullet - 1;
 
             splashDamage = 526f;
             splashDamageRadius = 8f * tilesize;
@@ -68,6 +71,9 @@ public class PayloadBullets implements ContentList{
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;
+            riseStart = thrusterGrowth;
+            riseEnd = thrusterGrowth + 10f;
+            targetLayer = Layer.bullet - 1;
 
             splashDamage = 276f;
             splashDamageRadius = 88f;
@@ -95,6 +101,9 @@ public class PayloadBullets implements ContentList{
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;
+            riseStart = thrusterGrowth;
+            riseEnd = thrusterGrowth + 10f;
+            targetLayer = Layer.bullet - 1;
 
             collides = collidesTiles = false;
             splashDamage = 142f;

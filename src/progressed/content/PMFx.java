@@ -11,6 +11,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.bullet.explosive.RocketBulletType.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
@@ -39,15 +40,17 @@ public class PMFx{
         trail.draw(e.color, e.rotation);
     }),
 
-    lowTrailFade = new Effect(440f, e -> {
-        if(!(e.data instanceof Trail trail)) return;
-        //lifetime is how many frames it takes to fade out the trail
-        e.lifetime = trail.length * 1.4f;
+    rocketTrailFade = new Effect(440f, e -> {
+        if(!(e.data instanceof RocketTrailData data)) return;
+        z(data.layer);
 
-        trail.shorten();
-        trail.drawCap(e.color, e.rotation);
-        trail.draw(e.color, e.rotation);
-    }).layer(Layer.turret + 0.014f),
+        //lifetime is how many frames it takes to fade out the trail
+        e.lifetime = data.trail.length * 1.4f;
+
+        data.trail.shorten();
+        data.trail.drawCap(e.color, e.rotation);
+        data.trail.draw(e.color, e.rotation);
+    }),
 
     dronePowerKill = new Effect(80f, e -> {
         color(Color.scarlet);
@@ -59,6 +62,7 @@ public class PMFx{
 
     rocketTrail = new Effect(60, e -> {
         if(e.data instanceof float[] f){
+            z(f[2]);
             color(e.color, Pal.lightishGray, Pal.darkerGray, e.fin());
             randLenVectors(e.id, 4, 24f * e.finpow() * f[1], f[0] + 180f, 15f * f[1], (x, y) -> {
                 Fill.circle(e.x + x, e.y + y, (e.rotation - e.fin() * e.rotation) / 2f);

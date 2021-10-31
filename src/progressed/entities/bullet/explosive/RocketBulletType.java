@@ -21,9 +21,11 @@ public class RocketBulletType extends BasicBulletType{
     public float backSpeed = 1f;
     public float fallDrag = 0.05f, thrustDelay = 20f;
     public float thrusterSize = 4f, thrusterOffset = 8f, thrusterGrowth = 5f;
-    public float trailOffset = 0f;
+    public float trailDelay = -1f, trailOffset = 0f;
     public float acceleration = 0.03f;
     public float rotOffset = 0f;
+
+    public float riseStart, riseEnd, targetLayer = -1;
 
     public BulletType bombBullet;
     public float bombInterval;
@@ -43,6 +45,8 @@ public class RocketBulletType extends BasicBulletType{
     public void init(){
         super.init();
         if(homingDelay < 0) homingDelay = thrustDelay;
+        if(targetLayer < 0) targetLayer = layer;
+        if(trailDelay < 0) trailDelay = thrusterGrowth;
     }
 
     @Override
@@ -103,13 +107,13 @@ public class RocketBulletType extends BasicBulletType{
 
                 if(trailChance > 0){
                     if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale});
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale, getLayer(b)});
                     }
                 }
 
                 if(trailInterval > 0f){
                     if(b.timer(0, trailInterval)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale});
+                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale, getLayer(b)});
                     }
                 }
 
@@ -122,7 +126,7 @@ public class RocketBulletType extends BasicBulletType{
                 }
 
                 //updateTrail, but with the (x, y) above
-                if(!headless && trailLength > 0){
+                if(!headless && trailLength > 0 && b.time >= trailDelay){
                     if(b.trail == null){
                         b.trail = new Trail(trailLength);
                     }
@@ -137,6 +141,8 @@ public class RocketBulletType extends BasicBulletType{
     public void draw(Bullet b){
         if(b.data instanceof RocketData r){
             float angle = r.thrust ? b.rotation() : r.angle;
+            Draw.z(getLayer(b));
+            float z = Draw.z();
 
             if(b.time >= thrustDelay || thrustDelay <= 0){ //Engine draw code stolen from units
                 float scale = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
@@ -144,7 +150,6 @@ public class RocketBulletType extends BasicBulletType{
 
                 //drawTrail but with the above variables
                 if(trailLength > 0 && b.trail != null){
-                    float z = Draw.z();
                     Draw.z(z - 0.0001f);
                     b.trail.draw(b.team.color, trailWidth * scale);
                     Draw.z(z);
@@ -165,9 +170,9 @@ public class RocketBulletType extends BasicBulletType{
                 Draw.color();
             }
 
-            Draw.z(layer - 0.01f);
+            Draw.z(z - 0.01f);
             Draw.rect(backRegion, b.x, b.y, angle - 90f + rotOffset);
-            Draw.z(layer);
+            Draw.z(z);
             Draw.rect(frontRegion, b.x, b.y, angle - 90f + rotOffset);
             Draw.reset();
         }
@@ -176,8 +181,13 @@ public class RocketBulletType extends BasicBulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            PMFx.lowTrailFade.at(b.x, b.y, trailWidth, b.team.color, b.trail.copy());
+            PMFx.rocketTrailFade.at(b.x, b.y, trailWidth, b.team.color, new RocketTrailData(b.trail.copy(), getLayer(b)));
         }
+    }
+
+    public float getLayer(Bullet b){
+        float progress = Mathf.curve(b.time, riseStart, riseEnd);
+        return Mathf.lerp(layer, targetLayer, progress);
     }
 
     @Override
@@ -202,6 +212,16 @@ public class RocketBulletType extends BasicBulletType{
 
         public RocketData(float angle){
             this.angle = angle;
+        }
+    }
+
+    public static class RocketTrailData{
+        public Trail trail;
+        public float layer;
+
+        public RocketTrailData(Trail trail, float layer){
+            this.trail = trail;
+            this.layer = layer;
         }
     }
 }
