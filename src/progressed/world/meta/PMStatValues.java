@@ -206,18 +206,23 @@ public class PMStatValues{
                             ammo(ObjectMap.of(t, stype.splitBullet), indent + 1).display(bt);
                         }
 
+                        if(type instanceof RocketBulletType stype && stype.bombBullet != null){
+                            float amount = type.speed * stype.bombInterval / tilesize;
+                            if(amount == 1){
+                                sep(bt, "@bullet.pm-bombs-single");
+                            }else{
+                                sep(bt, bundle.format("bullet.pm-bombs", amount));
+                            }
+                            bt.row();
+
+                            ammo(ObjectMap.of(t, stype.bombBullet), indent + 1).display(bt);
+                        }
+
                         if(type.fragBullet != null){
                             sep(bt, bundle.format("bullet.frags", type.fragBullets));
                             bt.row();
 
                             ammo(ObjectMap.of(t, type.fragBullet), indent + 1).display(bt);
-                        }
-
-                        if(type instanceof RocketBulletType stype && stype.bombBullet != null){
-                            sep(bt, bundle.format("bullet.pm-bombs", type.speed * stype.bombInterval / tilesize));
-                            bt.row();
-
-                            ammo(ObjectMap.of(t, stype.bombBullet), indent + 1).display(bt);
                         }
                     }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
                 }

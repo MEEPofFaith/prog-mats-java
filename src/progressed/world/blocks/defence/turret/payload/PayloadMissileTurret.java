@@ -39,7 +39,7 @@ public class PayloadMissileTurret extends PayloadBlock{
     /** How much reload is lowered by for each unit of liquid of heat capacity. */
     public float coolantMultiplier = 5f;
 
-    public float reloadTime = 1.5f * 60f;
+    public float reloadTime = 2f * 60f;
 
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;

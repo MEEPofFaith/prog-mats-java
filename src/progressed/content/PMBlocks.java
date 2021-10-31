@@ -62,11 +62,11 @@ public class PMBlocks implements ContentList{
     //Magnets
     magnet,
 
-    //Crit Sniper(s)
+    //Crit Sniper
     caliber,
 
-    //Misc
-    allure, sergeant, vaccinator,
+    //Support
+    allure, vaccinator,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -74,8 +74,11 @@ public class PMBlocks implements ContentList{
     //Misc
     blackhole, excalibur,
 
+    //Payload
+    sergeant, arbalest,
+
     //Missiles
-    firestorm, strikedown, trinity, arbalest,
+    firestorm, strikedown, trinity,
 
     //Apotheosis
     apotheosisNexus, apotheosisCharger,
@@ -126,8 +129,12 @@ public class PMBlocks implements ContentList{
 
     // endregion
 
+    private final ContentList payloads = new PMPayloads();
+
     @Override
     public void load(){
+        payloads.load();
+
         // Region Turrets
         minigun = new MinigunTurret("minigun"){{
             requirements(Category.turret, with(
@@ -650,35 +657,6 @@ public class PMBlocks implements ContentList{
             ammoPerShot = 10;
         }};
 
-        sergeant = new PayloadLaunchTurret("tinker"){{
-            requirements(Category.turret, with(
-                Items.copper, 125,
-                Items.lead, 75,
-                Items.silicon, 30,
-                Items.titanium, 50
-            ));
-            ammo(
-                PMPayloads.basicSentry, PayloadBullets.barrageLaunch,
-                PMPayloads.strikeSentry, PayloadBullets.downpourLaunch,
-                PMPayloads.dashSentry, PayloadBullets.rapierLaunch
-            );
-
-            size = 3;
-            hideDetails = false;
-            health = 140 * size * size;
-            minRange = 5f * tilesize;
-            range = 40 * tilesize;
-            velocityInaccuracy = 0.2f;
-            cooldown = 0.03f;
-            recoilAmount = 6f;
-            restitution = 0.02f;
-            shootShake = 2f;
-
-            loadTime = 4f; //In LaunchTurret, this determines how far back the payload is shifted
-            shootLength = 11f;
-            lineSpacing = 3.5f;
-        }};
-
         vaccinator = new ItemTurret("vaccinator"){
             {
                 requirements(Category.turret, with(
@@ -845,6 +823,55 @@ public class PMBlocks implements ContentList{
             }
         };
 
+        sergeant = new PayloadLaunchTurret("tinker"){{
+            requirements(Category.turret, with(
+                Items.copper, 125,
+                Items.lead, 75,
+                Items.silicon, 30,
+                Items.titanium, 50
+            ));
+            ammo(
+                PMPayloads.basicSentry, PayloadBullets.barrageLaunch,
+                PMPayloads.strikeSentry, PayloadBullets.downpourLaunch,
+                PMPayloads.dashSentry, PayloadBullets.rapierLaunch
+            );
+
+            size = 3;
+            hideDetails = false;
+            health = 140 * size * size;
+            minRange = 5f * tilesize;
+            range = 40 * tilesize;
+            velocityInaccuracy = 0.2f;
+            cooldown = 0.03f;
+            recoilAmount = 6f;
+            restitution = 0.02f;
+            shootShake = 2f;
+
+            loadTime = 4f; //In LaunchTurret, this determines how far back the payload is shifted
+            shootLength = 11f;
+            lineSpacing = 3.5f;
+        }};
+
+        arbalest = new PayloadRocketTurret("arbalest"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            ammo(
+                PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
+                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend,
+                PMPayloads.bomberRocket, PayloadBullets.arbalestBomber
+            );
+            size = 5;
+            range = 800f;
+            recoilAmount = 4f;
+            leadTargets = false;
+
+            shootLength = doorOffset = 6f / 4f;
+            doorWidth = 32f / 4f;
+            doorLength = 116f / 4f;
+            rotOffset = 90f;
+
+            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+        }};
+
         firestorm = new MissileTurret("firestorm"){{
             requirements(Category.turret, with(
                 Items.copper, 180,
@@ -925,26 +952,6 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.explosionbig;
             cooldown = 0.005f;
             shootShake = 10f;
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
-        }};
-
-        arbalest = new PayloadRocketTurret("arbalest"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            ammo(
-                PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
-                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend,
-                PMPayloads.bomberRocket, PayloadBullets.arbalestBomber
-            );
-            size = 5;
-            range = 800f;
-            recoilAmount = 4f;
-            leadTargets = false;
-
-            shootLength = doorOffset = 6f / 4f;
-            doorWidth = 32f / 4f;
-            doorLength = 116f / 4f;
-            rotOffset = 90f;
-
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
