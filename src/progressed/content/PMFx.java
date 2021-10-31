@@ -742,6 +742,25 @@ public class PMFx{
         });
     }),
 
+    apotheosisPuddle = new Effect(60f * 10f, 30f * tilesize, e -> {
+        if(!(e.data instanceof float[] f)) return;
+        z(f[0] - (Layer.effect - Layer.scorch));
+
+        float fin = Mathf.curve(e.time, 0, 10f);
+        float rad = 1f - Mathf.curve(e.time, 60f * 9f, 60f * 10f);
+
+        randLenVectors(e.id, 6, 32f * f[1], (x, y) -> {
+            float px = e.x + x * fin,
+                py = e.y +  y * fin,
+                baseRad = 16f * f[1],
+                radius = Mathf.randomSeed((long)(e.id + x + y), baseRad / 2f, baseRad) * rad;
+
+            color(PMPal.apotheosisLaser);
+            Fill.circle(px, py, radius);
+            Drawf.light(px, py, radius * 1.5f, getColor(), 0.8f);
+        });
+    }),
+
     apotheosisPulse = new Effect(120f, 100f * tilesize, e -> {
         if(!(e.data instanceof float[] f)) return;
         z(f[0]);

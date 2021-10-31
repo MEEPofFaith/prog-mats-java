@@ -14,6 +14,7 @@ import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -76,7 +77,7 @@ public class ApotheosisNexus extends ReloadTurret{
         chargeEffect = PMFx.apotheosisCharge,
         fireEffect = Fx.none,
         touchdownEffect = PMFx.apotheosisTouchdown,
-        damageEffect = PMFx.apotheosisDamage,
+        damageEffect = new MultiEffect(PMFx.apotheosisPuddle, PMFx.apotheosisDamage),
         pulseEffect = PMFx.apotheosisPulse;
     public float bigPulseScl = 2f;
     public Color[] flashStart = {PMPal.apotheosisLaser, PMPal.pissbeam}, flashEnd = {PMPal.apotheosisLaserDark, PMPal.pissbeamDark};
