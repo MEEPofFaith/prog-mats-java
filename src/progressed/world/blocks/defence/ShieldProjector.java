@@ -16,6 +16,8 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.consumers.*;
 import progressed.content.*;
+import progressed.entities.bullet.explosive.*;
+import progressed.entities.bullet.explosive.StrikeBulletType.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -28,11 +30,16 @@ public class ShieldProjector extends ForceProjector{
 
     static ShieldBuild paramEntity;
     static final Cons<Bullet> shieldConsumer = trait -> {
-        if(trait.team != paramEntity.team && trait.type.absorbable){
-            trait.absorb();
-            Fx.absorb.at(trait);
-            paramEntity.hit = 1f;
-            paramEntity.buildup += trait.damage() * paramEntity.warmup;
+        if(trait.team != paramEntity.team){
+            if(trait.type.absorbable){
+                trait.absorb();
+                Fx.absorb.at(trait);
+                paramEntity.hit = 1f;
+                paramEntity.buildup += trait.damage() * paramEntity.warmup;
+            }
+            if(trait.type instanceof StrikeBulletType && trait.data instanceof StrikeBulletData d){
+                d.shield = paramEntity;
+            }
         }
     };
 
@@ -112,7 +119,6 @@ public class ShieldProjector extends ForceProjector{
             }
 
             warmup = Mathf.lerpDelta(warmup, efficiency(), 0.1f);
-
 
             if(buildup > 0){
                 float scale = !broken ? cooldownNormal : cooldownBrokenBase;

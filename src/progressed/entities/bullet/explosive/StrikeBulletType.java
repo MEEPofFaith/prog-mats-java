@@ -172,11 +172,11 @@ public class StrikeBulletType extends BasicBulletType{
 
     @Override
     public void despawned(Bullet b){
-        ShieldBuild shield = (ShieldBuild)(indexer.findEnemyTile(b.team, b.x, b.y, 256f, build -> build instanceof ShieldBuild s && !s.broken));
-        boolean shielded = shield != null && PMMathf.isInSquare(shield.x, shield.y, shield.realRadius(), b.x, b.y);
+        StrikeBulletData data = (StrikeBulletData)b.data;
+        ShieldBuild s = data.shield;
 
-        if(shielded){
-            ((StrikeBulletData)b.data).block(shield);
+        if(s != null && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y)){
+            data.blocked = true;
             blockEffect.at(b.x, b.y, b.rotation(), hitColor);
         }else{
             despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
@@ -357,19 +357,6 @@ public class StrikeBulletType extends BasicBulletType{
 
         public void setVel(Vec2 vel){
             this.vel = vel.cpy();
-        }
-
-        public void block(ShieldBuild shield){
-            blocked = true;
-            this.shield = shield;
-        }
-
-        public String toString(){
-            return "x : " + x +
-            "\ny: " + y +
-            "\nstopped: " + stopped +
-            "\nblocked: " + blocked +
-            "\nsplit: " + split;
         }
     }
 }
