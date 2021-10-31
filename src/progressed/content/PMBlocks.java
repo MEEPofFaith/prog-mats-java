@@ -832,7 +832,7 @@ public class PMBlocks implements ContentList{
             ));
             ammo(
                 PMPayloads.basicSentry, PayloadBullets.barrageLaunch,
-                PMPayloads.strikeSentry, PayloadBullets.downpourLaunch,
+                PMPayloads.missileSentry, PayloadBullets.downpourLaunch,
                 PMPayloads.dashSentry, PayloadBullets.rapierLaunch
             );
 
@@ -1218,7 +1218,7 @@ public class PMBlocks implements ContentList{
 
             size = 3;
             build = false;
-            products = Seq.with(PMPayloads.basicSentry, PMPayloads.strikeSentry, PMPayloads.dashSentry);
+            products = Seq.with(PMPayloads.basicSentry, PMPayloads.missileSentry, PMPayloads.dashSentry);
         }};
         // endregion
 

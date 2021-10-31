@@ -11,11 +11,12 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.payloads.NuclearWarhead.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class Missile extends NuclearWarhead{
+public class Missile extends Block{
     public BulletType explosion;
     public int explosions = 1;
     public float explosionArea = 0f;
@@ -34,7 +35,10 @@ public class Missile extends NuclearWarhead{
 
         buildVisibility = BuildVisibility.sandboxOnly;
         category = Category.units;
+        health = 50; //volatile, do not destroy
         researchCostMultiplier = 5f;
+        solid = true;
+        update = true;
         hasShadow = false;
         rebuildable = false;
         drawDisabled = false;
@@ -75,7 +79,7 @@ public class Missile extends NuclearWarhead{
         return false;
     }
 
-    public class MissileBuild extends NuclearWarheadBuild{
+    public class MissileBuild extends Building{
         @Override
         public void onDestroyed(){
             super.onDestroyed();
@@ -88,7 +92,8 @@ public class Missile extends NuclearWarhead{
             if(explosion != null){
                 for(int i = 0; i < explosions; i++){
                     Time.run(Mathf.random(maxDelay), () -> {
-                        Tmp.v1.setToRandomDirection().setLength(explosionArea);
+                        float dst = explosionArea * Mathf.sqrt(Mathf.random());
+                        Tmp.v1.setToRandomDirection().setLength(dst);
                         Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f);
                         b.time = b.lifetime;
                     });

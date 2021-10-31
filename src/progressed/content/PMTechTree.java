@@ -87,8 +87,8 @@ public class PMTechTree implements ContentList{
                     node(basicSentry, () -> {
                         node(barrage, ItemStack.empty, Seq.with(new Research(basicSentry)));
                     });
-                    node(strikeSentry, Seq.with(new Research(firestorm)), () -> {
-                        node(downpour, ItemStack.empty, Seq.with(new Research(strikeSentry)));
+                    node(missileSentry, Seq.with(new Research(firestorm)), () -> {
+                        node(downpour, ItemStack.empty, Seq.with(new Research(missileSentry)));
                     });
                     node(dashSentry, Seq.with(new Research(lancer), new Research(quasar)), () -> {
                         node(rapier, ItemStack.empty, Seq.with(new Research(dashSentry)));

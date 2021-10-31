@@ -6,7 +6,6 @@ import progressed.content.bullets.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.payloads.*;
 
-import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class PMPayloads implements ContentList{
@@ -32,7 +31,7 @@ public class PMPayloads implements ContentList{
 
     //Region Sentries
 
-    basicSentry, strikeSentry, dashSentry;
+    basicSentry, missileSentry, dashSentry;
 
     @Override
     public void load(){
@@ -160,10 +159,11 @@ public class PMPayloads implements ContentList{
             unit = PMUnitTypes.barrage;
         }};
 
-        strikeSentry = new Sentry("strike-sentry"){{
+        missileSentry = new Sentry("strike-sentry"){{
             requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 15, Items.silicon, 25, Items.blastCompound, 15);
 
             size = 2;
+            baseExplosiveness = 100f;
             powerUse = 4.5f;
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
