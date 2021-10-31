@@ -70,7 +70,7 @@ public class PMPayloads implements ContentList{
         }};
 
         bomberRocket = new Missile("bomber-rocket"){{
-            requirements = with(Items.titanium, 4, Items.pyratite, 6);
+            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.pyratite, 10);
 
             prev = emptyRocket;
             size = 3;
@@ -79,7 +79,7 @@ public class PMPayloads implements ContentList{
             elevation = 2f / 3f;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.carpetBomb;
+            explosion = ((RocketBulletType)(PayloadBullets.arbalestBomber)).bombBullet;
             explosions = 50;
             maxDelay = 25f;
         }};

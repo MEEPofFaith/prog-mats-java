@@ -16,7 +16,7 @@ public class PayloadBullets implements ContentList{
 
     barrageLaunch, downpourLaunch, rapierLaunch,
 
-    arbalestBasic, arbalestIncend, carpetBomb, arbalestBomber,
+    arbalestBasic, arbalestIncend, arbalestBomber,
 
     firestormMissile, //not payload, but it fits with the other missiles so whatever
     strikedownBasic, strikedownRecursive,
@@ -79,58 +79,44 @@ public class PayloadBullets implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        carpetBomb = new BombBulletType(88f, 72f){{
-            lifetime = 15f;
-            width =  8f;
-            height = 10f;
-            hitEffect = Fx.flakExplosion;
-            status = StatusEffects.blasted;
-            statusDuration = 60f;
-            collidesAir = true;
-            frontColor = Pal.sapBullet;
-            backColor = Pal.sapBulletBack;
-            layer = Layer.turret + 0.014f;
+        arbalestBomber = new RocketBulletType(4f, 35f, "prog-mats-bomber-rocket"){{
+            lifetime = 70f;
+            acceleration = 0.03f;
+            backSpeed = thrustDelay = 0f;
+            trailWidth = thrusterSize = 6f / 4f;
+            trailParam = thrusterSize * 2f * 1.5f;
+            trailOffset = thrusterOffset = 43f / 4f;
+            rotOffset = 90f;
+            despawnEffect = PMFx.missileExplosion;
+            trailInterval = 1f;
+            trailEffect = PMFx.rocketTrail;
+            trailLength = 6;
+            drawSize = 60f * 80f;
+            layer = Layer.turret + 0.015f;
+
+            collides = collidesTiles = false;
+            splashDamage = 52f;
+            splashDamageRadius = 36f;
+            homingPower = 0.25f;
+            homingDelay = 5f;
+            homingRange = 100f * 8f;
+
+            bombBullet = new BombBulletType(88f, 72f){{
+                lifetime = 15f;
+                width =  8f;
+                height = 10f;
+                hitEffect = Fx.flakExplosion;
+                status = StatusEffects.blasted;
+                statusDuration = 60f;
+                collidesAir = true;
+                frontColor = Pal.sapBullet;
+                backColor = Pal.sapBulletBack;
+                layer = Layer.turret + 0.014f;
+            }};
+            bombInterval = 2f;
+
+            unitSort = (u, x, y) -> u.maxHealth + u.dst2(x, y) / 6400f;
         }};
-
-        arbalestBomber = new RocketBulletType(4f, 35f, "prog-mats-bomber-rocket"){
-            final float bombInterval = 2f;
-
-            {
-                lifetime = 70f;
-                acceleration = 0.03f;
-                backSpeed = thrustDelay = 0f;
-                trailWidth = thrusterSize = 6f / 4f;
-                trailParam = thrusterSize * 2f * 1.5f;
-                trailOffset = thrusterOffset = 43f / 4f;
-                rotOffset = 90f;
-                despawnEffect = PMFx.missileExplosion;
-                trailInterval = 1f;
-                trailEffect = PMFx.rocketTrail;
-                trailLength = 6;
-                drawSize = 60f * 80f;
-                layer = Layer.turret + 0.015f;
-
-                collides = collidesTiles = false;
-                splashDamage = 52f;
-                splashDamageRadius = 36f;
-                homingPower = 0.25f;
-                homingDelay = 5f;
-                homingRange = 100f * 8f;
-
-                unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
-            }
-
-            @Override
-            public void update(Bullet b){
-                super.update(b);
-
-                if(b.time > thrustDelay + thrusterGrowth){
-                    if(b.timer(1, bombInterval * (speed / b.vel.len()))){
-                        carpetBomb.create(b, b.x, b.y, b.rotation());
-                    }
-                }
-            }
-        };
 
         firestormMissile = new StrikeBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
             splashDamage = 72f;

@@ -7,11 +7,13 @@ import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.*;
+import mindustry.entities.Units.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -130,6 +132,14 @@ public class PayloadRocketTurret extends PayloadTurret{
             }
         }
 
+        protected void findTarget(){
+            Sortf sort = peekAmmo() instanceof RocketBulletType b ? b.unitSort : unitSort;
+            if(targetAir && !targetGround){
+                target = Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded(), sort);
+            }else{
+                target = Units.bestTarget(team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> true, sort);
+            }
+        }
 
         @Override
         public void updateLoading(){

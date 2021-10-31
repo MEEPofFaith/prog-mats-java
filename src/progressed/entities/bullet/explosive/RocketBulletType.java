@@ -25,6 +25,9 @@ public class RocketBulletType extends BasicBulletType{
     public float acceleration = 0.03f;
     public float rotOffset = 0f;
 
+    public BulletType bombBullet;
+    public float bombInterval;
+
     public Sortf unitSort = Unit::dst2;
 
     public RocketBulletType(float speed, float damage, String sprite){
@@ -107,6 +110,14 @@ public class RocketBulletType extends BasicBulletType{
                 if(trailInterval > 0f){
                     if(b.timer(0, trailInterval)){
                         trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale});
+                    }
+                }
+
+                if(bombBullet != null){
+                    if(b.time > thrustDelay + thrusterGrowth){
+                        if(b.timer(1, bombInterval * (speed / b.vel.len()))){
+                            bombBullet.create(b, b.x, b.y, b.rotation());
+                        }
                     }
                 }
 

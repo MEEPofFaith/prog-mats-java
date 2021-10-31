@@ -1188,7 +1188,11 @@ public class PMBlocks implements ContentList{
             size = 5;
             hideDetails = false;
             ambientSound = Sounds.machine;
-            products = Seq.with(PMPayloads.basicRocket, PMPayloads.basicMissile, PMPayloads.incendiaryRocket, PMPayloads.recursiveMissile, PMPayloads.basicNuke, PMPayloads.clusterNuke);
+            products = Seq.with(
+                PMPayloads.basicRocket, PMPayloads.incendiaryRocket, PMPayloads.bomberRocket,
+                PMPayloads.basicMissile, PMPayloads.recursiveMissile,
+                PMPayloads.basicNuke, PMPayloads.clusterNuke
+            );
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{
