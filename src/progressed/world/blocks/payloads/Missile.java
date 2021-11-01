@@ -81,6 +81,12 @@ public class Missile extends Block{
 
     public class MissileBuild extends Building{
         @Override
+        public void drawCracks(){
+            //TODO crack masking
+            //This is just a temporary solution
+        }
+
+        @Override
         public void onDestroyed(){
             super.onDestroyed();
 
