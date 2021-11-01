@@ -1,10 +1,10 @@
 package progressed.graphics;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class PMShaders{
@@ -14,16 +14,13 @@ public class PMShaders{
         vertBuild = new VerticalBuildShader();
     }
 
-    public static class VerticalBuildShader extends Shader{
+    public static class VerticalBuildShader extends PMLoadShader{
         public float progress, time;
         public Color color = new Color();
         public TextureRegion region;
 
         public VerticalBuildShader(){
-            super(
-                Core.files.internal("shaders/default.vert"),
-                tree.get("shaders/vertbuild.frag")
-            );
+            super("vertbuild");
         }
 
         @Override
@@ -37,4 +34,12 @@ public class PMShaders{
         }
     }
 
+    static class PMLoadShader extends Shader{
+        PMLoadShader(String frag){
+            super(
+                files.internal("shaders/default.vert"),
+                tree.get("shaders/" + frag + ".frag")
+            );
+        }
+    }
 }
