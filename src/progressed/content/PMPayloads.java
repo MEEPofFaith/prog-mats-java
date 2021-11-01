@@ -69,7 +69,7 @@ public class PMPayloads implements ContentList{
         }};
 
         bomberRocket = new Missile("bomber-rocket"){{
-            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.pyratite, 10);
+            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.blastCompound, 10);
 
             prev = emptyRocket;
             size = 3;
@@ -130,7 +130,7 @@ public class PMPayloads implements ContentList{
             prev = emptyNuke;
             size = 3;
             powerUse = 6f;
-            constructTime = 60f * 55f;
+            constructTime = 60f * 25f;
 
             explosion = PayloadBullets.trinityBasic;
         }};
@@ -141,7 +141,7 @@ public class PMPayloads implements ContentList{
             prev = emptyNuke;
             size = 3;
             powerUse = 6.25f;
-            constructTime = 60f * 60f;
+            constructTime = 60f * 35f;
 
             explosionArea = -1f;
             StrikeBulletType b = (StrikeBulletType)PayloadBullets.trinityCluster;
