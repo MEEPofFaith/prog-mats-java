@@ -39,6 +39,7 @@ public class RocketBulletType extends BasicBulletType{
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = hitEffect = Fx.explosion;
         hitSound = Sounds.explosion;
+        status = StatusEffects.blasted;
     }
 
     @Override

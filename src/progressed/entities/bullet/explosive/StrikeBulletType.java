@@ -53,6 +53,7 @@ public class StrikeBulletType extends BasicBulletType{
         lightOpacity = 0.6f;
         lightColor = Pal.engine;
         trailEffect = Fx.none;
+        status = StatusEffects.blasted;
     }
 
     @Override
