@@ -126,7 +126,7 @@ public class PayloadBullets implements ContentList{
             }};
             bombInterval = 2f;
 
-            unitSort = (u, x, y) -> u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = (u, x, y) -> u.health + u.dst2(x, y) / 6400f; //Target, bomb, and destroy low health units :)))
         }};
 
         firestormMissile = new StrikeBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
