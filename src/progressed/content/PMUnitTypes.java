@@ -156,8 +156,6 @@ public class PMUnitTypes implements ContentList{
                     targetRadius = 0.5f;
                 }};
             }}, new RocketWeapon(name + "-rocket"){{
-                bottomWeapons.add(this);
-
                 x = 18f / 4f;
                 y = 0f;
                 mirror = true;
@@ -165,6 +163,7 @@ public class PMUnitTypes implements ContentList{
                 reload = 60f;
                 shootCone = 5f;
                 shootSound = Sounds.missile;
+                layerOffset = -0.0001f;
 
                 bullet = new RocketBulletType(4.5f, 36f, name){{
                     lifetime = 60f;

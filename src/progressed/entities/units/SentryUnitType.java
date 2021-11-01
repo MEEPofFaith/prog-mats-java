@@ -13,13 +13,14 @@ import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.entities.units.entity.*;
 import progressed.util.*;
 
-public class SentryUnitType extends PMUnitType{
+public class SentryUnitType extends UnitType{
     public int engines = 4;
     public float engineRotOffset = 45f, duration = 600f, riseSpeed = 0.125f;
 
