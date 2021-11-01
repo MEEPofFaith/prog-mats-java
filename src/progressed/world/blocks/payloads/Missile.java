@@ -42,6 +42,7 @@ public class Missile extends Block{
         hasShadow = false;
         rebuildable = false;
         drawDisabled = false;
+        squareSprite = false;
     }
 
     @Override

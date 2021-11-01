@@ -1057,6 +1057,7 @@ public class PMBlocks implements ContentList{
             constructTime = 10f * 60f;
             constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
             hideDetails = false;
+            squareSprite = false;
         }};
 
         itemDroneStation = new ItemDroneStation("drone-station-items"){{
@@ -1070,6 +1071,7 @@ public class PMBlocks implements ContentList{
             ));
             size = 3;
             itemCapacity = 500;
+            squareSprite = false;
         }};
 
         liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
@@ -1083,6 +1085,7 @@ public class PMBlocks implements ContentList{
             ));
             size = 3;
             liquidCapacity = 1000f;
+            squareSprite = false;
         }};
 
         payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
@@ -1096,6 +1099,7 @@ public class PMBlocks implements ContentList{
             ));
             size = 5;
             maxPayloadSize = 4f;
+            squareSprite = false;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{
