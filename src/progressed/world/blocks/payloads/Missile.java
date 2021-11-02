@@ -1,6 +1,7 @@
 package progressed.world.blocks.payloads;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
@@ -83,8 +84,12 @@ public class Missile extends Block{
     public class MissileBuild extends Building{
         @Override
         public void drawCracks(){
-            //TODO crack masking
-            //This is just a temporary solution
+            if(explosion != null){
+                float f = Mathf.clamp(healthf());
+                Tmp.c1.set(Color.red).lerp(Color.white, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
+                Draw.color(Tmp.c1);
+                Draw.rect(topRegion, x, y);
+            }
         }
 
         @Override

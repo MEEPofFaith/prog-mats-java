@@ -1,5 +1,7 @@
 package progressed.world.blocks.payloads;
 
+import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.*;
@@ -45,14 +47,77 @@ public class Sentry extends Missile{
 
     @Override
     public void drawBase(Tile tile){
-        Draw.z(Layer.blockUnder - 1f);
-        Drawf.shadow(unit.fullIcon, tile.drawx() - elevation, tile.drawy() - elevation, tile.build.rotdeg() - 90f);
-        Draw.z(Layer.block);
-        Draw.rect(unit.fullIcon, tile.drawx(), tile.drawy(), tile.build.rotdeg() - 90f);
+        if(tile.build != null){
+            tile.build.draw();
+        }
     }
 
     public class SentryBuild extends MissileBuild{
         public boolean activated;
+
+        @Override
+        public void draw(){
+            Draw.z(Layer.blockUnder - 1f);
+            Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, rotdeg() - 90f);
+            Draw.z(Layer.block);
+            if(unit.drawBody && Core.atlas.isFound(unit.outlineRegion)) Draw.rect(unit.outlineRegion, x, y, rotdeg() - 90f);
+            drawWeaponOutlines();
+            if(unit.drawBody) Draw.rect(unit.region, x, y, rotdeg() - 90f);
+            if(unit.drawCell) drawCell();
+            drawWeapons();
+        }
+
+        public void drawCell(){
+            float f = Mathf.clamp(healthf());
+            Tmp.c1.set(Color.black).lerp(team.color, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
+            Draw.color(Tmp.c1);
+            Draw.rect(unit.cellRegion, x, y, rotdeg() - 90f);
+            Draw.reset();
+        }
+
+        public void drawWeaponOutlines(){
+            for(Weapon weapon : unit.weapons){
+                if(!weapon.top){
+                    float
+                        wx = x + Angles.trnsx(rotdeg() - 90f, weapon.x, weapon.y),
+                        wy = y + Angles.trnsy(rotdeg() - 90f, weapon.x, weapon.y);
+                    Draw.rect(
+                        weapon.outlineRegion,
+                        wx, wy,
+                        weapon.region.width * Draw.scl * -Mathf.sign(weapon.flipSprite),
+                        weapon.region.height * Draw.scl,
+                        rotdeg() - 90f
+                    );
+                }
+            }
+        }
+
+        public void drawWeapons(){
+            for(Weapon weapon : unit.weapons){
+                float z = Draw.z();
+                Draw.z(z + weapon.layerOffset);
+                float
+                    wx = x + Angles.trnsx(rotdeg() - 90f, weapon.x, weapon.y),
+                    wy = y + Angles.trnsy(rotdeg() - 90f, weapon.x, weapon.y);
+
+                if(weapon.shadow > 0) Drawf.shadow(wx, wy, weapon.shadow);
+                if(weapon.top) Draw.rect(weapon.outlineRegion, wx, wy, rotdeg() - 90f);
+                Draw.rect(
+                    weapon.region,
+                    wx, wy,
+                    weapon.region.width * Draw.scl * -Mathf.sign(weapon.flipSprite),
+                    weapon.region.height * Draw.scl,
+                    rotdeg() - 90f
+                );
+
+                Draw.z(z);
+            }
+        }
+
+        @Override
+        public void drawCracks(){
+            //no
+        }
 
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
