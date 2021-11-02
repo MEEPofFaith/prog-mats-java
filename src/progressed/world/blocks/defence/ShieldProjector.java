@@ -17,7 +17,7 @@ import mindustry.world.blocks.defense.*;
 import mindustry.world.consumers.*;
 import progressed.content.*;
 import progressed.entities.bullet.explosive.*;
-import progressed.entities.bullet.explosive.StrikeBulletType.*;
+import progressed.entities.bullet.explosive.ArcMissileBulletType.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -37,7 +37,7 @@ public class ShieldProjector extends ForceProjector{
                 paramEntity.hit = 1f;
                 paramEntity.buildup += trait.damage() * paramEntity.warmup;
             }
-            if(trait.type instanceof StrikeBulletType && trait.data instanceof StrikeBulletData d){
+            if(trait.type instanceof ArcMissileBulletType && trait.data instanceof ArcMissileData d){
                 d.shield = paramEntity;
             }
         }

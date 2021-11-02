@@ -129,7 +129,7 @@ public class PayloadBullets implements ContentList{
             unitSort = (u, x, y) -> u.health + u.dst2(x, y) / 6400f; //Target, bomb, and destroy low health units :)))
         }};
 
-        firestormMissile = new StrikeBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
+        firestormMissile = new ArcMissileBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
             splashDamage = 72f;
             splashDamageRadius = 30f;
             lifetime = 90f;
@@ -158,7 +158,7 @@ public class PayloadBullets implements ContentList{
             targetRadius = 0.5f;
         }};
 
-        strikedownBasic = new StrikeBulletType(2f, 80f, "prog-mats-basic-missile"){{
+        strikedownBasic = new ArcMissileBulletType(2f, 80f, "prog-mats-basic-missile"){{
             splashDamage = 750f;
             splashDamageRadius = 64f;
             homingPower = 0.05f;
@@ -185,7 +185,7 @@ public class PayloadBullets implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        strikedownRecursive = new StrikeBulletType(2f, 80f, "prog-mats-recursive-missile"){{
+        strikedownRecursive = new ArcMissileBulletType(2f, 80f, "prog-mats-recursive-missile"){{
             splashDamage = 200f;
             splashDamageRadius = 48f;
             homingPower = 0.05f;
@@ -214,7 +214,7 @@ public class PayloadBullets implements ContentList{
             splitBullets = 3;
             splitVelocityMin = 0.8f;
             splitVelocityMax = 1.2f;
-            splitBullet = new StrikeBulletType(3f, 80f, "prog-mats-recursive-missile"){{
+            splitBullet = new ArcMissileBulletType(3f, 80f, "prog-mats-recursive-missile"){{
                 splashDamage = 100f;
                 splashDamageRadius = 40f;
                 homingPower = 0.07f;
@@ -244,7 +244,7 @@ public class PayloadBullets implements ContentList{
                 splitBullets = 3;
                 splitVelocityMin = 0.8f;
                 splitVelocityMax = 1.2f;
-                splitBullet = new StrikeBulletType(4f, 80f, "prog-mats-recursive-missile"){{
+                splitBullet = new ArcMissileBulletType(4f, 80f, "prog-mats-recursive-missile"){{
                     splashDamage = 50f;
                     splashDamageRadius = 32f;
                     homingPower = 0.1f;
@@ -274,7 +274,7 @@ public class PayloadBullets implements ContentList{
             }};
         }};
 
-        trinityBasic = new StrikeBulletType(1f, 300f, "prog-mats-basic-nuke"){{
+        trinityBasic = new ArcMissileBulletType(1f, 300f, "prog-mats-basic-nuke"){{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
             homingPower = 0.05f;
@@ -303,7 +303,7 @@ public class PayloadBullets implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        trinityCluster = new StrikeBulletType(1.25f, 0f, "prog-mats-cluster-nuke"){{
+        trinityCluster = new ArcMissileBulletType(1.25f, 0f, "prog-mats-cluster-nuke"){{
             homingPower = 0.05f;
             homingRange = 2200f;
             lifetime = 2400f;
@@ -312,7 +312,7 @@ public class PayloadBullets implements ContentList{
             despawnEffect = hitEffect = Fx.none;
 
             splitBullets = 20;
-            splitBullet = new StrikeBulletType(1f, 80f, "prog-mats-recursive-missile"){{
+            splitBullet = new ArcMissileBulletType(1f, 80f, "prog-mats-recursive-missile"){{
                 splashDamage = 3000f;
                 splashDamageRadius = 40f;
                 lifetime = 150f;

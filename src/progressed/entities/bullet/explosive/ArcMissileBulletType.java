@@ -21,7 +21,7 @@ import progressed.world.blocks.defence.ShieldProjector.*;
 import static mindustry.Vars.*;
 
 /** @author MEEP */
-public class StrikeBulletType extends BasicBulletType{
+public class ArcMissileBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, snapRot, randRot;
     public float weaveWidth, weaveSpeed;
@@ -43,7 +43,7 @@ public class StrikeBulletType extends BasicBulletType{
 
     public Sortf unitSort = Unit::dst2;
 
-    public StrikeBulletType(float speed, float damage, String sprite){
+    public ArcMissileBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
         ammoMultiplier = 1;
         collides = hittable = absorbable = reflectable = keepVelocity = false;
@@ -77,17 +77,17 @@ public class StrikeBulletType extends BasicBulletType{
 
         if(b.data == null){
             if(b.owner instanceof Unit unit){
-                b.data = new StrikeBulletData(unit.x, unit.y);
+                b.data = new ArcMissileData(unit.x, unit.y);
             }
             if(b.owner instanceof Building build){
-                b.data = new StrikeBulletData(build.x, build.y);
+                b.data = new ArcMissileData(build.x, build.y);
             }
         }
     }
 
     @Override
     public void update(Bullet b){
-        if(b.data instanceof StrikeBulletData data){
+        if(b.data instanceof ArcMissileData data){
             float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
             if(rise < 0.99f && Mathf.chanceDelta(smokeTrailChance)){
                 float x = data.x;
@@ -165,7 +165,7 @@ public class StrikeBulletType extends BasicBulletType{
             if(splitBullet != null && !data.split && b.time >= (b.lifetime - fallTime)){
                 data.split = true;
                 for(int i = 0; i < splitBullets; i++){
-                    splitBullet.create(b.owner, b.team, b.x, b.y, Mathf.random(360f), -1f, Mathf.random(splitVelocityMin, splitVelocityMax), Mathf.random(splitLifeMin, splitLifeMax), new StrikeBulletData(b.x, b.y));
+                    splitBullet.create(b.owner, b.team, b.x, b.y, Mathf.random(360f), -1f, Mathf.random(splitVelocityMin, splitVelocityMax), Mathf.random(splitLifeMin, splitLifeMax), new ArcMissileData(b.x, b.y));
                 }
             }
         }
@@ -173,7 +173,7 @@ public class StrikeBulletType extends BasicBulletType{
 
     @Override
     public void despawned(Bullet b){
-        StrikeBulletData data = (StrikeBulletData)b.data;
+        ArcMissileData data = (ArcMissileData)b.data;
         ShieldBuild s = data.shield;
 
         if(s != null && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y)){
@@ -203,15 +203,15 @@ public class StrikeBulletType extends BasicBulletType{
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
-                if(fragBullet instanceof StrikeBulletType strike){
-                    strike.create(b.owner, b.team, x, y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax), new StrikeBulletData(x, y));
+                if(fragBullet instanceof ArcMissileBulletType strike){
+                    strike.create(b.owner, b.team, x, y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax), new ArcMissileData(x, y));
                 }else{
                     fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
                 }
             }
         }
 
-        StrikeBulletData data = ((StrikeBulletData)b.data);
+        ArcMissileData data = ((ArcMissileData)b.data);
 
         if(!data.blocked){
             if(puddleLiquid != null && puddles > 0){
@@ -255,7 +255,7 @@ public class StrikeBulletType extends BasicBulletType{
 
     @Override
     public void draw(Bullet b){
-        if(b.data instanceof StrikeBulletData data){
+        if(b.data instanceof ArcMissileData data){
             float x = data.x;
             float y = data.y;
 
@@ -345,13 +345,13 @@ public class StrikeBulletType extends BasicBulletType{
         //Do nothing
     }
 
-    public static class StrikeBulletData{
+    public static class ArcMissileData{
         public float x, y;
         public Vec2 vel;
         public boolean stopped, blocked, split, canDrop;
         public ShieldBuild shield;
 
-        public StrikeBulletData(float x, float y){
+        public ArcMissileData(float x, float y){
             this.x = x;
             this.y = y;
         }

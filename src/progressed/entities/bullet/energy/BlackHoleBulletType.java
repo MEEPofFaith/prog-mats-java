@@ -130,7 +130,7 @@ public class BlackHoleBulletType extends BulletType{
     }
 
     public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.
-        return (type instanceof StrikeBulletType) ||
+        return (type instanceof ArcMissileBulletType) ||
             (type instanceof BlackHoleCataclysmType) ||
             (type instanceof MagmaBulletType);
     }

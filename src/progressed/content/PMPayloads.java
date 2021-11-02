@@ -111,7 +111,7 @@ public class PMPayloads implements ContentList{
             constructTime = 60f * 8f;
 
             explosionArea = -1f;
-            explosion = ((StrikeBulletType)(((StrikeBulletType)(PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
+            explosion = ((ArcMissileBulletType)(((ArcMissileBulletType)(PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
             explosions = 13;
             maxDelay = 20f;
         }};
@@ -144,7 +144,7 @@ public class PMPayloads implements ContentList{
             constructTime = 60f * 35f;
 
             explosionArea = -1f;
-            StrikeBulletType b = (StrikeBulletType)PayloadBullets.trinityCluster;
+            ArcMissileBulletType b = (ArcMissileBulletType)PayloadBullets.trinityCluster;
             explosion = b.splitBullet;
             explosions = b.splitBullets;
             maxDelay = 20f;

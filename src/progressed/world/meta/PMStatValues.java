@@ -199,7 +199,7 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
                         }
 
-                        if(type instanceof StrikeBulletType stype && stype.splitBullet != null){
+                        if(type instanceof ArcMissileBulletType stype && stype.splitBullet != null){
                             sep(bt, bundle.format("bullet.pm-splits", stype.splitBullets));
                             bt.row();
 
