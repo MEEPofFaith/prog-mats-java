@@ -249,7 +249,7 @@ public class ApotheosisNexus extends ReloadTurret{
             super.draw();
 
             for(int i = 0; i < lights; i++){
-                float lerp = (0.25f + Mathf.absin(Time.time - i * (lightInterval / lights), lightInterval / 8, 0.75f)) * warmup;
+                float lerp = (0.5f + Mathf.absin(Time.time - i * (lightInterval / lights), lightInterval / 8, 0.5f)) * warmup;
                 tc.set(lightsBase).lerp(lightsDark, lerp);
                 Draw.color(tc);
                 Draw.rect(lightRegions[i], x, y);
