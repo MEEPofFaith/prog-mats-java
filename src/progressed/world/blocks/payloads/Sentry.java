@@ -58,11 +58,11 @@ public class Sentry extends Missile{
         @Override
         public void draw(){
             Draw.z(Layer.blockUnder - 1f);
-            Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, rotdeg() - 90f);
+            Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, drawRot());
             Draw.z(Layer.block);
-            if(unit.drawBody && Core.atlas.isFound(unit.outlineRegion)) Draw.rect(unit.outlineRegion, x, y, rotdeg() - 90f);
+            if(unit.drawBody && Core.atlas.isFound(unit.outlineRegion)) Draw.rect(unit.outlineRegion, x, y, drawRot());
             drawWeaponOutlines();
-            if(unit.drawBody) Draw.rect(unit.region, x, y, rotdeg() - 90f);
+            if(unit.drawBody) Draw.rect(unit.region, x, y, drawRot());
             if(unit.drawCell) drawCell();
             drawWeapons();
         }
@@ -71,7 +71,7 @@ public class Sentry extends Missile{
             float f = Mathf.clamp(healthf());
             Tmp.c1.set(Color.black).lerp(team.color, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
             Draw.color(Tmp.c1);
-            Draw.rect(unit.cellRegion, x, y, rotdeg() - 90f);
+            Draw.rect(unit.cellRegion, x, y, drawRot());
             Draw.reset();
         }
 
@@ -79,14 +79,14 @@ public class Sentry extends Missile{
             for(Weapon weapon : unit.weapons){
                 if(!weapon.top){
                     float
-                        wx = x + Angles.trnsx(rotdeg() - 90f, weapon.x, weapon.y),
-                        wy = y + Angles.trnsy(rotdeg() - 90f, weapon.x, weapon.y);
+                        wx = x + Angles.trnsx(drawRot(), weapon.x, weapon.y),
+                        wy = y + Angles.trnsy(drawRot(), weapon.x, weapon.y);
                     Draw.rect(
                         weapon.outlineRegion,
                         wx, wy,
                         weapon.region.width * Draw.scl * -Mathf.sign(weapon.flipSprite),
                         weapon.region.height * Draw.scl,
-                        rotdeg() - 90f
+                        drawRot()
                     );
                 }
             }
@@ -97,21 +97,25 @@ public class Sentry extends Missile{
                 float z = Draw.z();
                 Draw.z(z + weapon.layerOffset);
                 float
-                    wx = x + Angles.trnsx(rotdeg() - 90f, weapon.x, weapon.y),
-                    wy = y + Angles.trnsy(rotdeg() - 90f, weapon.x, weapon.y);
+                    wx = x + Angles.trnsx(drawRot(), weapon.x, weapon.y),
+                    wy = y + Angles.trnsy(drawRot(), weapon.x, weapon.y);
 
                 if(weapon.shadow > 0) Drawf.shadow(wx, wy, weapon.shadow);
-                if(weapon.top) Draw.rect(weapon.outlineRegion, wx, wy, rotdeg() - 90f);
+                if(weapon.top) Draw.rect(weapon.outlineRegion, wx, wy, drawRot());
                 Draw.rect(
                     weapon.region,
                     wx, wy,
                     weapon.region.width * Draw.scl * -Mathf.sign(weapon.flipSprite),
                     weapon.region.height * Draw.scl,
-                    rotdeg() - 90f
+                    drawRot()
                 );
 
                 Draw.z(z);
             }
+        }
+
+        public float drawRot(){
+            return rotdeg() - 90f;
         }
 
         @Override

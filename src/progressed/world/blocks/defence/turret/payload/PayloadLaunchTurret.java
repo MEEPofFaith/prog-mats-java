@@ -115,7 +115,7 @@ public class PayloadLaunchTurret extends PayloadTurret{
         @Override
         public void write(Writes write){
             super.write(write);
-            write.f(loadProgress);
+            write.f(charge);
         }
 
         @Override

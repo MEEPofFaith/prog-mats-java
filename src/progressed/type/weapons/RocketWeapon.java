@@ -51,7 +51,8 @@ public class RocketWeapon extends Weapon{
                     wx, wy,
                     outlineRegion.width * Draw.scl * -Mathf.sign(flipSprite),
                     region.height * Draw.scl,
-                    weaponRotation);
+                    weaponRotation
+                );
             }
         }
     }
@@ -59,6 +60,8 @@ public class RocketWeapon extends Weapon{
     @Override
     public void draw(Unit unit, WeaponMount mount){
         RocketMount rMount = (RocketMount)mount;
+        float z = Draw.z();
+        Draw.z(z + layerOffset);
 
         float rotation = unit.rotation - 90,
             weaponRotation  = rotation + (rotate ? mount.rotation : 0),
@@ -72,9 +75,7 @@ public class RocketWeapon extends Weapon{
         if(rMount.warmup > 0.01f || loadf(mount) > 0.01f){
             Draw.draw(Draw.z(), () -> {
                 if(outlineRegion.found() && top){
-                    Draw.draw(Draw.z(), () -> {
-                        PMDrawf.vertConstruct(wx, wy, outlineRegion, weaponRotation, loadf(mount), rMount.warmup, rMount.total);
-                    });
+                    PMDrawf.vertConstruct(wx, wy, outlineRegion, weaponRotation, loadf(mount), rMount.warmup, rMount.total);
                 }
                 PMDrawf.vertConstruct(wx, wy, region, weaponRotation, loadf(mount), rMount.warmup, rMount.total);
             });
@@ -84,15 +85,19 @@ public class RocketWeapon extends Weapon{
                     wx, wy,
                     outlineRegion.width * Draw.scl * -Mathf.sign(flipSprite),
                     region.height * Draw.scl,
-                    weaponRotation);
+                    weaponRotation
+                );
             }
 
             Draw.rect(region,
                 wx, wy,
                 region.width * Draw.scl * -Mathf.sign(flipSprite),
                 region.height * Draw.scl,
-                weaponRotation);
+                weaponRotation
+            );
         }
+
+        Draw.z(z);
     }
 
     public float loadf(WeaponMount mount){

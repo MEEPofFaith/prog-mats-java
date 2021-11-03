@@ -23,7 +23,7 @@ public class PayloadTurret extends PayloadMissileTurret{
     public float shootLength = -1;
     public float rotOffset = 0f;
 
-    public float chargeTime = -1f;
+    public float chargeTime = 0f;
     public float loadTime = 20f;
 
     protected Vec2 tr = new Vec2();
@@ -245,6 +245,7 @@ public class PayloadTurret extends PayloadMissileTurret{
             loadProgress = 0f;
             loaded = false;
             shoot(peekAmmo());
+            charging = false;
             shooting = false;
             reload %= reloadTime;
         }

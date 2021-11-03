@@ -848,6 +848,7 @@ public class PMBlocks implements ContentList{
             shootShake = 2f;
 
             loadTime = 4f; //In LaunchTurret, this determines how far back the payload is shifted
+            chargeTime = 60f;
             shootLength = 11f;
             lineSpacing = 3.5f;
         }};
