@@ -192,6 +192,7 @@ public class PayloadCrafter extends BlockProducer{
                             Shaders.blockbuild.region = region;
                             Shaders.blockbuild.progress = progress / ((Missile)recipe).constructTime;
 
+                            Draw.shader(Shaders.blockbuild);
                             Draw.rect(region, x, y, recipe.rotate ? rotdeg() : 0);
                             Draw.flush();
                         }
