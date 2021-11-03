@@ -1222,7 +1222,7 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 3;
-            build = false;
+            blockBuild = false;
             products = Seq.with(PMPayloads.basicSentry, PMPayloads.missileSentry, PMPayloads.dashSentry);
         }};
         // endregion

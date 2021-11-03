@@ -30,7 +30,7 @@ public class PayloadCrafter extends BlockProducer{
     private float scrollPos;
 
     public Seq<Missile> products;
-    public boolean hasTop = true, build = true;
+    public boolean hasTop = true, blockBuild = true;
 
     public int[] capacities = {};
 
@@ -185,7 +185,7 @@ public class PayloadCrafter extends BlockProducer{
 
             if(recipe != null){
                 Draw.draw(Layer.blockBuilding, () -> {
-                    if(build){
+                    if(blockBuild){
                         Draw.color(Pal.accent);
 
                         for(TextureRegion region : recipe.getGeneratedIcons()){
@@ -202,7 +202,7 @@ public class PayloadCrafter extends BlockProducer{
                     }
                 });
 
-                if(build){
+                if(blockBuild){
                     Draw.z(Layer.blockBuilding + 0.01f);
                     Draw.color(Pal.accent, heat);
 
