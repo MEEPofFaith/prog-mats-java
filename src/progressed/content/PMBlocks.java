@@ -182,7 +182,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 150,
                 Items.plastanium, 175,
                 Items.thorium, 170,
-                PMItems.valexitite, 120
+                PMItems.tenelium, 120
             ));
             ammo(
                 Items.copper, MinigunBullets.standardCopperMini,
@@ -224,7 +224,7 @@ public class PMBlocks implements ContentList{
                 Items.thorium, 340,
                 Items.plastanium, 325,
                 Items.surgeAlloy, 220,
-                PMItems.valexitite, 270
+                PMItems.tenelium, 270
             ));
             ammo(
                 Items.copper, MinigunBullets.standardCopperMini,
@@ -310,7 +310,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 105,
                 Items.titanium, 90,
                 Items.surgeAlloy, 40,
-                PMItems.valexitite, 50
+                PMItems.tenelium, 50
             ));
             rings.addAll(
                 new TeslaRing(1f),
@@ -418,7 +418,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 600,
                 Items.titanium, 350,
                 Items.surgeAlloy, 200,
-                PMItems.valexitite, 200
+                PMItems.tenelium, 200
             ));
             float h = 0.9f;
             cells.addAll(
@@ -457,7 +457,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 600,
                 Items.thorium, 800,
                 Items.surgeAlloy, 650,
-                PMItems.valexitite, 600
+                PMItems.tenelium, 600
             ));
             float h = 0.5f;
             cells.add(
@@ -489,7 +489,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 350,
                 Items.titanium, 200,
                 Items.phaseFabric, 50,
-                PMItems.valexitite, 150
+                PMItems.tenelium, 150
             ));
             size = 3;
             hideDetails = false;
@@ -509,7 +509,7 @@ public class PMBlocks implements ContentList{
                     Items.silicon, 400,
                     Items.surgeAlloy, 400,
                     Items.phaseFabric, 200,
-                    PMItems.valexitite, 450
+                    PMItems.tenelium, 450
                 ));
                 size = 5;
                 hideDetails = false;
@@ -573,7 +573,7 @@ public class PMBlocks implements ContentList{
                 ammo(
                     Items.copper, PMBullets.magnetCopper,
                     Items.titanium, PMBullets.magnetTitanium,
-                    PMItems.valexitite, PMBullets.magnetTechtanite
+                    PMItems.tenelium, PMBullets.magnetTechtanite
                 );
                 size = 3;
                 health = 90 * size * size;
@@ -610,13 +610,13 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 200,
                 Items.thorium, 150,
                 Items.plastanium, 110,
-                PMItems.valexitite, 60
+                PMItems.tenelium, 60
             ));
             ammo(
                 Items.titanium, SniperBullets.sniperBoltTitanium,
                 Items.thorium, SniperBullets.sniperBoltThorium,
                 Items.silicon, SniperBullets.sniperBoltSilicon,
-                PMItems.valexitite, SniperBullets.sniperBoltValexitite,
+                PMItems.tenelium, SniperBullets.sniperBoltValexitite,
                 Items.surgeAlloy, SniperBullets.sniperBoltSurge
             );
             size = 3;
@@ -637,11 +637,11 @@ public class PMBlocks implements ContentList{
                 Items.lead, 80,
                 Items.silicon, 130,
                 Items.plastanium, 110,
-                PMItems.valexitite, 90
+                PMItems.tenelium, 90
             ));
             ammo(
                 Items.silicon, PMBullets.smallFlare,
-                PMItems.valexitite, PMBullets.mediumFlare,
+                PMItems.tenelium, PMBullets.mediumFlare,
                 Items.surgeAlloy, PMBullets.largeFlare
             );
             size = 2;
@@ -700,7 +700,7 @@ public class PMBlocks implements ContentList{
                 Items.graphite, 350,
                 Items.surgeAlloy, 450,
                 Items.silicon, 450,
-                PMItems.valexitite, 250
+                PMItems.tenelium, 250
             ));
 
             size = 4;
@@ -761,7 +761,7 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, 250,
                 Items.silicon, 800,
                 Items.phaseFabric, 500,
-                PMItems.valexitite, 500
+                PMItems.tenelium, 500
             ));
             size = 4;
             hideDetails = false;
@@ -795,7 +795,7 @@ public class PMBlocks implements ContentList{
                     Items.thorium, 700,
                     Items.plastanium, 350,
                     Items.surgeAlloy, 450,
-                    PMItems.valexitite, 800
+                    PMItems.tenelium, 800
                 ));
                 size = 6;
                 hideDetails = false;
@@ -859,7 +859,7 @@ public class PMBlocks implements ContentList{
                 Items.graphite, 300,
                 Items.silicon, 325,
                 Items.titanium, 350,
-                PMItems.valexitite, 160
+                PMItems.tenelium, 160
             ));
             ammo(
                 PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
@@ -924,7 +924,7 @@ public class PMBlocks implements ContentList{
                 Items.graphite, 300,
                 Items.silicon, 300,
                 Items.titanium, 250,
-                PMItems.valexitite, 120
+                PMItems.tenelium, 120
             ));
             ammo(
                 PMPayloads.basicMissile, PayloadBullets.strikedownBasic,
@@ -950,7 +950,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 1300,
                 Items.thorium, 650,
                 Items.surgeAlloy, 200,
-                PMItems.valexitite, 800
+                PMItems.tenelium, 800
             ));
             ammo(
                 PMPayloads.basicNuke, PayloadBullets.trinityBasic,
@@ -974,7 +974,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 6300,
                 Items.thorium, 3100,
                 Items.surgeAlloy, 3600,
-                PMItems.valexitite, 5400
+                PMItems.tenelium, 5400
             ));
             size = 9;
             health = 480 * size * size;
@@ -1007,7 +1007,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 2400,
                 Items.thorium, 2300,
                 Items.surgeAlloy, 1000,
-                PMItems.valexitite, 2500
+                PMItems.tenelium, 2500
             ));
             size = 7;
             health = 360 * size * size;
@@ -1034,7 +1034,7 @@ public class PMBlocks implements ContentList{
                 Items.lead, 3,
                 Items.metaglass, 3,
                 Items.plastanium, 3,
-                PMItems.valexitite, 3
+                PMItems.tenelium, 3
             ));
             health = 15;
             speed = 0.06f;
@@ -1051,7 +1051,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 550,
                 Items.lead, 500,
                 Items.surgeAlloy, 90,
-                PMItems.valexitite, 150
+                PMItems.tenelium, 150
             ));
             size = 4;
             chargeX = chargeY = 41f / 4f;
@@ -1071,7 +1071,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 125,
                 Items.lead, 175,
                 Items.thorium, 125,
-                PMItems.valexitite, 75
+                PMItems.tenelium, 75
             ));
             size = 3;
             itemCapacity = 500;
@@ -1085,7 +1085,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 125,
                 Items.lead, 300,
                 Items.metaglass, 175,
-                PMItems.valexitite, 75
+                PMItems.tenelium, 75
             ));
             size = 3;
             liquidCapacity = 1000f;
@@ -1099,7 +1099,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 100,
                 Items.lead, 250,
                 Items.thorium, 125,
-                PMItems.valexitite, 100
+                PMItems.tenelium, 100
             ));
             size = 5;
             maxPayloadSize = 4f;
@@ -1112,7 +1112,7 @@ public class PMBlocks implements ContentList{
                 Items.silicon, 200,
                 Items.lead, 350,
                 Items.thorium, 125,
-                PMItems.valexitite, 75
+                PMItems.tenelium, 75
             ));
             size = 3;
             itemCapacity = 180;
@@ -1141,7 +1141,7 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 4,
                 Items.thorium, 4
             ));
-            outputItem = new ItemStack(PMItems.valexitite, 3);
+            outputItem = new ItemStack(PMItems.tenelium, 3);
         }};
 
         pyroclastForge = new FuelCrafter("forge"){{
@@ -1151,7 +1151,7 @@ public class PMBlocks implements ContentList{
                 Items.plastanium, 175,
                 Items.silicon, 370,
                 Items.surgeAlloy, 150,
-                PMItems.valexitite, 250
+                PMItems.tenelium, 250
             ));
             size = 5;
             itemCapacity = 32;
@@ -1264,7 +1264,7 @@ public class PMBlocks implements ContentList{
                 Items.lead, 325,
                 Items.titanium, 225,
                 Items.surgeAlloy, 75,
-                PMItems.valexitite, 125
+                PMItems.tenelium, 125
             ));
             size = 4;
             hideDetails = false;
@@ -1273,7 +1273,7 @@ public class PMBlocks implements ContentList{
             phaseShieldBoost = 1800f;
             cooldownBrokenBase *= 2f;
 
-            consumes.items(with(Items.phaseFabric, 1, PMItems.valexitite, 1)).boost();
+            consumes.items(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
             consumes.power(7f);
         }};
         // endregion
