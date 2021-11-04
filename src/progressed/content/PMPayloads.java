@@ -117,7 +117,7 @@ public class PMPayloads implements ContentList{
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
-            requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.valexitite, 20);
+            requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.tenelium, 20);
 
             size = 3;
             powerUse = 5f;
@@ -136,7 +136,7 @@ public class PMPayloads implements ContentList{
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
-            requirements = with(Items.titanium, 35, Items.plastanium, 25, PMItems.valexitite, 15, Items.silicon, 30, Items.blastCompound, 25);
+            requirements = with(Items.titanium, 35, Items.plastanium, 25, PMItems.tenelium, 15, Items.silicon, 30, Items.blastCompound, 25);
 
             prev = emptyNuke;
             size = 3;
