@@ -131,6 +131,7 @@ public class Sentry extends Missile{
         }
 
         public float drawRot(){
+            if(isPayload()) return 0f;
             return rotdeg() - 90f;
         }
 
