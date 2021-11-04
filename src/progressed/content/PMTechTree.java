@@ -11,10 +11,10 @@ import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
 import static mindustry.content.UnitTypes.*;
-import static progressed.content.PMBlocks.*;
 import static progressed.content.PMItems.*;
-import static progressed.content.PMPayloads.*;
 import static progressed.content.PMUnitTypes.*;
+import static progressed.content.blocks.PMBlocks.*;
+import static progressed.content.blocks.PMPayloads.*;
 
 public class PMTechTree implements ContentList{
     //Dont mind me I'ma just yoink some stuff from BetaMindy

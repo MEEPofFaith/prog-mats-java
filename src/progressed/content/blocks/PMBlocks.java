@@ -1,4 +1,4 @@
-package progressed.content;
+package progressed.content.blocks;
 
 import arc.*;
 import arc.graphics.*;
@@ -18,6 +18,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.entities.units.*;
 import progressed.util.*;

@@ -8,7 +8,7 @@ import mindustry.type.*;
 import mindustry.type.weather.*;
 import mindustry.world.meta.*;
 
-//These are more experimental, and are not actually used anywhere.
+//These are just experimental, and are not actually used anywhere.
 public class PMWeathers implements ContentList{
     public static Weather
     overdrive;
