@@ -868,6 +868,7 @@ public class PMBlocks implements ContentList{
             );
             size = 5;
             health = 180 * size * size;
+            reloadTime = 1.5f * 60f;
             range = 800f;
             recoilAmount = 4f;
             leadTargets = false;
@@ -931,6 +932,7 @@ public class PMBlocks implements ContentList{
             size = 4;
             hideDetails = false;
             health = 160 * size * size;
+            reloadTime = 60f;
             range = 330f;
             shootSound = Sounds.artillery;
             cooldown = 0.01f;
