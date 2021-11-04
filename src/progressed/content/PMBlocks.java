@@ -867,6 +867,7 @@ public class PMBlocks implements ContentList{
                 PMPayloads.bomberRocket, PayloadBullets.arbalestBomber
             );
             size = 5;
+            hideDetails = false;
             health = 180 * size * size;
             reloadTime = 1.5f * 60f;
             range = 800f;
