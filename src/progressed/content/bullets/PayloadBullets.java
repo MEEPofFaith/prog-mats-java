@@ -57,35 +57,43 @@ public class PayloadBullets implements ContentList{
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
 
-        arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){{
-            lifetime = 70f;
-            acceleration = 0.03f;
-            backSpeed = thrustDelay = 0f;
-            trailWidth = thrusterSize = 6f / 4f;
-            trailParam = thrusterSize * 2f * 1.5f;
-            trailOffset = thrusterOffset = 43f / 4f;
-            rotOffset = 90f;
-            hitEffect = despawnEffect = new MultiEffect(PMFx.flameRing, PMFx.missileExplosion);
-            trailInterval = 1f;
-            trailEffect = PMFx.rocketTrail;
-            trailLength = 6;
-            drawSize = 60f * 80f;
-            layer = Layer.turret + 0.015f;
-            riseStart = thrusterGrowth;
-            riseEnd = thrusterGrowth + 10f;
-            targetLayer = Layer.bullet - 1;
+        arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){
+            {
+                lifetime = 70f;
+                acceleration = 0.03f;
+                backSpeed = thrustDelay = 0f;
+                trailWidth = thrusterSize = 6f / 4f;
+                trailParam = thrusterSize * 2f * 1.5f;
+                trailOffset = thrusterOffset = 43f / 4f;
+                rotOffset = 90f;
+                hitEffect = despawnEffect = PMFx.missileExplosion;
+                trailInterval = 1f;
+                trailEffect = PMFx.rocketTrail;
+                trailLength = 6;
+                drawSize = 60f * 80f;
+                layer = Layer.turret + 0.015f;
+                riseStart = thrusterGrowth;
+                riseEnd = thrusterGrowth + 10f;
+                targetLayer = Layer.bullet - 1;
 
-            splashDamage = 276f;
-            splashDamageRadius = 88f;
-            makeFire = true;
-            status = PMStatusEffects.incendiaryBurn;
-            statusDuration = 15f * 60f;
-            homingPower = 0.2f;
-            homingDelay = 5f;
-            homingRange = 100f * tilesize;
+                splashDamage = 276f;
+                splashDamageRadius = 88f;
+                makeFire = true;
+                status = PMStatusEffects.incendiaryBurn;
+                statusDuration = 15f * 60f;
+                homingPower = 0.2f;
+                homingDelay = 5f;
+                homingRange = 100f * tilesize;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
-        }};
+                unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            }
+
+            @Override
+            public void hit(Bullet b, float x, float y){
+                PMFx.flameRing.at(x, y, b.rotation(), hitColor);
+                super.hit(b, x, y);
+            }
+        };
 
         arbalestBomber = new RocketBulletType(4f, 35f, "prog-mats-bomber-rocket"){{
             lifetime = 70f;
