@@ -43,7 +43,7 @@ import static mindustry.type.ItemStack.*;
 public class PMBlocks implements ContentList{
     public static Block
 
-    // Region Turrets
+    // region Turrets
 
     //Miniguns
     minigun, miinigun, mivnigun,
@@ -73,7 +73,7 @@ public class PMBlocks implements ContentList{
     sentinel,
 
     //Misc
-    blackhole, excalibur,
+    concretion, blackhole, excalibur,
 
     //Payload
     sergeant, arbalest,
@@ -85,7 +85,7 @@ public class PMBlocks implements ContentList{
     apotheosisNexus, apotheosisCharger,
 
     // endregion
-    // Region Distribution
+    // region Distribution
 
     //Conveyor
     floatingConveyor,
@@ -97,18 +97,26 @@ public class PMBlocks implements ContentList{
     burstDriver,
 
     // endregion
-    // Region Crafting
+    // region Crafting
 
     //Crafters
-    mindronCollider, pyroclastForge, shellPress, missileFactory, sentryBuilder,
+    mindronCollider, pyroclastForge,
+
+    //Payloads
+    shellPress, missileFactory, sentryBuilder,
 
     // endregion
-    // Region Effect
+    // region defence
+
+    concretionRock,
+
+    // endregion
+    // region Effect
 
     fence, web, shieldProjector,
 
     // endregion
-    // Region Sandbox
+    // region Sandbox
 
     //Turret
     harbinger, everythingGun, omegaCharger,
@@ -136,7 +144,7 @@ public class PMBlocks implements ContentList{
     public void load(){
         payloads.load();
 
-        // Region Turrets
+        // region Turrets
         minigun = new MinigunTurret("minigun"){{
             requirements(Category.turret, with(
                 Items.copper, 200,
@@ -1029,7 +1037,7 @@ public class PMBlocks implements ContentList{
         ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
         // endregion
 
-        // Region Distribution
+        // region Distribution
         floatingConveyor = new FloatingConveyor("floating-conveyor"){{
             requirements(Category.distribution, with(
                 Items.lead, 3,
@@ -1125,7 +1133,7 @@ public class PMBlocks implements ContentList{
         }};
         // endregion
 
-        // Region Crafting
+        // region Crafting
         mindronCollider = new ColliderCrafter("mindron-collider"){{
             requirements(Category.crafting, with(
                 Items.silicon, 150,
@@ -1231,8 +1239,16 @@ public class PMBlocks implements ContentList{
             products = Seq.with(PMPayloads.basicSentry, PMPayloads.missileSentry, PMPayloads.dashSentry);
         }};
         // endregion
+        // region Defense
 
-        // Region Effect
+        concretionRock = new MagmaPylon("magma-pylon"){{
+            destroyEffect = Fx.flakExplosionBig; //TODO effect
+            glowVariants = 5;
+            glowWeights = new int[]{1, 4, 4, 5, 5};
+        }};
+
+        // endregion
+        // region Effect
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(
                 Items.copper, 60,
@@ -1279,7 +1295,7 @@ public class PMBlocks implements ContentList{
         }};
         // endregion
 
-        // Region Sandbox
+        // region Sandbox
         /// Turret
         harbinger = new ChaosTurret("harbinger"){
             {
