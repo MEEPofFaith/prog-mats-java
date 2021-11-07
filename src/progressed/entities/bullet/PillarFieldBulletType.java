@@ -3,7 +3,9 @@ package progressed.entities.bullet;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -11,6 +13,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import progressed.content.*;
+import progressed.content.PMFx.*;
 import progressed.entities.*;
 import progressed.world.blocks.defence.*;
 
@@ -24,6 +27,11 @@ public class PillarFieldBulletType extends BulletType{
     public Color ringColor = Pal.darkerGray;
     public Effect ringEffect = PMFx.earthquke;
     public float ringEffectInterval = 2f;
+
+    public int crackEffects = 1;
+    public float crackStroke = 1f;
+    public Color crackColor = Pal.darkerGray;
+    public Effect crackEffect = PMFx.groundCrack;
 
     public Effect placeEffect = PMFx.pillarPlace;
 
@@ -73,8 +81,16 @@ public class PillarFieldBulletType extends BulletType{
             }
         }
 
-        if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime) && b.timer(2, ringEffectInterval)){
-            ringEffect.at(b.x, b.y, radius);
+        if(b.timer(2, ringEffectInterval)){
+            for(int i = 0; i < crackEffects; i++){
+                Tmp.v1.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random())).add(b);
+                Tmp.v2.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random())).add(b);
+                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(new Vec2(Tmp.v2), crackStroke));
+            }
+
+            if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime)){
+                ringEffect.at(b.x, b.y, radius);
+            }
         }
     }
 
