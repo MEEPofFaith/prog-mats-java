@@ -14,6 +14,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 
 public class IgneousPillar extends Block{
     public float growTime = 10f, minDelay = 60f, maxDelay = 90f;
@@ -21,7 +22,7 @@ public class IgneousPillar extends Block{
     public float damage = 70f, radius = 24f;
     public boolean damageAll;
     public boolean damageGround = true, damageAir = true;
-    public StatusEffect status = StatusEffects.none;
+    public StatusEffect status = StatusEffects.burning;
     public float statusDuration = 10f * 60f;
 
     public int glowVariants = 1;
@@ -38,7 +39,7 @@ public class IgneousPillar extends Block{
         update = true;
         solid = true;
         destructible = breakable = alwaysReplace = rebuildable = targetable = false;
-        destroyEffect = Fx.flakExplosionBig; //TODO effect
+        destroyEffect = PMFx.pillarBlast;
     }
 
     @Override

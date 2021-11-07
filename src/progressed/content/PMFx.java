@@ -147,6 +147,34 @@ public class PMFx{
         }
     }).layer(Layer.debris),
 
+    pillarBlast = new Effect(20, e -> {
+        color(Pal.bulletYellow);
+        e.scaled(6, s -> {
+            stroke(3f * s.fout());
+            Lines.circle(e.x, e.y, 3f + s.fin() * 6f);
+        });
+
+        color(Pal.lightPyraFlame);
+        e.scaled(15, s -> {
+            randLenVectors(e.id, 3, 2f + 13f * s.finpow(), (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, s.fout() * 3f + 0.5f);
+            });
+        });
+
+        color(Color.gray);
+        randLenVectors(e.id + 1, 3, 2f + 16f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 3f + 0.5f);
+        });
+
+        color(Pal.lightPyraFlame);
+        stroke(e.fout());
+        randLenVectors(e.id + 2, 4, 1f + 16f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Drawf.light(e.x, e.y, 50f, Pal.lightPyraFlame, 0.8f * e.fout());
+    }),
+
     smallBoom = new Effect(30f, e -> {
         color(Pal.missileYellow);
 
