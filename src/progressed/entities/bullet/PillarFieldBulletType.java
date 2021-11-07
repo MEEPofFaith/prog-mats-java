@@ -29,7 +29,7 @@ public class PillarFieldBulletType extends BulletType{
     public float ringEffectInterval = 2f;
 
     public int crackEffects = 1;
-    public float crackStroke = 1f;
+    public float crackStroke = 1.5f;
     public Color crackColor = Pal.darkerGray;
     public Effect crackEffect = PMFx.groundCrack;
 
