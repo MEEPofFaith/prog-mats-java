@@ -139,6 +139,16 @@ public class MagmaPylon extends Block{
         }
 
         @Override
+        public void damage(float damage){
+            //no
+        }
+
+        @Override
+        public void damage(float amount, boolean withEffect){
+            //no
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 
