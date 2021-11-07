@@ -128,12 +128,12 @@ public class PMFx{
         }
     }),
 
-    pillarPlace = new Effect(15f, e -> {
-        Draw.color(PMPal.darkBrown);
-        randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
-            Fill.circle(e.x + x, e.y + y,  4f * e.fout());
+    concretionSlam = new Effect(23, e -> {
+        color(Tmp.c1.set(e.color).mul(1.1f));
+        randLenVectors(e.id, 6, 10f * e.finpow(), e.rotation, 15f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.4f);
         });
-    }).layer(Layer.blockUnder),
+    }).layer(Layer.debris),
 
     earthquke = new Effect(10f, 100f, e -> {
         float rad = e.rotation;
@@ -147,6 +147,13 @@ public class PMFx{
             Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
         }
     }).layer(Layer.debris),
+
+    pillarPlace = new Effect(15f, e -> {
+        Draw.color(PMPal.darkBrown);
+        randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y,  4f * e.fout());
+        });
+    }).layer(Layer.blockUnder),
 
     pillarBlast = new Effect(20, e -> {
         color(Pal.bulletYellow);

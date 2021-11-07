@@ -6,12 +6,14 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.environment.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.bullet.*;
@@ -24,6 +26,7 @@ public class GeomancyTurret extends PowerTurret{
     public float crackStroke = 1.5f;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = PMFx.groundCrack;
+    public Effect slamEffect = PMFx.concretionSlam;
 
     public TextureRegion turretRegion;
     public TextureRegion[]
@@ -166,6 +169,11 @@ public class GeomancyTurret extends PowerTurret{
             tr.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootLength);
             Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
             Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
+
+            Floor f = Vars.world.tileWorld(x + tr.x, y + tr.y).floor();
+            if(f != null){
+                slamEffect.at(x + tr.x, y + tr.y, rotation, f.mapColor);
+            }
 
             fshootEffect.at(x + tr.x, y + tr.y, rotation);
             fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
