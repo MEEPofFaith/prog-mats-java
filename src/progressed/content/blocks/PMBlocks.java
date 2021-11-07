@@ -768,10 +768,15 @@ public class PMBlocks implements ContentList{
             size = 2;
             reloadTime = 120f;
             range = 23f * tilesize;
-            recoilAmount = -8f;
+            recoilAmount = -25f / 4f;
+            shootLength = 8f + 15f / 4f;
             targetAir = false;
+            cooldown = 0.005f;
             shootType = PMBullets.pillarField;
             chargeTime = PMFx.groundCrack.lifetime / 2f;
+
+            armX = 15f / 4f;
+            armY = -2f / 4f;
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
