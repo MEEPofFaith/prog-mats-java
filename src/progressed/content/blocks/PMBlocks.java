@@ -109,7 +109,7 @@ public class PMBlocks implements ContentList{
     // endregion
     // region defence
 
-    concretionRock,
+    concretionPylon,
 
     // endregion
     // region Effect
@@ -766,7 +766,11 @@ public class PMBlocks implements ContentList{
         concretion = new PowerTurret("concretion"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 2;
+            reloadTime = 120f;
             shootType = PMBullets.pylonField;
+            alternate = true;
+            shots = 2;
+            spread = 4;
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
@@ -1248,12 +1252,12 @@ public class PMBlocks implements ContentList{
         // endregion
         // region Defense
 
-        concretionRock = new MagmaPylon("magma-pylon"){{
+        concretionPylon = new MagmaPylon("magma-pylon"){{
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};
 
-        ((PylonFieldBulletType)(PMBullets.pylonField)).pylon = (MagmaPylon)concretionRock;
+        ((PylonFieldBulletType)(PMBullets.pylonField)).pylon = (MagmaPylon)concretionPylon;
 
         // endregion
         // region Effect

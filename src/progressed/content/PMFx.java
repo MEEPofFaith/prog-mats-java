@@ -128,28 +128,24 @@ public class PMFx{
         }
     }),
 
-    critPierce = new Effect(20f, e -> {
-        float rot = e.rotation - 90f;
-        float fin = e.fin(Interp.pow5Out);
-        float end = e.lifetime - 6f;
-        float fout = 1f - Interp.pow2Out.apply(Mathf.curve(e.time, end, e.lifetime));
-        float width = fin * fout;
-
-        e.scaled(7f, s -> {
-            stroke(0.5f + s.fout());
-            color(Color.white, e.color, s.fin());
-            Lines.circle(e.x + trnsx(rot, 0f, 5f * fin), e.y + trnsy(rot, 0f, 5f * fin), s.fin() * 6f);
+    pylonPlace = new Effect(15f, e -> {
+        Draw.color(Pal.darkerGray);
+        randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y,  4f * e.fout());
         });
+    }).layer(Layer.blockUnder),
 
-        color(Color.white, e.color, Mathf.curve(e.time, 0f, end));
+    earthquke = new Effect(10f, 100f, e -> {
+        float rad = e.rotation;
+        Draw.color(Pal.darkerGray);
 
-        Fill.quad(
-            e.x + trnsx(rot, 0f, 2f * fin), e.y + trnsy(rot, 0f, 2f * fin),
-            e.x + trnsx(rot, 4f * width, -4f * fin), e.y + trnsy(rot, 4f * width, -4f * fin),
-            e.x + trnsx(rot, 0f, 8f * fin), e.y + trnsy(rot, 0f, 8f * fin),
-            e.x + trnsx(rot, -4f * width, -4f * fin), e.y + trnsy(rot, -4f * width, -4f * fin)
-        );
-    }),
+        int points = 3;
+        for(int i = 0; i < points; i++){
+            float angle = Mathf.randomSeedRange(e.id + i, 360f);
+            float length = Mathf.randomSeed(e.id * 2L + i, rad / 6f, rad / 1.5f);
+            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
+        }
+    }).layer(Layer.debris),
 
     smallBoom = new Effect(30f, e -> {
         color(Pal.missileYellow);
@@ -310,6 +306,29 @@ public class PMFx{
         stroke(2f * out + 3f * e.fout());
 
         Lines.circle(e.x, e.y, 6f * out + 57f * in * out);
+    }),
+
+    critPierce = new Effect(20f, e -> {
+        float rot = e.rotation - 90f;
+        float fin = e.fin(Interp.pow5Out);
+        float end = e.lifetime - 6f;
+        float fout = 1f - Interp.pow2Out.apply(Mathf.curve(e.time, end, e.lifetime));
+        float width = fin * fout;
+
+        e.scaled(7f, s -> {
+            stroke(0.5f + s.fout());
+            color(Color.white, e.color, s.fin());
+            Lines.circle(e.x + trnsx(rot, 0f, 5f * fin), e.y + trnsy(rot, 0f, 5f * fin), s.fin() * 6f);
+        });
+
+        color(Color.white, e.color, Mathf.curve(e.time, 0f, end));
+
+        Fill.quad(
+            e.x + trnsx(rot, 0f, 2f * fin), e.y + trnsy(rot, 0f, 2f * fin),
+            e.x + trnsx(rot, 4f * width, -4f * fin), e.y + trnsy(rot, 4f * width, -4f * fin),
+            e.x + trnsx(rot, 0f, 8f * fin), e.y + trnsy(rot, 0f, 8f * fin),
+            e.x + trnsx(rot, -4f * width, -4f * fin), e.y + trnsy(rot, -4f * width, -4f * fin)
+        );
     }),
     
     sniperCritMini = new Effect(90f, e -> {

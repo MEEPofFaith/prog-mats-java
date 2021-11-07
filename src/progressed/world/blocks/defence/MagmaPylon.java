@@ -16,7 +16,7 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 
 public class MagmaPylon extends Block{
-    public float minDelay = 30, maxDelay = 120;
+    public float growTime = 10f, minDelay = 60f, maxDelay = 90f;
 
     public float damage = 70f, radius = 24f;
     public boolean damageAll;
@@ -76,7 +76,7 @@ public class MagmaPylon extends Block{
     }
 
     public class MagmaPylonBuild extends Building{
-        public float delay, timer;
+        public float delay, growTimer, boomTimer;
 
         @Override
         public void created(){
@@ -87,6 +87,7 @@ public class MagmaPylon extends Block{
 
         @Override
         public void draw(){
+            Draw.alpha(growf());
             super.draw();
 
             Draw.color(glowColorFrom, glowColorTo, timerf());
@@ -102,15 +103,21 @@ public class MagmaPylon extends Block{
                     x, y, block.rotate ? rotdeg() : 0f
                 );
             }
+
+            Draw.reset();
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
 
-            timer += Time.delta;
+            growTimer += Time.delta;
 
-            if(timer >= delay) kill();
+            if(growTimer >= growTime){
+                boomTimer += Time.delta;
+
+                if(boomTimer >= delay) kill();
+            }
         }
 
         @Override
@@ -123,8 +130,12 @@ public class MagmaPylon extends Block{
             destroyEffect.at(x, y);
         }
 
+        public float growf(){
+            return Mathf.clamp(growTimer / growTime);
+        }
+
         public float timerf(){
-            return timer / delay;
+            return Mathf.clamp(boomTimer / delay);
         }
 
         @Override
@@ -132,7 +143,7 @@ public class MagmaPylon extends Block{
             super.write(write);
 
             write.f(delay);
-            write.f(timer);
+            write.f(boomTimer);
         }
 
         @Override
@@ -140,7 +151,7 @@ public class MagmaPylon extends Block{
             super.read(read, revision);
 
             delay = read.f();
-            timer = read.f();
+            boomTimer = read.f();
         }
     }
 }

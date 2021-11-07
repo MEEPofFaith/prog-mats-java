@@ -117,8 +117,8 @@ public class PMBullets implements ContentList{
         }};
 
         pylonField = new PylonFieldBulletType(){{
-            lifetime = 5f * 60f;
-            amount = 10;
+            lifetime = 90f;
+            amount = 15;
         }};
 
         blackHole = new BlackHoleBulletType(0.5f, 1400f / 30f){{
