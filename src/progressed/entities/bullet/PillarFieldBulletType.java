@@ -15,6 +15,7 @@ import mindustry.world.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.*;
 
 public class PillarFieldBulletType extends BulletType{
@@ -24,13 +25,13 @@ public class PillarFieldBulletType extends BulletType{
 
     public float fadeTime = 8f;
     public float ringStroke = 2f;
-    public Color ringColor = Pal.darkerGray;
+    public Color ringColor = PMPal.darkBrown;
     public Effect ringEffect = PMFx.earthquke;
     public float ringEffectInterval = 2f;
 
     public int crackEffects = 1;
     public float crackStroke = 1.5f;
-    public Color crackColor = Pal.darkerGray;
+    public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = PMFx.groundCrack;
 
     public Effect placeEffect = PMFx.pillarPlace;

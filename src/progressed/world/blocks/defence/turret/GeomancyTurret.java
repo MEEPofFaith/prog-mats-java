@@ -23,6 +23,7 @@ public class GeomancyTurret extends PowerTurret{
     public int crackEffects = 3;
     public float crackStroke = 2f;
     public Color crackColor = Pal.darkerGray;
+    public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = PMFx.groundCrack;
 
     public GeomancyTurret(String name){

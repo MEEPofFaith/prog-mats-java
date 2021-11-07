@@ -129,7 +129,7 @@ public class PMFx{
     }),
 
     pillarPlace = new Effect(15f, e -> {
-        Draw.color(Pal.darkerGray);
+        Draw.color(PMPal.darkBrown);
         randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
             Fill.circle(e.x + x, e.y + y,  4f * e.fout());
         });
@@ -137,7 +137,7 @@ public class PMFx{
 
     earthquke = new Effect(10f, 100f, e -> {
         float rad = e.rotation;
-        Draw.color(Pal.darkerGray);
+        Draw.color(PMPal.darkBrown);
 
         int points = 3;
         for(int i = 0; i < points; i++){
