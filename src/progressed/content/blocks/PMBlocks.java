@@ -20,6 +20,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.entities.bullet.*;
 import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -762,6 +763,12 @@ public class PMBlocks implements ContentList{
             };
         }};
 
+        concretion = new PowerTurret("concretion"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
+            size = 2;
+            shootType = PMBullets.pylonField;
+        }};
+
         blackhole = new BlackHoleTurret("blackhole"){{
             requirements(Category.turret, with(
                 Items.titanium, 100,
@@ -1242,10 +1249,11 @@ public class PMBlocks implements ContentList{
         // region Defense
 
         concretionRock = new MagmaPylon("magma-pylon"){{
-            destroyEffect = Fx.flakExplosionBig; //TODO effect
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};
+
+        ((PylonFieldBulletType)(PMBullets.pylonField)).pylon = (MagmaPylon)concretionRock;
 
         // endregion
         // region Effect

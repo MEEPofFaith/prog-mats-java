@@ -37,7 +37,8 @@ public class MagmaPylon extends Block{
 
         update = true;
         solid = true;
-        breakable = alwaysReplace = rebuildable = targetable = false;
+        destructible = breakable = alwaysReplace = rebuildable = targetable = false;
+        destroyEffect = Fx.flakExplosionBig; //TODO effect
     }
 
     @Override
@@ -47,6 +48,11 @@ public class MagmaPylon extends Block{
 
     @Override
     public boolean canBeBuilt(){
+        return false;
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
         return false;
     }
 
@@ -104,16 +110,17 @@ public class MagmaPylon extends Block{
 
             timer += Time.delta;
 
-            if(timer >= delay) explode();
+            if(timer >= delay) kill();
         }
 
-        public void explode(){
+        @Override
+        public void onDestroyed(){
             if(status != StatusEffects.none){
                 Damage.status(damageAll ? null : team, x, y, radius, status, statusDuration, damageAir, damageGround);
             }
             Damage.damage(damageAll ? null : team, x, y, radius, damage, damageAir, damageGround);
 
-            kill();
+            destroyEffect.at(x, y);
         }
 
         public float timerf(){

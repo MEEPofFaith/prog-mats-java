@@ -6,6 +6,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.unit.*;
@@ -21,6 +22,8 @@ public class PMBullets implements ContentList{
     syringe,
 
     smallFlare, mediumFlare, largeFlare,
+
+    pylonField,
     
     blackHole, cataclysm, absorbed,
     
@@ -111,6 +114,11 @@ public class PMBullets implements ContentList{
         largeFlare = new SignalFlareBulletType(6f, 80f, PMUnitTypes.flareLarge){{
             size = 12f;
             spinSpeed = 8f;
+        }};
+
+        pylonField = new PylonFieldBulletType(){{
+            lifetime = 5f * 60f;
+            amount = 10;
         }};
 
         blackHole = new BlackHoleBulletType(0.5f, 1400f / 30f){{
