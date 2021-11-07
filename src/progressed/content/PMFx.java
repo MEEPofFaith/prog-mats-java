@@ -142,7 +142,8 @@ public class PMFx{
         int points = 3;
         for(int i = 0; i < points; i++){
             float angle = Mathf.randomSeedRange(e.id + i, 360f);
-            float length = Mathf.randomSeed(e.id * 2L + i, rad / 6f, rad / 1.5f);
+            float length = Mathf.randomSeed(e.id * 2L + i, rad / 6f, rad);
+            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout() / 4f, angle);
             Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
         }
     }).layer(Layer.debris),
@@ -458,6 +459,43 @@ public class PMFx{
         });
     }),
 
+    groundCrack = new Effect(20f, 500f, e -> {
+        if(!(e.data instanceof LightningData d)) return;
+        float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+        v1.set(d.pos).sub(e.x, e.y).nor();
+
+        float normx = v1.x, normy = v1.y;
+        float range = 6f;
+        int links = Mathf.ceil(dst / range);
+        float spacing = dst / links;
+
+        Lines.stroke(d.stroke * Mathf.curve(e.fout(), 0f, 0.5f));
+        Draw.color(e.color);
+
+        Lines.beginLine();
+
+        Lines.linePoint(e.x, e.y);
+
+        rand.setSeed(e.id);
+
+        for(int i = 0; i < links * Mathf.curve(e.fin(), 0f, 0.5f); i++){
+            float nx, ny;
+            if(i == links - 1){
+                nx = tx;
+                ny = ty;
+            }else{
+                float len = (i + 1) * spacing;
+                v1.setToRandomDirection(rand).scl(range/2f);
+                nx = e.x + normx * len + v1.x;
+                ny = e.y + normy * len + v1.y;
+            }
+
+            Lines.linePoint(nx, ny);
+        }
+
+        Lines.endLine();
+    }).followParent(false).layer(Layer.debris - 0.01f),
+
     fakeLightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
@@ -526,7 +564,7 @@ public class PMFx{
         }
 
         Fill.circle(v2.x, v2.y, Lines.getStroke() / 2);
-    }).layer(Layer.bullet + 0.01f),
+    }).followParent(false).layer(Layer.bullet + 0.01f),
     
     harbingerCharge = new Effect(150f, 1600f, e -> {
         Color[] colors = {Color.valueOf("D99F6B55"), Color.valueOf("E8D174aa"), Color.valueOf("F3E979"), Color.valueOf("ffffff")};

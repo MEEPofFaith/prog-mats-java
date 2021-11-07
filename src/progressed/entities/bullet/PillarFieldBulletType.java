@@ -19,7 +19,7 @@ public class PillarFieldBulletType extends BulletType{
     public float radius = 7.5f * 8f;
     public int amount = 1;
 
-    public float growTime = 8f, fadeTime = 8f;
+    public float fadeTime = 8f;
     public float ringStroke = 2f;
     public Color ringColor = Pal.darkerGray;
     public Effect ringEffect = PMFx.earthquke;
@@ -73,7 +73,7 @@ public class PillarFieldBulletType extends BulletType{
             }
         }
 
-        if(b.time >= growTime && b.time <= b.lifetime - ringEffect.lifetime - fadeTime && b.timer(2, ringEffectInterval)){
+        if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime) && b.timer(2, ringEffectInterval)){
             ringEffect.at(b.x, b.y, radius);
         }
     }
@@ -82,7 +82,7 @@ public class PillarFieldBulletType extends BulletType{
     public void draw(Bullet b){
         Lines.stroke(ringStroke, ringColor);
         Draw.alpha(1f - Mathf.curve(b.time, b.lifetime - fadeTime, b.lifetime));
-        Lines.circle(b.x, b.y, radius * Mathf.curve(b.time, 0, growTime));
+        Lines.circle(b.x, b.y, radius);
     }
 
     public static class PillarFieldData{

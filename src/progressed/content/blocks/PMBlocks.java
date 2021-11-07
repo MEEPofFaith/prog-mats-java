@@ -767,10 +767,9 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 2;
             reloadTime = 120f;
+            range = 23f * tilesize;
             shootType = PMBullets.pillarField;
-            alternate = true;
-            shots = 2;
-            spread = 4;
+            chargeTime = PMFx.groundCrack.lifetime / 2f;
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
