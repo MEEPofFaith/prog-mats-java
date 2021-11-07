@@ -21,7 +21,7 @@ public class IgneousPillar extends Block{
 
     public float damage = 70f, radius = 24f;
     public boolean damageAll;
-    public boolean damageGround = true, damageAir = true;
+    public boolean damageGround = true, damageAir;
     public StatusEffect status = StatusEffects.burning;
     public float statusDuration = 10f * 60f;
 
@@ -137,16 +137,6 @@ public class IgneousPillar extends Block{
 
         public float timerf(){
             return Mathf.clamp(boomTimer / delay);
-        }
-
-        @Override
-        public void damage(float damage){
-            //no
-        }
-
-        @Override
-        public void damage(float amount, boolean withEffect){
-            //no
         }
 
         @Override

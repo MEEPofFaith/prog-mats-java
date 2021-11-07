@@ -769,6 +769,7 @@ public class PMBlocks implements ContentList{
             reloadTime = 120f;
             range = 23f * tilesize;
             recoilAmount = -8f;
+            targetAir = false;
             shootType = PMBullets.pillarField;
             chargeTime = PMFx.groundCrack.lifetime / 2f;
         }};
@@ -1253,6 +1254,7 @@ public class PMBlocks implements ContentList{
         // region Defense
 
         igneousPillar = new IgneousPillar("igneous-pillar"){{
+            health = 60 * 4;
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};
