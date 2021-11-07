@@ -768,6 +768,7 @@ public class PMBlocks implements ContentList{
             size = 2;
             reloadTime = 120f;
             range = 23f * tilesize;
+            recoilAmount = -8f;
             shootType = PMBullets.pillarField;
             chargeTime = PMFx.groundCrack.lifetime / 2f;
         }};

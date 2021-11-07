@@ -75,22 +75,54 @@ public class GeomancyTurret extends PowerTurret{
 
             for(int arm : Mathf.zeroOne){
                 tr2.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
-                Drawf.shadow(armRegion, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90);
+                Drawf.shadow(
+                    armRegion,
+                    x + tr2.x - elevation, y + tr2.y - elevation,
+                    armRegion.width * xScl() * Mathf.signs[arm],
+                    armRegion.height * yScl(),
+                    rotation - 90
+                );
             }
 
             Drawf.shadow(region, x - elevation, y - elevation, rotation - 90);
             Draw.rect(region, x, y, rotation - 90);
+            if(heatRegion.found() && heat > 0.01f){
+                Draw.alpha(heat);
+                Draw.rect(heatRegion, x, y, rotation - 90);
+                Draw.color();
+            }
 
             for(int arm : Mathf.zeroOne){
                 tr2.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
-                Draw.rect(armRegion, x + tr2.x, y + tr2.y, rotation - 90);
+                Draw.rect(
+                    armRegion,
+                    x + tr2.x, y + tr2.y,
+                    armRegion.width * xScl() * Mathf.signs[arm],
+                    armRegion.height * yScl(),
+                    rotation - 90
+                );
 
                 if(armHeatRegion.found() && armHeat[arm] > 0.01f){
                     Draw.alpha(armHeat[arm]);
-                    Draw.rect(armHeatRegion, x + tr2.x, y + tr2.y, rotation - 90);
+                    Draw.rect(
+                        armHeatRegion,
+                        x + tr2.x, y + tr2.y,
+                        armHeatRegion.width * xScl() * Mathf.signs[arm],
+                        armHeatRegion.height * yScl(),
+                        rotation - 90
+                    );
                     Draw.color();
                 }
             }
+        }
+
+        //Why include these? Remove the xscl/yscl, spawn it out of a payload source, and see for yourself.
+        public float xScl(){
+            return Draw.scl * Draw.xscl;
+        }
+
+        public float yScl(){
+            return Draw.scl * Draw.yscl;
         }
 
         @Override
@@ -108,6 +140,7 @@ public class GeomancyTurret extends PowerTurret{
             });
             armRecoil[shotCounter % 2] = recoilAmount;
             armHeat[shotCounter % 2] = 1f;
+            heat = 1f;
             effects();
 
             tr2.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootLength).add(x, y);
