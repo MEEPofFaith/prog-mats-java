@@ -128,7 +128,7 @@ public class PMFx{
         }
     }),
 
-    pylonPlace = new Effect(15f, e -> {
+    pillarPlace = new Effect(15f, e -> {
         Draw.color(Pal.darkerGray);
         randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
             Fill.circle(e.x + x, e.y + y,  4f * e.fout());

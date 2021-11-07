@@ -15,7 +15,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-public class MagmaPylon extends Block{
+public class IgneousPillar extends Block{
     public float growTime = 10f, minDelay = 60f, maxDelay = 90f;
 
     public float damage = 70f, radius = 24f;
@@ -31,7 +31,7 @@ public class MagmaPylon extends Block{
 
     Seq<TextureRegion> weightedGlowRegions = new Seq<>();
 
-    public MagmaPylon(String name){
+    public IgneousPillar(String name){
         super(name);
         requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
 
@@ -75,7 +75,7 @@ public class MagmaPylon extends Block{
         }
     }
 
-    public class MagmaPylonBuild extends Building{
+    public class IgneousPillarBuild extends Building{
         public float delay, growTimer, boomTimer;
 
         @Override

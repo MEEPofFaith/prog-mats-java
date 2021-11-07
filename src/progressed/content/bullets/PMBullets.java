@@ -23,7 +23,7 @@ public class PMBullets implements ContentList{
 
     smallFlare, mediumFlare, largeFlare,
 
-    pylonField,
+    pillarField,
     
     blackHole, cataclysm, absorbed,
     
@@ -116,7 +116,7 @@ public class PMBullets implements ContentList{
             spinSpeed = 8f;
         }};
 
-        pylonField = new PylonFieldBulletType(){{
+        pillarField = new PillarFieldBulletType(){{
             lifetime = 90f;
             amount = 15;
         }};

@@ -14,8 +14,8 @@ import progressed.content.*;
 import progressed.entities.*;
 import progressed.world.blocks.defence.*;
 
-public class PylonFieldBulletType extends BulletType{
-    public MagmaPylon pylon;
+public class PillarFieldBulletType extends BulletType{
+    public IgneousPillar pillar;
     public float radius = 7.5f * 8f;
     public int amount = 1;
 
@@ -25,9 +25,9 @@ public class PylonFieldBulletType extends BulletType{
     public Effect ringEffect = PMFx.earthquke;
     public float ringEffectInterval = 2f;
 
-    public Effect placeEffect = PMFx.pylonPlace;
+    public Effect placeEffect = PMFx.pillarPlace;
 
-    public PylonFieldBulletType(){
+    public PillarFieldBulletType(){
         super();
 
         absorbable = hittable = false;
@@ -48,7 +48,7 @@ public class PylonFieldBulletType extends BulletType{
     public void init(Bullet b){
         super.init(b);
 
-        PylonFieldData data = new PylonFieldData();
+        PillarFieldData data = new PillarFieldData();
         PMDamage.trueEachTile(b.x, b.y, radius, t -> data.tiles.add(t));
         data.tiles.shuffle();
         b.data = data;
@@ -58,15 +58,15 @@ public class PylonFieldBulletType extends BulletType{
     public void update(Bullet b){
         super.update(b);
 
-        if(b.data instanceof PylonFieldData data && b.timer(1, lifetime / amount)){
+        if(b.data instanceof PillarFieldData data && b.timer(1, lifetime / amount)){
             for(int i = 0; i < data.tiles.size; i++){
                 Tile t = data.tiles.get(i);
                 if(t.block() == Blocks.air){
                     boolean occupied = Groups.unit.intersect(t.worldx(), t.worldy(), 1, 1).contains(Flyingc::isGrounded);
                     if(!occupied){
                         data.tiles.remove(t);
-                        placeEffect.at(t.worldx(), t.worldy(), pylon.size);
-                        t.setNet(pylon, b.team, 0);
+                        placeEffect.at(t.worldx(), t.worldy(), pillar.size);
+                        t.setNet(pillar, b.team, 0);
                         break;
                     }
                 }
@@ -85,7 +85,7 @@ public class PylonFieldBulletType extends BulletType{
         Lines.circle(b.x, b.y, radius * Mathf.curve(b.time, 0, growTime));
     }
 
-    public static class PylonFieldData{
+    public static class PillarFieldData{
         public Seq<Tile> tiles = new Seq<>();
     }
 }

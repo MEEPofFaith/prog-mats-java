@@ -109,7 +109,7 @@ public class PMBlocks implements ContentList{
     // endregion
     // region defence
 
-    concretionPylon,
+    igneousPillar,
 
     // endregion
     // region Effect
@@ -763,11 +763,11 @@ public class PMBlocks implements ContentList{
             };
         }};
 
-        concretion = new PowerTurret("concretion"){{
+        concretion = new GeomancyTurret("concretion"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 2;
             reloadTime = 120f;
-            shootType = PMBullets.pylonField;
+            shootType = PMBullets.pillarField;
             alternate = true;
             shots = 2;
             spread = 4;
@@ -1252,12 +1252,12 @@ public class PMBlocks implements ContentList{
         // endregion
         // region Defense
 
-        concretionPylon = new MagmaPylon("magma-pylon"){{
+        igneousPillar = new IgneousPillar("igneous-pillar"){{
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};
 
-        ((PylonFieldBulletType)(PMBullets.pylonField)).pylon = (MagmaPylon)concretionPylon;
+        ((PillarFieldBulletType)(PMBullets.pillarField)).pillar = (IgneousPillar)igneousPillar;
 
         // endregion
         // region Effect
