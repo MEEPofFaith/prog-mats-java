@@ -52,6 +52,9 @@ public class PMBlocks implements ContentList{
     //Teslas
     shock, spark, storm,
 
+    //Geomancy
+    concretion,
+
     //Eruptors
     flame, blaze, inferno,
     
@@ -74,7 +77,7 @@ public class PMBlocks implements ContentList{
     sentinel,
 
     //Misc
-    concretion, blackhole, excalibur,
+    blackhole, excalibur,
 
     //Payload
     sergeant, arbalest,
@@ -387,6 +390,28 @@ public class PMBlocks implements ContentList{
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;
+        }};
+
+        concretion = new GeomancyTurret("concretion"){{
+            requirements(Category.turret, with(
+                Items.copper, 100,
+                Items.lead, 120,
+                Items.silicon, 75,
+                Items.titanium, 60
+            ));
+            size = 2;
+            health = 310 * size * size;
+            reloadTime = 120f;
+            range = 23f * tilesize;
+            recoilAmount = -25f / 4f;
+            shootLength = 8f + 15f / 4f;
+            targetAir = false;
+            cooldown = 0.005f;
+            shootType = PMBullets.pillarField;
+            chargeTime = PMFx.groundCrack.lifetime / 2f;
+
+            armX = 15f / 4f;
+            armY = -2f / 4f;
         }};
 
         flame = new EruptorTurret("flame"){{
@@ -761,22 +786,6 @@ public class PMBlocks implements ContentList{
                 Draw.blend();
                 Draw.color();
             };
-        }};
-
-        concretion = new GeomancyTurret("concretion"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            size = 2;
-            reloadTime = 120f;
-            range = 23f * tilesize;
-            recoilAmount = -25f / 4f;
-            shootLength = 8f + 15f / 4f;
-            targetAir = false;
-            cooldown = 0.005f;
-            shootType = PMBullets.pillarField;
-            chargeTime = PMFx.groundCrack.lifetime / 2f;
-
-            armX = 15f / 4f;
-            armY = -2f / 4f;
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
@@ -1259,7 +1268,7 @@ public class PMBlocks implements ContentList{
         // region Defense
 
         igneousPillar = new IgneousPillar("igneous-pillar"){{
-            health = 60 * 4;
+            health = 30 * 4; //4 is wallHealthMultiplier in Blocks.java
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};

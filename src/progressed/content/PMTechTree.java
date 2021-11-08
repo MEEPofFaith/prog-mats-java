@@ -22,11 +22,14 @@ public class PMTechTree implements ContentList{
 
     @Override
     public void load(){
-        vanillaNode(meltdown, () ->{
-            // Eruptors
-            node(flame, () -> {
-                node(blaze, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
-                    node(inferno, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+        vanillaNode(lancer, () -> {
+            // Geomancy
+            node(concretion, () -> {
+                // Eruptors
+                node(flame, Seq.with(new Research(meltdown), new SectorComplete(SectorPresets.impact0078)), () -> {
+                    node(blaze, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
+                        node(inferno, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+                    });
                 });
             });
         });

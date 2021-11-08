@@ -36,6 +36,8 @@ public class GeomancyTurret extends PowerTurret{
 
     public GeomancyTurret(String name){
         super(name);
+
+        accurateDelay = true;
     }
 
     @Override
@@ -131,11 +133,6 @@ public class GeomancyTurret extends PowerTurret{
                     Draw.color();
                 }
             }
-        }
-
-        @Override
-        public void targetPosition(Posc pos){
-            targetPos.set(pos); //Don't lead
         }
 
         @Override

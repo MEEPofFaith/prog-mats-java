@@ -118,7 +118,8 @@ public class PMBullets implements ContentList{
 
         pillarField = new PillarFieldBulletType(){{
             lifetime = 90f;
-            amount = 15;
+            radius = 5f * 8f;
+            amount = 10;
         }};
 
         blackHole = new BlackHoleBulletType(0.5f, 1400f / 30f){{
