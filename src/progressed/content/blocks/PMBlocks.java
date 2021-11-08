@@ -402,6 +402,7 @@ public class PMBlocks implements ContentList{
             size = 2;
             health = 310 * size * size;
             reloadTime = 120f;
+            shootSound = Sounds.rockBreak;
             range = 23f * tilesize;
             recoilAmount = -25f / 4f;
             shootLength = 8f + 15f / 4f;
@@ -1269,6 +1270,7 @@ public class PMBlocks implements ContentList{
 
         igneousPillar = new IgneousPillar("igneous-pillar"){{
             health = 30 * 4; //4 is wallHealthMultiplier in Blocks.java
+            destroySound = PMSounds.rockExplode;
             glowVariants = 5;
             glowWeights = new int[]{1, 4, 4, 5, 5};
         }};

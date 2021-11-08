@@ -1,5 +1,6 @@
 package progressed.entities.bullet;
 
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -20,6 +21,8 @@ import progressed.world.blocks.defence.*;
 
 public class PillarFieldBulletType extends BulletType{
     public IgneousPillar pillar;
+    public Sound formationSound = Sounds.rockBreak;
+    public float formationSoundVolume = 0.25f;
     public float radius = 7.5f * 8f;
     public int amount = 1;
 
@@ -71,10 +74,12 @@ public class PillarFieldBulletType extends BulletType{
             for(int i = 0; i < data.tiles.size; i++){
                 Tile t = data.tiles.get(i);
                 if(t.block() == Blocks.air){
+                    //Don't want this spawning under a ground unit and instantly killing it.
                     boolean occupied = Groups.unit.intersect(t.worldx(), t.worldy(), 1, 1).contains(Flyingc::isGrounded);
                     if(!occupied){
                         data.tiles.remove(t);
                         placeEffect.at(t.worldx(), t.worldy(), pillar.size);
+                        formationSound.at(t.worldx(), t.worldy(), Mathf.random(0.8f, 1.2f), formationSoundVolume);
                         t.setNet(pillar, b.team, 0);
                         break;
                     }
