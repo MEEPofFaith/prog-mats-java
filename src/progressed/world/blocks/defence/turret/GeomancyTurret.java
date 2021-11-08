@@ -10,7 +10,6 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
