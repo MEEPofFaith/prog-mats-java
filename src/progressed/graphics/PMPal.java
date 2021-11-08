@@ -11,6 +11,7 @@ public class PMPal{
     lightGray = valueOf("B0BAC0"),
     midGray = valueOf("989AA4"),
     darkGray = valueOf("6E7080"),
+    darkBrown = valueOf("4d2c0c"),
 
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),

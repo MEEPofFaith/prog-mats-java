@@ -128,27 +128,59 @@ public class PMFx{
         }
     }),
 
-    critPierce = new Effect(20f, e -> {
-        float rot = e.rotation - 90f;
-        float fin = e.fin(Interp.pow5Out);
-        float end = e.lifetime - 6f;
-        float fout = 1f - Interp.pow2Out.apply(Mathf.curve(e.time, end, e.lifetime));
-        float width = fin * fout;
+    concretionSlam = new Effect(23, e -> {
+        color(Tmp.c1.set(e.color).mul(1.1f));
+        randLenVectors(e.id, 6, 10f * e.finpow(), e.rotation, 15f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.4f);
+        });
+    }).layer(Layer.debris),
 
-        e.scaled(7f, s -> {
-            stroke(0.5f + s.fout());
-            color(Color.white, e.color, s.fin());
-            Lines.circle(e.x + trnsx(rot, 0f, 5f * fin), e.y + trnsy(rot, 0f, 5f * fin), s.fin() * 6f);
+    earthquke = new Effect(10f, 100f, e -> {
+        float rad = e.rotation;
+        Draw.color(PMPal.darkBrown);
+
+        int points = 3;
+        for(int i = 0; i < points; i++){
+            float angle = Mathf.randomSeedRange(e.id + i, 360f);
+            float length = Mathf.randomSeed(e.id * 2L + i, rad / 6f, rad);
+            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout() / 4f, angle);
+            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
+        }
+    }).layer(Layer.debris),
+
+    pillarPlace = new Effect(15f, e -> {
+        Draw.color(PMPal.darkBrown);
+        randLenVectors(e.id, 6, 4f + 20f * e.fin(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y,  4f * e.fout());
+        });
+    }).layer(Layer.blockUnder),
+
+    pillarBlast = new Effect(20, e -> {
+        color(Pal.bulletYellow);
+        e.scaled(6, s -> {
+            stroke(3f * s.fout());
+            Lines.circle(e.x, e.y, 3f + s.fin() * 6f);
         });
 
-        color(Color.white, e.color, Mathf.curve(e.time, 0f, end));
+        color(Pal.lightPyraFlame);
+        e.scaled(15, s -> {
+            randLenVectors(e.id, 3, 2f + 13f * s.finpow(), (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, s.fout() * 3f + 0.5f);
+            });
+        });
 
-        Fill.quad(
-            e.x + trnsx(rot, 0f, 2f * fin), e.y + trnsy(rot, 0f, 2f * fin),
-            e.x + trnsx(rot, 4f * width, -4f * fin), e.y + trnsy(rot, 4f * width, -4f * fin),
-            e.x + trnsx(rot, 0f, 8f * fin), e.y + trnsy(rot, 0f, 8f * fin),
-            e.x + trnsx(rot, -4f * width, -4f * fin), e.y + trnsy(rot, -4f * width, -4f * fin)
-        );
+        color(Color.gray);
+        randLenVectors(e.id + 1, 3, 2f + 16f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 3f + 0.5f);
+        });
+
+        color(Pal.lightPyraFlame);
+        stroke(e.fout());
+        randLenVectors(e.id + 2, 4, 1f + 16f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Drawf.light(e.x, e.y, 50f, Pal.lightPyraFlame, 0.8f * e.fout());
     }),
 
     smallBoom = new Effect(30f, e -> {
@@ -311,6 +343,29 @@ public class PMFx{
 
         Lines.circle(e.x, e.y, 6f * out + 57f * in * out);
     }),
+
+    critPierce = new Effect(20f, e -> {
+        float rot = e.rotation - 90f;
+        float fin = e.fin(Interp.pow5Out);
+        float end = e.lifetime - 6f;
+        float fout = 1f - Interp.pow2Out.apply(Mathf.curve(e.time, end, e.lifetime));
+        float width = fin * fout;
+
+        e.scaled(7f, s -> {
+            stroke(0.5f + s.fout());
+            color(Color.white, e.color, s.fin());
+            Lines.circle(e.x + trnsx(rot, 0f, 5f * fin), e.y + trnsy(rot, 0f, 5f * fin), s.fin() * 6f);
+        });
+
+        color(Color.white, e.color, Mathf.curve(e.time, 0f, end));
+
+        Fill.quad(
+            e.x + trnsx(rot, 0f, 2f * fin), e.y + trnsy(rot, 0f, 2f * fin),
+            e.x + trnsx(rot, 4f * width, -4f * fin), e.y + trnsy(rot, 4f * width, -4f * fin),
+            e.x + trnsx(rot, 0f, 8f * fin), e.y + trnsy(rot, 0f, 8f * fin),
+            e.x + trnsx(rot, -4f * width, -4f * fin), e.y + trnsy(rot, -4f * width, -4f * fin)
+        );
+    }),
     
     sniperCritMini = new Effect(90f, e -> {
         v1.trns(e.rotation + 90f, 0f, 32f * e.fin(Interp.pow2Out));
@@ -411,6 +466,43 @@ public class PMFx{
         });
     }),
 
+    groundCrack = new Effect(20f, 500f, e -> {
+        if(!(e.data instanceof LightningData d)) return;
+        float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+        v1.set(d.pos).sub(e.x, e.y).nor();
+
+        float normx = v1.x, normy = v1.y;
+        float range = 6f;
+        int links = Mathf.ceil(dst / range);
+        float spacing = dst / links;
+
+        Lines.stroke(d.stroke * Mathf.curve(e.fout(), 0f, 0.5f));
+        Draw.color(e.color);
+
+        Lines.beginLine();
+
+        Lines.linePoint(e.x, e.y);
+
+        rand.setSeed(e.id);
+
+        for(int i = 0; i < links * Mathf.curve(e.fin(), 0f, 0.5f); i++){
+            float nx, ny;
+            if(i == links - 1){
+                nx = tx;
+                ny = ty;
+            }else{
+                float len = (i + 1) * spacing;
+                v1.setToRandomDirection(rand).scl(range/2f);
+                nx = e.x + normx * len + v1.x;
+                ny = e.y + normy * len + v1.y;
+            }
+
+            Lines.linePoint(nx, ny);
+        }
+
+        Lines.endLine();
+    }).followParent(false).layer(Layer.debris - 0.01f),
+
     fakeLightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
@@ -479,7 +571,7 @@ public class PMFx{
         }
 
         Fill.circle(v2.x, v2.y, Lines.getStroke() / 2);
-    }).layer(Layer.bullet + 0.01f),
+    }).followParent(false).layer(Layer.bullet + 0.01f),
     
     harbingerCharge = new Effect(150f, 1600f, e -> {
         Color[] colors = {Color.valueOf("D99F6B55"), Color.valueOf("E8D174aa"), Color.valueOf("F3E979"), Color.valueOf("ffffff")};

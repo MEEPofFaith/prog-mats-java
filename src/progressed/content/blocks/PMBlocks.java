@@ -20,6 +20,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.entities.bullet.*;
 import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -43,13 +44,16 @@ import static mindustry.type.ItemStack.*;
 public class PMBlocks implements ContentList{
     public static Block
 
-    // Region Turrets
+    // region Turrets
 
     //Miniguns
     minigun, miinigun, mivnigun,
 
     //Teslas
     shock, spark, storm,
+
+    //Geomancy
+    concretion,
 
     //Eruptors
     flame, blaze, inferno,
@@ -85,7 +89,7 @@ public class PMBlocks implements ContentList{
     apotheosisNexus, apotheosisCharger,
 
     // endregion
-    // Region Distribution
+    // region Distribution
 
     //Conveyor
     floatingConveyor,
@@ -97,18 +101,26 @@ public class PMBlocks implements ContentList{
     burstDriver,
 
     // endregion
-    // Region Crafting
+    // region Crafting
 
     //Crafters
-    mindronCollider, pyroclastForge, shellPress, missileFactory, sentryBuilder,
+    mindronCollider, pyroclastForge,
+
+    //Payloads
+    shellPress, missileFactory, sentryBuilder,
 
     // endregion
-    // Region Effect
+    // region defence
+
+    igneousPillar,
+
+    // endregion
+    // region Effect
 
     fence, web, shieldProjector,
 
     // endregion
-    // Region Sandbox
+    // region Sandbox
 
     //Turret
     harbinger, everythingGun, omegaCharger,
@@ -136,7 +148,7 @@ public class PMBlocks implements ContentList{
     public void load(){
         payloads.load();
 
-        // Region Turrets
+        // region Turrets
         minigun = new MinigunTurret("minigun"){{
             requirements(Category.turret, with(
                 Items.copper, 200,
@@ -378,6 +390,29 @@ public class PMBlocks implements ContentList{
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;
+        }};
+
+        concretion = new GeomancyTurret("concretion"){{
+            requirements(Category.turret, with(
+                Items.copper, 100,
+                Items.lead, 120,
+                Items.silicon, 75,
+                Items.titanium, 60
+            ));
+            size = 2;
+            health = 310 * size * size;
+            reloadTime = 120f;
+            shootSound = Sounds.rockBreak;
+            range = 23f * tilesize;
+            recoilAmount = -25f / 4f;
+            shootLength = 8f + 15f / 4f;
+            targetAir = false;
+            cooldown = 0.005f;
+            shootType = PMBullets.pillarField;
+            chargeTime = PMFx.groundCrack.lifetime / 2f;
+
+            armX = 15f / 4f;
+            armY = -2f / 4f;
         }};
 
         flame = new EruptorTurret("flame"){{
@@ -1029,7 +1064,7 @@ public class PMBlocks implements ContentList{
         ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
         // endregion
 
-        // Region Distribution
+        // region Distribution
         floatingConveyor = new FloatingConveyor("floating-conveyor"){{
             requirements(Category.distribution, with(
                 Items.lead, 3,
@@ -1125,7 +1160,7 @@ public class PMBlocks implements ContentList{
         }};
         // endregion
 
-        // Region Crafting
+        // region Crafting
         mindronCollider = new ColliderCrafter("mindron-collider"){{
             requirements(Category.crafting, with(
                 Items.silicon, 150,
@@ -1231,8 +1266,19 @@ public class PMBlocks implements ContentList{
             products = Seq.with(PMPayloads.basicSentry, PMPayloads.missileSentry, PMPayloads.dashSentry);
         }};
         // endregion
+        // region Defense
 
-        // Region Effect
+        igneousPillar = new IgneousPillar("igneous-pillar"){{
+            health = 30 * 4; //4 is wallHealthMultiplier in Blocks.java
+            destroySound = PMSounds.rockExplode;
+            glowVariants = 5;
+            glowWeights = new int[]{1, 4, 4, 5, 5};
+        }};
+
+        ((PillarFieldBulletType)(PMBullets.pillarField)).pillar = (IgneousPillar)igneousPillar;
+
+        // endregion
+        // region Effect
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(
                 Items.copper, 60,
@@ -1279,7 +1325,7 @@ public class PMBlocks implements ContentList{
         }};
         // endregion
 
-        // Region Sandbox
+        // region Sandbox
         /// Turret
         harbinger = new ChaosTurret("harbinger"){
             {

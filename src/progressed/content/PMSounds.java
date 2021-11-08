@@ -14,6 +14,7 @@ public class PMSounds{
     public static Sound
         pixelShoot = new Sound(),
         pixelHit = new Sound(),
+        rockExplode = new Sound(),
         harbingerCharge = new Sound(),
         harbingerBlast = new Sound(),
         popeshadowCharge = new Sound(),
@@ -31,6 +32,7 @@ public class PMSounds{
 
         pixelShoot = loadSound("pixel-shoot");
         pixelHit = loadSound("pixel-hit");
+        rockExplode = loadSound("rock-explode");
         harbingerCharge = loadSound("harbinger-charge");
         harbingerBlast = loadSound("harbinger-blast");
         popeshadowCharge = loadSound("popeshadow-charge");
