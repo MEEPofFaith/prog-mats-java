@@ -26,9 +26,16 @@ public class PMTechTree implements ContentList{
             // Geomancy
             node(concretion, () -> {
                 // Eruptors
-                node(flame, Seq.with(new Research(meltdown), new SectorComplete(SectorPresets.impact0078)), () -> {
-                    node(blaze, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
-                        node(inferno, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+                node(flame, Seq.with(
+                    new SectorComplete(SectorPresets.impact0078),
+                    new Research(meltdown)
+                ), () -> {
+                    node(blaze, Seq.with(
+                        new SectorComplete(SectorPresets.overgrowth)
+                    ), () -> {
+                        node(inferno, Seq.with(
+                            new SectorComplete(SectorPresets.nuclearComplex)
+                        ));
                     });
                 });
             });
@@ -36,8 +43,12 @@ public class PMTechTree implements ContentList{
 
         vanillaNode(salvo, () -> {
             //Miniguns
-            node(minigun, Seq.with(new SectorComplete(SectorPresets.fungalPass)), () -> {
-                node(miinigun, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
+            node(minigun, Seq.with(
+                new SectorComplete(SectorPresets.fungalPass)
+            ), () -> {
+                node(miinigun, Seq.with(
+                    new SectorComplete(SectorPresets.overgrowth)
+                ), () -> {
                     node(mivnigun);
                 });
             });
@@ -45,16 +56,29 @@ public class PMTechTree implements ContentList{
 
         vanillaNode(fuse, () -> {
             //Kugelblitz
-            node(blackhole, Seq.with(new SectorComplete(SectorPresets.nuclearComplex), new Research(meltdown)));
+            node(blackhole, Seq.with(
+                new SectorComplete(SectorPresets.nuclearComplex),
+                new Research(meltdown)
+            ));
         });
 
         vanillaNode(ripple, () -> {
             //Missile Launchers (also painful to look at)
-            node(firestorm, Seq.with(new Research(launchPad), new SectorComplete(SectorPresets.impact0078)), () -> {
-                node(strikedown, Seq.with(new Research(arbalest), new SectorComplete(SectorPresets.nuclearComplex)), () -> {
-                    node(trinity, Seq.with(new Research(interplanetaryAccelerator)), () -> {
+            node(firestorm, Seq.with(
+                new SectorComplete(SectorPresets.impact0078),
+                new Research(launchPad)
+            ), () -> {
+                node(strikedown, Seq.with(
+                    new SectorComplete(SectorPresets.nuclearComplex),
+                    new Research(arbalest)
+                ), () -> {
+                    node(trinity, Seq.with(
+                        new Research(interplanetaryAccelerator)
+                    ), () -> {
                         //Apotheosis
-                        node(apotheosisNexus, Seq.with(new Research(impactReactor)), () -> {
+                        node(apotheosisNexus, Seq.with(
+                            new Research(impactReactor) //I should probably think of power generation block ideas for PM
+                        ), () -> {
                             node(apotheosisCharger);
                         });
                     });
@@ -62,12 +86,20 @@ public class PMTechTree implements ContentList{
             });
 
             //Tinker
-            node(sergeant, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)), () -> {
-                node(arbalest, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)), () -> {
+            node(sergeant, Seq.with(
+                new SectorComplete(SectorPresets.windsweptIslands)
+            ), () -> {
+                node(arbalest, Seq.with(
+                    new SectorComplete(SectorPresets.nuclearComplex)
+                ), () -> {
                     node(shellPress, () -> {
                         node(emptyRocket);
-                        node(emptyMissile, Seq.with(new Research(strikedown)));
-                        node(emptyNuke, Seq.with(new Research(trinity)));
+                        node(emptyMissile, Seq.with(
+                            new Research(strikedown)
+                        ));
+                        node(emptyNuke, Seq.with(
+                            new Research(trinity)
+                        ));
                         node(missileFactory, () -> {
                             //Rockets
                             node(basicRocket, () -> {
@@ -75,11 +107,15 @@ public class PMTechTree implements ContentList{
                                 node(bomberRocket);
                             });
                             //Missiles
-                            node(basicMissile, Seq.with(new Research(strikedown)), () -> {
+                            node(basicMissile, Seq.with(
+                                new Research(strikedown)
+                            ), () -> {
                                 node(recursiveMissile);
                             });
                             //Nukes
-                            node(basicNuke, Seq.with(new Research(trinity)), () -> {
+                            node(basicNuke, Seq.with(
+                                new Research(trinity)
+                            ), () -> {
                                 node(clusterNuke);
                             });
                         });
@@ -88,12 +124,19 @@ public class PMTechTree implements ContentList{
 
                 node(sentryBuilder, () -> {
                     node(basicSentry, () -> {
-                        node(barrage, ItemStack.empty, Seq.with(new Research(basicSentry)));
+                        node(barrage, ItemStack.empty, Seq.with(
+                            new Research(basicSentry)
+                        ));
                     });
                     node(missileSentry, Seq.with(new Research(firestorm)), () -> {
-                        node(downpour, ItemStack.empty, Seq.with(new Research(missileSentry)));
+                        node(downpour, ItemStack.empty, Seq.with(
+                            new Research(missileSentry)
+                        ));
                     });
-                    node(dashSentry, Seq.with(new Research(lancer), new Research(quasar)), () -> {
+                    node(dashSentry, Seq.with(
+                        new Research(lancer),
+                        new Research(quasar)
+                    ), () -> {
                         node(rapier, ItemStack.empty, Seq.with(new Research(dashSentry)));
                     });
                 });
@@ -106,14 +149,20 @@ public class PMTechTree implements ContentList{
             
             //Coil
             node(shock, () -> {
-                node(spark, Seq.with(new Research(differentialGenerator)), () -> {
-                    node(storm, Seq.with(new Research(thoriumReactor)));
+                node(spark, Seq.with(
+                    new Research(differentialGenerator)
+                ), () -> {
+                    node(storm, Seq.with(
+                        new Research(thoriumReactor)
+                    ));
                 });
             });
         });
 
         vanillaNode(lancer, () -> {
-            node(sentinel, Seq.with(new SectorComplete(SectorPresets.impact0078)));
+            node(sentinel, Seq.with(
+                new SectorComplete(SectorPresets.impact0078)
+            ));
         });
 
         vanillaNode(cyclone, () -> {
@@ -121,14 +170,20 @@ public class PMTechTree implements ContentList{
             node(caliber);
 
             //Sword
-            node(ball, Seq.with(new SectorComplete(SectorPresets.overgrowth)), () -> {
-                node(masquerade, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+            node(ball, Seq.with(
+                new SectorComplete(SectorPresets.overgrowth)
+            ), () -> {
+                node(masquerade, Seq.with(
+                    new SectorComplete(SectorPresets.nuclearComplex)
+                ));
             });
         });
 
         vanillaNode(foreshadow, () -> {
             //P o p e s h a d o w
-            node(excalibur, Seq.with(new SectorComplete(SectorPresets.nuclearComplex)));
+            node(excalibur, Seq.with(
+                new SectorComplete(SectorPresets.nuclearComplex)
+            ));
         });
 
         vanillaNode(parallax, () -> {
@@ -144,18 +199,28 @@ public class PMTechTree implements ContentList{
         // Distribution
         vanillaNode(armoredConveyor, () -> {
             //Floating Conveyor
-            node(floatingConveyor, Seq.with(new SectorComplete(SectorPresets.windsweptIslands)));
+            node(floatingConveyor, Seq.with(
+                new SectorComplete(SectorPresets.windsweptIslands)
+            ));
         });
 
         vanillaNode(massDriver, () -> {
             //Burst Driver
-            node(burstDriver, Seq.with(new Research(plastaniumConveyor)));
+            node(burstDriver, Seq.with(
+                new Research(plastaniumConveyor)
+            ));
 
             //Drones
             node(dronePad, Seq.with(new Research(launchPad), new Research(mega)), () -> {
-                node(itemDroneStation, Seq.with(new Research(vault)));
-                node(liquidDroneStation, Seq.with(new Research(liquidTank)));
-                node(payloadDroneStation, Seq.with(new Research(payloadConveyor)));
+                node(itemDroneStation, Seq.with(
+                    new Research(vault)
+                ));
+                node(liquidDroneStation, Seq.with(
+                    new Research(liquidTank)
+                ));
+                node(payloadDroneStation, Seq.with(
+                    new Research(payloadConveyor)
+                ));
             });
         });
 
@@ -179,7 +244,9 @@ public class PMTechTree implements ContentList{
 
         vanillaNode(forceProjector, () -> {
             //Shield Projector
-            node(shieldProjector, Seq.with(new Research(strikedown)));
+            node(shieldProjector, Seq.with(
+                new Research(strikedown)
+            ));
         });
 
         // Items
