@@ -117,7 +117,9 @@ public class PMBlocks implements ContentList{
     // endregion
     // region Effect
 
-    fence, web, shieldProjector,
+    fence, web,
+
+    systemBooster, shieldProjector,
 
     // endregion
     // region Sandbox
@@ -1304,6 +1306,12 @@ public class PMBlocks implements ContentList{
             maxNodes = 6;
             damage = 4f;
             powerPerLink = 0.5f;
+        }};
+
+        systemBooster = new SystemBooster("system-booster"){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
+            size = 3;
+            powerPerBlock = 0.2f;
         }};
 
         shieldProjector = new ShieldProjector("shield-projector"){{
