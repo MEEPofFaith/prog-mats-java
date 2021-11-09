@@ -2,6 +2,7 @@ package progressed.world.blocks.defence;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -10,6 +11,8 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+
+import static mindustry.Vars.*;
 
 public class SystemBooster extends Block{
     public float reload = 60f;
@@ -105,6 +108,27 @@ public class SystemBooster extends Block{
         public void drawSelect(){
             power.graph.all.each(b -> b.block.canOverdrive, b -> {
                 Drawf.selected(b, Tmp.c1.set(boostColor).a(Mathf.absin(4f, 1f)));
+            });
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+
+            float time = (Time.time / 100f) % 1f;
+            Draw.z(Layer.power + 0.1f);
+            Lines.stroke((4f * (1f - time) + 0.1f) * heat, boostColor);
+            power.links.each(i -> {
+                Building b = world.build(i);
+                float angle1 = Angles.angle(x, y, b.x, b.y),
+                    vx = Mathf.cosDeg(angle1), vy = Mathf.sinDeg(angle1),
+                    len1 = size * tilesize / 2f - 1.5f, len2 = b.block.size * tilesize / 2f - 1.5f;
+
+                Lines.lineAngleCenter(
+                    Mathf.lerp(x + vx * len1, b.x - vx * len2, time),
+                    Mathf.lerp(y + vy * len1, b.y - vy * len2, time),
+                    angle1 + 90f, 2f, false
+                );
             });
         }
     }
