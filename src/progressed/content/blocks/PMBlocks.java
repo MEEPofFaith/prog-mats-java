@@ -1311,6 +1311,7 @@ public class PMBlocks implements ContentList{
         systemBooster = new SystemBooster("system-booster"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
             size = 3;
+            basePowerUse = 2f;
             powerPerBlock = 0.2f;
         }};
 

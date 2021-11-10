@@ -4,7 +4,9 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -17,8 +19,10 @@ import static mindustry.Vars.*;
 public class SystemBooster extends Block{
     public float reload = 60f;
     public float speedBoost = 1.1f;
-    public float powerPerBlock = 1f;
+    public float basePowerUse, powerPerBlock = 1f;
     public Color boostColor = Color.valueOf("feb380");
+
+    public TextureRegion topRegion;
 
     public SystemBooster(String name){
         super(name);
@@ -30,6 +34,13 @@ public class SystemBooster extends Block{
         canOverdrive = false;
         emitLight = true;
         lightRadius = 50f;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        topRegion = Core.atlas.find(name + "-top");
     }
 
     @Override
@@ -65,7 +76,7 @@ public class SystemBooster extends Block{
         float heat;
         float charge = Mathf.random(reload);
         float totalPowerUse, maxBoost;
-        int boosters;
+        int boosters, boosted;
         float smoothEfficiency;
 
         @Override
@@ -98,9 +109,11 @@ public class SystemBooster extends Block{
         }
 
         public void updatePowerUse(){
-            totalPowerUse = 0;
+            totalPowerUse = basePowerUse;
+            boosted = 0;
             power.graph.all.each(b -> b.block.canOverdrive, b -> {
                 totalPowerUse += powerPerBlock;
+                boosted++;
             });
         }
 
@@ -115,21 +128,49 @@ public class SystemBooster extends Block{
         public void draw(){
             super.draw();
 
-            float time = (Time.time / 100f) % 1f;
-            Draw.z(Layer.power + 0.1f);
-            Lines.stroke((4f * (1f - time) + 0.1f) * heat, boostColor);
+            Draw.color(boostColor);
+            Draw.alpha(heat * Mathf.absin(Time.time, 10f, 1f) * 0.5f);
+            Draw.rect(topRegion, x, y);
+            Draw.alpha(1f);
+
+            float f = 1f - (Time.time / 100f) % 1f;
+            Lines.stroke(f * heat);
             power.links.each(i -> {
                 Building b = world.build(i);
                 float angle1 = Angles.angle(x, y, b.x, b.y),
                     vx = Mathf.cosDeg(angle1), vy = Mathf.sinDeg(angle1),
-                    len1 = size * tilesize / 2f - 1.5f, len2 = b.block.size * tilesize / 2f - 1.5f;
+                    len1 = size * tilesize / 2f - 1.5f;
 
-                Lines.lineAngleCenter(
-                    Mathf.lerp(x + vx * len1, b.x - vx * len2, time),
-                    Mathf.lerp(y + vy * len1, b.y - vy * len2, time),
-                    angle1 + 90f, 2f, false
+                Lines.circle(
+                    x + vx * len1,
+                    y + vy * len1,
+                    (1f - f) * 3f
                 );
             });
+        }
+
+        @Override
+        public void display(Table table){
+            super.display(table);
+
+            table.row();
+            table.label(() -> Core.bundle.format("pm-poweruse", Strings.autoFixed(totalPowerUse * 60f, 2))).left().fillX().wrap();
+            table.row();
+            table.label(() -> Core.bundle.format("pm-overdrivedcount", boosted)).left().padLeft(18).fillX().wrap();
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(heat);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            heat = read.f();
         }
     }
 
@@ -142,7 +183,11 @@ public class SystemBooster extends Block{
         @Override
         public void display(Stats stats){
             stats.add(Stat.powerUse, s -> {
-                s.add(Strings.autoFixed(powerPerBlock, 2));
+                if(basePowerUse != 0){
+                    StatValues.number(basePowerUse * 60f, StatUnit.powerSecond).display(s);
+                    s.add(" + ");
+                }
+                s.add(Strings.autoFixed(powerPerBlock * 60f, 2));
                 s.add(" " + Core.bundle.get("stat.pm-powersecondblock"));
             });
         }

@@ -251,7 +251,7 @@ public class PMStatValues{
                 t.row();
 
                 t.table(tt -> {
-                    tt.add("@pm-fuel").top();
+                    tt.add("@stat.pm-fuel").top();
                     tt.table(ft -> {
                         ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
                         ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
@@ -260,11 +260,11 @@ public class PMStatValues{
                             st.clearChildren();
                             st.left().defaults().padRight(3).left();
 
-                            st.add(bundle.format("pm-fuel.input", crafter.fuelPerItem));
+                            st.add(bundle.format("stat.pm-fuel.input", crafter.fuelPerItem));
 
-                            sep(st, bundle.format("pm-fuel.use", crafter.fuelPerCraft));
+                            sep(st, bundle.format("stat.pm-fuel.use", crafter.fuelPerCraft));
 
-                            sep(st, bundle.format("pm-fuel.capacity", crafter.fuelCapacity));
+                            sep(st, bundle.format("stat.pm-fuel.capacity", crafter.fuelCapacity));
 
                             if(crafter.attribute != null){
                                 st.row();
@@ -276,7 +276,7 @@ public class PMStatValues{
                                         at.clearChildren();
                                         at.left();
 
-                                        at.add("@pm-fuel.affinity");
+                                        at.add("@stat.pm-fuel.affinity");
 
                                         if(state.isGame()){
                                             var blocks = Vars.content.blocks()
