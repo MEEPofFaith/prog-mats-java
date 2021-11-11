@@ -798,14 +798,14 @@ public class PMFx{
     }),
 
     apotheosisDamage = new Effect(30f, 100f * tilesize, e -> {
-        if(!(e.data instanceof float[] f)) return;
-        z(f[0]);
+        if(!(e.data instanceof ApotheosisEffectData d)) return;
+        z(Layer.effect + d.layerOffset);
 
-        float intensity = 2f * f[1];
+        float intensity = 2f * d.scl;
         float baseLifetime = 20f + intensity * 4f;
         e.lifetime = 25f + intensity * 6f;
 
-        color(PMPal.apotheosisLaserDark);
+        color(d.laserColorDark);
         alpha(0.9f);
         for(int i = 0; i < 5; i++){
             rand.setSeed(e.id * 2L + i);
@@ -823,7 +823,7 @@ public class PMFx{
         }
 
         e.scaled(baseLifetime, s -> {
-            color(PMPal.apotheosisLaser, PMPal.apotheosisLaserDark, s.fin());
+            color(d.laserColor, d.laserColorDark, s.fin());
             stroke((2f * s.fout()));
 
             z(Layer.effect + 0.001f);
@@ -835,42 +835,42 @@ public class PMFx{
     }),
 
     apotheosisPuddle = new Effect(60f * 10f, 30f * tilesize, e -> {
-        if(!(e.data instanceof float[] f)) return;
-        z(f[0] - (Layer.effect - Layer.scorch));
+        if(!(e.data instanceof ApotheosisEffectData d)) return;
+        z(Layer.scorch + 1f); //Used in a MultiEffect, .layer() doesn't quite work.
 
         float fin = Mathf.curve(e.time, 0, 10f);
         float rad = 1f - Mathf.curve(e.time, 60f * 9f, 60f * 10f);
 
-        randLenVectors(e.id, 6, 32f * f[1], (x, y) -> {
+        randLenVectors(e.id, 6, 32f * d.scl, (x, y) -> {
             float px = e.x + x * fin,
                 py = e.y +  y * fin,
-                baseRad = 16f * f[1],
+                baseRad = 16f * d.scl,
                 radius = Mathf.randomSeed((long)(e.id + x + y), baseRad / 2f, baseRad) * rad;
 
-            color(PMPal.apotheosisLaser);
+            color(d.laserColor);
             Fill.circle(px, py, radius);
             Drawf.light(px, py, radius * 1.5f, getColor(), 0.8f);
         });
     }),
 
     apotheosisPulse = new Effect(120f, 100f * tilesize, e -> {
-        if(!(e.data instanceof float[] f)) return;
-        z(f[0]);
+        if(!(e.data instanceof ApotheosisEffectData d)) return;
+        z(Layer.effect + d.layerOffset);
 
-        color(PMPal.apotheosisLaser, 0.7f);
-        stroke(32f * f[1] * e.fout(Interp.pow5In));
-        Lines.circle(e.x, e.y, 16f * tilesize * f[1] * e.fin(Interp.pow5Out));
+        color(d.laserColor, 0.7f);
+        stroke(32f * d.scl * e.fout(Interp.pow5In));
+        Lines.circle(e.x, e.y, 16f * tilesize * d.scl * e.fin(Interp.pow5Out));
     }),
 
     apotheosisTouchdown = new Effect(720f, 300f * tilesize, e -> {
-        if(!(e.data instanceof float[] f)) return;
-        z(f[0]);
+        if(!(e.data instanceof ApotheosisEffectData d)) return;
+        z(Layer.effect + d.layerOffset);
 
-        color(PMPal.apotheosisLaser, 0.7f);
-        stroke(64f * f[1] * e.fout(Interp.pow5In));
-        Lines.circle(e.x, e.y, 148f * tilesize * e.fin(Interp.pow3Out) * f[1]);
-        Lines.circle(e.x, e.y, (10f + 162f * tilesize * e.fin(Interp.pow5Out)) * f[1]);
-        Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * f[1]);
+        color(d.laserColor, 0.7f);
+        stroke(64f * d.scl * e.fout(Interp.pow5In));
+        Lines.circle(e.x, e.y, 148f * tilesize * e.fin(Interp.pow3Out) * d.scl);
+        Lines.circle(e.x, e.y, (10f + 162f * tilesize * e.fin(Interp.pow5Out)) * d.scl);
+        Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * d.scl);
     }),
     
     staticSpark = new Effect(10f, e -> {
@@ -908,12 +908,25 @@ public class PMFx{
     }).layer(Layer.shields);
 
     public static class LightningData{
-        Position pos;
-        float stroke;
+        public Position pos;
+        public float stroke;
 
         public LightningData(Position pos, float stroke){
             this.pos = pos;
             this.stroke = stroke;
+        }
+    }
+
+    public static class ApotheosisEffectData{
+        public float layerOffset;
+        public float scl;
+        public Color laserColor, laserColorDark;
+
+        public ApotheosisEffectData(float layerOffset, float scl, Color c1, Color c2){
+            this.layerOffset = layerOffset;
+            this.scl = scl;
+            laserColor = c1;
+            laserColorDark = c2;
         }
     }
 }

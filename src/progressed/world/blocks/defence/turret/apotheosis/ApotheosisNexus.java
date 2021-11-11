@@ -26,6 +26,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.audio.*;
 import progressed.content.*;
+import progressed.content.PMFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -525,6 +526,7 @@ public class ApotheosisNexus extends ReloadTurret{
                         fireSound.at(x, y, fireSoundPitch, fireSoundVolume);
                         if(isPiss()){
                             (Core.settings.getBool("pm-farting") && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
+                            Sounds.wind3.at(x, y, 1f, 5f);
                         }
                         fireEffect.at(x, y);
                     }
@@ -626,7 +628,12 @@ public class ApotheosisNexus extends ReloadTurret{
 
 
         public void effect(Effect eff, float scl){
-            eff.at(curPos.x, curPos.y, 0f, new float[]{Layer.effect + (curPos.y < y ? 0.0029f : 0.0009f), radscl() * fadef() * scl}); //Layer data to draw properly close to the beam [layer, scl])
+            eff.at(curPos.x, curPos.y, 0f, new ApotheosisEffectData(
+                curPos.y < y ? 0.0029f : 0.0009f,
+                radscl() * fadef() * scl,
+                isPiss() ? PMPal.pissbeam : PMPal.apotheosisLaser,
+                isPiss() ? PMPal.pissbeamDark : PMPal.apotheosisLaserDark
+            ));
         }
 
         public void effect(Effect eff){
