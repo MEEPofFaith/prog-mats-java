@@ -48,6 +48,8 @@ public class SystemBooster extends Block{
         consumes.add(new BoosterConsumePower());
 
         super.init();
+
+        clipSize = Math.max(clipSize, size * tilesize * 2f + 8f);
     }
 
     @Override
@@ -129,7 +131,7 @@ public class SystemBooster extends Block{
             super.draw();
 
             Draw.color(boostColor);
-            Draw.alpha(heat * Mathf.absin(Time.time, 10f, 1f) * 0.5f);
+            Draw.alpha(heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
             Draw.rect(topRegion, x, y);
             Draw.alpha(1f);
 
@@ -147,6 +149,11 @@ public class SystemBooster extends Block{
                     (1f - f) * 3f
                 );
             });
+
+            Draw.z(Layer.shields);
+            Lines.stroke(f * 4f * heat);
+            Draw.alpha(0.9f);
+            Lines.circle(x, y, (1f - f) * size * tilesize * 2f);
         }
 
         @Override
