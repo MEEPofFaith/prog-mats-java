@@ -13,13 +13,14 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.world.blocks.defence.SystemBooster.SystemBoosterBuild.*;
 
 import static mindustry.Vars.*;
 
 public class SystemBooster extends Block{
     public float reload = 60f;
     public float speedBoost = 1.1f;
-    public float basePowerUse, powerPerBlock = 1f;
+    public float basePowerUse, powerPerBlock = 0.01f;
     public Color boostColor = Color.valueOf("feb380");
 
     public TextureRegion topRegion;
@@ -68,7 +69,7 @@ public class SystemBooster extends Block{
     public void setBars(){
         super.setBars();
         bars.add("boost", (SystemBoosterBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-totalboost", Mathf.round(Math.max((entity.realBoost() * 100 - 100), 0)), entity.boosters),
+            () -> Core.bundle.format("bar.pm-totalboost", Mathf.round(Math.max((entity.realBoost() * 100 - 100), 0))),
             () -> Pal.accent,
             () -> entity.realBoost() / entity.maxBoost
         ));
@@ -111,12 +112,15 @@ public class SystemBooster extends Block{
         }
 
         public void updatePowerUse(){
-            totalPowerUse = basePowerUse;
+            totalPowerUse = 0f;
             boosted = 0;
-            power.graph.all.each(b -> b.block.canOverdrive, b -> {
-                totalPowerUse += powerPerBlock;
+            power.graph.consumers.each(b -> b.block.canOverdrive, b -> {
+                ConsumePower consumePower = b.block.consumes.getPower();
+                totalPowerUse += consumePower.requestedPower(b) * b.delta();
                 boosted++;
             });
+            totalPowerUse *= powerPerBlock;
+            totalPowerUse += basePowerUse;
         }
 
         @Override
@@ -161,9 +165,11 @@ public class SystemBooster extends Block{
             super.display(table);
 
             table.row();
-            table.label(() -> Core.bundle.format("pm-poweruse", Strings.autoFixed(totalPowerUse * 60f, 2))).left().fillX().wrap();
+            table.label(() -> Core.bundle.format("pm-boostercount", boosters)).left().padLeft(18).fillX();
             table.row();
-            table.label(() -> Core.bundle.format("pm-overdrivedcount", boosted)).left().padLeft(18).fillX().wrap();
+            table.label(() -> Core.bundle.format("pm-poweruse", Mathf.round(totalPowerUse * 60f))).left().fillX();
+            table.row();
+            table.label(() -> Core.bundle.format("pm-overdrivedcount", boosted)).left().padLeft(18).fillX();
         }
 
         @Override
@@ -194,8 +200,7 @@ public class SystemBooster extends Block{
                     StatValues.number(basePowerUse * 60f, StatUnit.powerSecond).display(s);
                     s.add(" + ");
                 }
-                s.add(Strings.autoFixed(powerPerBlock * 60f, 2));
-                s.add(" " + Core.bundle.get("stat.pm-powersecondblock"));
+                s.add(Core.bundle.format("stat.pm-powersecondblock", powerPerBlock * 100f));
             });
         }
     }

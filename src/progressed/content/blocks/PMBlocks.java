@@ -1309,10 +1309,17 @@ public class PMBlocks implements ContentList{
         }};
 
         systemBooster = new SystemBooster("system-booster"){{
-            requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.effect, with(
+                Items.lead, 250,
+                Items.titanium, 200,
+                Items.silicon, 230,
+                Items.plastanium, 100,
+                Items.surgeAlloy, 130,
+                PMItems.tenelium, 170
+            ));
             size = 3;
             basePowerUse = 2f;
-            powerPerBlock = 0.2f;
+            powerPerBlock = 0.05f;
         }};
 
         shieldProjector = new ShieldProjector("shield-projector"){{
