@@ -77,6 +77,7 @@ public class IgneousPillar extends Block{
     }
 
     public class IgneousPillarBuild extends Building{
+        public TextureRegion glowRegion;
         public float delay, growTimer, boomTimer;
 
         @Override
@@ -84,6 +85,12 @@ public class IgneousPillar extends Block{
             super.created();
 
             delay = Mathf.random(minDelay, maxDelay);
+            int seed = id + pos();
+            if(glowWeights != null){
+                glowRegion = weightedGlowRegions.get(Mathf.randomSeed(seed, 0, weightedGlowRegions.size - 1));
+            }else{
+                glowRegion = glowRegions[Mathf.randomSeed(seed, 0, glowRegions.length - 1)];
+            }
         }
 
         @Override
@@ -92,18 +99,10 @@ public class IgneousPillar extends Block{
             super.draw();
 
             Draw.color(glowColorFrom, glowColorTo, timerf());
-            int seed = id + pos();
-            if(glowWeights != null){
-                Draw.rect(
-                    weightedGlowRegions.get(Mathf.randomSeed(seed, 0, weightedGlowRegions.size - 1)),
-                    x, y, block.rotate ? rotdeg() : 0f
-                );
-            }else{
-                Draw.rect(
-                    glowRegions[Mathf.randomSeed(seed, 0, glowRegions.length - 1)],
-                    x, y, block.rotate ? rotdeg() : 0f
-                );
-            }
+            Draw.rect(
+                glowRegion,
+                x, y, block.rotate ? rotdeg() : 0f
+            );
 
             Draw.reset();
         }
@@ -140,11 +139,17 @@ public class IgneousPillar extends Block{
         }
 
         @Override
+        public boolean canPickup(){
+            return false;
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 
             write.f(delay);
             write.f(boomTimer);
+            write.f(growTimer);
         }
 
         @Override
@@ -153,6 +158,15 @@ public class IgneousPillar extends Block{
 
             delay = read.f();
             boomTimer = read.f();
+
+            if(revision >= 1){
+                growTimer = read.f();
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 1;
         }
     }
 }
