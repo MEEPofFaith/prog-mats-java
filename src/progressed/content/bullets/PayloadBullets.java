@@ -2,6 +2,7 @@ package progressed.content.bullets;
 
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -94,47 +95,65 @@ public class PayloadBullets implements ContentList{
             }
         };
 
-        arbalestBomber = new RocketBulletType(4f, 35f, "prog-mats-bomber-rocket"){{
-            lifetime = 70f;
-            acceleration = 0.03f;
-            backSpeed = thrustDelay = 0f;
-            trailWidth = thrusterSize = 6f / 4f;
-            trailParam = thrusterSize * 2f * 1.5f;
-            trailOffset = thrusterOffset = 43f / 4f;
-            rotOffset = 90f;
-            despawnEffect = PMFx.missileExplosion;
-            trailInterval = 1f;
-            trailEffect = PMFx.rocketTrail;
-            trailLength = 6;
-            drawSize = 60f * 80f;
-            layer = Layer.turret + 0.015f;
-            riseStart = thrusterGrowth;
-            riseEnd = thrusterGrowth + 10f;
-            targetLayer = Layer.bullet - 1;
+        arbalestBomber = new RocketBulletType(4f, 12f, "prog-mats-bomber-rocket"){
+            {
+                lifetime = 70f;
+                acceleration = 0.03f;
+                backSpeed = thrustDelay = 0f;
+                trailWidth = thrusterSize = 6f / 4f;
+                trailParam = thrusterSize * 2f * 1.5f;
+                trailOffset = thrusterOffset = 43f / 4f;
+                rotOffset = 90f;
+                despawnEffect = PMFx.missileExplosion;
+                trailInterval = 1f;
+                trailEffect = PMFx.rocketTrail;
+                trailLength = 6;
+                drawSize = 60f * 80f;
+                layer = Layer.turret + 0.015f;
+                riseStart = thrusterGrowth;
+                riseEnd = thrusterGrowth + 10f;
+                targetLayer = Layer.bullet - 1;
 
-            collides = collidesTiles = false;
-            splashDamage = 142f;
-            splashDamageRadius = 6.5f * tilesize;
-            homingPower = 0.25f;
-            homingDelay = 5f;
-            homingRange = 100f * tilesize;
+                collidesTiles = false;
+                pierce = true;
+                splashDamage = 135f;
+                splashDamageRadius = 6.5f * tilesize;
+                homingPower = 0.25f;
+                homingDelay = 5f;
+                homingRange = 100f * tilesize;
 
-            bombBullet = new BombBulletType(74f, 4.5f * tilesize){{
-                lifetime = 15f;
-                width =  8f;
-                height = 10f;
-                hitEffect = Fx.flakExplosion;
-                status = StatusEffects.blasted;
-                statusDuration = 60f;
-                collidesAir = true;
-                frontColor = Pal.sapBullet;
-                backColor = Pal.sapBulletBack;
-                layer = Layer.turret + 0.014f;
-            }};
-            bombInterval = 2f;
+                bombBullet = new BombBulletType(74f, 4.5f * tilesize){{
+                    lifetime = 15f;
+                    width =  8f;
+                    height = 10f;
+                    hitEffect = Fx.flakExplosion;
+                    status = StatusEffects.blasted;
+                    statusDuration = 60f;
+                    collidesAir = true;
+                    frontColor = Pal.sapBullet;
+                    backColor = Pal.sapBulletBack;
+                    layer = Layer.turret + 0.014f;
+                }};
+                bombInterval = 2f;
 
-            unitSort = (u, x, y) -> u.health + u.dst2(x, y) / 6400f; //Target, bomb, and destroy low health units :)))
-        }};
+                unitSort = (u, x, y) -> u.health + u.dst2(x, y) / 6400f; //Target, bomb, and destroy low health units :)))
+            }
+
+            @Override
+            public void hit(Bullet b, float x, float y){
+                //no
+            }
+
+            @Override
+            public void despawned(Bullet b){
+                hitEffect.at(b.x, b.y, b.rotation(), hitColor);
+                hitSound.at(b.x, b.y, hitSoundPitch, hitSoundVolume);
+
+                Effect.shake(hitShake, hitShake, b);
+
+                Damage.damage(b.team, b.x, b.y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+            }
+        };
 
         firestormMissile = new ArcMissileBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
             splashDamage = 72f;
