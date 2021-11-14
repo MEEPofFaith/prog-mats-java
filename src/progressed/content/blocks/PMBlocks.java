@@ -1318,8 +1318,9 @@ public class PMBlocks implements ContentList{
                 PMItems.tenelium, 170
             ));
             size = 3;
-            basePowerUse = 2f;
-            powerPerBlock = 0.05f;
+            speedBoost = 1.2f;
+            basePowerUse = 2.4f;
+            powerPerBlock = 0.08f;
         }};
 
         shieldProjector = new ShieldProjector("shield-projector"){{
