@@ -1,9 +1,12 @@
 package progressed.world.blocks.storage;
 
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -30,16 +33,6 @@ public class CoreLink extends Block{
     @Override
     public boolean outputsItems(){
         return false;
-    }
-
-    public static void incinerateEffect(Building self, Building source){
-        if(Mathf.chance(0.3)){
-            Tile edge = Edges.getFacingEdge(source, self);
-            Tile edge2 = Edges.getFacingEdge(self, source);
-            if(edge != null && edge2 != null){
-                Fx.coreBurn.at((edge.worldx() + edge2.worldx())/2f, (edge.worldy() + edge2.worldy())/2f);
-            }
-        }
     }
 
     public class LinkBuild extends Building{
@@ -77,7 +70,9 @@ public class CoreLink extends Block{
         public void handleItem(Building source, Item item){
             if(linkedCore != null){
                 if(linkedCore.items.get(item) >= ((CoreBuild)linkedCore).storageCapacity){
-                    incinerateEffect(this, source);
+                    if(Mathf.chance(0.3)){
+                        Fx.coreBurn.at(this);
+                    }
                 }
                 ((CoreBuild)linkedCore).noEffect = true;
                 linkedCore.handleItem(source, item);
@@ -109,7 +104,7 @@ public class CoreLink extends Block{
 
         @Override
         public int getMaximumAccepted(Item item){
-            return itemCapacity;
+            return linkedCore != null ? linkedCore.getMaximumAccepted(item) : 0;
         }
 
         @Override
@@ -120,8 +115,17 @@ public class CoreLink extends Block{
 
         @Override
         public void drawSelect(){
+            //outlines around core
             if(linkedCore != null){
                 linkedCore.drawSelect();
+            }
+
+            //outlines around self
+            Draw.color(Pal.darkMetal, Pal.accent, efficiency());
+            for(int i = 0; i < 4; i++){
+                Point2 p = Geometry.d8edge[i];
+                float offset = -Math.max(block.size - 1, 0) / 2f * tilesize;
+                Draw.rect("block-select", x + offset * p.x, y + offset * p.y, i * 90);
             }
         }
 
