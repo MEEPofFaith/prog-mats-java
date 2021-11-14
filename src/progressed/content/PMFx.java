@@ -872,6 +872,11 @@ public class PMFx{
         Lines.circle(e.x, e.y, (10f + 162f * tilesize * e.fin(Interp.pow5Out)) * d.scl);
         Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * d.scl);
     }),
+
+    linkActivation = new Effect(30f, e -> {
+        stroke(e.fout() * 1.5f, e.color);
+        Lines.circle(e.x, e.y, e.fin() * 12f * tilesize);
+    }),
     
     staticSpark = new Effect(10f, e -> {
         color(e.color);

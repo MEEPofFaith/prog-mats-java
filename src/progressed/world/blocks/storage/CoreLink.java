@@ -1,20 +1,29 @@
 package progressed.world.blocks.storage;
 
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
 public class CoreLink extends Block{
+    public float activationDelay = 60f;
+    public float portalRad = -1f;
+    public Effect activationEffect = PMFx.linkActivation;
+
     public CoreLink(String name){
         super(name);
         hasItems = true;
@@ -24,10 +33,18 @@ public class CoreLink extends Block{
         separateItemCapacity = true;
         group = BlockGroup.transportation;
         flags = EnumSet.of(BlockFlag.storage);
+        //Will be false until my dynamic resupply pr is accepted, so units don't take from this when it doesn't have the power to support item transfer.
         //allowResupply = true;
-        //will be false until my dynamic resupply pr is accepted
         envEnabled = Env.any;
         highUnloadPriority = true;
+        canOverdrive = false;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(portalRad < 0) portalRad = size * tilesize / 2f * 0.625f;
     }
 
     @Override
@@ -37,6 +54,8 @@ public class CoreLink extends Block{
 
     public class LinkBuild extends Building{
         public Building linkedCore;
+        public boolean activated;
+        public float activationTime;
 
         @Override
         public void created(){
@@ -54,6 +73,43 @@ public class CoreLink extends Block{
             if(linkedCore != null){
                 items = linkedCore.items;
             }
+
+            activationTime += Time.delta * Mathf.sign(consValid());
+            activationTime = Mathf.clamp(activationTime, 0f, activationDelay);
+
+            if(!activated && isActive()){
+                activated = true;
+                activationEffect.at(x, y, team.color);
+            }
+            if(activated && !isActive()) activated = false;
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+
+            if(activef() > 0.01f){
+                Draw.z(Layer.bullet - 0.0001f);
+
+                float rad = portalRad * Interp.pow2Out.apply(activef());
+                float smallScl = 0.75f;
+                float drift = 60f;
+                Draw.color(team.color);
+                PMDrawf.shiningCircle(id, Time.time,
+                    x, y, rad,
+                    3, 120f,
+                    rad * 2f, rad,
+                    drift
+                );
+
+                Draw.color(Color.black);
+                PMDrawf.shiningCircle(id, Time.time,
+                    x, y, rad * smallScl,
+                    3, 120f,
+                    rad * smallScl * 2f, rad * smallScl,
+                    drift
+                );
+            }
         }
 
         @Override
@@ -61,9 +117,17 @@ public class CoreLink extends Block{
             return super.consValid() && (power == null || power.status >= 1);
         }
 
+        public boolean isActive(){
+            return activationTime >= activationDelay;
+        }
+
+        public float activef(){
+            return Mathf.clamp(activationTime / activationDelay);
+        }
+
         @Override
         public boolean acceptItem(Building source, Item item){
-            return consValid() && linkedCore != null && linkedCore.acceptItem(source, item);
+            return consValid() && isActive() && linkedCore != null && linkedCore.acceptItem(source, item);
         }
 
         @Override
@@ -81,7 +145,7 @@ public class CoreLink extends Block{
 
         @Override
         public boolean canUnload(){
-            return super.canUnload() && consValid();
+            return super.canUnload() && consValid() && isActive();
         }
 
         @Override
@@ -121,7 +185,7 @@ public class CoreLink extends Block{
             }
 
             //outlines around self
-            Draw.color(Pal.darkMetal, Pal.accent, efficiency());
+            Draw.color(Pal.darkMetal, Pal.accent, activef());
             for(int i = 0; i < 4; i++){
                 Point2 p = Geometry.d8edge[i];
                 float offset = -Math.max(block.size - 1, 0) / 2f * tilesize;
