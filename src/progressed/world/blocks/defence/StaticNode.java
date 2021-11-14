@@ -363,6 +363,11 @@ public class StaticNode extends Block{
             }
         }
 
+        public float powerUse(){
+            if(!active || links.size <= 0) return 0;
+            return powerPerLink * links.size;
+        }
+
         @Override
         public boolean onConfigureTileTapped(Building other){
             if(linkValid(this, other)){
@@ -483,11 +488,7 @@ public class StaticNode extends Block{
     class StaticNodeConsumePower extends ConsumePower{
         @Override
         public float requestedPower(Building entity){
-            if(entity instanceof StaticNodeBuild e){
-                if(entity.tile().build == null || !e.active) return 0f;
-                if(e.links.size > 0) return ((StaticNode)entity.block).powerPerLink * e.links.size;
-            }
-            return 0f;
+            return ((StaticNodeBuild)entity).powerUse();
         }
     }
 }

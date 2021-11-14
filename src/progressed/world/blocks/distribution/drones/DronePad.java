@@ -594,17 +594,9 @@ public class DronePad extends Block{
     }
 
     protected class DronePadConsumePower extends ConsumePower{
-        public DronePadConsumePower(){
-            super();
-        }
-
         @Override
         public float requestedPower(Building entity){
-            if(entity instanceof DronePadBuild s){
-                return s.powerUse();
-            }
-
-            return super.requestedPower(entity);
+            return ((DronePadBuild)entity).powerUse();
         }
     }
 }

@@ -168,6 +168,10 @@ public class PayloadCrafter extends BlockProducer{
             time += heat * delta();
         }
 
+        public float powerUse(){
+            return recipe instanceof Missile m ? m.powerUse : 0f;
+        }
+
         @Override
         public void draw(){
             Draw.rect(region, x, y);
@@ -334,17 +338,9 @@ public class PayloadCrafter extends BlockProducer{
     }
 
     protected class PayloadCrafterConsumePower extends ConsumePower{
-        public PayloadCrafterConsumePower(){
-            super();
-        }
-
         @Override
         public float requestedPower(Building entity){
-            if(entity instanceof PayloadCrafterBuild s && s.recipe() instanceof Missile m){
-                return m.powerUse;
-            }
-
-            return super.requestedPower(entity);
+            return ((PayloadCrafterBuild)entity).powerUse();
         }
     }
 }
