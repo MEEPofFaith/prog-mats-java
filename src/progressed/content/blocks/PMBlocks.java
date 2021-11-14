@@ -36,6 +36,7 @@ import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.sandbox.*;
+import progressed.world.blocks.storage.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -116,6 +117,8 @@ public class PMBlocks implements ContentList{
 
     // endregion
     // region Effect
+
+    coreCovalence,
 
     fence, web,
 
@@ -1281,6 +1284,12 @@ public class PMBlocks implements ContentList{
 
         // endregion
         // region Effect
+        coreCovalence = new CoreLink("core-covalence"){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
+            size = 3;
+            consumes.power(20f);
+        }};
+
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(
                 Items.copper, 60,
