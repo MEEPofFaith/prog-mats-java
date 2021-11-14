@@ -21,7 +21,6 @@ import static mindustry.Vars.*;
 
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
-    private static final float[] v = new float[6];
 
     public static void plus(float x, float y, float diameter, float angle, Color color, float alpha){
         color(color, alpha);
@@ -191,40 +190,28 @@ public class PMDrawf{
         }
     }
 
-    /** @author EyeofDarkness */
-    public static void shiningCircle(int seed, float time, float x, float y, float radius, int spikes, float spikeDuration, float spikeWidth, float spikeHeight){
-        shiningCircle(seed, time, x, y, radius, spikes, spikeDuration, spikeWidth, spikeHeight, 0f);
+    public static void spinningCircle(int seed, float time, float x, float y, float radius, int spikes, float spikeDuration, float durationRnd, float spikeWidth, float spikeHeight, float pointOffset){
+        spinningCircle(seed, time, time, x, y, radius, spikes, spikeDuration, durationRnd, spikeWidth, spikeHeight, pointOffset);
     }
 
-    /** @author EyeofDarkness */
-    public static void shiningCircle(int seed, float time, float x, float y, float radius, int spikes, float spikeDuration, float spikeWidth, float spikeHeight, float angleDrift){
-        shiningCircle(seed, time, x, y, radius, spikes, spikeDuration, 0f, spikeWidth, spikeHeight, angleDrift);
-    }
-
-    /** @author EyeofDarkness */
-    public static void shiningCircle(int seed, float time, float x, float y, float radius, int spikes, float spikeDuration, float durationRange, float spikeWidth, float spikeHeight, float angleDrift){
+    public static void spinningCircle(int seed, float angle, float time, float x, float y, float radius, int spikes, float spikeDuration, float durationRnd, float spikeWidth, float spikeHeight, float pointOffset){
         Fill.circle(x, y, radius);
-        spikeWidth = Math.min(spikeWidth, 90f);
-        int idx;
 
         for(int i = 0; i < spikes; i++){
-            float d = spikeDuration * (durationRange > 0f ? Mathf.randomSeed((seed + i) * 41L, 1f - durationRange, 1f + durationRange) : 1f);
+            float d = spikeDuration + Mathf.randomSeedRange(seed + i + spikes, durationRnd);
             float timeOffset = Mathf.randomSeed((seed + i) * 314L, 0f, d);
             int timeSeed = Mathf.floor((time + timeOffset) / d);
+            float a = angle + Mathf.randomSeed(Math.max(timeSeed, 1) + ((i + seed) * 245L), 360f);
             float fin = ((time + timeOffset) % d) / d;
             float fslope = (0.5f - Math.abs(fin - 0.5f)) * 2f;
-            float angle = Mathf.randomSeed(Math.max(timeSeed, 1) + ((i + seed) * 245L), 360f);
-            if(fslope > 0.0001f){
-                idx = 0;
-                float drift = angleDrift > 0 ? Mathf.randomSeed(Math.max(timeSeed, 1) + ((i + seed) * 162L), -angleDrift, angleDrift) * fin : 0f;
-                for(int j = 0; j < 3; j++){
-                    float angB = (j * spikeWidth - (2f) * spikeWidth / 2f) + angle;
-                    Tmp.v1.trns(angB + drift, radius + (j == 1 ? (spikeHeight * fslope) : 0f)).add(x, y);
-                    v[idx++] = Tmp.v1.x;
-                    v[idx++] = Tmp.v1.y;
-                }
-                Fill.tri(v[0], v[1], v[2], v[3], v[4], v[5]);
-            }
+            vec1.trns(a + spikeWidth / 2f, radius).add(x, y);
+            vec2.trns(a - spikeWidth / 2f, radius).add(x, y);
+            vec3.trns(a + pointOffset, radius + spikeHeight * fslope).add(x, y);
+            Fill.tri(
+                vec1.x, vec1.y,
+                vec2.x, vec2.y,
+                vec3.x, vec3.y
+            );
         }
     }
 }

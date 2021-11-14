@@ -1286,7 +1286,11 @@ public class PMBlocks implements ContentList{
         // region Effect
         coreCovalence = new CoreLink("core-covalence"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
-            size = 3;
+            size = 5;
+            portalRad = 3f * tilesize / 2f * 0.625f;
+            clouds = 15;
+            minCloudSize = 0.5f;
+            maxCloudSize = 1.25f;
             consumes.power(20f);
         }};
 

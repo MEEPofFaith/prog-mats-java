@@ -21,7 +21,9 @@ import static mindustry.Vars.*;
 
 public class CoreLink extends Block{
     public float activationDelay = 60f;
-    public float portalRad = -1f;
+    public float portalRad = -1f, innerRadScl = 0.75f;
+    public int clouds;
+    public float minCloudSize = 1f, maxCloudSize = 1f;
     public Effect activationEffect = PMFx.linkActivation;
 
     public CoreLink(String name){
@@ -91,24 +93,32 @@ public class CoreLink extends Block{
             if(activef() > 0.01f){
                 Draw.z(Layer.bullet - 0.0001f);
 
-                float rad = portalRad * Interp.pow2Out.apply(activef());
-                float smallScl = 0.75f;
-                float drift = 60f;
+                float scl = Interp.pow2Out.apply(activef());
+                float rad = portalRad * scl;
                 Draw.color(team.color);
-                PMDrawf.shiningCircle(id, Time.time,
+                if(clouds > 0){
+                    for(int i = 0; i < clouds; i++){
+                        float angle = Time.time * 4f + Mathf.randomSeed((id + i) * 37L, 360f);
+                        float cRad = Mathf.randomSeed((id + i) * 52L, minCloudSize, maxCloudSize) * scl;
+                        Tmp.v1.trns(angle, rad).add(x, y);
+                        Fill.circle(Tmp.v1.x, Tmp.v1.y, cRad);
+                    }
+                }
+                PMDrawf.spinningCircle(
+                    id, Time.time * 4f, Time.time,
                     x, y, rad,
-                    3, 120f,
-                    rad * 2f, rad,
-                    drift
+                    3, 60f, 30f,
+                    20f, rad * 1.5f, -40f
+                );
+                PMDrawf.spinningCircle(
+                    id * 2, Time.time * 8f, Time.time,
+                    x, y, rad,
+                    3, 40f, 10f,
+                    30f, rad * 1.5f, -60f
                 );
 
                 Draw.color(Color.black);
-                PMDrawf.shiningCircle(id, Time.time,
-                    x, y, rad * smallScl,
-                    3, 120f,
-                    rad * smallScl * 2f, rad * smallScl,
-                    drift
-                );
+                Fill.circle(x, y, rad * innerRadScl);
             }
         }
 
