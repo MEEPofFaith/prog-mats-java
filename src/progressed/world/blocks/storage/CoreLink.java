@@ -21,7 +21,8 @@ public class CoreLink extends Block{
         separateItemCapacity = true;
         group = BlockGroup.transportation;
         flags = EnumSet.of(BlockFlag.storage);
-        allowResupply = true;
+        //allowResupply = true;
+        //will be false until my dynamic resupply pr is accepted
         envEnabled = Env.any;
         highUnloadPriority = true;
     }
@@ -60,6 +61,11 @@ public class CoreLink extends Block{
             if(linkedCore != null){
                 items = linkedCore.items;
             }
+        }
+
+        @Override
+        public boolean consValid(){
+            return super.consValid() && (power == null || power.status >= 1);
         }
 
         @Override
