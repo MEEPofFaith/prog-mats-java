@@ -242,6 +242,12 @@ public class PMTechTree implements ContentList{
             node(web);
         });
 
+        vanillaNode(overdriveDome, () -> {
+            node(systemBooster, Seq.with(
+                new Research(surgeTower)
+            ));
+        });
+
         vanillaNode(forceProjector, () -> {
             //Shield Projector
             node(shieldProjector, Seq.with(
