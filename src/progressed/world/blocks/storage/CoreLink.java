@@ -8,6 +8,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -47,6 +48,11 @@ public class CoreLink extends Block{
         super.init();
 
         if(portalRad < 0) portalRad = size * tilesize / 2f * 0.625f;
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return teamRegion.found() ? new TextureRegion[]{region, teamRegions[Team.sharded.id]} : new TextureRegion[]{region};
     }
 
     @Override
@@ -105,15 +111,15 @@ public class CoreLink extends Block{
                     }
                 }
                 PMDrawf.spinningCircle(
-                    id, Time.time * 4f, Time.time,
+                    id, Time.time * 3f, Time.time,
                     x, y, rad,
                     3, 60f, 30f,
                     20f, rad * 1.5f, -40f
                 );
                 PMDrawf.spinningCircle(
-                    id * 2, Time.time * 8f, Time.time,
+                    id * 2, Time.time * 6f, Time.time,
                     x, y, rad,
-                    3, 40f, 10f,
+                    3, 60f, 20f,
                     30f, rad * 1.5f, -60f
                 );
 

@@ -75,9 +75,7 @@ public class ShieldProjector extends ForceProjector{
 
     @Override
     protected TextureRegion[] icons(){
-        //use team region in vanilla team blocks
-        TextureRegion r = variants > 0 ? Core.atlas.find(name + "1") : region;
-        return teamRegion.found() ? new TextureRegion[]{r, teamRegions[Team.sharded.id]} : new TextureRegion[]{r};
+        return teamRegion.found() ? new TextureRegion[]{region, teamRegions[Team.sharded.id]} : new TextureRegion[]{region};
     }
 
     @Override
