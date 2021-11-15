@@ -1285,13 +1285,20 @@ public class PMBlocks implements ContentList{
         // endregion
         // region Effect
         coreCovalence = new CoreLink("core-covalence"){{
-            requirements(Category.effect, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.effect, with(
+                Items.copper, 6000,
+                Items.lead, 6000,
+                Items.silicon, 3000,
+                Items.titanium, 3000,
+                Items.thorium, 2000,
+                Items.phaseFabric, 1000
+            ));
             size = 4;
             portalRad = 3f * tilesize / 2f * 0.625f;
             clouds = 15;
             minCloudSize = 0.5f;
             maxCloudSize = 1.25f;
-            consumes.power(2000f / 60f);
+            consumes.power(42.5f);
         }};
 
         fence = new StaticNode("fence"){{

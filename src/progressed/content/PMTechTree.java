@@ -236,6 +236,14 @@ public class PMTechTree implements ContentList{
         });
 
         // Effect
+        vanillaNode(coreNucleus, () -> {
+            //Core link
+            node(coreCovalence, Seq.with(
+                new SectorComplete(SectorPresets.impact0078),
+                new Research(phaseConveyor)
+            ));
+        });
+
         vanillaNode(shockMine, () -> {
             //Static link
             node(fence);
@@ -243,6 +251,7 @@ public class PMTechTree implements ContentList{
         });
 
         vanillaNode(overdriveDome, () -> {
+            //Overdrive Diffuser
             node(systemBooster, Seq.with(
                 new Research(surgeTower)
             ));

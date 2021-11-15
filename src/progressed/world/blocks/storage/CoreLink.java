@@ -56,6 +56,13 @@ public class CoreLink extends Block{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.itemCapacity);
+    }
+
+    @Override
     public boolean outputsItems(){
         return false;
     }
@@ -114,13 +121,13 @@ public class CoreLink extends Block{
                     id, Time.time * 3f, Time.time,
                     x, y, rad,
                     3, 60f, 30f,
-                    20f, rad * 1.5f, -40f
+                    20f, rad * 1.125f, -40f
                 );
                 PMDrawf.spinningCircle(
                     id * 2, Time.time * 6f, Time.time,
                     x, y, rad,
                     3, 60f, 20f,
-                    30f, rad * 1.5f, -60f
+                    30f, rad * 1.25f, -60f
                 );
 
                 Draw.color(Color.black);
