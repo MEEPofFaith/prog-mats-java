@@ -21,6 +21,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.entities.bullet.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -73,6 +74,9 @@ public class PMBlocks implements ContentList{
 
     //Support
     allure, vaccinator,
+
+    //Anime sweep laser
+    incision,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -733,6 +737,20 @@ public class PMBlocks implements ContentList{
                 stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
             }
         };
+
+        incision = new PowerTurret("incision"){{
+            float brange = range = 15f * tilesize;
+
+            requirements(Category.turret, empty);
+            size = 3;
+            powerUse = 1f;
+
+            shootType = new SweepLaserBulletType(){{
+                speed = brange;
+                length = 6f * tilesize;
+                blastBullet = Bullets.standardCopper;
+            }};
+        }};
 
         sentinel = new AimLaserTurret("sentinel"){{
             requirements(Category.turret, with(
