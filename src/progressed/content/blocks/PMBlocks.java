@@ -1289,9 +1289,9 @@ public class PMBlocks implements ContentList{
                 Items.copper, 6000,
                 Items.lead, 6000,
                 Items.silicon, 3000,
-                Items.titanium, 3000,
                 Items.thorium, 2000,
-                Items.phaseFabric, 1000
+                Items.phaseFabric, 1000,
+                PMItems.tenelium, 3000
             ));
             size = 4;
             portalRad = 3f * tilesize / 2f * 0.625f;
