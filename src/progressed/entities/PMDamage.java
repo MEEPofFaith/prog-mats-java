@@ -161,7 +161,7 @@ public class PMDamage{
                 Building tile = world.build(cx, cy);
                 boolean collide = tile != null && collidedBlocks.add(tile.pos());
 
-                if(collide && damage > 0){
+                if(collide && damage > 0 && tile.team != team){
                     effect.at(tile.x, tile.y, angle, team.color);
                     tile.damage(damage);
                     check = true;
