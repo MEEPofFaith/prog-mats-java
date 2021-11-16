@@ -739,7 +739,7 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        incision = new PowerTurret("incision"){{
+        incision = new SweepLaserTurret("incision"){{
             float brange = range = 22f * tilesize;
 
             requirements(Category.turret, empty);
@@ -753,7 +753,7 @@ public class PMBlocks implements ContentList{
                 length = 8f * tilesize;
                 angleRnd = 25f;
                 blasts = 12;
-                blastBullet = new BombBulletType(120, 4f, "clear"){{
+                blastBullet = new BombBulletType(100, 32f, "clear"){{
                     lifetime = 0f;
                     hitEffect = Fx.explosion;
                 }};

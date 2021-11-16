@@ -40,6 +40,11 @@ public class SweepLaserBulletType extends BulletType{
 
     @Override
     public void update(Bullet b){
+        sweepBlast(b);
+        super.update(b);
+    }
+
+    public void sweepBlast(Bullet b){
         if(b.data instanceof SweepLaserData data){
             if(b.fin() >= blastTime && !data.blasted){
                 data.blasted = true;
@@ -60,8 +65,6 @@ public class SweepLaserBulletType extends BulletType{
                 }
             }
         }
-
-        super.update(b);
     }
 
     @Override
