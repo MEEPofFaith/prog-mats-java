@@ -201,9 +201,9 @@ public class StaticNode extends Block{
             Tmp.v3.trns(angle1 - 90f, space);
             float dst = Mathf.dst(x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y, x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y);
 
-            boolean hit = PMDamage.staticDamage(damage, team, shockEffect, status, statusDuration,
+            boolean hit = PMDamage.collideLine(damage, team, shockEffect, status, statusDuration,
                 x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y, angle1, dst,
-                hitAir, hitGround
+                hitGround, hitAir
             );
             if(hit){
                 PMFx.fakeLightningFast.at(x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y,

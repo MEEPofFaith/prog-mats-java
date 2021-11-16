@@ -40,37 +40,35 @@ public class SweepLaserBulletType extends BulletType{
 
     @Override
     public void update(Bullet b){
-        sweepBlast(b);
+        if(b.data instanceof SweepLaserData data){
+            if(b.fin() >= blastTime && !data.blasted){
+                sweepBlast(b, data);
+                data.blasted = true;
+            }
+        }
         super.update(b);
     }
 
-    public void sweepBlast(Bullet b){
-        if(b.data instanceof SweepLaserData data){
-            if(b.fin() >= blastTime && !data.blasted){
-                data.blasted = true;
-                float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-                Tmp.v1.trns(data.rotation - 90f + a, -length / 2f);
-                Tmp.v2.trns(data.rotation - 90f + a, length / 2f);
-                float time = b.lifetime - b.time;
-                float delay = time / (blasts - 1);
-                float x1 = data.x + Tmp.v1.x, y1 = data.y + Tmp.v1.y,
-                    x2 = data.x + Tmp.v2.x, y2 = data.y + Tmp.v2.y;
-                for(int i = 0; i < blasts; i++){
-                    int ii = i;
-                    Time.run(delay * i, () -> {
-                        float tx = Mathf.lerp(x1, x2, ii / (blasts - 1f)),
-                            ty = Mathf.lerp(y1, y2, ii / (blasts - 1f));
-                        blastBullet.create(b, tx, ty, data.rotation);
-                    });
-                }
-            }
+    public void sweepBlast(Bullet b, SweepLaserData data){
+        float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
+        Tmp.v1.trns(data.rotation - 90f + a, -length / 2f);
+        Tmp.v2.trns(data.rotation - 90f + a, length / 2f);
+        float time = b.lifetime - b.time;
+        float delay = time / (blasts - 1);
+        float x1 = data.x + Tmp.v1.x, y1 = data.y + Tmp.v1.y,
+            x2 = data.x + Tmp.v2.x, y2 = data.y + Tmp.v2.y;
+        for(int i = 0; i < blasts; i++){
+            int ii = i;
+            Time.run(delay * i, () -> {
+                float tx = Mathf.lerp(x1, x2, ii / (blasts - 1f)),
+                    ty = Mathf.lerp(y1, y2, ii / (blasts - 1f));
+                blastBullet.create(b, tx, ty, data.rotation);
+            });
         }
     }
 
     @Override
     public void draw(Bullet b){
-        super.draw(b);
-
         if(b.data instanceof SweepLaserData data){
             float fin = Mathf.curve(b.fin(), 0f, sweepTime);
             float fout = Mathf.curve(b.fin(), blastTime);

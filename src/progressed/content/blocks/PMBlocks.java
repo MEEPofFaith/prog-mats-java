@@ -77,7 +77,7 @@ public class PMBlocks implements ContentList{
     allure, vaccinator,
 
     //Anime sweep laser
-    incision,
+    incision, fissure,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -757,6 +757,22 @@ public class PMBlocks implements ContentList{
                     lifetime = 0f;
                     hitEffect = Fx.explosion;
                 }};
+            }};
+        }};
+
+        fissure = new SweepLaserTurret("fissure"){{
+            float brange = range = 25f * tilesize;
+
+            requirements(Category.turret, empty);
+            size = 4;
+            powerUse = 1f;
+            reloadTime = 2f * 60f;
+
+            shootType = new RiftBulletType(2000f){{
+                speed = brange;
+                drawSize = brange + 10f * tilesize;
+                length = 12f * tilesize;
+                angleRnd = 25f;
             }};
         }};
 

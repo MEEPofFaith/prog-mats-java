@@ -17,7 +17,7 @@ import static mindustry.Vars.*;
 public class PMDamage{
     private static final Rect rect = new Rect();
     private static final Rect hitrect = new Rect();
-    private static final Vec2 tr = new Vec2();
+    private static final Vec2 tr = new Vec2(), seg1 = new Vec2(), seg2 = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
     private static final IntSet collidedBlocks = new IntSet();
     private static Tile furthest;
@@ -97,12 +97,16 @@ public class PMDamage{
         return check;
     }
 
+    public static boolean collideLine(float damage, Team team, Effect effect, StatusEffect status, float statusDuration, float x, float y, float angle, float length, boolean ground, boolean air){
+        return collideLine(damage, team, effect, status, statusDuration, x, y, angle, length, ground, air, false);
+    }
+
     /**
      * Damages entities in a line.
-     * Only enemie units of the specified team are damaged.
+     * Only enemies of the specified team are damaged.
      */
-    public static boolean staticDamage(float damage, Team team, Effect effect, StatusEffect status, float statusDuration, float x, float y, float angle, float length, boolean air, boolean ground){
-        tr.trns(angle, length);
+    public static boolean collideLine(float damage, Team team, Effect effect, StatusEffect status, float statusDuration, float x, float y, float angle, float length, boolean ground, boolean air, boolean buildings){
+        tr.trnsExact(angle, length);
 
         rect.setPosition(x, y).setSize(tr.x, tr.y);
         float x2 = tr.x + x, y2 = tr.y + y;
@@ -149,6 +153,36 @@ public class PMDamage{
 
         units.sort(u -> u.dst2(x, y));
         units.each(cons);
+
+        if(buildings){
+            collidedBlocks.clear();
+
+            Intc2 collider = (cx, cy) -> {
+                Building tile = world.build(cx, cy);
+                boolean collide = tile != null && collidedBlocks.add(tile.pos());
+
+                if(collide && damage > 0){
+                    effect.at(tile.x, tile.y, angle, team.color);
+                    tile.damage(damage);
+                    check = true;
+                }
+            };
+
+            seg1.set(x, y);
+            seg2.set(seg1).add(tr);
+            world.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
+                collider.get(cx, cy);
+
+                for(Point2 p : Geometry.d4){
+                    Tile other = world.tile(p.x + cx, p.y + cy);
+                    if(other != null && Intersector.intersectSegmentRectangle(seg1, seg2, other.getBounds(Tmp.r1))){
+                        collider.get(cx + p.x, cy + p.y);
+                    }
+                }
+                return false;
+            });
+        }
+
         return check;
     }
 

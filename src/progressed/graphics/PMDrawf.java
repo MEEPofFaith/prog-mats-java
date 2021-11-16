@@ -226,4 +226,16 @@ public class PMDrawf{
             );
         }
     }
+
+    /** @author sunny */
+    public static void border(float x1, float y1, float x2, float y2, float height, Color bottomColor, Color topColor){
+        float c1f = bottomColor.toFloatBits();
+        float c2f = topColor.toFloatBits();
+        float x3 = x1 + height * (x1 - Core.camera.position.x);
+        float y3 = y1 + height * (y1 - Core.camera.position.y);
+        float x4 = x2 + height * (x2 - Core.camera.position.x);
+        float y4 = y2 + height * (y2 - Core.camera.position.y);
+
+        Fill.quad(x1, y1, c1f, x2, y2, c1f, x4, y4, c2f, x3, y3, c2f);
+    }
 }
