@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -739,16 +740,23 @@ public class PMBlocks implements ContentList{
         };
 
         incision = new PowerTurret("incision"){{
-            float brange = range = 15f * tilesize;
+            float brange = range = 22f * tilesize;
 
             requirements(Category.turret, empty);
             size = 3;
             powerUse = 1f;
+            reloadTime = 2f * 60f;
 
             shootType = new SweepLaserBulletType(){{
                 speed = brange;
-                length = 6f * tilesize;
-                blastBullet = Bullets.standardCopper;
+                drawSize = brange + 10f * tilesize;
+                length = 8f * tilesize;
+                angleRnd = 25f;
+                blasts = 12;
+                blastBullet = new BombBulletType(120, 4f, "clear"){{
+                    lifetime = 0f;
+                    hitEffect = Fx.explosion;
+                }};
             }};
         }};
 

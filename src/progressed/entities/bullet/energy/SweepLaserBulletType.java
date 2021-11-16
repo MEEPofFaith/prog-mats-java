@@ -1,26 +1,31 @@
 package progressed.entities.bullet.energy;
 
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import progressed.graphics.*;
 
 public class SweepLaserBulletType extends BulletType{
+    public Color color = Color.red;
     public float length = 1f, width = 1f;
     public float radius = 2f;
-    public float angleRnd, sweepTime = 0.5f;
-    public int blasts = 6;
+    public float angleRnd, sweepTime = 0.375f, blastTime = 0.625f;
+    public int blasts = 2;
 
     public BulletType blastBullet;
 
     /** Just like with {@link PointBulletType}, speed = range */
     public SweepLaserBulletType(){
         scaleVelocity = true;
-        lifetime = 20f;
+        lifetime = 40f;
         collides = keepVelocity = backMove = false;
         absorbable = hittable = false;
+        hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
     }
 
     @Override
@@ -36,9 +41,9 @@ public class SweepLaserBulletType extends BulletType{
     @Override
     public void update(Bullet b){
         if(b.data instanceof SweepLaserData data){
-            if(b.fin() >= sweepTime && !data.blasted){
+            if(b.fin() >= blastTime && !data.blasted){
                 data.blasted = true;
-                float a = Mathf.randomSeedRange(b.id, angleRnd);
+                float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
                 Tmp.v1.trns(data.rotation - 90f + a, -length / 2f);
                 Tmp.v2.trns(data.rotation - 90f + a, length / 2f);
                 float time = b.lifetime - b.time;
@@ -48,7 +53,6 @@ public class SweepLaserBulletType extends BulletType{
                 for(int i = 0; i < blasts; i++){
                     int ii = i;
                     Time.run(delay * i, () -> {
-                        if(!b.isAdded() && ii / (blasts - 1f) != 1f) return;
                         float tx = Mathf.lerp(x1, x2, ii / (blasts - 1f)),
                             ty = Mathf.lerp(y1, y2, ii / (blasts - 1f));
                         blastBullet.create(b, tx, ty, data.rotation);
@@ -66,15 +70,38 @@ public class SweepLaserBulletType extends BulletType{
 
         if(b.data instanceof SweepLaserData data){
             float fin = Mathf.curve(b.fin(), 0f, sweepTime);
-            float fout = Mathf.curve(b.fin(), sweepTime);
-            float a = Mathf.randomSeedRange(b.id, angleRnd);
+            float fout = Mathf.curve(b.fin(), blastTime);
+            float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
             Tmp.v1.trns(data.rotation - 90f + a, length * fout - length / 2);
             Tmp.v2.trns(data.rotation - 90f + a, length * fin - length / 2f);
+
+            Lines.stroke(width, color);
+            PMDrawf.baseTri(
+                data.x + Tmp.v1.x, data.y + Tmp.v1.y,
+                width, width * 2f,
+                data.rotation + 90 + a
+            );
+            PMDrawf.baseTri(
+                data.x + Tmp.v2.x, data.y + Tmp.v2.y,
+                width, width * 2f,
+                data.rotation - 90 + a
+            );
 
             Lines.line(
                 data.x + Tmp.v1.x, data.y + Tmp.v1.y,
                 data.x + Tmp.v2.x, data.y + Tmp.v2.y
             );
+
+            if(fin < 1){
+                Lines.line(
+                    b.x, b.y,
+                    data.x + Tmp.v2.x, data.y + Tmp.v2.y
+                );
+                Fill.circle(
+                    data.x + Tmp.v2.x, data.y + Tmp.v2.y,
+                    radius
+                );
+            }
         }
     }
 

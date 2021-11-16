@@ -60,9 +60,21 @@ public class PMDrawf{
         lineAngleCenter(x, y, angle, length - width, false);
         
         for(int i = 0; i < 2; i++){
-            Tmp.v1.trns(angle + 180f * i, length / 2f - width / 2f);
-            Fill.circle(x + Tmp.v1.x, y + Tmp.v1.y, width / 2f);
+            vec1.trns(angle + 180f * i, length / 2f - width / 2f);
+            Fill.circle(x + vec1.x, y + vec1.y, width / 2f);
         }
+    }
+
+    public static void baseTri(float x, float y, float b, float h, float rot){
+        vec1.trns(rot, h).add(x, y);
+        vec2.trns(rot - 90f, b / 2f).add(x, y);
+        vec3.trns(rot + 90f, b / 2f).add(x, y);
+
+        Fill.tri(
+            vec1.x, vec1.y,
+            vec2.x, vec2.y,
+            vec3.x, vec3.y
+        );
     }
 
     public static void target(float x, float y, float angle, float radius, Color ringColor, Color spikeColor, float alpha){
@@ -88,15 +100,15 @@ public class PMDrawf{
         for(int s = 0; s < colors.length; s++){
             color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + absin(Time.time, 1f, 0.1f)));
             for(int i = 0; i < tscales.length; i++){
-                Tmp.v1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
+                vec1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
                 stroke((width + absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
-                lineAngle(x + Tmp.v1.x, y + Tmp.v1.y, angle, length * lenscales[i], false);
+                lineAngle(x + vec1.x, y + vec1.y, angle, length * lenscales[i], false);
             }
         }
 
-        Tmp.v1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
-        Tmp.v2.trns(angle, length * lenscales[lenscales.length - 1]);
-        Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, width * 2f, lightColor, 0.7f * alpha);
+        vec1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
+        vec2.trns(angle, length * lenscales[lenscales.length - 1]);
+        Drawf.light(team, x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y, width * 2f, lightColor, 0.7f * alpha);
     }
 
     public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
