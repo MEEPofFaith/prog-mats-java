@@ -3,18 +3,20 @@ package progressed.entities.bullet.energy;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import progressed.graphics.*;
 
 public class SweepLaserBulletType extends BulletType{
     public Color color = Color.red;
     public float length = 1f, width = 1f;
     public float radius = 2f;
-    public float angleRnd, sweepTime = 0.375f, blastTime = 0.625f;
+    public float angleRnd;
+    public float extendTime = 0.125f, retractTime = -1f,
+        sweepTime = 0.5f, blastTime = 0.625f;
     public int blasts = 2;
 
     public BulletType blastBullet;
@@ -26,6 +28,14 @@ public class SweepLaserBulletType extends BulletType{
         collides = keepVelocity = backMove = false;
         absorbable = hittable = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
+        layer = Layer.groundUnit + 0.1f;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(retractTime < 0) retractTime = sweepTime + extendTime;
     }
 
     @Override
@@ -70,36 +80,42 @@ public class SweepLaserBulletType extends BulletType{
     @Override
     public void draw(Bullet b){
         if(b.data instanceof SweepLaserData data){
-            float fin = Mathf.curve(b.fin(), 0f, sweepTime);
+            float fin = Mathf.curve(b.fin(), extendTime, sweepTime);
             float fout = Mathf.curve(b.fin(), blastTime);
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-            Tmp.v1.trns(data.rotation - 90f + a, length * fout - length / 2);
-            Tmp.v2.trns(data.rotation - 90f + a, length * fin - length / 2f);
+            Tmp.v1.trns(data.rotation - 90f + a, length * fout - length / 2).add(data.x, data.y);
+            Tmp.v2.trns(data.rotation - 90f + a, length * fin - length / 2f).add(data.x, data.y);
 
             Lines.stroke(width, color);
             PMDrawf.baseTri(
-                data.x + Tmp.v1.x, data.y + Tmp.v1.y,
+                Tmp.v1.x, Tmp.v1.y,
                 width, width * 2f,
                 data.rotation + 90 + a
             );
             PMDrawf.baseTri(
-                data.x + Tmp.v2.x, data.y + Tmp.v2.y,
+                Tmp.v2.x, Tmp.v2.y,
                 width, width * 2f,
                 data.rotation - 90 + a
             );
 
             Lines.line(
-                data.x + Tmp.v1.x, data.y + Tmp.v1.y,
-                data.x + Tmp.v2.x, data.y + Tmp.v2.y
+                Tmp.v1.x, Tmp.v1.y,
+                Tmp.v2.x, Tmp.v2.y
             );
 
-            if(fin < 1){
+            //Line
+            float lfin = Mathf.curve(b.fin(), 0f, extendTime);
+            float lfout = 1f - Mathf.curve(b.fin(), sweepTime, retractTime);
+            float lscl = lfin * lfout;
+            if(lscl > 0.01f){
+                float lx = Mathf.lerp(b.x, Tmp.v2.x, lscl),
+                    ly = Mathf.lerp(b.y, Tmp.v2.y, lscl);
                 Lines.line(
                     b.x, b.y,
-                    data.x + Tmp.v2.x, data.y + Tmp.v2.y
+                    lx, ly
                 );
                 Fill.circle(
-                    data.x + Tmp.v2.x, data.y + Tmp.v2.y,
+                    lx, ly,
                     radius
                 );
             }

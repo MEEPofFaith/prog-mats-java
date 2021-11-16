@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 
@@ -18,7 +17,6 @@ public class RiftBulletType extends SweepLaserBulletType{
         color = Color.black;
         collidesGround = collidesTiles = true;
         collidesAir = false;
-        layer = Layer.groundUnit + 0.1f;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class RiftBulletType extends SweepLaserBulletType{
     @Override
     public void draw(Bullet b){
         if(b.data instanceof SweepLaserData data){
-            float fin = Mathf.curve(b.fin(), 0f, sweepTime);
+            float fin = Mathf.curve(b.fin(), extendTime, sweepTime);
             float fout = 1f - Mathf.curve(b.fin(), blastTime);
             float w = width * fout;
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
@@ -69,21 +67,29 @@ public class RiftBulletType extends SweepLaserBulletType{
                 Tmp.v2.x, Tmp.v2.y
             );
 
-            if(fin < 1){
+            //Line
+            float lfin = Mathf.curve(b.fin(), 0f, extendTime);
+            float lfout = 1f - Mathf.curve(b.fin(), sweepTime, retractTime);
+            float lscl = lfin * lfout;
+            if(lscl > 0.01f){
+                float lx1 = Mathf.lerp(b.x, Tmp.v1.x, lscl),
+                    ly1 = Mathf.lerp(b.y, Tmp.v1.y, lscl),
+                    lx2 = Mathf.lerp(b.x, Tmp.v2.x, lscl),
+                    ly2 = Mathf.lerp(b.y, Tmp.v2.y, lscl);
                 Lines.line(
                     b.x, b.y,
-                    Tmp.v1.x, Tmp.v1.y
+                    lx1, ly1
                 );
                 Fill.circle(
-                    Tmp.v1.x, Tmp.v1.y,
+                    lx1, ly1,
                     radius
                 );
                 Lines.line(
                     b.x, b.y,
-                    Tmp.v2.x, Tmp.v2.y
+                    lx2, ly2
                 );
                 Fill.circle(
-                    Tmp.v2.x, Tmp.v2.y,
+                    lx2, ly2,
                     radius
                 );
             }
