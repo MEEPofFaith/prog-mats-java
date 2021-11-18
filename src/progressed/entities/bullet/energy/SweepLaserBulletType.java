@@ -50,52 +50,52 @@ public class SweepLaserBulletType extends BulletType{
 
     @Override
     public void update(Bullet b){
-        if(b.data instanceof SweepLaserData data){
-            if(b.fin() >= blastTime && !data.blasted){
-                sweepBlast(b, data);
-                data.blasted = true;
+        if(b.data instanceof SweepLaserData d){
+            if(b.fin() >= blastTime && !d.blasted){
+                sweepBlast(b, d);
+                d.blasted = true;
             }
         }
         super.update(b);
     }
 
-    public void sweepBlast(Bullet b, SweepLaserData data){
+    public void sweepBlast(Bullet b, SweepLaserData d){
         float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-        Tmp.v1.trns(data.rotation - 90f + a, -length / 2f);
-        Tmp.v2.trns(data.rotation - 90f + a, length / 2f);
+        Tmp.v1.trns(d.rotation - 90f + a, -length / 2f);
+        Tmp.v2.trns(d.rotation - 90f + a, length / 2f);
         float time = b.lifetime - b.time;
         float delay = time / (blasts - 1);
-        float x1 = data.x + Tmp.v1.x, y1 = data.y + Tmp.v1.y,
-            x2 = data.x + Tmp.v2.x, y2 = data.y + Tmp.v2.y;
+        float x1 = d.x + Tmp.v1.x, y1 = d.y + Tmp.v1.y,
+            x2 = d.x + Tmp.v2.x, y2 = d.y + Tmp.v2.y;
         for(int i = 0; i < blasts; i++){
             int ii = i;
             Time.run(delay * i, () -> {
                 float tx = Mathf.lerp(x1, x2, ii / (blasts - 1f)),
                     ty = Mathf.lerp(y1, y2, ii / (blasts - 1f));
-                blastBullet.create(b, tx, ty, data.rotation);
+                blastBullet.create(b, tx, ty, d.rotation);
             });
         }
     }
 
     @Override
     public void draw(Bullet b){
-        if(b.data instanceof SweepLaserData data){
+        if(b.data instanceof SweepLaserData d){
             float fin = Mathf.curve(b.fin(), extendTime, sweepTime);
             float fout = Mathf.curve(b.fin(), blastTime);
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-            Tmp.v1.trns(data.rotation - 90f + a, length * fout - length / 2).add(data.x, data.y);
-            Tmp.v2.trns(data.rotation - 90f + a, length * fin - length / 2f).add(data.x, data.y);
+            Tmp.v1.trns(d.rotation - 90f + a, length * fout - length / 2).add(d.x, d.y);
+            Tmp.v2.trns(d.rotation - 90f + a, length * fin - length / 2f).add(d.x, d.y);
 
             Lines.stroke(width, color);
             PMDrawf.baseTri(
                 Tmp.v1.x, Tmp.v1.y,
                 width, width * 2f,
-                data.rotation + 90 + a
+                d.rotation + 90 + a
             );
             PMDrawf.baseTri(
                 Tmp.v2.x, Tmp.v2.y,
                 width, width * 2f,
-                data.rotation - 90 + a
+                d.rotation - 90 + a
             );
 
             Lines.line(

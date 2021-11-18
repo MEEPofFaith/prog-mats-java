@@ -580,6 +580,9 @@ public class PMBlocks implements ContentList{
                 cooldown *= timeScl;
                 speed = 3f;
                 rotateSpeed = 4.5f;
+                float pitchDecrease = 0.25f;
+                minPitch -= pitchDecrease;
+                maxPitch -= pitchDecrease;
             }
 
             @Override
@@ -746,6 +749,7 @@ public class PMBlocks implements ContentList{
             size = 3;
             powerUse = 1f;
             reloadTime = 2f * 60f;
+            shootSound = Sounds.plasmadrop;
 
             shootType = new SweepLaserBulletType(){{
                 speed = brange;
@@ -767,6 +771,7 @@ public class PMBlocks implements ContentList{
             size = 4;
             powerUse = 1f;
             reloadTime = 2f * 60f;
+            shootSound = Sounds.plasmadrop;
 
             shootType = new RiftBulletType(2000f){{
                 speed = brange;
@@ -891,7 +896,7 @@ public class PMBlocks implements ContentList{
                 heatColor = Pal.surge;
                 chargeTime = 180f;
                 chargeSound = PMSounds.popeshadowCharge;
-                shootSound = PMSounds.popeshadowBlast;
+                shootSound = Sounds.laserblast;
                 rotateSpeed = 2f;
                 recoilAmount = 8f;
                 restitution = 0.05f;

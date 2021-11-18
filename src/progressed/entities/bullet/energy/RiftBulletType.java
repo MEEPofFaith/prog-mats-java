@@ -4,11 +4,14 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
+import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 
 public class RiftBulletType extends SweepLaserBulletType{
+    public float riftHeight = 0.5f;
     public Color edgeColor;
 
     public RiftBulletType(float damage){
@@ -17,6 +20,7 @@ public class RiftBulletType extends SweepLaserBulletType{
         color = Color.black;
         collidesGround = collidesTiles = true;
         collidesAir = false;
+        hitSound = PMSounds.riftSplit;
     }
 
     @Override
@@ -27,10 +31,12 @@ public class RiftBulletType extends SweepLaserBulletType{
     }
 
     @Override
-    public void sweepBlast(Bullet b, SweepLaserData data){
+    public void sweepBlast(Bullet b, SweepLaserData d){
         float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-        Tmp.v1.trns(data.rotation - 90f + a, -length / 2f).add(data.x, data.y);
-        Tmp.v2.trns(data.rotation - 90f + a, length / 2f).add(data.x, data.y);
+        Tmp.v1.trns(d.rotation - 90f + a, -length / 2f).add(d.x, d.y);
+        Tmp.v2.trns(d.rotation - 90f + a, length / 2f).add(d.x, d.y);
+        Effect.shake(hitShake, hitShake, d.x, d.y);
+        hitSound.at(d.x, d.y, hitSoundPitch, hitSoundVolume);
         PMDamage.collideLine(
             damage, b.team,
             hitEffect, status, statusDuration,
@@ -42,24 +48,24 @@ public class RiftBulletType extends SweepLaserBulletType{
 
     @Override
     public void draw(Bullet b){
-        if(b.data instanceof SweepLaserData data){
+        if(b.data instanceof SweepLaserData d){
             float fin = Mathf.curve(b.fin(), extendTime, sweepTime);
             float fout = 1f - Mathf.curve(b.fin(), blastTime);
             float w = width * fout;
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
-            Tmp.v1.trns(data.rotation - 90f + a, -length / 2f * fin).add(data.x, data.y);
-            Tmp.v2.trns(data.rotation - 90f + a, length / 2f * fin).add(data.x, data.y);
+            Tmp.v1.trns(d.rotation - 90f + a, -length / 2f * fin).add(d.x, d.y);
+            Tmp.v2.trns(d.rotation - 90f + a, length / 2f * fin).add(d.x, d.y);
 
             Lines.stroke(w, color);
             PMDrawf.baseTri(
                 Tmp.v1.x, Tmp.v1.y,
                 w, w * 2f,
-                data.rotation + 90 + a
+                d.rotation + 90 + a
             );
             PMDrawf.baseTri(
                 Tmp.v2.x, Tmp.v2.y,
                 w, w * 2f,
-                data.rotation - 90 + a
+                d.rotation - 90 + a
             );
 
             Lines.line(
@@ -100,7 +106,7 @@ public class RiftBulletType extends SweepLaserBulletType{
                 PMDrawf.border(
                     Tmp.v1.x, Tmp.v1.y,
                     Tmp.v2.x, Tmp.v2.y,
-                    0.4f,
+                    riftHeight,
                     Tmp.c1, Tmp.c2
                 );
             }
