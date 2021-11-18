@@ -32,7 +32,10 @@ public class ProgMats extends Mod{
 
     public ProgMats(){
         super();
-        Events.on(ClientLoadEvent.class, e -> settingAdder.init());
+        Events.on(ClientLoadEvent.class, e -> {
+            settingAdder.init();
+            PMPal.init();
+        });
 
         // Load all assets once they're added into Vars.tree
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {

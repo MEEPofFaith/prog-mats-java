@@ -1,8 +1,10 @@
 package progressed.graphics;
 
 import arc.graphics.*;
+import arc.util.*;
 
 import static arc.graphics.Color.*;
+import static mindustry.Vars.*;
 
 public class PMPal{
     //Single colors
@@ -26,7 +28,25 @@ public class PMPal{
 
     //Color sets
     public static Color[]
+    itemColors,
+    liquidColors,
 
     apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, white},
     pissbeamColors = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), white};
+
+    public static void init(){
+        int items = content.items().size;
+        itemColors = new Color[items + 1];
+        for(int i = 0; i < items; i++){
+            itemColors[i] = content.item(i).color;
+        }
+        itemColors[items] = content.items().first().color;
+
+        int liquids = content.liquids().size;
+        liquidColors = new Color[liquids + 1];
+        for(int i = 0; i < liquids; i++){
+            liquidColors[i] = content.liquid(i).color;
+        }
+        liquidColors[liquids] = content.liquids().first().color;
+    }
 }

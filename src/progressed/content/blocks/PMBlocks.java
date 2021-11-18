@@ -136,7 +136,10 @@ public class PMBlocks implements ContentList{
     harbinger, everythingGun, omegaCharger,
 
     //Distribution
-    sandDriver,
+    everythingItemSource, sandDriver,
+
+    //liquid
+    everythingLiquidSource,
     
     //Power
     strobeNode, strobeInf, strobeBoost, 
@@ -1489,6 +1492,8 @@ public class PMBlocks implements ContentList{
         }};
 
         /// Distribution
+        everythingItemSource = new EverythingItemSource("everything-item-source");
+
         sandDriver = new SandDriver("sand-driver"){{
             size = 3;
             itemCapacity = 180;
@@ -1498,6 +1503,9 @@ public class PMBlocks implements ContentList{
             range = 560f;
             consumes.power(0.1f);
         }};
+
+        /// Liquid
+        everythingLiquidSource = new EverythingLiquidSource("everything-liquid-source");
 
         /// Power
         strobeNode = new StrobeNode("rainbow-power-node");
