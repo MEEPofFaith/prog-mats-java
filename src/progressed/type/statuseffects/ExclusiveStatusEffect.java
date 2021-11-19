@@ -16,7 +16,7 @@ public class ExclusiveStatusEffect extends StatusEffect{
 
         //This effect gets replaced by the new effect.
         exclusives.each(s -> {
-            transitions.put(s, ((unit, result, time) -> result.set(s, result.time)));
+            transitions.put(s, ((unit, result, time) -> result.set(s, time)));
             opposites.add(s);
         });
     }
