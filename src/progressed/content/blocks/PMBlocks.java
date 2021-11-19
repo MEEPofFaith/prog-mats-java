@@ -781,6 +781,8 @@ public class PMBlocks implements ContentList{
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
                 angleRnd = 25f;
+                hitSound = PMSounds.riftSplit;
+                hitSoundVolume = 0.2f;
             }};
         }};
 

@@ -6,7 +6,6 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
-import progressed.content.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 
@@ -20,7 +19,6 @@ public class RiftBulletType extends SweepLaserBulletType{
         color = Color.black;
         collidesGround = collidesTiles = true;
         collidesAir = false;
-        hitSound = PMSounds.riftSplit;
     }
 
     @Override
