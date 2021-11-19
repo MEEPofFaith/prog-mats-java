@@ -28,7 +28,7 @@ public class SweepLaserBulletType extends BulletType{
         collides = keepVelocity = backMove = false;
         absorbable = hittable = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
-        layer = Layer.groundUnit + 0.1f;
+        layer = Layer.effect + 1f;
     }
 
     @Override

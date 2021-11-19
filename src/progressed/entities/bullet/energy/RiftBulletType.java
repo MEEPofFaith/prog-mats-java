@@ -19,6 +19,7 @@ public class RiftBulletType extends SweepLaserBulletType{
         color = Color.black;
         collidesGround = collidesTiles = true;
         collidesAir = false;
+        layer++;
     }
 
     @Override
