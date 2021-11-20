@@ -25,11 +25,10 @@ import static mindustry.Vars.*;
 public class ArcMissileBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, snapRot, randRot;
-    public float weaveWidth, weaveSpeed;
     public Effect rocketEffect = PMFx.rocketSmoke;
     public float trailChance = 0.5f, smokeTrailChance = 0.75f;
     public float targetRadius = 1f;
-    public float riseEngineTime, riseEngineSize = 8f, fallEngineTime = 8f, fallEngineSize = 6f;
+    public float riseEngineTime, riseEngineSize = 8f, fallEngineTime = -1f, fallEngineSize = 6f;
     public float trailRnd = 3f, trailSize = 0.5f;
     public float riseTime = 60f, fallTime = 20f, elevation = 1f, shadowOffset;
     public float riseEngineLightRadius = 50f, fallEngineLightRadius = 42f, engineLightOpacity = 0.5f;
@@ -62,9 +61,8 @@ public class ArcMissileBulletType extends BasicBulletType{
         super.init();
 
         drawSize = elevation + 64f;
-        if(blockEffect == Fx.none){
-            blockEffect = despawnEffect;
-        }
+        if(blockEffect == Fx.none) blockEffect = despawnEffect;
+        if(fallEngineTime < 0) fallEngineTime = fallTime;
 
         if(Core.settings.getBool("pm-farting") && hitSound != Sounds.none){
             hitSound = Sounds.wind3;
@@ -93,9 +91,8 @@ public class ArcMissileBulletType extends BasicBulletType{
             if(rise < 0.99f && Mathf.chanceDelta(smokeTrailChance)){
                 float x = data.x;
                 float y = data.y;
-                float rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
-                float weave = weaveWidth > 0f ? Mathf.sin(b.time * weaveSpeed) * weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1f))] * rise : 0f;
-                rocketEffect.at(x + weave + Mathf.range(trailRnd * rRocket), y + rise * elevation + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
+                float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
+                rocketEffect.at(x + Mathf.range(trailRnd * rRocket), y + rise * elevation + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
             }
 
             //Instant drop
@@ -264,9 +261,8 @@ public class ArcMissileBulletType extends BasicBulletType{
             float fadeOut = 1f - rise;
             float fadeIn = Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime);
             float fall = 1f - fadeIn;
-            float a = fadeOut + Interp.pow5Out.apply(fadeIn);
+            float a = Interp.pow2Out.apply(fadeOut) + Interp.pow2Out.apply(fadeIn);
             float rot = (snapRot ? b.rotation() + 90f : rise * riseSpin + fadeIn * fallSpin) + (randRot ? Mathf.randomSeed(b.id, 360f) : 0f);
-            float weave = Mathf.sin(b.time * weaveSpeed) * weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1f))];
             Tmp.v1.trns(225f, rise * fall * shadowOffset * 2f);
 
             //Target
@@ -284,10 +280,10 @@ public class ArcMissileBulletType extends BasicBulletType{
 
             //Missile
             if(fadeOut > 0 && fadeIn == 0){
-                float rWeave = weaveWidth > 0f ? weave * rise : 0f;
-                float rX = x + rWeave + PMDrawf.cameraXOffset(x, rise * elevation);
+                float rX = x + PMDrawf.cameraXOffset(x, rise * elevation);
                 float rY = y + PMDrawf.cameraYOffset(y, rise * elevation);
-                float rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
+                float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
+                Draw.scl(rRocket);
                 //Engine stolen from launchpad
                 if(riseEngineSize > 0f){
                     Draw.z(Layer.effect + 0.001f);
@@ -298,13 +294,13 @@ public class ArcMissileBulletType extends BasicBulletType{
                 drawMissile(b.team, frontRegion, rX, rY, rot, a);
                 //Missile shadow
                 Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(frontRegion, x + rWeave + Tmp.v1.x, y + Tmp.v1.y, rot, a);
+                drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, a);
             }else if(fadeOut == 0f && fadeIn > 0f){
-                float fWeave = weaveWidth > 0f ? weave * fall : 0f;
-                float fX = b.x + fWeave + PMDrawf.cameraXOffset(b.x, fall * elevation);
+                float fX = b.x + PMDrawf.cameraXOffset(b.x, fall * elevation);
                 float fY = b.y + PMDrawf.cameraYOffset(b.y, fall * elevation);
                 float rot2 = rot + 180f + Mathf.randomSeed(b.id + 3, 360f);
                 float fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime - fallTime + fallEngineTime));
+                Draw.scl(fRocket);
                 //Missile itself
                 Draw.z(Layer.weather - 2f);
                 drawMissile(b.team, backRegion, fX, fY, rot2, a);
@@ -315,7 +311,7 @@ public class ArcMissileBulletType extends BasicBulletType{
                 }
                 //Missile shadow
                 Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(backRegion, b.x + fWeave + Tmp.v1.x, b.y + Tmp.v1.y, rot2, a);
+                drawShadow(backRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, rot2, a);
             }
 
             Draw.reset();
@@ -325,20 +321,20 @@ public class ArcMissileBulletType extends BasicBulletType{
     public void drawMissile(Team team, TextureRegion region, float x, float y, float rot, float a){
         Draw.color();
         Draw.alpha(a);
-        Draw.rect(region, x, y, region.width * Draw.scl, region.height * Draw.scl, rot);
+        Draw.rect(region, x, y, rot);
         Drawf.light(team, x, y, lightRadius, lightColor, lightOpacity);
     }
 
-    public void drawEngine(Team team, float x, float y, float size, float lightRadius, float mul, long seed){
+    public void drawEngine(Team team, float x, float y, float size, float lightRadius, float scl, long seed){
         Draw.color(engineLightColor);
-        Fill.light(x, y, 10, size * 1.5625f * mul, Tmp.c1.set(Pal.engine).mul(1f, 1f, 1f, mul), Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f));
-        PMDrawf.cross(x, y, size * 0.375f, size * 2.5f * mul, Time.time * 1.5f + Mathf.randomSeed(seed, 360f));
-        Drawf.light(team, x, y, lightRadius * mul, engineLightColor, engineLightOpacity * mul);
+        Fill.light(x, y, 10, size * 1.5625f * scl, Tmp.c1.set(Pal.engine).mul(1f, 1f, 1f, scl), Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f));
+        PMDrawf.cross(x, y, size * 0.375f, size * 2.5f * scl, Time.time * 1.5f + Mathf.randomSeed(seed, 360f));
+        Drawf.light(team, x, y, lightRadius * scl, engineLightColor, engineLightOpacity * scl);
     }
 
     public void drawShadow(TextureRegion region, float x, float y, float rot, float a){
         Draw.color(0f, 0f, 0f, 0.22f * a);
-        Draw.rect(region, x, y, region.width * Draw.scl, region.height * Draw.scl, rot);
+        Draw.rect(region, x, y, rot);
     }
 
     @Override

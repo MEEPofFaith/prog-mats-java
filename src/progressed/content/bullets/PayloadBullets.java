@@ -173,8 +173,6 @@ public class PayloadBullets implements ContentList{
             shadowOffset = 150f;
             riseTime = 30f;
             fallTime = 20f;
-            weaveWidth = 12f;
-            weaveSpeed = 0.3f;
 
             autoDropRadius = 0f;
             stopRadius = 8f;
