@@ -161,7 +161,7 @@ public class ApotheosisChargeTower extends Block{
             super.placed();
 
             if(getNexus() == null){
-                Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild n);
+                Building find = indexer.findTile(team, x, y, range * tilesize, b -> b instanceof ApotheosisNexusBuild);
                 if(find != null){
                     configure(find.pos());
                 }

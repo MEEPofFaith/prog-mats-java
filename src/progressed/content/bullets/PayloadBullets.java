@@ -170,7 +170,7 @@ public class PayloadBullets implements ContentList{
 
             targetColor = PMPal.missileBasic;
 
-            elevation = 150f;
+            shadowOffset = 150f;
             riseTime = 30f;
             fallTime = 20f;
             weaveWidth = 12f;
@@ -201,12 +201,10 @@ public class PayloadBullets implements ContentList{
             stopRadius = 10f;
             riseEngineSize = 16f;
             fallEngineSize = 8f;
-            elevation = 300f;
+            shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 25f;
             trailSize = 0.7f;
-            riseSpin = 300f;
-            fallSpin = 135f;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
         }};
@@ -228,12 +226,11 @@ public class PayloadBullets implements ContentList{
             stopRadius = 10f;
             riseEngineSize = 16f;
             fallEngineSize = 8f;
-            elevation = 300f;
+            elevation = 2f;
+            shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 25f;
             trailSize = 0.7f;
-            riseSpin = 300f;
-            fallSpin = 135f;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
 
@@ -258,11 +255,11 @@ public class PayloadBullets implements ContentList{
                 stopDelay = 55f;
                 dropDelay = 35f;
                 fallEngineSize = 8f;
-                elevation = 260f;
+                elevation = 2f;
+                shadowOffset = 260f;
                 riseTime = 0f;
                 fallTime = 20f;
                 trailSize = 0.7f;
-                fallSpin = 120f;
                 randRot = true;
 
                 unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
@@ -288,11 +285,11 @@ public class PayloadBullets implements ContentList{
                     stopDelay = 35f;
                     dropDelay = 25f;
                     fallEngineSize = 8f;
-                    elevation = 230f;
+                    elevation = 2f;
+                    shadowOffset = 230f;
                     riseTime = 0f;
                     fallTime = 15f;
                     trailSize = 0.7f;
-                    fallSpin = 110f;
                     randRot = true;
 
                     unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
@@ -318,12 +315,11 @@ public class PayloadBullets implements ContentList{
             stopRadius = 20f;
             riseEngineSize = 24f;
             fallEngineSize = 14f;
-            elevation = 900f;
-            riseTime = 240f;
-            fallTime = 90f;
+            elevation = 3f;
+            shadowOffset = 900f;
+            riseTime = 90f;
+            fallTime = 60f;
             trailSize = 2f;
-            riseSpin = 720f;
-            fallSpin = 180f;
             targetRadius = 2f;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
@@ -351,11 +347,10 @@ public class PayloadBullets implements ContentList{
 
                 autoDropRadius = stopRadius = -1f;
                 fallEngineSize = 8f;
-                elevation = 900f;
+                shadowOffset = 900f;
                 riseTime = -1f;
                 fallTime = 75f;
                 trailSize = 0.7f;
-                fallSpin = 135f;
             }};
             splitVelocityMin = 0.1f;
             splitVelocityMax = 1f;
@@ -366,11 +361,11 @@ public class PayloadBullets implements ContentList{
             autoDropRadius = 30f;
             stopRadius = 20f;
             riseEngineSize = 24f;
-            elevation = 900f;
-            riseTime = 240f;
+            elevation = 3f;
+            shadowOffset = 900f;
+            riseTime = 90f;
             fallTime = -1f;
             trailSize = 2f;
-            riseSpin = 720f;
             targetRadius = 2f;
 
             unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;

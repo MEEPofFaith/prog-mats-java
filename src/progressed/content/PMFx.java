@@ -20,6 +20,8 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
+import static mindustry.graphics.Drawf.*;
+import static progressed.graphics.PMDrawf.*;
 
 public class PMFx{
     private static final Rand rand = new Rand();
@@ -143,8 +145,8 @@ public class PMFx{
         for(int i = 0; i < points; i++){
             float angle = Mathf.randomSeedRange(e.id + i, 360f);
             float length = Mathf.randomSeed(e.id * 2L + i, rad / 6f, rad);
-            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout() / 4f, angle);
-            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
+            tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout() / 4f, angle);
+            tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
         }
     }).layer(Layer.debris),
 
@@ -180,7 +182,17 @@ public class PMFx{
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
         });
 
-        Drawf.light(e.x, e.y, 50f, Pal.lightPyraFlame, 0.8f * e.fout());
+        light(e.x, e.y, 50f, Pal.lightPyraFlame, 0.8f * e.fout());
+    }),
+
+    rocketSmoke = new Effect(120, e -> {
+        if(e.data instanceof Float height){
+            float x = e.x + cameraXOffset(e.x, height),
+                y = e.y + cameraYOffset(e.y, height);
+            color(Color.gray);
+            alpha(Mathf.clamp(e.fout() * 1.6f - Interp.pow3In.apply(e.rotation) * 1.2f));
+            Fill.circle(x, y, (1f + 6f * e.rotation) - e.fin() * 2f);
+        }
     }),
 
     smallBoom = new Effect(30f, e -> {
@@ -222,7 +234,7 @@ public class PMFx{
                     float rad = fout * ((2f + intensity) * 2.35f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, Pal.gray, 0.7f);
+                    light(s.x + x, s.y + y, rad * 2.6f, Pal.gray, 0.7f);
                 });
             });
         }
@@ -232,7 +244,7 @@ public class PMFx{
             s.scaled(2 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
                 Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
-                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * s.fout());
+                light(s.x, s.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * s.fout());
             });
 
             color(Pal.lighterOrange, Pal.redSpark, s.fin());
@@ -241,7 +253,7 @@ public class PMFx{
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
                 lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
-                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
+                light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
             });
         });
     }),
@@ -263,7 +275,7 @@ public class PMFx{
                     float rad = fout * ((2f + intensity) * 2.35f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
+                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
                 });
             });
         }
@@ -273,7 +285,7 @@ public class PMFx{
             s.scaled(2 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
                 Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
-                Drawf.light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
+                light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
             });
 
             color(Pal.lighterOrange, Pal.redSpark, s.fin());
@@ -282,7 +294,7 @@ public class PMFx{
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
                 lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
-                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
+                light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
     }),
@@ -374,7 +386,7 @@ public class PMFx{
             float rot = Mathf.randomSeed((long)(e.id + x + y), 360);
             float tx = x * e.fin(Interp.pow2Out);
             float ty = y * e.fin(Interp.pow2Out);
-            PMDrawf.plus(e.x + tx + v1.x, e.y + ty + v1.y, 3f, rot, e.color, e.fout());
+            plus(e.x + tx + v1.x, e.y + ty + v1.y, 3f, rot, e.color, e.fout());
         });
     }),
     
@@ -385,7 +397,7 @@ public class PMFx{
             float rot = Mathf.randomSeed((long)(e.id + x + y), 360);
             float tx = x * e.fin(Interp.pow2Out);
             float ty = y * e.fin(Interp.pow2Out);
-            PMDrawf.plus(e.x + tx + v1.x, e.y + ty + v1.y, 4f, rot, e.color, e.fout());
+            plus(e.x + tx + v1.x, e.y + ty + v1.y, 4f, rot, e.color, e.fout());
         });
     }),
     
@@ -420,7 +432,7 @@ public class PMFx{
                 Tmp.c2
             );
 
-            Drawf.light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
+            light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
                 b.suctionRadius * e.fout()),
                 bullet.y + trnsy(e.rotation + startAngle * e.fout(),
                 b.suctionRadius * e.fout()),
@@ -457,14 +469,6 @@ public class PMFx{
         stroke(2f * e.fout(Interp.pow3In));
         Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
     }).layer(Layer.max - 0.04f),
-    
-    particle = new Effect(38f, e -> {
-        color(e.color);
-
-        randLenVectors(e.id, 2, 1f + 20f * e.fin(Interp.pow2Out), e.rotation, 120f, (x, y) -> {
-            Drawf.tri(e.x + x, e.y + y, e.fslope() * 3f + 1, e.fslope() * 3f + 1, Mathf.angle(x, y));
-        });
-    }),
 
     groundCrack = new Effect(20f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
@@ -567,7 +571,7 @@ public class PMFx{
             
             Lines.line(v1.x, v1.y, v2.x, v2.y, false);
             Fill.circle(v1.x, v1.y, Lines.getStroke() / 2f);
-            Drawf.light((Team)data[2], v1.x, v1.y, v2.x, v2.y, (float)data[1] * 3f, e.color, 0.4f);
+            light((Team)data[2], v1.x, v1.y, v2.x, v2.y, (float)data[1] * 3f, e.color, 0.4f);
         }
 
         Fill.circle(v2.x, v2.y, Lines.getStroke() / 2);
@@ -588,7 +592,7 @@ public class PMFx{
         for(int i = 0; i < 36; i++){
             v1.trns(i * 10f, 384f * (1 - e.finpow()));
             v2.trns(i * 10f + 10f, 384f * (1f - e.finpow()));
-            Drawf.light((Team)e.data, e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
+            light((Team)e.data, e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
         }
         
         float fade = 1f - Mathf.curve(e.time, e.lifetime - 30f, e.lifetime);
@@ -608,7 +612,7 @@ public class PMFx{
                     
                     v1.trns((e.rotation + 360f * e.finpow() + side) * dir, baseLen * 1.1f);
                     
-                    Drawf.light((Team)e.data, e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
+                    light((Team)e.data, e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
                 }
             }
             Draw.reset();
@@ -669,7 +673,7 @@ public class PMFx{
 
         color();
 
-        Drawf.light(Team.derelict, e.x, e.y, 20f * e.fslope(), Pal.lightFlame, 0.5f);
+        light(Team.derelict, e.x, e.y, 20f * e.fslope(), Pal.lightFlame, 0.5f);
     }),
     
     aimChargeBegin = new Effect(300f, e -> {
@@ -732,18 +736,18 @@ public class PMFx{
         color(PMPal.apotheosisLaser);
         randLenVectors(e.id, 14, 92f * e.fout(), (x, y) -> {
             Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
         });
         randLenVectors(e.id + 1, 17,116f * e.fout(Interp.pow3Out), (x, y) -> {
             Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
         });
         randLenVectors(e.id + 2, 20,146f * e.fout(Interp.pow5Out), (x, y) -> {
             Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            Drawf.light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
+            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
         });
 
-        Drawf.light(e.x, e.y, e.fin() * 36f, PMPal.apotheosisLaserDark, 0.7f);
+        light(e.x, e.y, e.fin() * 36f, PMPal.apotheosisLaserDark, 0.7f);
     }),
 
     apotheosisChargerBlast = new Effect(30f, e -> {
@@ -791,7 +795,7 @@ public class PMFx{
                     float rad = fout * ((2f + intensity) * 3.52f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
+                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
                 });
             });
         }
@@ -817,7 +821,7 @@ public class PMFx{
                     float rad = fout * ((2f + intensity) * 2.35f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    Drawf.light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
+                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
                 });
             });
         }
@@ -829,7 +833,7 @@ public class PMFx{
             z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
                 lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
-                Drawf.light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
+                light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
     }),
@@ -849,7 +853,7 @@ public class PMFx{
 
             color(d.laserColor);
             Fill.circle(px, py, radius);
-            Drawf.light(px, py, radius * 1.5f, getColor(), 0.8f);
+            light(px, py, radius * 1.5f, getColor(), 0.8f);
         });
     }),
 
