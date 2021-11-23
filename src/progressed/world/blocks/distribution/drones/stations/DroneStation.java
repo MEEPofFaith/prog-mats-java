@@ -65,7 +65,7 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active, loading, arrived, loaded, dumping, taken;
+        public boolean connected, active, loading, arrived, loaded, dumping, taken;
         public float load;
         public StationState stationState = StationState.disconnected;
         public StringBuilder stationName;
