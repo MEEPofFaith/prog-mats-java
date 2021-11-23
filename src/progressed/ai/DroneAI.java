@@ -50,6 +50,7 @@ public class DroneAI extends AIController{
                                     d.deactivate();
                                     reset(d);
                                     updateRoutes(d);
+                                    d.cargo.drawCargo = true;
                                 }
                             }else{
                                 fail(d);
