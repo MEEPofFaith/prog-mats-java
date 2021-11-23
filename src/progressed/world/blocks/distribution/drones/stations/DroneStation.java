@@ -52,7 +52,7 @@ public class DroneStation extends Block{
             }
         });
         config(Boolean.class, (DroneStationBuild b, Boolean bool) -> b.connected = bool);
-        config(Integer.class, (DroneStationBuild build, Integer i) -> build.state = StationState.all[i]);
+        config(Integer.class, (DroneStationBuild build, Integer i) -> build.stationState = StationState.all[i]);
         config(Byte.class, (DroneStationBuild build, Byte hhhhh) -> build.dumpCargo()); //ALL IN THE NAME OF SYNCING
     }
 
@@ -65,9 +65,9 @@ public class DroneStation extends Block{
     }
 
     public class DroneStationBuild extends Building{
-        public boolean connected = false, active, loading, loaded, dumping, taken;
+        public boolean connected = false, active, loading, arrived, loaded, dumping, taken;
         public float load;
-        public StationState state = StationState.disconnected;
+        public StationState stationState = StationState.disconnected;
         public StringBuilder stationName;
         public Vec2 loadPoint = new Vec2(), loadVector = new Vec2();
 
@@ -85,16 +85,16 @@ public class DroneStation extends Block{
             updateLoading();
 
             if(!active && !connected){
-                state = StationState.disconnected;
+                stationState = StationState.disconnected;
             }
         }
 
         public boolean canConnect(StationState state){
-            return !(connected || active) || state == this.state;
+            return !(connected || active) || state == this.stationState;
         }
 
         public boolean isOrigin(){
-            return state == StationState.origin;
+            return stationState == StationState.origin;
         }
 
         public Color selectColor(){
@@ -118,10 +118,16 @@ public class DroneStation extends Block{
             configure(false);
         }
 
+        public void padDestroyed(){
+            arrived = false;
+            resetLoading();
+        }
+
         public void updateLoading(){
             if(loading){
-                load = Mathf.approachDelta(load, isOrigin() ? 1 : 0, loadSpeed);
-                if(load == (isOrigin() ? 1f : 0f)){
+                int target = isOrigin() ? 1 : 0;
+                load = Mathf.approachDelta(load, target, loadSpeed);
+                if(load == target){
                     loading = false;
                     loaded = true;
                 }
@@ -133,7 +139,7 @@ public class DroneStation extends Block{
         }
 
         public void resetLoading(){
-            loadVector.set(0, 0);
+            loadVector.setZero();
             loaded = false;
             taken = false;
         }
@@ -142,24 +148,20 @@ public class DroneStation extends Block{
             if(isOrigin()) loadPoint.set(d);
         }
 
-        public void loadCargo(DroneUnitEntity d){
-            load = 0;
-        }
+        public void loadCargo(DroneUnitEntity d){}
 
-        public void takeCargo(DroneUnitEntity d){
-            if(!taken){
-                load = 1;
-                loadPoint.set(d);
-                loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
-                taken = true;
-                loading = true;
-            }
-        }
+        public void takeCargo(DroneUnitEntity d){}
 
-        public void setLoading(){
-            if(!loaded){
+        public void setLoading(DroneUnitEntity d){
+            if(!arrived){
                 active = true;
                 loading = true;
+
+                load = isOrigin() ? 0 : 1;
+                loadPoint.set(d);
+                loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
+
+                arrived = true;
             }
         }
 
@@ -244,9 +246,7 @@ public class DroneStation extends Block{
             ImageButton dump = table.button(Icon.trash, Styles.defaulti, () -> configure((byte)0)).tooltip("@pm-drone-dump").size(40).get();
             dump.getStyle().over = Tex.buttonDown;
             dump.getStyle().checked = Tex.buttonOver;
-            dump.update(() -> {
-                dump.setChecked(dumping);
-            });
+            dump.update(() -> dump.setChecked(dumping));
         }
 
         @Override
@@ -276,7 +276,7 @@ public class DroneStation extends Block{
         @Override
         public void remove(){
             connected = active = loading = false;
-            state = StationState.disconnected;
+            stationState = StationState.disconnected;
 
             super.remove();
         }
@@ -291,13 +291,15 @@ public class DroneStation extends Block{
             write.bool(loaded);
             write.bool(dumping);
             write.bool(taken);
-            write.i(state.ordinal());
+            write.i(stationState.ordinal());
             write.str(stationName.toString());
 
             write.f(loadVector.x);
             write.f(loadVector.y);
             write.f(loadPoint.x);
             write.f(loadPoint.y);
+
+            write.bool(arrived);
         }
 
         @Override
@@ -310,11 +312,18 @@ public class DroneStation extends Block{
             loaded = read.bool();
             dumping = read.bool();
             taken = read.bool();
-            state = StationState.all[read.i()];
+            stationState = StationState.all[read.i()];
             stationName = new StringBuilder(read.str());
 
             loadVector.set(read.f(), read.f());
             loadPoint.set(read.f(), read.f());
+
+            if(revision >= 1) arrived = read.bool();
+        }
+
+        @Override
+        public byte version(){
+            return 1;
         }
     }
 

@@ -1,9 +1,11 @@
 package progressed.ai;
 
+import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import progressed.entities.units.entity.*;
 import progressed.entities.units.entity.DroneUnitEntity.*;
+import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 
 public class DroneAI extends AIController{
     @Override
@@ -31,7 +33,8 @@ public class DroneAI extends AIController{
                         case pickup -> {
                             if(d.getStation() != null){
                                 loading(d);
-                                if(!d.getStation().loading){
+                                if(d.getStation().load == 1){
+                                    d.cargo.drawCargo = true;
                                     d.getStation().loadCargo(d);
                                     reset(d);
                                 }
@@ -41,9 +44,10 @@ public class DroneAI extends AIController{
                         }
                         case dropoff -> {
                             if(d.getStation() != null){
-                                d.getStation().takeCargo(d);
+                                d.cargo.drawCargo = false;
                                 loading(d);
-                                if(!d.getStation().loading){
+                                if(d.getStation().load == 0){
+                                    d.getStation().takeCargo(d);
                                     d.deactivate();
                                     reset(d);
                                     updateRoutes(d);
@@ -97,6 +101,7 @@ public class DroneAI extends AIController{
     }
 
     public void reset(DroneUnitEntity d){
+        if(d.getStation() != null) d.getStation().arrived = false;
         d.target = null;
         d.arrived = false;
     }
@@ -107,8 +112,11 @@ public class DroneAI extends AIController{
     }
 
     public void loading(DroneUnitEntity d){
-        d.getStation().setLoading();
-        d.getStation().updateCargo(d);
+        DroneStationBuild station = d.getStation();
+        if(station != null){
+            station.setLoading(d);
+            station.updateCargo(d);
+        }
     }
 
     @Override

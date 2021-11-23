@@ -131,8 +131,8 @@ public class DronePad extends Block{
         public void updateTile(){
             super.updateTile();
 
-            buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing), 0.15f);
-            chargeup = Mathf.lerpDelta(chargeup, Mathf.num(charging), 0.15f);
+            buildup = Mathf.lerpDelta(buildup, Mathf.num(constructing && consValid()), 0.15f);
+            chargeup = Mathf.lerpDelta(chargeup, Mathf.num(charging && consValid()), 0.15f);
 
             for(int i = 0; i < maxRoutes; i++){
                 DroneStationBuild o = getStation(i, 0);
@@ -195,7 +195,7 @@ public class DronePad extends Block{
         public void draw(){
             super.draw();
 
-            if(buildup > 0.01){
+            if(buildup > 0.01 || build > 0.01){
                 Draw.draw(Layer.blockOver, () -> {
                     Drawf.construct(x, y, droneType.fullIcon, 0f, Math.max(build / constructTime, 0.02f), buildup, total);
                 });
@@ -242,7 +242,7 @@ public class DronePad extends Block{
                 if(s != null){
                     float drawSize = s.block().size * tilesize / 2f + 2f;
                     Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                    if(s.state != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(r) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
+                    if(s.stationState != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(r) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
                 }
             });
 
@@ -276,7 +276,7 @@ public class DronePad extends Block{
                 DroneStationBuild s = (DroneStationBuild)b;
                 float drawSize = s.block().size * tilesize / 2f + 2f;
                 Drawf.select(s.x, s.y, drawSize, s.selectColor());
-                if(s.state != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(s.pos()) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
+                if(s.stationState != StationState.disconnected) drawArrow(s.x, s.y, Mathf.floor(routes.indexOf(s.pos()) / 2f) + 1, s.isOrigin(), drawSize / 2f, s.selectColor());
             });
 
             drawConnections();
@@ -508,6 +508,7 @@ public class DronePad extends Block{
             DroneStationBuild s = getStation(route, end);
             if(s != null && routes.count(s.pos()) == 1){
                 s.disconnect();
+                s.padDestroyed();
                 if(drone == null || drone.curRoute != route) s.configure(2);
             }
             routes.set(route * 2 + end, -1);

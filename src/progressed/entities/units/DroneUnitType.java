@@ -128,7 +128,7 @@ public class DroneUnitType extends UnitType{
 
     @Override
     public <T extends Unit & Payloadc> void drawPayload(T unit){
-        if(unit instanceof DroneUnitEntity d){
+        if(unit instanceof DroneUnitEntity d && d.cargo.drawCargo){
             if(d.cargo.hasItems()){
                 Drawf.shadow(d.x, d.y, 2f * tilesize * 2f, 1f);
                 Draw.rect(container, d.x, d.y);

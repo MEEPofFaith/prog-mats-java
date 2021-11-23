@@ -88,8 +88,6 @@ public class ProgMats extends Mod{
     public void loadContent(){
         for(ContentList list : pmContent){
             list.load();
-
-            //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
         }
     }
 }

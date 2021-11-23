@@ -80,7 +80,6 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
-            super.loadCargo(d);
             d.cargo.load(new LiquidStack(liquids.current(), liquids.currentAmount()));
             d.cargo.liquidCapacity = liquidCapacity;
             liquids.clear();
@@ -90,7 +89,6 @@ public class LiquidDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            super.takeCargo(d);
             if(d.cargo.hasLiquid()) liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
             d.cargo.empty();
             build = constructTime;

@@ -226,6 +226,7 @@ public class DroneUnitEntity extends PayloadUnit{
         public int[] itemCargo = new int[content.items().size];
         public LiquidStack liquidCargo;
         public float liquidCapacity;
+        public boolean drawCargo = true;
 
         public DroneCargo(){}
 
@@ -275,6 +276,7 @@ public class DroneUnitEntity extends PayloadUnit{
                 write.f(liquidCargo.amount);
             }
             write.f(liquidCapacity);
+            write.bool(drawCargo);
         }
 
         public void read(Reads read){
@@ -294,6 +296,7 @@ public class DroneUnitEntity extends PayloadUnit{
                 liquidCargo = new LiquidStack(content.liquid(liquidId), liquidAmount);
             }
             liquidCapacity = read.f();
+            drawCargo = read.bool();
         }
     }
 

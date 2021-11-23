@@ -15,6 +15,7 @@ import static mindustry.Vars.*;
 public class ItemDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
+    public float dumpTime = 1f;
     public int loadSize = 2;
 
     public TextureRegion containerFull;
@@ -30,8 +31,8 @@ public class ItemDroneStation extends DroneStation{
         defName = "Item";
 
         config(Integer.class, (ItemDroneStationBuild build, Integer i) -> {
-            build.state = StationState.all[i];
-            build.constructing = build.state == StationState.origin;
+            build.stationState = StationState.all[i];
+            build.constructing = build.stationState == StationState.origin;
         });
     }
 
@@ -80,7 +81,6 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void loadCargo(DroneUnitEntity d){
-            super.loadCargo(d);
             int[] it = new int[content.items().size];
             for(int i = 0; i < content.items().size; i++){
                 it[i] = items.get(content.items().get(i));
@@ -93,14 +93,20 @@ public class ItemDroneStation extends DroneStation{
 
         @Override
         public void takeCargo(DroneUnitEntity d){
-            super.takeCargo(d);
             for(int i = 0; i < content.items().size; i++){
                 for(int j = 0; j < d.cargo.itemCargo[i]; j++){
                     offload(content.item(i));
                 }
             }
             d.cargo.empty();
-            build = constructTime;
+        }
+
+        @Override
+        public void setLoading(DroneUnitEntity d){
+            if(!arrived && !isOrigin()){
+                build = constructTime;
+            }
+            super.setLoading(d);
         }
 
         @Override
@@ -111,6 +117,23 @@ public class ItemDroneStation extends DroneStation{
         @Override
         public boolean ready(){
             return active || connected && open && (isOrigin() ? items.total() >= itemCapacity * transportThreshold : items.total() <= itemCapacity);
+        }
+
+        @Override
+        public void offload(Item item){ //do not count as item production
+            if(item == null) return;
+            int dump = this.cdump;
+
+            for(int i = 0; i < proximity.size; i++){
+                incrementDump(proximity.size);
+                Building other = proximity.get((i + dump) % proximity.size);
+                if(other.team == team && other.acceptItem(self(), item)){
+                    other.handleItem(self(), item);
+                    return;
+                }
+            }
+
+            handleItem(self(), item);
         }
 
         @Override
