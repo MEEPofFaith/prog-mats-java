@@ -65,15 +65,13 @@ public class ItemDroneStation extends DroneStation{
                 }
             }
 
-            if(!loading){
+            if(!arrived){
                 if(isOrigin()){
                     build = Mathf.approach(build, constructTime, edelta());
                     constructing = build < constructTime;
-                }else{
-                    if(items.empty()){
-                        build = Mathf.approach(build, 0f, edelta());
-                        constructing = build > 0f;
-                    }
+                }else if(items.empty()){
+                    build = Mathf.approach(build, 0f, edelta());
+                    constructing = build > 0f;
                 }
             }
             open = isOrigin() ? build >= constructTime : build <= 0;

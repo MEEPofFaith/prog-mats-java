@@ -136,10 +136,12 @@ public class PayloadDroneStation extends DroneStation{
         }
 
         @Override
-        public void takeCargo(DroneUnitEntity d){
-            loadVector.trns(angleTo(loadPoint), dst(loadPoint) * load);
-            if(d.payloads().any()) payload = d.payloads().first();
-            d.payloads().clear();
+        public void setLoading(DroneUnitEntity d){
+            if(!arrived){
+                if(d.payloads().any()) payload = d.payloads().first();
+                d.payloads().clear();
+            }
+            super.setLoading(d);
         }
 
         @Override

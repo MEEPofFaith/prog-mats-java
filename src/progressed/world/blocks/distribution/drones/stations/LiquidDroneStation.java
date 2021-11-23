@@ -64,15 +64,13 @@ public class LiquidDroneStation extends DroneStation{
                 }
             }
 
-            if(!loading){
+            if(!arrived){
                 if(isOrigin()){
                     build = Mathf.approach(build, constructTime, edelta());
                     constructing = build < constructTime;
-                }else{
-                    if(liquids.total() <= 0.01f){
-                        build = Mathf.approach(build, 0f, edelta());
-                        constructing = build > 0f;
-                    }
+                }else if(liquids.total() <= 0.01f){
+                    build = Mathf.approach(build, 0f, edelta());
+                    constructing = build > 0f;
                 }
             }
             open = isOrigin() ? build >= constructTime : build <= 0;
@@ -91,7 +89,14 @@ public class LiquidDroneStation extends DroneStation{
         public void takeCargo(DroneUnitEntity d){
             if(d.cargo.hasLiquid()) liquids.add(d.cargo.liquidCargo.liquid, d.cargo.liquidCargo.amount);
             d.cargo.empty();
-            build = constructTime;
+        }
+
+        @Override
+        public void setLoading(DroneUnitEntity d){
+            if(!arrived && !isOrigin()){
+                build = constructTime;
+            }
+            super.setLoading(d);
         }
 
         @Override
