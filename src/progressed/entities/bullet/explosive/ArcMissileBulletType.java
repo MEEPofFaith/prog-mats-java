@@ -41,7 +41,7 @@ public class ArcMissileBulletType extends BasicBulletType{
     public float splitVelocityMin = 0.2f, splitVelocityMax = 1f, splitLifeMin = 1f, splitLifeMax = 1f;
     public BulletType splitBullet;
 
-    public Sortf unitSort = Unit::dst2;
+    public Sortf unitSort = UnitSorts.closest;
 
     public ArcMissileBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
@@ -95,32 +95,30 @@ public class ArcMissileBulletType extends BasicBulletType{
                 rocketEffect.at(x + Mathf.range(trailRnd * rRocket), y + rise * elevation + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
             }
 
+            //Find nearby target. Used for early dropping, starting and stopping, and homing.
+            float range = Math.max(autoDropRadius, Math.max(stopRadius, homingRange));
+            Teamc target = Units.bestTarget(b.team, b.x, b.y, range,
+                e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
+                t -> !t.dead() && collidesGround,
+                unitSort
+            );
+
             //Instant drop
             data.canDrop = riseTime < b.time && b.time < (b.lifetime - fallTime);
             if(autoDropRadius > 0f && data.canDrop && b.time >= dropDelay){
-                Teamc dTarget = Units.bestTarget(b.team, b.x, b.y, autoDropRadius,
-                    e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
-                    t -> !t.dead() && collidesGround,
-                    unitSort
-                );
-                if(dTarget != null){
+                if(target != null && b.within(target, autoDropRadius)){
                     b.time = b.lifetime - fallTime;
                 }
             }
 
             //Start and stop
             if(stopRadius > 0f && b.time >= stopDelay){
-                Teamc sTarget = Units.bestTarget(b.team, b.x, b.y, stopRadius,
-                    e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
-                    t -> !t.dead() && collidesGround,
-                    unitSort
-                );
-                if(sTarget != null){
+                if(target != null && b.within(target, stopRadius)){
                     if(!data.stopped){
                         data.setVel(b.vel);
                         data.stopped = true;
                         b.vel.trns(b.vel.angle(), 0.001f);
-                    }else if(resumeSeek && (((Healthc)sTarget).dead() || ((Healthc)sTarget).health() < 0f) && data.stopped){
+                    }else if(resumeSeek && (((Healthc)target).dead() || ((Healthc)target).health() < 0f) && data.stopped){
                         b.vel.set(data.vel);
                         data.stopped = false;
                     }
@@ -132,14 +130,8 @@ public class ArcMissileBulletType extends BasicBulletType{
 
             if(!data.stopped){
                 if(homingPower > 0.0001f && b.time >= homingDelay){
-                    Teamc hTarget = Units.bestTarget(b.team, b.x, b.y, homingRange,
-                        e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
-                        t -> collidesGround && !b.hasCollided(t.id),
-                        unitSort
-                    );
-
-                    if(hTarget != null){
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(hTarget), homingPower * Time.delta * 50f));
+                    if(target != null && b.within(target, homingRange)){
+                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
                     }
                 }
 

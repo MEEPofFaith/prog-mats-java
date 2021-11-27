@@ -54,7 +54,7 @@ public class PayloadBullets implements ContentList{
             homingDelay = 5f;
             homingRange = 100f * tilesize;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){
@@ -85,7 +85,7 @@ public class PayloadBullets implements ContentList{
                 homingDelay = 5f;
                 homingRange = 100f * tilesize;
 
-                unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+                unitSort = UnitSorts.strongest;
             }
 
             @Override
@@ -136,7 +136,7 @@ public class PayloadBullets implements ContentList{
                 }};
                 bombInterval = 2f;
 
-                unitSort = (u, x, y) -> u.health + u.dst2(x, y) / 6400f; //Target, bomb, and destroy low health units :)))
+                unitSort = UnitSorts.weakest; //Target, bomb, and destroy low health units :)))
             }
 
             @Override
@@ -204,7 +204,7 @@ public class PayloadBullets implements ContentList{
             fallTime = 25f;
             trailSize = 0.7f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         strikedownRecursive = new ArcMissileBulletType(2f, 80f, "prog-mats-recursive-missile"){{
@@ -230,7 +230,7 @@ public class PayloadBullets implements ContentList{
             fallTime = 25f;
             trailSize = 0.7f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
 
             splitBullets = 3;
             splitVelocityMin = 0.8f;
@@ -260,7 +260,7 @@ public class PayloadBullets implements ContentList{
                 trailSize = 0.7f;
                 randRot = true;
 
-                unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+                unitSort = UnitSorts.strongest;
 
                 splitBullets = 3;
                 splitVelocityMin = 0.8f;
@@ -290,7 +290,7 @@ public class PayloadBullets implements ContentList{
                     trailSize = 0.7f;
                     randRot = true;
 
-                    unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+                    unitSort = UnitSorts.strongest;
                 }};
             }};
         }};
@@ -320,7 +320,7 @@ public class PayloadBullets implements ContentList{
             trailSize = 2f;
             targetRadius = 2f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         trinityCluster = new ArcMissileBulletType(1.25f, 0f, "prog-mats-cluster-nuke"){{
@@ -366,7 +366,7 @@ public class PayloadBullets implements ContentList{
             trailSize = 2f;
             targetRadius = 2f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
     }
 }

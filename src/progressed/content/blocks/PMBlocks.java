@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
@@ -833,7 +834,7 @@ public class PMBlocks implements ContentList{
             aimRnd = 16f;
 
             shootType = PMBullets.sentinelLaser;
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
 
             heatDrawer = tile -> {
                 if(tile.heat <= 0.00001f) return;
@@ -972,7 +973,7 @@ public class PMBlocks implements ContentList{
             doorLength = 116f / 4f;
             rotOffset = 90f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         firestorm = new MissileTurret("firestorm"){{
@@ -1032,7 +1033,7 @@ public class PMBlocks implements ContentList{
             cooldown = 0.01f;
             shootShake = 5f;
             inaccuracy = 5f;
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         trinity = new PayloadMissileTurret("arbiter"){{
@@ -1056,7 +1057,7 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.explosionbig;
             cooldown = 0.005f;
             shootShake = 10f;
-            unitSort = (u, x, y) -> -u.maxHealth + u.dst2(x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
@@ -1081,7 +1082,7 @@ public class PMBlocks implements ContentList{
             duration = 4f * 60f;
             shake = laserShake = 5f;
 
-            unitSort = (u, x, y) -> -u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+            unitSort = UnitSorts.strongest;
 
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
