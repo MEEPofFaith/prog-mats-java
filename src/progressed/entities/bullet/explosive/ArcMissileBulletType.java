@@ -29,8 +29,8 @@ public class ArcMissileBulletType extends BasicBulletType{
     public float trailChance = 0.5f, smokeTrailChance = 0.75f;
     public float targetRadius = 1f;
     public float riseEngineTime, riseEngineSize = 8f, fallEngineTime = -1f, fallEngineSize = 6f;
-    public float trailRnd = 3f, trailSize = 0.5f;
-    public float riseTime = 60f, fallTime = 20f, elevation = 1f, shadowOffset;
+    public float trailRnd, trailSize = 0.375f;
+    public float riseTime = 60f, fallTime = 40f, elevation = 1f, shadowOffset;
     public float riseEngineLightRadius = 50f, fallEngineLightRadius = 42f, engineLightOpacity = 0.5f;
     public Color engineLightColor = Pal.engine;
     public Color targetColor;
@@ -88,11 +88,11 @@ public class ArcMissileBulletType extends BasicBulletType{
     public void update(Bullet b){
         if(b.data instanceof ArcMissileData data){
             float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
-            if(rise < 0.99f && Mathf.chanceDelta(smokeTrailChance)){
+            if(rise < 1f && Mathf.chanceDelta(smokeTrailChance)){
                 float x = data.x;
                 float y = data.y;
                 float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
-                rocketEffect.at(x + Mathf.range(trailRnd * rRocket), y + rise * elevation + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
+                rocketEffect.at(x + Mathf.range(trailRnd * rRocket), y + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
             }
 
             //Find nearby target. Used for early dropping, starting and stopping, and homing.

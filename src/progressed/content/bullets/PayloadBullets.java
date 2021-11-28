@@ -155,6 +155,11 @@ public class PayloadBullets implements ContentList{
             }
         };
 
+        float firestormSize = 0.125f,
+            trinitySize = 1f,
+            strikedownRnd = 1.5f,
+            trinityRnd = 3f;
+
         firestormMissile = new ArcMissileBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
             splashDamage = 72f;
             splashDamageRadius = 30f;
@@ -178,7 +183,7 @@ public class PayloadBullets implements ContentList{
             stopRadius = 8f;
             resumeSeek = false;
             riseEngineSize = fallEngineSize = 5f;
-            trailSize = 0.2f;
+            trailSize = firestormSize;
             targetRadius = 0.5f;
         }};
 
@@ -201,8 +206,8 @@ public class PayloadBullets implements ContentList{
             fallEngineSize = 8f;
             shadowOffset = 300f;
             riseTime = 45f;
-            fallTime = 25f;
-            trailSize = 0.7f;
+            fallTime = 30f;
+            trailRnd = strikedownRnd;
 
             unitSort = UnitSorts.strongest;
         }};
@@ -227,8 +232,8 @@ public class PayloadBullets implements ContentList{
             elevation = 2f;
             shadowOffset = 300f;
             riseTime = 45f;
-            fallTime = 25f;
-            trailSize = 0.7f;
+            fallTime = 30f;
+            trailRnd = strikedownRnd;
 
             unitSort = UnitSorts.strongest;
 
@@ -256,8 +261,7 @@ public class PayloadBullets implements ContentList{
                 elevation = 2f;
                 shadowOffset = 260f;
                 riseTime = 0f;
-                fallTime = 20f;
-                trailSize = 0.7f;
+                fallTime = 30f;
                 randRot = true;
 
                 unitSort = UnitSorts.strongest;
@@ -286,8 +290,7 @@ public class PayloadBullets implements ContentList{
                     elevation = 2f;
                     shadowOffset = 230f;
                     riseTime = 0f;
-                    fallTime = 15f;
-                    trailSize = 0.7f;
+                    fallTime = 20f;
                     randRot = true;
 
                     unitSort = UnitSorts.strongest;
@@ -316,8 +319,9 @@ public class PayloadBullets implements ContentList{
             elevation = 3f;
             shadowOffset = 900f;
             riseTime = 90f;
-            fallTime = 60f;
-            trailSize = 2f;
+            fallTime = 75f;
+            trailSize = trinitySize;
+            trailRnd = trinityRnd;
             targetRadius = 2f;
 
             unitSort = UnitSorts.strongest;
@@ -347,8 +351,7 @@ public class PayloadBullets implements ContentList{
                 fallEngineSize = 8f;
                 shadowOffset = 900f;
                 riseTime = -1f;
-                fallTime = 75f;
-                trailSize = 0.7f;
+                fallTime = 75;
             }};
             splitVelocityMin = 0.1f;
             splitVelocityMax = 1f;
@@ -363,7 +366,8 @@ public class PayloadBullets implements ContentList{
             shadowOffset = 900f;
             riseTime = 90f;
             fallTime = -1f;
-            trailSize = 2f;
+            trailSize = trinitySize;
+            trailRnd = trinityRnd;
             targetRadius = 2f;
 
             unitSort = UnitSorts.strongest;

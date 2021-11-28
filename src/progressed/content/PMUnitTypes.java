@@ -152,7 +152,7 @@ public class PMUnitTypes implements ContentList{
 
                     riseEngineSize = fallEngineSize = 5f;
 
-                    trailSize = 0.2f;
+                    trailSize = 0.125f;
                     targetRadius = 0.5f;
                 }};
             }}, new RocketWeapon(name + "-rocket"){{

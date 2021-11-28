@@ -190,8 +190,8 @@ public class PMFx{
             float x = e.x + cameraXOffset(e.x, height),
                 y = e.y + cameraYOffset(e.y, height);
             color(Color.gray);
-            alpha(Mathf.clamp(e.fout() * 1.6f - Interp.pow3In.apply(e.rotation) * 1.2f));
-            Fill.circle(x, y, (1f + 6f * e.rotation) - e.fin() * 2f);
+            alpha(Mathf.clamp(e.fout() * 1.6f - Interp.pow3In.apply(Mathf.clamp(e.rotation)) * 1.2f));
+            Fill.circle(x, y, (1f + 10f * e.rotation) - e.fin() * 2f);
         }
     }),
 
