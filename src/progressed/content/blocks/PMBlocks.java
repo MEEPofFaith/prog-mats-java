@@ -750,7 +750,7 @@ public class PMBlocks implements ContentList{
             float brange = range = 22f * tilesize;
 
             requirements(Category.turret, empty);
-            size = 3;
+            size = 2;
             powerUse = 1f;
             reloadTime = 2f * 60f;
             shootSound = Sounds.plasmadrop;
@@ -772,7 +772,7 @@ public class PMBlocks implements ContentList{
             float brange = range = 25f * tilesize;
 
             requirements(Category.turret, empty);
-            size = 4;
+            size = 3;
             powerUse = 1f;
             reloadTime = 2f * 60f;
             shootSound = Sounds.plasmadrop;

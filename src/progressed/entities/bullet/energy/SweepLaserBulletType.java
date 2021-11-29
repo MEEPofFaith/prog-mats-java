@@ -97,7 +97,6 @@ public class SweepLaserBulletType extends BulletType{
                 width, width * 2f,
                 d.rotation - 90 + a
             );
-
             Lines.line(
                 Tmp.v1.x, Tmp.v1.y,
                 Tmp.v2.x, Tmp.v2.y

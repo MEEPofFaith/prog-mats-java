@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.energy;
 
+import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
@@ -10,6 +11,12 @@ import mindustry.world.blocks.defense.turrets.*;
 import progressed.entities.bullet.energy.*;
 
 public class SweepLaserTurret extends PowerTurret{
+    public Cons<SweepLaserTurretBuild> pointDrawer = tile -> {
+        if(tile.bullet == null && !(shootType instanceof SweepLaserBulletType s)) return;
+
+        //TODO
+    };
+
     public SweepLaserTurret(String name){
         super(name);
         targetAir = false;
@@ -17,6 +24,13 @@ public class SweepLaserTurret extends PowerTurret{
 
     public class SweepLaserTurretBuild extends PowerTurretBuild{
         public Bullet bullet;
+
+        @Override
+        public void draw(){
+            super.draw();
+
+            pointDrawer.get(this);
+        }
 
         @Override
         public void targetPosition(Posc pos){
