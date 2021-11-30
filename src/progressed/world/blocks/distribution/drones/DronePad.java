@@ -45,6 +45,7 @@ public class DronePad extends Block{
     public Color laserColor = Pal.powerLight, laserColorTop = Color.white;
     public float chargeX, chargeY;
     public float beamWidth = 1f;
+    public float glowRadius = -1f;
 
     public DroneUnitType droneType;
 
@@ -79,6 +80,8 @@ public class DronePad extends Block{
     public void init(){
         consumes.add(new DronePadConsumePower());
         super.init();
+
+        if(glowRadius < 0) glowRadius = size * tilesize / 4f;
     }
 
     @Override
@@ -94,7 +97,7 @@ public class DronePad extends Block{
     public void load(){
         super.load();
 
-        arrowRegion = atlas.find(name + "-arrow", "bridge-arrow");
+        arrowRegion = atlas.find(name + "-arrow", "transfer-arrow");
         laser = atlas.find("laser-white");
         laserEnd = atlas.find("laser-white-end");
         laserTop = atlas.find("laser-top");
@@ -199,6 +202,21 @@ public class DronePad extends Block{
                 Draw.draw(Layer.blockOver, () -> {
                     Drawf.construct(x, y, droneType.fullIcon, 0f, Math.max(build / constructTime, 0.02f), buildup, total);
                 });
+            }
+
+            if(drone != null){
+                float scl = 1f - chargeup;
+                Draw.z(Layer.effect);
+                Lines.stroke(scl, team.color);
+                Lines.square(x, y, glowRadius);
+                Draw.scl(scl);
+                for(int i = 0; i < 4; i++){
+                    float ax = Geometry.d4x[i] * (glowRadius + 2f),
+                        ay = Geometry.d4y[i] * (glowRadius + 2f);
+
+                    Draw.rect(arrowRegion, x + ax, y + ay, i * 90f);
+                }
+                Draw.scl();
             }
 
             if(chargeup > 0.01f || charging){ //Why do I feel like this'll kill low-end devices?
