@@ -11,11 +11,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import progressed.entities.bullet.energy.*;
 
 public class SweepLaserTurret extends PowerTurret{
-    public Cons<SweepLaserTurretBuild> pointDrawer = tile -> {
-        if(tile.bullet == null && !(shootType instanceof SweepLaserBulletType s)) return;
-
-        //TODO
-    };
+    public Cons<SweepLaserTurretBuild> pointDrawer = tile -> {};
 
     public SweepLaserTurret(String name){
         super(name);

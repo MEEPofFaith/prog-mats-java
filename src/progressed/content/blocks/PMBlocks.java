@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
@@ -755,7 +756,7 @@ public class PMBlocks implements ContentList{
             reloadTime = 2f * 60f;
             shootSound = Sounds.plasmadrop;
 
-            shootType = new SweepLaserBulletType(){{
+            SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 8f * tilesize;
@@ -766,6 +767,35 @@ public class PMBlocks implements ContentList{
                     hitEffect = Fx.explosion;
                 }};
             }};
+            shootType = sweepLaser;
+
+            pointDrawer = t -> {
+                if(t.bullet == null) return;
+
+                Draw.z(Layer.effect + 1f);
+                Draw.color(Color.red);
+                tr.trns(t.rotation, shootLength);
+
+                float x = t.x + tr.x + tr2.x,
+                    y = t.y + tr.y + tr2.y,
+                    fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.extendTime),
+                    fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
+                    scl = fin * fout;
+
+                for(int side : Mathf.signs){
+                    float a = t.rotation + 90 + 90 * side;
+
+                    Tmp.v1.trns(a, 1.5f * scl, 0f);
+                    Tmp.v2.trns(a, -1.5f * scl, 0f);
+                    Tmp.v3.trns(a, 0f, 6f * scl);
+
+                    Fill.tri(
+                        x + Tmp.v1.x, y + Tmp.v1.y,
+                        x + Tmp.v2.x, y + Tmp.v2.y,
+                        x + Tmp.v3.x, y + Tmp.v3.y
+                    );
+                }
+            };
         }};
 
         fissure = new SweepLaserTurret("fissure"){{
@@ -777,7 +807,7 @@ public class PMBlocks implements ContentList{
             reloadTime = 2f * 60f;
             shootSound = Sounds.plasmadrop;
 
-            shootType = new RiftBulletType(2000f){{
+            RiftBulletType rift = new RiftBulletType(2000f){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
@@ -785,6 +815,35 @@ public class PMBlocks implements ContentList{
                 hitSound = PMSounds.riftSplit;
                 hitSoundVolume = 0.2f;
             }};
+            shootType = rift;
+
+            pointDrawer = t -> {
+                if(t.bullet == null) return;
+
+                Draw.z(Layer.effect + 1f);
+                Draw.color(Color.black);
+                tr.trns(t.rotation, shootLength);
+
+                float x = t.x + tr.x + tr2.x,
+                    y = t.y + tr.y + tr2.y,
+                    fin = Mathf.curve(t.bullet.fin(), 0f, rift.extendTime),
+                    fout = 1f - Mathf.curve(t.bullet.fin(), rift.retractTime, rift.retractTime + 0.125f),
+                    scl = fin * fout;
+
+                for(int i = 0; i < 4; i++){
+                    float a = t.rotation + 45 + 90 * i;
+
+                    Tmp.v1.trns(a, 2f * scl, 0f);
+                    Tmp.v2.trns(a, -2f * scl, 0f);
+                    Tmp.v3.trns(a, 0f, 10f * scl);
+
+                    Fill.tri(
+                        x + Tmp.v1.x, y + Tmp.v1.y,
+                        x + Tmp.v2.x, y + Tmp.v2.y,
+                        x + Tmp.v3.x, y + Tmp.v3.y
+                    );
+                }
+            };
         }};
 
         sentinel = new AimLaserTurret("sentinel"){{
