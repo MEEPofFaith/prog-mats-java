@@ -103,7 +103,8 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public void updateRoutes(){
-        routes = new IntSeq(getPad().routes);
+        DronePadBuild p = getPad();
+        if(p != null) routes = new IntSeq(p.routes);
     }
 
     public void nextRoute(){
