@@ -72,9 +72,10 @@ public class DroneUnitEntity extends PayloadUnit{
 
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public void spontaniumCombustum(){
+        Call.unitDespawn(this);
         Fx.unitCapKill.at(this);
-        elevation = 0;
-        kill();
+        //elevation = 0;
+        //kill();
     }
 
     public float chargef(){
