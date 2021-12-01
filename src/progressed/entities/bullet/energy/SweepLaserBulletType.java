@@ -12,8 +12,8 @@ import progressed.graphics.*;
 
 public class SweepLaserBulletType extends BulletType{
     public Color color = Color.red;
-    public float length = 1f, width = 1f;
-    public float radius = 2f;
+    public float length = 1f, width = 0.5f;
+    public float radius = 1f;
     public float angleRnd;
     public float extendTime = 0.125f, retractTime = -1f,
         sweepTime = 0.5f, blastTime = 0.625f;

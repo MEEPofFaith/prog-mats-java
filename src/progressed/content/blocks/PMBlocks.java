@@ -754,6 +754,7 @@ public class PMBlocks implements ContentList{
             size = 2;
             powerUse = 1f;
             reloadTime = 2f * 60f;
+            shootLength = 26f / 4f;
             shootSound = Sounds.plasmadrop;
 
             SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
@@ -770,31 +771,23 @@ public class PMBlocks implements ContentList{
             shootType = sweepLaser;
 
             pointDrawer = t -> {
-                if(t.bullet == null) return;
-
                 Draw.z(Layer.effect + 1f);
                 Draw.color(Color.red);
                 tr.trns(t.rotation, shootLength);
 
+
+                float fin = Mathf.curve(t.reload / reloadTime, 0.75f),
+                    fout = 1f;
+                if(t.bullet != null){
+                    fin = 1f;
+                    fout -= Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f);
+                }
+
                 float x = t.x + tr.x + tr2.x,
                     y = t.y + tr.y + tr2.y,
-                    fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.extendTime),
-                    fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
                     scl = fin * fout;
 
-                for(int side : Mathf.signs){
-                    float a = t.rotation + 90 + 90 * side;
-
-                    Tmp.v1.trns(a, 1.5f * scl, 0f);
-                    Tmp.v2.trns(a, -1.5f * scl, 0f);
-                    Tmp.v3.trns(a, 0f, 6f * scl);
-
-                    Fill.tri(
-                        x + Tmp.v1.x, y + Tmp.v1.y,
-                        x + Tmp.v2.x, y + Tmp.v2.y,
-                        x + Tmp.v3.x, y + Tmp.v3.y
-                    );
-                }
+                Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
             };
         }};
 
