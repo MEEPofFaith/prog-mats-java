@@ -51,6 +51,13 @@ public class GeomancyTurret extends PowerTurret{
         }
     }
 
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        PMGeneration.outlineRegions(packer, armRegions, outlineColor, name + "-arm-outline");
+        PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-turret");
+    }
+
     public class GeomancyTurretBuild extends PowerTurretBuild{
         public Vec2 strikePos = new Vec2();
         public float[] armRecoil = new float[2], armHeat = new float[2];
