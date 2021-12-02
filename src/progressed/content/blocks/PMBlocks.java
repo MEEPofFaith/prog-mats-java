@@ -1463,6 +1463,8 @@ public class PMBlocks implements ContentList{
             radius = 88f;
             shieldHealth = 2600f;
             phaseShieldBoost = 1800f;
+            shieldCharge = 600f;
+            phaseShieldCharge = 350f;
             cooldownBrokenBase *= 2f;
 
             consumes.items(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();

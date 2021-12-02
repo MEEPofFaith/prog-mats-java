@@ -23,7 +23,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class ShieldProjector extends ForceProjector{
-    public float chargeTime = 900f, shieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
+    public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
     public Effect chargeEffect = PMFx.squareShieldRecharge;
     public Color lerpColor = Color.gray;
     public float lerpPercent = 0.75f;
@@ -131,7 +131,7 @@ public class ShieldProjector extends ForceProjector{
 
                     if(charge >= chargeTime){
                         chargeEffect.at(x, y, realRadius(), team.color);
-                        buildup -= shieldCharge * delta();
+                        buildup -= realCharge() * delta();
                         charge %= chargeTime;
                     }
                 }else{
@@ -161,6 +161,10 @@ public class ShieldProjector extends ForceProjector{
                 paramEntity = this;
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
             }
+        }
+
+        public float realCharge(){
+            return shieldCharge + phaseHeat * phaseShieldCharge;
         }
 
         @Override
