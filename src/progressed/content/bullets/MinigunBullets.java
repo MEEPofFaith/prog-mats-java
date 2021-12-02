@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 
 public class MinigunBullets implements ContentList{
@@ -43,6 +44,7 @@ public class MinigunBullets implements ContentList{
             inaccuracy = 5f;
             makeFire = true;
             lifetime = 86f;
+            hitEffect = despawnEffect = new MultiEffect(Fx.hitBulletSmall, Fx.fireHit);
         }};
 
         standardThoriumMini = new BasicBulletType(4f, 54f){{
