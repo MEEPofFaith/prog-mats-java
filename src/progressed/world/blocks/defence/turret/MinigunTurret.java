@@ -13,6 +13,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 public class MinigunTurret extends ItemTurret{
@@ -25,6 +26,7 @@ public class MinigunTurret extends ItemTurret{
 
     public MinigunTurret(String name){
         super(name);
+        outlineIcon = false; //frame 1 is used for icon
     }
 
     @Override
@@ -34,9 +36,16 @@ public class MinigunTurret extends ItemTurret{
         for(int i = 0; i < 3; i++){
             turretRegions[i] = Core.atlas.find(name + "-frame-" + i);
         }
+        region = turretRegions[0];
         for(int i = 0; i < 12; i++){
             heatRegions[i] = Core.atlas.find(name + "-heat-" + i);
         }
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        Outliner.outlineRegions(packer, turretRegions, outlineColor, name + "-frame");
+        super.createIcons(packer);
     }
 
     @Override

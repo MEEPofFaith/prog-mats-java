@@ -26,6 +26,7 @@ import progressed.content.bullets.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.units.*;
+import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
@@ -64,7 +65,7 @@ public class PMBlocks implements ContentList{
     flame, blaze, inferno,
     
     //Swords
-    ball, masquerade,
+    dance, ball,
 
     //Pixel Turrets
     bit,
@@ -340,7 +341,9 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, 40,
                 PMItems.tenelium, 50
             ));
+            float spinSpeed = 12f;
             rings.addAll(
+                //Center
                 new TeslaRing(1f),
                 new TeslaRing(3.25f),
                 new TeslaRing(6.5f),
@@ -350,47 +353,47 @@ public class PMBlocks implements ContentList{
                     drawUnder = true;
                     xOffset = -8.625f;
                     yOffset = 8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //TR
                     drawUnder = true;
                     xOffset = yOffset = 8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //BL
                     drawUnder = true;
                     xOffset = yOffset = -8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //BR
                     drawUnder = true;
                     xOffset = 8.625f;
                     yOffset = -8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 //Spinner 2
-                new TeslaRing(1f){{ //Tl
+                new TeslaRing(1f){{ //TL
                     hasSprite = true;
                     drawUnder = true;
                     xOffset = -7.625f;
                     yOffset = 7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
-                new TeslaRing(1f){{ //TT
+                new TeslaRing(1f){{ //TR
                     drawUnder = true;
                     xOffset = yOffset = 7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
-                new TeslaRing(1f){{ //Bl
+                new TeslaRing(1f){{ //BL
                     drawUnder = true;
                     xOffset = yOffset = -7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
                 new TeslaRing(1f){{ //BR
                     drawUnder = true;
                     xOffset = 7.625f;
                     yOffset = -7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }}
             );
             size = 3;
@@ -400,8 +403,6 @@ public class PMBlocks implements ContentList{
             range = 210f;
             maxTargets = 16;
             coolantMultiplier = 1f;
-            spinUp = 0.005f;
-            spinDown = 0.0125f;
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;
@@ -533,7 +534,7 @@ public class PMBlocks implements ContentList{
             consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f)).update(false);
         }};
 
-        ball = new SwordTurret("masquerade"){{
+        dance = new SwordTurret("dance"){{
             requirements(Category.turret, with(
                 Items.copper, 500,
                 Items.graphite, 250,
@@ -552,7 +553,7 @@ public class PMBlocks implements ContentList{
             trailWidth = 30f / 4f;
         }};
 
-        masquerade = new SwordTurret("violet"){
+        ball = new SwordTurret("ball"){
             {
                 requirements(Category.turret, with(
                     Items.copper, 1400,
@@ -1133,6 +1134,7 @@ public class PMBlocks implements ContentList{
             speed = 4f;
             duration = 4f * 60f;
             shake = laserShake = 5f;
+            outlineColor = PMPal.darkOutline;
 
             unitSort = UnitSorts.strongest;
 
@@ -1164,7 +1166,7 @@ public class PMBlocks implements ContentList{
             radiusBoost = 1f;
             speedBoost = 1f / 8f;
             durationBoost = 5f;
-            outlineColor = Color.valueOf("2e3142");
+            outlineColor = PMPal.darkOutline;
 
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;
@@ -1538,7 +1540,7 @@ public class PMBlocks implements ContentList{
             radiusBoost = 5f * tilesize;
             speedBoost = 3f;
             durationBoost = 18f;
-            outlineColor = Color.valueOf("2e3142");
+            outlineColor = PMPal.darkOutline;
 
             width = 0.25f;
             startLength = -6f / 4f;

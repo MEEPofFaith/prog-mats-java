@@ -11,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -48,14 +49,21 @@ public class SniperTurret extends ItemTurret{
         cHeats = new TextureRegion[partCount - 1];
         
         for(int i = 0; i < partCount; i++){
-            outlines[i] = atlas.find(name + "-outline-" + i);
             parts[i] = atlas.find(name + "-part-" + i);
+            outlines[i] = atlas.find(name + "-outline-" + i);
             heats[i] = atlas.find(name + "-heat-" + i);
             if(i < partCount - 1){
                 connectors[i] = atlas.find(name + "-connector-" + i);
                 cHeats[i] = atlas.find(name + "-connector-heat-" + i);
             }
         }
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        Outliner.outlineRegions(packer, parts, outlineColor, name + "-outline");
+        Outliner.outlineRegions(packer, connectors, outlineColor, name + "-connector");
     }
 
     @Override
@@ -91,6 +99,12 @@ public class SniperTurret extends ItemTurret{
                 Drawf.shadow(outlines[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
             }
 
+            for(int i = 0; i < partCount - 1; i++){
+                float tx = Angles.trnsx(rotation, split * charge * (i + 0.5f));
+                float ty = Angles.trnsy(rotation, split * charge * (i + 0.5f));
+                Drawf.shadow(connectors[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
+            }
+
             for(int i = 0; i < partCount; i++){
                 float tx = Angles.trnsx(rotation, split * charge * i);
                 float ty = Angles.trnsy(rotation, split * charge * i);
@@ -98,18 +112,16 @@ public class SniperTurret extends ItemTurret{
             }
 
             for(int i = 0; i < partCount - 1; i++){
-                if(Core.atlas.isFound(connectors[i])){
-                    float tx = Angles.trnsx(rotation, split * charge * (i + 0.5f));
-                    float ty = Angles.trnsy(rotation, split * charge * (i + 0.5f));
-                    Draw.rect(connectors[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
-                    if(heat > 0.001f){
-                        if(Core.atlas.isFound(cHeats[i])){
-                            Draw.color(heatColor, heat);
-                            Draw.blend(Blending.additive);
-                            Draw.rect(cHeats[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
-                            Draw.blend();
-                            Draw.color();
-                        }
+                float tx = Angles.trnsx(rotation, split * charge * (i + 0.5f));
+                float ty = Angles.trnsy(rotation, split * charge * (i + 0.5f));
+                Draw.rect(connectors[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                if(heat > 0.001f){
+                    if(Core.atlas.isFound(cHeats[i])){
+                        Draw.color(heatColor, heat);
+                        Draw.blend(Blending.additive);
+                        Draw.rect(cHeats[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                        Draw.blend();
+                        Draw.color();
                     }
                 }
             }

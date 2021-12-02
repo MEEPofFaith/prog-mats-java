@@ -78,6 +78,7 @@ public class SwordTurret extends BaseTurret{
         super(name);
         hasPower = true;
         rotateSpeed = 4f;
+        //coolant not supported
         acceptCoolant = canOverdrive = false;
     }
 
@@ -110,6 +111,12 @@ public class SwordTurret extends BaseTurret{
             baseRegion,
             region
         };
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        Outliner.outlineRegion(packer, swordRegion, outlineColor, name + "-sword-outline");
     }
 
     @Override
