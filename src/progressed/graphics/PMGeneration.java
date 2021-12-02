@@ -13,6 +13,7 @@ public class PMGeneration{
      * @author Sunny
      * */
     public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
+        if(tex == null) return;
         final int radius = 4;
         PixmapRegion region = Core.atlas.getPixmap(tex);
         Pixmap out = new Pixmap(region.width, region.height);

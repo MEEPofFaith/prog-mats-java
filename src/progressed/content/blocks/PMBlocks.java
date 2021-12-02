@@ -331,7 +331,9 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, 40,
                 PMItems.tenelium, 50
             ));
+            float spinSpeed = 12f;
             rings.addAll(
+                //Center
                 new TeslaRing(1f),
                 new TeslaRing(3.25f),
                 new TeslaRing(6.5f),
@@ -341,47 +343,47 @@ public class PMBlocks implements ContentList{
                     drawUnder = true;
                     xOffset = -8.625f;
                     yOffset = 8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //TR
                     drawUnder = true;
                     xOffset = yOffset = 8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //BL
                     drawUnder = true;
                     xOffset = yOffset = -8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 new TeslaRing(4.25f){{ //BR
                     drawUnder = true;
                     xOffset = 8.625f;
                     yOffset = -8.625f;
-                    rotationMul = 12f;
+                    rotationMul = spinSpeed;
                 }},
                 //Spinner 2
-                new TeslaRing(1f){{ //Tl
+                new TeslaRing(1f){{ //TL
                     hasSprite = true;
                     drawUnder = true;
                     xOffset = -7.625f;
                     yOffset = 7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
-                new TeslaRing(1f){{ //TT
+                new TeslaRing(1f){{ //TR
                     drawUnder = true;
                     xOffset = yOffset = 7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
-                new TeslaRing(1f){{ //Bl
+                new TeslaRing(1f){{ //BL
                     drawUnder = true;
                     xOffset = yOffset = -7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }},
                 new TeslaRing(1f){{ //BR
                     drawUnder = true;
                     xOffset = 7.625f;
                     yOffset = -7.625f;
-                    rotationMul = -12f;
+                    rotationMul = -spinSpeed;
                 }}
             );
             size = 3;
@@ -391,8 +393,6 @@ public class PMBlocks implements ContentList{
             range = 210f;
             maxTargets = 16;
             coolantMultiplier = 1f;
-            spinUp = 0.005f;
-            spinDown = 0.0125f;
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;

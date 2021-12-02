@@ -20,6 +20,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -43,12 +44,13 @@ public class TeslaTurret extends Block{
     public StatusEffect status;
     public float statusDuration = 10f * 60f;
 
-    public float spinUp, spinDown, lightningStroke = 3.5f;
+    public float spinUp = 0.01f, spinDown = 0.0125f, lightningStroke = 3.5f;
     public float sectionRad = 0.14f, blinkScl = 20f;
     public int sections = 5;
 
     public Sound shootSound = Sounds.spark;
     public Effect shootEffect = Fx.sparkShoot;
+    public Effect hitEffect = Fx.hitLaserBlast;
     public Effect coolEffect = Fx.fuelburn;
     public Color heatColor = Pal.turretHeat;
     public float shootShake;
@@ -99,6 +101,12 @@ public class TeslaTurret extends Block{
         if(hasSpinners) bottomRegion = Core.atlas.find(name + "-bottom");
         topRegion = Core.atlas.find(name + "-top");
         baseRegion = Core.atlas.find(name + "-base", "block-" + size);
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        PMGeneration.outlineRegions(packer, ringRegions, outlineColor, name + "-outline");
     }
 
     @Override
@@ -230,7 +238,7 @@ public class TeslaTurret extends Block{
 
             if(Core.settings.getBool("pm-tesla-range") && curStroke > 0.001f){
                 Draw.z(Layer.bullet - 0.001f);
-                Lines.stroke((0.7f +  + Mathf.absin(blinkScl, 0.7f)) * curStroke, lightningColor);
+                Lines.stroke((0.7f + Mathf.absin(blinkScl, 0.7f)) * curStroke, lightningColor);
                 for(int i = 0; i < sections; i++){
                     float rot = i * 360f / sections + Time.time * rotateSpeed;
                     Lines.swirl(x, y, range, sectionRad, rot);
@@ -252,7 +260,7 @@ public class TeslaTurret extends Block{
                 speedScl = Mathf.lerpDelta(speedScl, 1, spinUp * liquid.heatCapacity * coolantMultiplier * edelta());
             }
                 
-            rotation -= speedScl * delta();
+            rotation -= speedScl * edelta();
             curStroke = Mathf.lerpDelta(curStroke, nearby ? 1 : 0, 0.09f);
 
             if(consValid()){
@@ -299,11 +307,12 @@ public class TeslaTurret extends Block{
                             Tmp.v1.trns(rotation * ring.rotationMul, ring.xOffset, ring.yOffset); //ring location
                             Tmp.v2.setToRandomDirection().setLength(ring.radius); //ring
 
-                            float shootX = x + Tmp.v1.x, shootY = y + Tmp.v1.y;
+                            float shootX = x + Tmp.v1.x + Tmp.v2.x, shootY = y + Tmp.v1.y + Tmp.v2.y;
                             float shootAngle = Angles.angle(shootX, shootY, other.x(), other.y());
 
                             shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
                             shootEffect.at(shootX, shootY, shootAngle, lightningColor);
+                            hitEffect.at(other.x(), other.y(), lightningColor);
                             PMFx.fakeLightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
                         }
 
