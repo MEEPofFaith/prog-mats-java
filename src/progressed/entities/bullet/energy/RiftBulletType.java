@@ -72,7 +72,7 @@ public class RiftBulletType extends SweepLaserBulletType{
             );
 
             //Line
-            float lfin = Mathf.curve(b.fin(), 0f, extendTime);
+            float lfin = Mathf.curve(b.fin(), startDelay, extendTime);
             float lfout = 1f - Mathf.curve(b.fin(), sweepTime, retractTime);
             float lscl = lfin * lfout;
             if(lscl > 0.01f){

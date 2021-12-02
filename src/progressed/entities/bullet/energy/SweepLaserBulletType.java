@@ -15,7 +15,7 @@ public class SweepLaserBulletType extends BulletType{
     public float length = 1f, width = 0.5f;
     public float radius = 1f;
     public float angleRnd;
-    public float extendTime = 0.125f, retractTime = -1f,
+    public float startDelay, extendTime = 0.125f, retractTime = -1f,
         sweepTime = 0.5f, blastTime = 0.625f;
     public int blasts = 2;
 
@@ -28,14 +28,14 @@ public class SweepLaserBulletType extends BulletType{
         collides = keepVelocity = backMove = false;
         absorbable = hittable = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
-        layer = Layer.effect + 1f;
+        layer = Layer.bullet - 1f;
     }
 
     @Override
     public void init(){
         super.init();
 
-        if(retractTime < 0) retractTime = sweepTime + extendTime;
+        if(retractTime < 0) retractTime = sweepTime + extendTime - startDelay;
     }
 
     @Override
@@ -103,7 +103,7 @@ public class SweepLaserBulletType extends BulletType{
             );
 
             //Line
-            float lfin = Mathf.curve(b.fin(), 0f, extendTime);
+            float lfin = Mathf.curve(b.fin(), startDelay, extendTime);
             float lfout = 1f - Mathf.curve(b.fin(), sweepTime, retractTime);
             float lscl = lfin * lfout;
             if(lscl > 0.01f){

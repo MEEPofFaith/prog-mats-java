@@ -755,13 +755,18 @@ public class PMBlocks implements ContentList{
             size = 2;
             powerUse = 1f;
             reloadTime = 2f * 60f;
-            shootLength = 26f / 4f;
+            shootLength = 23f / 4f;
             shootSound = Sounds.plasmadrop;
+            retractDelay = 0.125f;
+            hideDetails = false;
 
             SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 8f * tilesize;
+                startDelay = 0.125f;
+                extendTime += startDelay;
+                sweepTime += startDelay;
                 angleRnd = 25f;
                 blasts = 12;
                 blastBullet = new BombBulletType(100, 32f, "clear"){{
@@ -772,20 +777,16 @@ public class PMBlocks implements ContentList{
             shootType = sweepLaser;
 
             pointDrawer = t -> {
+                if(t.bullet == null) return;
+
                 Draw.z(Layer.effect + 1f);
                 Draw.color(Color.red);
                 tr.trns(t.rotation, shootLength);
 
-
-                float fin = Mathf.curve(t.reload / reloadTime, 0.75f),
-                    fout = 1f;
-                if(t.bullet != null){
-                    fin = 1f;
-                    fout -= Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f);
-                }
-
                 float x = t.x + tr.x + tr2.x,
                     y = t.y + tr.y + tr2.y,
+                    fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
+                    fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
                     scl = fin * fout;
 
                 Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
