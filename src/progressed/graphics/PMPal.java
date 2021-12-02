@@ -13,6 +13,8 @@ public class PMPal{
     darkGray = valueOf("6E7080"),
     darkBrown = valueOf("4d2c0c"),
 
+    darkOutline = Color.valueOf("2e3142"),
+
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
 

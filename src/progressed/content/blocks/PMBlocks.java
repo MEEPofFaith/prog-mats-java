@@ -22,6 +22,7 @@ import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.entities.bullet.*;
 import progressed.entities.units.*;
+import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
@@ -1028,6 +1029,7 @@ public class PMBlocks implements ContentList{
             speed = 4f;
             duration = 4f * 60f;
             shake = laserShake = 5f;
+            outlineColor = PMPal.darkOutline;
 
             unitSort = (u, x, y) -> -u.maxHealth + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 
@@ -1059,7 +1061,7 @@ public class PMBlocks implements ContentList{
             radiusBoost = 1f;
             speedBoost = 1f / 8f;
             durationBoost = 5f;
-            outlineColor = Color.valueOf("2e3142");
+            outlineColor = PMPal.darkOutline;
 
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;
