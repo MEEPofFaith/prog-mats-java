@@ -1435,7 +1435,7 @@ public class PMBlocks implements ContentList{
             radiusBoost = 5f * tilesize;
             speedBoost = 3f;
             durationBoost = 18f;
-            outlineColor = Color.valueOf("2e3142");
+            outlineColor = PMPal.darkOutline;
 
             width = 0.25f;
             startLength = -6f / 4f;

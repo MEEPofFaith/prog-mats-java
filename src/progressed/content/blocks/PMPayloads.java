@@ -43,6 +43,8 @@ public class PMPayloads implements ContentList{
             powerUse = 0.5f;
             constructTime = 60f * 2f;
             elevation = 2f / 3f;
+            outlineIcon = true;
+            outlinedIcon = 0;
         }};
 
         basicRocket = new Missile("basic-rocket"){{
@@ -53,6 +55,7 @@ public class PMPayloads implements ContentList{
             powerUse = 1f;
             constructTime = 60f * 6f;
             elevation = 2f / 3f;
+            outlined = true;
 
             explosion = PayloadBullets.arbalestBasic;
         }};
@@ -65,6 +68,7 @@ public class PMPayloads implements ContentList{
             powerUse = 1.25f;
             constructTime = 60f * 6.5f;
             elevation = 2f / 3f;
+            outlined = true;
 
             explosion = PayloadBullets.arbalestIncend;
         }};
@@ -77,6 +81,7 @@ public class PMPayloads implements ContentList{
             powerUse = 1.25f;
             constructTime = 60f * 6.5f;
             elevation = 2f / 3f;
+            outlined = true;
 
             explosionArea = -1f;
             explosion = ((RocketBulletType)(PayloadBullets.arbalestBomber)).bombBullet;

@@ -12,6 +12,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -27,7 +28,9 @@ public class Missile extends Block{
 
     public float elevation = -1f;
 
-    public TextureRegion topRegion;
+    public boolean outlined;
+
+    public TextureRegion topRegion, outlineRegion;
 
     public Missile(String name){
         super(name);
@@ -57,8 +60,17 @@ public class Missile extends Block{
     public void load(){
         super.load();
 
-        region = Core.atlas.find(name + "-outline", name);
+        outlineRegion = Core.atlas.find(name + "-outline");
         topRegion = Core.atlas.find(name + "-top", region);
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        if(outlined){
+            PMGeneration.outlineRegion(packer, region, outlineColor, name + "-outline");
+            region = Core.atlas.find(name + "-outline"); //For icon. Putting outlineRegion in icons() does not work properly.
+        }
+        super.createIcons(packer);
     }
 
     @Override
@@ -67,10 +79,11 @@ public class Missile extends Block{
     }
 
     public void drawBase(Tile tile){
+        TextureRegion reg = outlined ? outlineRegion : region; //Using region directly will not have an outline, even if an outline was created. Not sure why.
         Draw.z(Layer.blockUnder - 1f);
-        Drawf.shadow(region, tile.drawx() - elevation, tile.drawy() - elevation);
+        Drawf.shadow(reg, tile.drawx() - elevation, tile.drawy() - elevation);
         Draw.z(Layer.block);
-        Draw.rect(region, tile.drawx(), tile.drawy());
+        Draw.rect(reg, tile.drawx(), tile.drawy());
         if(topRegion.found()) Draw.rect(topRegion, tile.drawx(), tile.drawy());
     }
 
