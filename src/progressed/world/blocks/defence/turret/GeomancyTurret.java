@@ -54,8 +54,8 @@ public class GeomancyTurret extends PowerTurret{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegions(packer, armRegions, outlineColor, name + "-arm-outline");
         PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-turret");
+        PMGeneration.outlineRegions(packer, armRegions, outlineColor, name + "-arm-outline");
     }
 
     public class GeomancyTurretBuild extends PowerTurretBuild{

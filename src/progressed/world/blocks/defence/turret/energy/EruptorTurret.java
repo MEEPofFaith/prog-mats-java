@@ -18,6 +18,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.bullet.energy.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;
@@ -35,7 +36,7 @@ public class EruptorTurret extends PowerTurret{
     public float capCloseRate = 0.01f;
 
 
-    public TextureRegion turretRegion, baseOutline;
+    public TextureRegion turretRegion, turretOutline;
     public TextureRegion[] cellRegions, capRegions, outlineRegions, heatRegions;
     
     protected Vec2 tr3 = new Vec2();
@@ -69,7 +70,7 @@ public class EruptorTurret extends PowerTurret{
         super.load();
 
         turretRegion = atlas.find(name + "-turret");
-        baseOutline = atlas.find(name + "-base-outline");
+        turretOutline = atlas.find(name + "-turret-outline");
         cellRegions = new TextureRegion[cells.size];
         capRegions = new TextureRegion[cells.size];
         outlineRegions = new TextureRegion[cells.size];
@@ -80,6 +81,13 @@ public class EruptorTurret extends PowerTurret{
             outlineRegions[i] = atlas.find(name + "-outline-" + i);
             heatRegions[i] = atlas.find(name + "-cell-heat-" + i);
         }
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-turret-outline");
+        PMGeneration.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
     }
 
     @Override
@@ -151,20 +159,8 @@ public class EruptorTurret extends PowerTurret{
             tr2.trns(rotation, -recoil);
             float tx = x + tr2.x, ty = y + tr2.y;
 
-            Drawf.shadow(baseOutline, tx - elevation, ty - elevation, rotation - 90f);
-            for(int i = 0; i < cells.size; i++){
-                EruptorCell cell = cells.get(i);
-                tr3.trns(rotation - 90, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                Drawf.shadow(outlineRegions[i], tx + tr3.x - elevation, ty + tr3.y - elevation, rotation - 90f);
-            }
-
-            Draw.rect(baseOutline, tx, ty, rotation - 90f);
-            for(int i = 0; i < cells.size; i++){
-                EruptorCell cell = cells.get(i);
-                tr3.trns(rotation - 90, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                Draw.rect(outlineRegions[i], tx + tr3.x, ty + tr3.y, rotation - 90f);
-            }
-
+            Drawf.shadow(turretOutline, tx - elevation, ty - elevation, rotation - 90f);
+            Draw.rect(turretOutline, tx, ty, rotation - 90f);
             Draw.rect(turretRegion, tx, ty, rotation - 90f);
 
             if(heat > 0.00001f){
@@ -179,6 +175,13 @@ public class EruptorTurret extends PowerTurret{
                 for(int j = 0; j < cells.size; j++){
                     EruptorCell cell = cells.get(j);
                     if((cell.layer - 1) != i) continue;
+                    tr3.trns(rotation - 90, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
+                    Draw.rect(outlineRegions[j], tx + tr3.x, ty + tr3.y, rotation - 90f);
+                }
+
+                for(int j = 0; j < cells.size; j++){
+                    EruptorCell cell = cells.get(j);
+                    if((cell.layer - 1) != i) continue;
                     Draw.rect(cellRegions[j], tx, ty, rotation - 90f);
                     if(heat > 0.00001f){
                         Draw.blend(Blending.additive);
@@ -188,6 +191,7 @@ public class EruptorTurret extends PowerTurret{
                         Draw.color();
                     }
                 }
+
                 for(int j = 0; j < cells.size; j++){
                     EruptorCell cell = cells.get(j);
                     if((cell.layer - 1) != i) continue;

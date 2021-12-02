@@ -18,6 +18,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 
@@ -54,6 +55,7 @@ public class InfernoTurret extends PowerTurret{
         ambientSound = Sounds.beam;
         ambientSoundVolume = 2f;
         heatColor = Color.valueOf("f08913");
+        outlinedIcon = 1;
 
         consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 0.01f)).update(false);
         coolantMultiplier = 1f;
@@ -90,6 +92,25 @@ public class InfernoTurret extends PowerTurret{
     }
 
     @Override
+    public void createIcons(MultiPacker packer){
+        PMGeneration.outlineRegion(packer, bottomRegion, outlineColor, name + "-bottom");
+        PMGeneration.outlineRegion(packer, sideRegion, outlineColor, name + "-side-outline");
+        PMGeneration.outlineRegion(packer, atlas.find(name + "-caps"), outlineColor, name + "-caps");
+        PMGeneration.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
+        super.createIcons(packer);
+    }
+
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{
+            baseRegion,
+            region,
+            atlas.find(name + "-cells"),
+            atlas.find(name + "-caps")
+        };
+    }
+
+    @Override
     public void init(){
         super.init();
 
@@ -98,14 +119,6 @@ public class InfernoTurret extends PowerTurret{
         if(cells.size == 0){
             throw new RuntimeException(name + " does not have any cells!");
         }
-    }
-
-    @Override
-    public TextureRegion[] icons(){
-        return new TextureRegion[]{
-            baseRegion,
-            atlas.find(name + "-icon")
-        };
     }
 
     @Override
@@ -139,25 +152,7 @@ public class InfernoTurret extends PowerTurret{
                 tr3.trns(rotation + i * 90f, recoil);
                 Drawf.shadow(sideOutline, x + tr3.x - elevation, y + tr3.y - elevation, rotation - 90f + i * 90f);
             }
-            for(int i = 0; i < cells.size; i++){
-                EruptorCell cell = cells.get(i);
-                for(int j = 0; j < 4; j++){
-                    tr2.trns(rotation - 90f + j * 90f, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                    tr3.trns(rotation + j * 90f, recoil);
-                    Drawf.shadow(outlineRegions[j], x + tr2.x + tr3.x - elevation, y + tr2.y + tr3.y - elevation, rotation - 90f + j * 90f);
-                }
-            }
 
-            Draw.rect(bottomRegion, x, y);
-            for(int i = 0; i < cells.size; i++){
-                EruptorCell cell = cells.get(i);
-                for(int j = 0; j < 4; j++){
-                    tr2.trns(rotation - 90f + j * 90f, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                    tr3.trns(rotation + j * 90f, recoil);
-                    Draw.rect(outlineRegions[j], x + tr2.x + tr3.x, y + tr2.y + tr3.y, rotation - 90f + j * 90f);
-                }
-            }
-            
             Draw.rect(bottomRegion, x, y);
 
             if(heat > 0.00001f){
@@ -185,6 +180,16 @@ public class InfernoTurret extends PowerTurret{
             }
 
             for(int i = 0; i < layers; i++){
+                for(int j = 0; j < cells.size; j++){
+                    EruptorCell cell = cells.get(j);
+                    if((cell.layer - 1) != i) continue;
+                    for(int k = 0; k < 4; k++){
+                        tr2.trns(rotation - 90f + k * 90f, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
+                        tr3.trns(rotation + k * 90f, recoil);
+                        Draw.rect(outlineRegions[j], x + tr2.x + tr3.x, y + tr2.y + tr3.y, rotation - 90f + k * 90f);
+                    }
+                }
+
                 for(int j = 0; j < cells.size; j++){
                     EruptorCell cell = cells.get(j);
                     if((cell.layer - 1) != i) continue;

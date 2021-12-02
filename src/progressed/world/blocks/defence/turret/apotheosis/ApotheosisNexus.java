@@ -142,9 +142,9 @@ public class ApotheosisNexus extends ReloadTurret{
 
     @Override
     public void createIcons(MultiPacker packer){
+        PMGeneration.outlineRegion(packer, spinners, outlineColor, name + "-spinners");
         PMGeneration.outlineRegions(packer, spinnerRegionsLight, outlineColor, name + "-spinner-light");
         PMGeneration.outlineRegions(packer, spinnerRegionsDark, outlineColor, name + "-spinner-dark");
-        PMGeneration.outlineRegion(packer, spinners, outlineColor, name + "-spinners");
         super.createIcons(packer);
     }
 
