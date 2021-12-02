@@ -86,8 +86,8 @@ public class EruptorTurret extends PowerTurret{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-turret-outline");
-        PMGeneration.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
+        Outliner.outlineRegion(packer, turretRegion, outlineColor, name + "-turret-outline");
+        Outliner.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
     }
 
     @Override

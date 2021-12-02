@@ -7,7 +7,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.graphics.*;
 
-public class PMGeneration{
+public class Outliner{
     /**
      * Outlines a given textureRegion. Run in createIcons.
      * @author Sunny

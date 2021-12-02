@@ -93,10 +93,10 @@ public class InfernoTurret extends PowerTurret{
 
     @Override
     public void createIcons(MultiPacker packer){
-        PMGeneration.outlineRegion(packer, bottomRegion, outlineColor, name + "-bottom");
-        PMGeneration.outlineRegion(packer, sideRegion, outlineColor, name + "-side-outline");
-        PMGeneration.outlineRegion(packer, atlas.find(name + "-caps"), outlineColor, name + "-caps");
-        PMGeneration.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
+        Outliner.outlineRegion(packer, bottomRegion, outlineColor, name + "-bottom");
+        Outliner.outlineRegion(packer, sideRegion, outlineColor, name + "-side-outline");
+        Outliner.outlineRegion(packer, atlas.find(name + "-caps"), outlineColor, name + "-caps");
+        Outliner.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
         super.createIcons(packer);
     }
 

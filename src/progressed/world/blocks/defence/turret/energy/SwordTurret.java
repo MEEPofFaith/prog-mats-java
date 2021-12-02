@@ -116,7 +116,7 @@ public class SwordTurret extends BaseTurret{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegion(packer, swordRegion, outlineColor, name + "-sword-outline");
+        Outliner.outlineRegion(packer, swordRegion, outlineColor, name + "-sword-outline");
     }
 
     @Override

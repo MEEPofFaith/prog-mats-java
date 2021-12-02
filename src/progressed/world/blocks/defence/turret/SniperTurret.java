@@ -61,8 +61,8 @@ public class SniperTurret extends ItemTurret{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegions(packer, parts, outlineColor, name + "-outline");
-        PMGeneration.outlineRegions(packer, connectors, outlineColor, name + "-connector");
+        Outliner.outlineRegions(packer, parts, outlineColor, name + "-outline");
+        Outliner.outlineRegions(packer, connectors, outlineColor, name + "-connector");
     }
 
     @Override

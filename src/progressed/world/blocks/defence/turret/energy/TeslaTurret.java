@@ -106,7 +106,7 @@ public class TeslaTurret extends Block{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegions(packer, ringRegions, outlineColor, name + "-outline");
+        Outliner.outlineRegions(packer, ringRegions, outlineColor, name + "-outline");
     }
 
     @Override

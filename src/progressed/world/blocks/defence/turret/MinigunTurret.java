@@ -44,7 +44,7 @@ public class MinigunTurret extends ItemTurret{
 
     @Override
     public void createIcons(MultiPacker packer){
-        PMGeneration.outlineRegions(packer, turretRegions, outlineColor, name + "-frame");
+        Outliner.outlineRegions(packer, turretRegions, outlineColor, name + "-frame");
         super.createIcons(packer);
     }
 

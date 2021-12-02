@@ -61,8 +61,8 @@ public class PopeshadowTurret extends PowerTurret{
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-outline");
-        PMGeneration.outlineRegions(packer, sideRegions, outlineColor, name + "-side-outline");
+        Outliner.outlineRegion(packer, turretRegion, outlineColor, name + "-outline");
+        Outliner.outlineRegions(packer, sideRegions, outlineColor, name + "-side-outline");
     }
 
     @Override

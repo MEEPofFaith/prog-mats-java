@@ -67,7 +67,7 @@ public class Missile extends Block{
     @Override
     public void createIcons(MultiPacker packer){
         if(outlined){
-            PMGeneration.outlineRegion(packer, region, outlineColor, name + "-outline");
+            Outliner.outlineRegion(packer, region, outlineColor, name + "-outline");
             region = Core.atlas.find(name + "-outline"); //For icon. Putting outlineRegion in icons() does not work properly.
         }
         super.createIcons(packer);
