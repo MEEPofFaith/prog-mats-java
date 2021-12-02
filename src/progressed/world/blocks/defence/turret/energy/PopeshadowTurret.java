@@ -8,6 +8,7 @@ import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;
@@ -18,6 +19,7 @@ public class PopeshadowTurret extends PowerTurret{
     public float xOpen = 2f, yOpen = -3f;
     public Color lightColor = Pal.surge;
     public float lightOpactiy = 0.7f;
+    //this is a mess
     public float[][] lightCoordsSet1 = {
         {21f / 4f, -65f / 4f, 26f / 4f, -60f / 4f, 3f},
         {33f / 4f, -40f / 4f, 38f / 4f, -35f / 4f, 3f},
@@ -31,8 +33,8 @@ public class PopeshadowTurret extends PowerTurret{
         {21f / 4f, 65f / 4f, 21f / 4f, 73f / 4f, 3f}
     };
 
-    public TextureRegion bottomRegion, topRegion;
-    public TextureRegion[] sideRegions = new TextureRegion[2], outlineRegions = new TextureRegion[3], cellRegions = new TextureRegion[8];
+    public TextureRegion turretRegion, turretOutline, topRegion;
+    public TextureRegion[] sideRegions = new TextureRegion[2], outlineRegions = new TextureRegion[2], cellRegions = new TextureRegion[8];
 
     public PopeshadowTurret(String name){
         super(name);
@@ -42,13 +44,14 @@ public class PopeshadowTurret extends PowerTurret{
     public void load(){
         super.load();
 
-        bottomRegion = atlas.find(name + "-bottom");
+        turretRegion = atlas.find(name + "-bottom");
+        turretOutline = atlas.find(name + "-outline");
         topRegion = atlas.find(name + "-top");
         for(int i = 0; i < 2; i++){
             sideRegions[i] = atlas.find(name + "-side-" + i);
         }
-        for(int i = 0; i < 3; i++){
-            outlineRegions[i] = atlas.find(name + "-outline-" + i);
+        for(int i = 0; i < 2; i++){
+            outlineRegions[i] = atlas.find(name + "-side-outline-" + i);
         }
         for(int i = 0; i < 8; i++){
             cellRegions[i] = atlas.find(name + "-cell-" + i);
@@ -56,11 +59,10 @@ public class PopeshadowTurret extends PowerTurret{
     }
 
     @Override
-    public TextureRegion[] icons(){
-        return new TextureRegion[]{
-            baseRegion,
-            atlas.find(name + "-icon")
-        };
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        PMGeneration.outlineRegion(packer, turretRegion, outlineColor, name + "-outline");
+        PMGeneration.outlineRegions(packer, sideRegions, outlineColor, name + "-side-outline");
     }
 
     @Override
@@ -105,23 +107,23 @@ public class PopeshadowTurret extends PowerTurret{
             
             Draw.z(Layer.turret);
 
-            Drawf.shadow(outlineRegions[0], tx - elevation, ty - elevation, rotation - 90f);
+            Drawf.shadow(turretOutline, tx - elevation, ty - elevation, rotation - 90f);
             for(int i = 0; i < 2; i++){
                 Drawf.shadow(outlineRegions[i], sX[i] - elevation, sY[i] - elevation, rotation - 90f);
             }
 
-            Draw.rect(outlineRegions[0], tx, ty, rotation - 90f);
+            Draw.rect(turretOutline, tx, ty, rotation - 90f);
             for(int i = 0; i < 2; i++){
-                Draw.rect(outlineRegions[i + 1], sX[i], sY[i], rotation - 90f);
+                Draw.rect(outlineRegions[i], sX[i], sY[i], rotation - 90f);
             }
 
-            Draw.rect(bottomRegion, tx, ty, rotation - 90f);
+            Draw.rect(turretRegion, tx, ty, rotation - 90f);
             for(int i = 0; i < 2; i++){
                 Draw.rect(sideRegions[i], sX[i], sY[i], rotation - 90f);
             }
 
             if(animation){
-                //Oh god even more variable aaaaaaaa
+                //Oh god even more variable spam aaaaaaaa
                 float[] cellLights = {
                     Mathf.curve(chargeTimer, pullTime, (pullTime + baseLightSpacing)) - closeAmount,
                     Mathf.curve(chargeTimer, (pullTime + baseLightSpacing), (pullTime + 2 * baseLightSpacing)) - closeAmount,
