@@ -101,7 +101,7 @@ public class RiftBulletType extends SweepLaserBulletType{
             if(fout < 1){
                 Tmp.c1.set(color).a(color.a * fout);
                 Tmp.c2.set(edgeColor).a(edgeColor.a * fout);
-                PMDrawf.border(
+                PMDrawf.draw3D(
                     Tmp.v1.x, Tmp.v1.y,
                     Tmp.v2.x, Tmp.v2.y,
                     riftHeight,
