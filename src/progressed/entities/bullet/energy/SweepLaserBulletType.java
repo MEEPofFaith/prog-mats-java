@@ -85,22 +85,24 @@ public class SweepLaserBulletType extends BulletType{
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
             Tmp.v1.trns(d.rotation - 90f + a, length * fout - length / 2).add(d.x, d.y);
             Tmp.v2.trns(d.rotation - 90f + a, length * fin - length / 2f).add(d.x, d.y);
-
             Lines.stroke(width, color);
-            PMDrawf.baseTri(
-                Tmp.v1.x, Tmp.v1.y,
-                width, width * 2f,
-                d.rotation + 90 + a
-            );
-            PMDrawf.baseTri(
-                Tmp.v2.x, Tmp.v2.y,
-                width, width * 2f,
-                d.rotation - 90 + a
-            );
-            Lines.line(
-                Tmp.v1.x, Tmp.v1.y,
-                Tmp.v2.x, Tmp.v2.y
-            );
+
+            if(fin > 0){
+                PMDrawf.baseTri(
+                    Tmp.v1.x, Tmp.v1.y,
+                    width, width * 2f,
+                    d.rotation + 90 + a
+                );
+                PMDrawf.baseTri(
+                    Tmp.v2.x, Tmp.v2.y,
+                    width, width * 2f,
+                    d.rotation - 90 + a
+                );
+                Lines.line(
+                    Tmp.v1.x, Tmp.v1.y,
+                    Tmp.v2.x, Tmp.v2.y
+                );
+            }
 
             //Line
             float lfin = Mathf.curve(b.fin(), startDelay, extendTime);

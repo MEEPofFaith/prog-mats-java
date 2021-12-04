@@ -54,22 +54,24 @@ public class RiftBulletType extends SweepLaserBulletType{
             float a = Mathf.randomSeedRange(b.id * 2L, angleRnd);
             Tmp.v1.trns(d.rotation - 90f + a, -length / 2f * fin).add(d.x, d.y);
             Tmp.v2.trns(d.rotation - 90f + a, length / 2f * fin).add(d.x, d.y);
-
             Lines.stroke(w, color);
-            PMDrawf.baseTri(
-                Tmp.v1.x, Tmp.v1.y,
-                w, w * 2f,
-                d.rotation + 90 + a
-            );
-            PMDrawf.baseTri(
-                Tmp.v2.x, Tmp.v2.y,
-                w, w * 2f,
-                d.rotation - 90 + a
-            );
-            Lines.line(
-                Tmp.v1.x, Tmp.v1.y,
-                Tmp.v2.x, Tmp.v2.y
-            );
+
+            if(fin > 0){
+                PMDrawf.baseTri(
+                    Tmp.v1.x, Tmp.v1.y,
+                    w, w * 2f,
+                    d.rotation + 90 + a
+                );
+                PMDrawf.baseTri(
+                    Tmp.v2.x, Tmp.v2.y,
+                    w, w * 2f,
+                    d.rotation - 90 + a
+                );
+                Lines.line(
+                    Tmp.v1.x, Tmp.v1.y,
+                    Tmp.v2.x, Tmp.v2.y
+                );
+            }
 
             //Line
             float lfin = Mathf.curve(b.fin(), startDelay, extendTime);

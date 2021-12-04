@@ -800,12 +800,17 @@ public class PMBlocks implements ContentList{
             size = 3;
             powerUse = 1f;
             reloadTime = 2f * 60f;
+            shootLength = 46f / 4f;
             shootSound = Sounds.plasmadrop;
+            retractDelay = 0.125f;
 
             RiftBulletType rift = new RiftBulletType(2000f){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
+                startDelay = 0.125f;
+                extendTime += startDelay;
+                sweepTime += startDelay;
                 angleRnd = 25f;
                 hitSound = PMSounds.riftSplit;
                 hitSoundVolume = 0.2f;
@@ -815,22 +820,25 @@ public class PMBlocks implements ContentList{
             pointDrawer = t -> {
                 if(t.bullet == null) return;
 
-                Draw.z(Layer.effect + 1f);
+                Draw.z(Layer.bullet - 1f);
                 Draw.color(Color.black);
                 tr.trns(t.rotation, shootLength);
 
                 float x = t.x + tr.x + tr2.x,
                     y = t.y + tr.y + tr2.y,
-                    fin = Mathf.curve(t.bullet.fin(), 0f, rift.extendTime),
+                    fin = Mathf.curve(t.bullet.fin(), 0f, rift.startDelay),
                     fout = 1f - Mathf.curve(t.bullet.fin(), rift.retractTime, rift.retractTime + 0.125f),
-                    scl = fin * fout;
+                    scl = fin * fout,
+                    s = Mathf.absin(Time.time, 1f, 0.25f),
+                    w = 1.5f + s,
+                    l = 4.5f + s;
 
                 for(int i = 0; i < 4; i++){
                     float a = t.rotation + 45 + 90 * i;
 
-                    Tmp.v1.trns(a, 2f * scl, 0f);
-                    Tmp.v2.trns(a, -2f * scl, 0f);
-                    Tmp.v3.trns(a, 0f, 10f * scl);
+                    Tmp.v1.trns(a, w * scl, 0f);
+                    Tmp.v2.trns(a, -w * scl, 0f);
+                    Tmp.v3.trns(a, 0f, l * scl);
 
                     Fill.tri(
                         x + Tmp.v1.x, y + Tmp.v1.y,
@@ -1309,12 +1317,12 @@ public class PMBlocks implements ContentList{
             hasLiquids = false;
             craftEffect = PMFx.superSmeltsmoke;
             ambientSound = Sounds.smelter;
-            ambientSoundVolume = 1f; //Big flame louder sound
+            ambientSoundVolume = 1f; //Big flame louder sound. LIKE REALLY LOUD.
 
-            DrawSmelter d = new DrawSmelter(Color.valueOf("ffef99"));
-            d.flameRadius = 11f;
-            d.flameRadiusIn = 7f;
-            drawer = d;
+            drawer = new DrawSmelter(Color.valueOf("ffef99")){{
+                flameRadiusMag = 11f;
+                flameRadiusIn = 7f;
+            }};
 
             fuelItem = Items.pyratite;
             fuelPerItem = 3;
