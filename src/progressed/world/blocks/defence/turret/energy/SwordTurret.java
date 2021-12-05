@@ -141,7 +141,7 @@ public class SwordTurret extends BaseTurret{
         for(int i = 0; i < swords; i++){
             float rot = 90f + i * (360f / swords);
             tr.trns(rot, -radius);
-            Draw.rect(outlineRegion, req.drawx() + tr.x, req.drawy() + tr.y, rot);
+            Draw.rect(outlineRegion, req.drawx() + tr.x, req.drawy() + tr.y + baseLength, rot);
         }
     }
 
