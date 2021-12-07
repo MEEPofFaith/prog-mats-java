@@ -23,6 +23,11 @@ public class PMTechTree implements ContentList{
     @Override
     public void load(){
         vanillaNode(lancer, () -> {
+            // Anime Sweep Laser
+            node(incision, () -> {
+                node(fissure);
+            });
+
             // Geomancy
             node(concretion, () -> {
                 // Eruptors
@@ -58,7 +63,8 @@ public class PMTechTree implements ContentList{
             //Kugelblitz
             node(blackhole, Seq.with(
                 new SectorComplete(SectorPresets.nuclearComplex),
-                new Research(meltdown)
+                new Research(meltdown),
+                new Research(fissure)
             ));
         });
 

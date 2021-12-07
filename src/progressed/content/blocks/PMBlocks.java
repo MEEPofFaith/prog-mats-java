@@ -845,7 +845,7 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
 
-            RiftBulletType rift = new RiftBulletType(380f){{
+            RiftBulletType rift = new RiftBulletType(530f){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
