@@ -128,6 +128,8 @@ public class PMBlocks implements ContentList{
 
     coreCovalence,
 
+    healZone, speedZone,
+
     fence, web,
 
     systemBooster, shieldProjector,
@@ -1457,6 +1459,36 @@ public class PMBlocks implements ContentList{
             minCloudSize = 0.5f;
             maxCloudSize = 1.25f;
             consumes.power(42.5f);
+        }};
+
+        healZone = new EffectZone("rejuvination-beacon"){{
+            requirements(Category.effect, empty);
+            size = 2;
+            range = 16f * tilesize;
+            height = 0.125f;
+            ringColor = Pal.heal;
+
+            zoneEffect = tile -> {
+                all.each(u -> {
+                    u.heal(160f * tile.heat);
+                });
+            };
+
+            consumes.power(2f);
+        }};
+
+        speedZone = new EffectZone("speed-zone"){{
+            requirements(Category.effect, empty);
+            size = 2;
+            range = 16f * tilesize;
+            height = 0.125f;
+            reload = 20f;
+
+            zoneEffect = tile -> {
+                all.each(u -> u.apply(PMStatusEffects.speedZone, 25f));
+            };
+
+            consumes.power(2f);
         }};
 
         fence = new StaticNode("fence"){{
