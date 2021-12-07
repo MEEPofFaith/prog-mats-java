@@ -272,8 +272,8 @@ public class ArcMissileBulletType extends BasicBulletType{
 
             //Missile
             if(fadeOut > 0 && fadeIn == 0){
-                float rX = x + PMDrawf.cameraXOffset(x, rise * elevation);
-                float rY = y + PMDrawf.cameraYOffset(y, rise * elevation);
+                float rX = x + Draw3D.cameraXOffset(x, rise * elevation);
+                float rY = y + Draw3D.cameraYOffset(y, rise * elevation);
                 float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
                 Draw.scl(rRocket);
                 //Engine stolen from launchpad
@@ -288,8 +288,8 @@ public class ArcMissileBulletType extends BasicBulletType{
                 Draw.z(Layer.flyingUnit + 1f);
                 drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, a);
             }else if(fadeOut == 0f && fadeIn > 0f){
-                float fX = b.x + PMDrawf.cameraXOffset(b.x, fall * elevation);
-                float fY = b.y + PMDrawf.cameraYOffset(b.y, fall * elevation);
+                float fX = b.x + Draw3D.cameraXOffset(b.x, fall * elevation);
+                float fY = b.y + Draw3D.cameraYOffset(b.y, fall * elevation);
                 float rot2 = rot + 180f + Mathf.randomSeed(b.id + 3, 360f);
                 float fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime - fallTime + fallEngineTime));
                 Draw.scl(fRocket);

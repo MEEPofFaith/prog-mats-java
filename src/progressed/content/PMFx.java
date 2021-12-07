@@ -21,6 +21,7 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
+import static progressed.graphics.Draw3D.*;
 import static progressed.graphics.PMDrawf.*;
 
 public class PMFx{
