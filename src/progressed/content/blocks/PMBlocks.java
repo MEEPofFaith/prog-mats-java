@@ -776,8 +776,8 @@ public class PMBlocks implements ContentList{
                 ));
                 health = 260 * size * size;
                 size = 2;
-                powerUse = 1f;
-                reloadTime = 2f * 60f;
+                powerUse = 5f;
+                reloadTime = 1.5f * 60f;
                 shootLength = 23f / 4f;
                 shootSound = Sounds.plasmadrop;
                 retractDelay = 0.125f;
@@ -839,13 +839,13 @@ public class PMBlocks implements ContentList{
             ));
             health = 230 * size * size;
             size = 3;
-            powerUse = 1f;
+            powerUse = 8.5f;
             reloadTime = 2f * 60f;
             shootLength = 46f / 4f;
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
 
-            RiftBulletType rift = new RiftBulletType(530f){{
+            RiftBulletType rift = new RiftBulletType(550f){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
