@@ -20,6 +20,7 @@ public class EverythingLiquidSource extends Block{
         super(name);
         requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
 
+        health = 999999999;
         update = true;
         solid = true;
         hasLiquids = true;

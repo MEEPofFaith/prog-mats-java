@@ -10,8 +10,8 @@ import progressed.entities.*;
 import progressed.graphics.*;
 
 public class RiftBulletType extends SweepLaserBulletType{
-    public float riftHeight = 0.5f;
-    public Color edgeColor;
+    public float riftHeight = 0.375f;
+    public Color topColor;
 
     public RiftBulletType(float damage){
         super();
@@ -26,7 +26,7 @@ public class RiftBulletType extends SweepLaserBulletType{
     public void init(){
         super.init();
 
-        if(edgeColor == null) edgeColor = color.cpy().a(0f);
+        if(topColor == null) topColor = color.cpy().a(0f);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class RiftBulletType extends SweepLaserBulletType{
 
             if(fout < 1){
                 Tmp.c1.set(color).a(color.a * fout);
-                Tmp.c2.set(edgeColor).a(edgeColor.a * fout);
+                Tmp.c2.set(topColor).a(topColor.a * fout);
                 Draw3D.wall(
                     Tmp.v1.x, Tmp.v1.y,
                     Tmp.v2.x, Tmp.v2.y,

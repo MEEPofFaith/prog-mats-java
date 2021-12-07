@@ -752,6 +752,7 @@ public class PMBlocks implements ContentList{
             float brange = range = 22f * tilesize;
 
             requirements(Category.turret, empty);
+            health = 260 * size * size;
             size = 2;
             powerUse = 1f;
             reloadTime = 2f * 60f;
@@ -769,7 +770,7 @@ public class PMBlocks implements ContentList{
                 sweepTime += startDelay;
                 angleRnd = 25f;
                 blasts = 12;
-                blastBullet = new BombBulletType(100, 32f, "clear"){{
+                blastBullet = new BombBulletType(20, 32f, "clear"){{
                     lifetime = 0f;
                     hitEffect = Fx.explosion;
                 }};
@@ -797,6 +798,7 @@ public class PMBlocks implements ContentList{
             float brange = range = 25f * tilesize;
 
             requirements(Category.turret, empty);
+            health = 230 * size * size;
             size = 3;
             powerUse = 1f;
             reloadTime = 2f * 60f;
@@ -804,7 +806,7 @@ public class PMBlocks implements ContentList{
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
 
-            RiftBulletType rift = new RiftBulletType(2000f){{
+            RiftBulletType rift = new RiftBulletType(380f){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 12f * tilesize;
@@ -813,7 +815,7 @@ public class PMBlocks implements ContentList{
                 sweepTime += startDelay;
                 angleRnd = 25f;
                 hitSound = PMSounds.riftSplit;
-                hitSoundVolume = 0.2f;
+                hitSoundVolume = 0.2f; //IT'S REALLY LOUD
                 layer = Layer.effect + 1f;
             }};
             shootType = rift;

@@ -20,6 +20,7 @@ public class EverythingItemSource extends Block{
         super(name);
         requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
 
+        health = 999999999;
         hasItems = true;
         update = true;
         solid = true;
