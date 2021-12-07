@@ -748,25 +748,10 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        incision = new SweepLaserTurret("incision"){{
-            float brange = range = 22f * tilesize;
+        incision = new SweepLaserTurret("incision"){
+            final float brange = range = 22f * tilesize;
 
-            requirements(Category.turret, with(
-                Items.copper, 60,
-                Items.lead, 50,
-                Items.silicon, 60,
-                Items.titanium, 50
-            ));
-            health = 260 * size * size;
-            size = 2;
-            powerUse = 1f;
-            reloadTime = 2f * 60f;
-            shootLength = 23f / 4f;
-            shootSound = Sounds.plasmadrop;
-            retractDelay = 0.125f;
-            hideDetails = false;
-
-            SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
+            final SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
                 speed = brange;
                 drawSize = brange + 10f * tilesize;
                 length = 8f * tilesize;
@@ -778,26 +763,70 @@ public class PMBlocks implements ContentList{
                 blastBullet = new BombBulletType(20, 32f, "clear"){{
                     lifetime = 0f;
                     hitEffect = Fx.explosion;
+                    status = StatusEffects.blasted;
                 }};
             }};
-            shootType = sweepLaser;
 
-            pointDrawer = t -> {
-                if(t.bullet == null) return;
+            {
+                requirements(Category.turret, with(
+                    Items.copper, 60,
+                    Items.lead, 50,
+                    Items.silicon, 60,
+                    Items.titanium, 50
+                ));
+                health = 260 * size * size;
+                size = 2;
+                powerUse = 1f;
+                reloadTime = 2f * 60f;
+                shootLength = 23f / 4f;
+                shootSound = Sounds.plasmadrop;
+                retractDelay = 0.125f;
+                hideDetails = false;
+                shootType = sweepLaser;
 
-                Draw.z(Layer.effect + 1f);
-                Draw.color(Color.red);
-                tr.trns(t.rotation, shootLength);
+                pointDrawer = t -> {
+                    if(t.bullet == null) return;
 
-                float x = t.x + tr.x + tr2.x,
-                    y = t.y + tr.y + tr2.y,
-                    fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
-                    fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
-                    scl = fin * fout;
+                    Draw.z(Layer.effect + 1f);
+                    Draw.color(Color.red);
+                    tr.trns(t.rotation, shootLength);
 
-                Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
-            };
-        }};
+                    float x = t.x + tr.x + tr2.x,
+                        y = t.y + tr.y + tr2.y,
+                        fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
+                        fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
+                        scl = fin * fout;
+
+                    Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
+                };
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, s -> {
+                    s.row();
+                    s.table(bt -> {
+                        bt.left().defaults().padRight(3).left();
+
+                        BulletType blast = sweepLaser.blastBullet;
+                        bt.add(
+                            Core.bundle.format("bullet.pm-multi-splash",
+                                sweepLaser.blasts,
+                                blast.splashDamage,
+                                Strings.fixed(blast.splashDamageRadius / tilesize, 1)
+                            )
+                        );
+                        bt.row();
+                        bt.add(
+                            (blast.status.minfo.mod == null ? blast.status.emoji() : "") + "[stat]" + blast.status.localizedName
+                        );
+                    }).padTop(-9).left().fillY().get().background(Tex.underline);
+                });
+            }
+        };
 
         fissure = new SweepLaserTurret("fissure"){{
             float brange = range = 25f * tilesize;

@@ -25,6 +25,7 @@ public class SweepLaserBulletType extends BulletType{
     public SweepLaserBulletType(){
         scaleVelocity = true;
         lifetime = 40f;
+        displayAmmoMultiplier = false;
         collides = keepVelocity = backMove = false;
         absorbable = hittable = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
