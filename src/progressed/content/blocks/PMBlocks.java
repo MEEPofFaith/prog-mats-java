@@ -751,7 +751,12 @@ public class PMBlocks implements ContentList{
         incision = new SweepLaserTurret("incision"){{
             float brange = range = 22f * tilesize;
 
-            requirements(Category.turret, empty);
+            requirements(Category.turret, with(
+                Items.copper, 60,
+                Items.lead, 50,
+                Items.silicon, 60,
+                Items.titanium, 50
+            ));
             health = 260 * size * size;
             size = 2;
             powerUse = 1f;
@@ -797,7 +802,12 @@ public class PMBlocks implements ContentList{
         fissure = new SweepLaserTurret("fissure"){{
             float brange = range = 25f * tilesize;
 
-            requirements(Category.turret, empty);
+            requirements(Category.turret, with(
+                Items.copper, 210,
+                Items.titanium, 200,
+                Items.silicon, 180,
+                PMItems.tenelium, 150
+            ));
             health = 230 * size * size;
             size = 3;
             powerUse = 1f;
