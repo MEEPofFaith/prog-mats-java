@@ -814,6 +814,7 @@ public class PMBlocks implements ContentList{
                 angleRnd = 25f;
                 hitSound = PMSounds.riftSplit;
                 hitSoundVolume = 0.2f;
+                layer = Layer.effect + 1f;
             }};
             shootType = rift;
 
