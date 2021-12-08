@@ -40,6 +40,7 @@ import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.blocks.production.*;
 import progressed.world.blocks.sandbox.*;
 import progressed.world.blocks.storage.*;
 import progressed.world.meta.*;
@@ -96,6 +97,11 @@ public class PMBlocks implements ContentList{
 
     //Apotheosis
     apotheosisNexus, apotheosisCharger,
+
+    // endregion
+    // region production
+
+    smartDrill,
 
     // endregion
     // region Distribution
@@ -1227,6 +1233,24 @@ public class PMBlocks implements ContentList{
         }};
 
         ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
+        // endregion
+
+        // region Production
+        smartDrill = new SmartDrill("smart-drill"){{
+            requirements(Category.production, empty);
+            size = 4;
+            drillTime = 280;
+            hasPower = true;
+            tier = 5;
+            updateEffect = Fx.pulverizeRed;
+            updateEffectChance = 0.03f;
+            drillEffect = Fx.mineHuge;
+            rotateSpeed = 6f;
+            warmupSpeed = 0.01f;
+
+            consumes.power(3f);
+            consumes.liquid(Liquids.water, 0.1f).boost();
+        }};
         // endregion
 
         // region Distribution
