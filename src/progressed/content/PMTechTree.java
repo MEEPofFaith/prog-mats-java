@@ -177,7 +177,8 @@ public class PMTechTree implements ContentList{
 
             //Sword
             node(dance, Seq.with(
-                new SectorComplete(SectorPresets.overgrowth)
+                new SectorComplete(SectorPresets.overgrowth),
+                new Research(incision)
             ), () -> {
                 node(ball, Seq.with(
                     new SectorComplete(SectorPresets.nuclearComplex)

@@ -64,9 +64,6 @@ public class PMBlocks implements ContentList{
 
     //Eruptors
     flame, blaze, inferno,
-    
-    //Swords
-    dance, ball,
 
     //Pixel Turrets
     bit,
@@ -82,6 +79,9 @@ public class PMBlocks implements ContentList{
 
     //Anime sweep laser
     incision, fissure,
+
+    //Swords
+    dance, ball,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -542,71 +542,6 @@ public class PMBlocks implements ContentList{
             consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f)).update(false);
         }};
 
-        dance = new SwordTurret("dance"){{
-            requirements(Category.turret, with(
-                Items.copper, 500,
-                Items.graphite, 250,
-                Items.silicon, 350,
-                Items.titanium, 200,
-                Items.phaseFabric, 50,
-                PMItems.tenelium, 150
-            ));
-            size = 3;
-            hideDetails = false;
-            health = 340 * size * size;
-            range = 180f;
-            powerUse = 6.5f;
-            minRadius = 16.5f;
-            bladeCenter = 9f;
-            trailWidth = 30f / 4f;
-        }};
-
-        ball = new SwordTurret("ball"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 1400,
-                    Items.graphite, 350,
-                    Items.silicon, 400,
-                    Items.surgeAlloy, 400,
-                    Items.phaseFabric, 200,
-                    PMItems.tenelium, 450
-                ));
-                size = 5;
-                hideDetails = false;
-                health = 230 * size * size;
-                range = 260f;
-                powerUse = 13.5f;
-                damage = 1000f;
-                bladeCenter = 122f / 8f;
-                trailWidth = 18f;
-                trailLength = 6;
-                float attackScl = 1.25f;
-                damageRadius *= attackScl;
-                attackRadius *= attackScl;
-                swords = 5;
-                minRadius = 33.25f;
-                radius = 6.25f * tilesize;
-                float timeScl = 0.9f;
-                expandTime *= timeScl;
-                pauseTime *= timeScl;
-                stabTime *= timeScl;
-                totalTime *= timeScl;
-                cooldown *= timeScl;
-                speed = 3f;
-                rotateSpeed = 4.5f;
-                float pitchDecrease = 0.25f;
-                minPitch -= pitchDecrease;
-                maxPitch -= pitchDecrease;
-            }
-
-            @Override
-            public void load(){
-                super.load();
-
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
-        };
-
         bit = new BitTurret("bit"){{
             requirements(Category.turret, with(
                 Items.copper, 50,
@@ -898,6 +833,71 @@ public class PMBlocks implements ContentList{
                 }
             };
         }};
+
+        dance = new SwordTurret("dance"){{
+            requirements(Category.turret, with(
+                Items.copper, 500,
+                Items.graphite, 250,
+                Items.silicon, 350,
+                Items.titanium, 200,
+                Items.phaseFabric, 50,
+                PMItems.tenelium, 150
+            ));
+            size = 3;
+            hideDetails = false;
+            health = 340 * size * size;
+            range = 180f;
+            powerUse = 6.5f;
+            minRadius = 16.5f;
+            bladeCenter = 9f;
+            trailWidth = 30f / 4f;
+        }};
+
+        ball = new SwordTurret("ball"){
+            {
+                requirements(Category.turret, with(
+                    Items.copper, 1400,
+                    Items.graphite, 350,
+                    Items.silicon, 400,
+                    Items.surgeAlloy, 400,
+                    Items.phaseFabric, 200,
+                    PMItems.tenelium, 450
+                ));
+                size = 5;
+                hideDetails = false;
+                health = 230 * size * size;
+                range = 260f;
+                powerUse = 13.5f;
+                damage = 1000f;
+                bladeCenter = 122f / 8f;
+                trailWidth = 18f;
+                trailLength = 6;
+                float attackScl = 1.25f;
+                damageRadius *= attackScl;
+                attackRadius *= attackScl;
+                swords = 5;
+                minRadius = 33.25f;
+                radius = 6.25f * tilesize;
+                float timeScl = 0.9f;
+                expandTime *= timeScl;
+                pauseTime *= timeScl;
+                stabTime *= timeScl;
+                totalTime *= timeScl;
+                cooldown *= timeScl;
+                speed = 3f;
+                rotateSpeed = 4.5f;
+                float pitchDecrease = 0.25f;
+                minPitch -= pitchDecrease;
+                maxPitch -= pitchDecrease;
+            }
+
+            @Override
+            public void load(){
+                super.load();
+
+                baseRegion = Core.atlas.find("prog-mats-block-" + size);
+            }
+        };
 
         sentinel = new AimLaserTurret("sentinel"){{
             requirements(Category.turret, with(

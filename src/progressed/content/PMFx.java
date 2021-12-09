@@ -652,13 +652,14 @@ public class PMFx{
     }),
     
     swordStab = new Effect(24f, e -> {
-        color(e.color, Color.violet, e.fin());
-        stroke(1f);
+        color(e.color, Color.crimson, e.fin());
 
         e.scaled(15f, s -> {
+            stroke(s.fout() * 1.5f);
             Lines.circle(e.x, e.y, 8f * s.fin());
         });
 
+        stroke(1f);
         randLenVectors(e.id, 16, 8f * e.fin(), e.rotation, 180f, (x, y) -> {
             float ang = angle(x, y);
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 4f);

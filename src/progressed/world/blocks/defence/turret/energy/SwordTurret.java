@@ -47,7 +47,7 @@ public class SwordTurret extends BaseTurret{
     public float cooldown = 0.05f;
 
     public float bladeCenter, trailWidth = 8f;
-    public Color trailColor = Color.violet;
+    public Color trailColor = Color.crimson;
     public int trailLength = 8;
 
     public float baseLength = -1f;
