@@ -1495,6 +1495,7 @@ public class PMBlocks implements ContentList{
             zoneEffect = tile -> {
                 if(!all.contains(Healthc::damaged)) return;
                 all.each(u -> {
+                    if(!u.damaged()) return;
                     u.heal(160f * tile.heat);
                     Fx.heal.at(u);
                 });
@@ -1513,6 +1514,19 @@ public class PMBlocks implements ContentList{
 
             zoneEffect = tile -> {
                 all.each(u -> u.apply(PMStatusEffects.speedZone, 25f * tile.heat));
+            };
+
+            zoneDraw = tile -> {
+                if(tile.activeHeat < 0.01f) return;
+
+                float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
+                Tmp.c1.set(ringColor).a(ringColor.a * tile.activeHeat * (0f + scl));
+                Tmp.c2.set(ringColor).a(ringColor.a * (0.25f + scl) * tile.activeHeat);
+                Fill.light(
+                    tile.x, tile.y,
+                    Lines.circleVertices(range),
+                    range, Tmp.c1, Tmp.c2
+                );
             };
 
             consumes.power(2f);

@@ -24,9 +24,10 @@ public class EffectZone extends Block{
         baseColor,
         topColor;
     public float height = 0.25f;
-    public float ringLayer = Layer.flyingUnit + 1f;
+    public float zoneLayer = Layer.blockOver + 1f, ringLayer = Layer.flyingUnit + 1f;
 
-    public Cons<EffectZoneBuild> zoneEffect = heat -> {};
+    public Cons<EffectZoneBuild> zoneEffect = tile -> {};
+    public Cons<EffectZoneBuild> zoneDraw = tile -> {};
 
     protected Seq<Unit> all = new Seq<>();
 
@@ -59,14 +60,16 @@ public class EffectZone extends Block{
     }
 
     public class EffectZoneBuild extends Building{
-        public float heat;
+        public float heat, activeHeat;
         public float charge = Mathf.random(reload);
         public float smoothEfficiency;
+        public boolean active;
 
         @Override
         public void updateTile(){
             smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency(), 0.08f);
-            heat = Mathf.lerpDelta(heat, consValid() ? 1f : 0f, 0.08f);
+            heat = Mathf.lerpDelta(heat, Mathf.num(consValid()), 0.08f);
+            activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(active), 0.08f);
             charge += heat * Time.delta;
 
             if(charge >= reload){
@@ -76,6 +79,7 @@ public class EffectZone extends Block{
                 Units.nearby(null, x, y, range, other -> {
                     all.add(other);
                 });
+                active = all.any();
 
                 zoneEffect.get(this);
             }
@@ -87,10 +91,12 @@ public class EffectZone extends Block{
 
             if(smoothEfficiency < 0.01f) return;
 
-            Draw.z(ringLayer);
+            Draw.z(zoneLayer);
+            zoneDraw.get(this);
 
-            Tmp.c1.set(baseColor).mul(1f, 1f, 1f, smoothEfficiency);
-            Tmp.c2.set(topColor).mul(1f, 1f, 1f, smoothEfficiency);
+            Draw.z(ringLayer);
+            Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency);
+            Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency);
 
             Draw3D.cylinder(x, y, range, height * smoothEfficiency, Tmp.c1, Tmp.c2);
         }
@@ -98,12 +104,14 @@ public class EffectZone extends Block{
         @Override
         public void write(Writes write){
             super.write(write);
+            write.f(charge);
             write.f(heat);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
+            charge = read.f();
             heat = read.f();
         }
     }
