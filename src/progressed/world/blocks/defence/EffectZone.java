@@ -19,6 +19,7 @@ import static mindustry.Vars.*;
 public class EffectZone extends Block{
     public float reload = 60f;
     public float range = 10f * 8f;
+    public boolean affectEnemyTeam, affectOwnTeam = true;
 
     public Color ringColor = Pal.lancerLaser,
         baseColor,
@@ -76,8 +77,8 @@ public class EffectZone extends Block{
                 charge = 0f;
 
                 all.clear();
-                Units.nearby(null, x, y, range, other -> {
-                    all.add(other);
+                Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
+                    if(affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team) all.add(other);
                 });
                 active = all.any();
 
