@@ -642,7 +642,7 @@ public class PMFx{
             float ang = angle(x, y, 0f, 0f);
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
-    }).layer(32.5f),
+    }).layer(Layer.block + 0.5f),
 
     superSmeltsmoke = new Effect(15, e -> {
         randLenVectors(e.id, 14, 6f + e.fin() * 18f, (x, y) -> {

@@ -43,6 +43,7 @@ import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
 import progressed.world.blocks.sandbox.*;
 import progressed.world.blocks.storage.*;
+import progressed.world.draw.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -1350,23 +1351,33 @@ public class PMBlocks implements ContentList{
         // endregion
 
         // region Crafting
-        mindronCollider = new ColliderCrafter("mindron-collider"){{
+        mindronCollider = new AccelerationCrafter("mindron-collider"){{
             requirements(Category.crafting, with(
                 Items.silicon, 150,
                 Items.metaglass, 50,
                 Items.plastanium, 80,
-                Items.thorium, 100,
-                Items.surgeAlloy, 110
+                Items.thorium, 100
             ));
-            size = 5;
-            craftTime = 300f;
-            itemCapacity = 15;
-            consumes.power(10f);
+            size = 3;
+
+            craftTime = 60f;
+            hasPower = hasLiquids = true;
+            accelerationSpeed = 0.0008f;
+            decelerationSpeed = 0.003125f;
+
+            drawer = new DrawImpact();
+            onCraft = tile -> {
+                Tmp.v1.setToRandomDirection().setLength(size * 2f);
+                PMFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
+            };
+
+            consumes.power(6f);
             consumes.items(with(
-                Items.titanium, 4,
-                Items.thorium, 4
+                Items.titanium, 2,
+                Items.thorium, 2
             ));
-            outputItem = new ItemStack(PMItems.tenelium, 3);
+            consumes.liquid(Liquids.cryofluid, 0.2f);
+            outputItem = new ItemStack(PMItems.tenelium, 2);
         }};
 
         pyroclastForge = new FuelCrafter("forge"){{
