@@ -12,6 +12,8 @@ import mindustry.world.draw.*;
 import progressed.world.blocks.crafting.AccelerationCrafter.*;
 
 public class DrawImpact extends DrawBlock{
+    public float lightRadius = 60f, lightSinScl = 5f, lightSinMag = 5f;
+
     public float oscMag = 3f, oscMagDec = 0.25f;
     public Color plasma1 = Color.valueOf("ffd06b"), plasma2 = Color.valueOf("ff361b");
 
@@ -24,6 +26,8 @@ public class DrawImpact extends DrawBlock{
         for(int i = 0; i < 4; i++){
             plasmaRegions[i] = Core.atlas.find(block.name + "-plasma-" + i, "impact-reactor-plasma-" + i);
         }
+
+        block.clipSize = Math.max(block.clipSize, (lightRadius + lightSinMag) * 2f * block.size);
     }
 
     @Override
@@ -52,6 +56,18 @@ public class DrawImpact extends DrawBlock{
 
         Draw.z(Layer.block + 1);
         Draw.rect(b.block.region, b.x, b.y);
+    }
+
+    @Override
+    public void drawLight(GenericCrafterBuild build){
+        if(!(build instanceof AcceleratingCrafterBuild b)) return;
+
+        Drawf.light(
+            b.team, b.x, b.y,
+            (lightRadius + Mathf.absin(b.totalActivity, lightSinScl, lightSinMag)) * b.getSpeed() * b.block.size,
+            Tmp.c1.set(plasma2).lerp(plasma1, Mathf.absin(7f, 0.2f)),
+            0.8f * b.getSpeed()
+        );
     }
 
     @Override
