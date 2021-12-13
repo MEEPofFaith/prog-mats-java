@@ -135,7 +135,7 @@ public class PMBlocks implements ContentList{
 
     coreCovalence,
 
-    healZone, speedZone,
+    healZone, speedZone, strengthZone,
 
     fence, web,
 
@@ -1504,13 +1504,13 @@ public class PMBlocks implements ContentList{
             size = 2;
             range = 16f * tilesize;
             height = 0.125f;
-            ringColor = Pal.heal;
+            baseColor = Pal.heal;
 
             zoneEffect = tile -> {
                 if(!all.contains(Healthc::damaged)) return;
                 all.each(u -> {
                     if(!u.damaged()) return;
-                    u.heal(160f * tile.heat);
+                    u.heal(55f * tile.heat);
                     Fx.heal.at(u);
                 });
                 Fx.healWaveDynamic.at(tile, range);
@@ -1524,23 +1524,23 @@ public class PMBlocks implements ContentList{
             size = 2;
             range = 16f * tilesize;
             height = 0.125f;
-            reload = 20f;
 
             zoneEffect = tile -> {
                 all.each(u -> u.apply(PMStatusEffects.speedZone, 25f * tile.heat));
             };
 
-            zoneDraw = tile -> {
-                if(tile.activeHeat < 0.01f) return;
+            consumes.power(2f);
+        }};
 
-                float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
-                Tmp.c1.set(ringColor).a(ringColor.a * tile.activeHeat * (0f + scl));
-                Tmp.c2.set(ringColor).a(ringColor.a * (0.25f + scl) * tile.activeHeat);
-                Fill.light(
-                    tile.x, tile.y,
-                    Lines.circleVertices(range),
-                    range, Tmp.c1, Tmp.c2
-                );
+        strengthZone = new EffectZone("strength-zone"){{
+            requirements(Category.effect, empty);
+            size = 2;
+            range = 16f * tilesize;
+            height = 0.125f;
+            baseColor = Pal.redderDust;
+
+            zoneEffect = tile -> {
+                all.each(u -> u.apply(PMStatusEffects.strengthZone, 25f * tile.heat));
             };
 
             consumes.power(2f);

@@ -17,18 +17,17 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class EffectZone extends Block{
-    public float reload = 60f;
+    public float reload = 20f;
     public float range = 10f * 8f;
     public boolean affectEnemyTeam, affectOwnTeam = true;
 
-    public Color ringColor = Pal.lancerLaser,
-        baseColor,
+    public Color
+        baseColor = Pal.lancerLaser,
         topColor;
     public float height = 0.25f;
     public float zoneLayer = Layer.blockOver + 1f, ringLayer = Layer.flyingUnit + 1f;
 
     public Cons<EffectZoneBuild> zoneEffect = tile -> {};
-    public Cons<EffectZoneBuild> zoneDraw = tile -> {};
 
     protected Seq<Unit> all = new Seq<>();
 
@@ -47,7 +46,6 @@ public class EffectZone extends Block{
     public void init(){
         super.init();
 
-        if(baseColor == null) baseColor = ringColor;
         if(topColor == null) topColor = baseColor.cpy().a(0f);
 
         clipSize = Math.max(clipSize, (range + 4f) * 2f);
@@ -57,11 +55,11 @@ public class EffectZone extends Block{
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
 
-        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, ringColor);
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, baseColor);
     }
 
     public class EffectZoneBuild extends Building{
-        public float heat, activeHeat;
+        public float heat, activeHeat, activeHeight;
         public float charge = Mathf.random(reload);
         public float smoothEfficiency;
         public boolean active;
@@ -71,6 +69,7 @@ public class EffectZone extends Block{
             smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency(), 0.08f);
             heat = Mathf.lerpDelta(heat, Mathf.num(consValid()), 0.08f);
             activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(active), 0.08f);
+            activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(active) * smoothEfficiency, 0.08f);
             charge += heat * Time.delta;
 
             if(charge >= reload){
@@ -92,14 +91,31 @@ public class EffectZone extends Block{
 
             if(smoothEfficiency < 0.01f) return;
 
-            Draw.z(zoneLayer);
-            zoneDraw.get(this);
+            if(activeHeat > 0.01f){
+                Draw.z(zoneLayer);
+                float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
+                Tmp.c1.set(baseColor).a(baseColor.a * scl * activeHeat);
+                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * activeHeat);
+                Fill.light(
+                    x, y,
+                    Lines.circleVertices(range),
+                    range, Tmp.c1, Tmp.c2
+                );
+            }
 
-            Draw.z(ringLayer);
-            Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency);
-            Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency);
+            if(smoothEfficiency > 0.01f){
+                Draw.z(ringLayer);
+                Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency);
+                Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency);
 
-            Draw3D.cylinder(x, y, range, height * smoothEfficiency, Tmp.c1, Tmp.c2);
+                Lines.stroke(1f, Tmp.c1);
+                Lines.circle(x, y, range);
+                Draw3D.cylinder(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
+            }
+        }
+
+        public float realHeight(){
+            return height * activeHeight;
         }
 
         @Override

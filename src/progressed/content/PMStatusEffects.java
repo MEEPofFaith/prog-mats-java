@@ -18,7 +18,7 @@ public class PMStatusEffects implements ContentList{
     //Anti-vaxxers are quivering in fear
     vcFrenzy, vcDisassembly, vcWeaken, vcCorvus,
 
-    speedZone;
+    speedZone, strengthZone;
 
     @Override
     public void load(){
@@ -69,10 +69,16 @@ public class PMStatusEffects implements ContentList{
             hideDetails = false;
         }};
 
-        speedZone = new StatusEffect("speed-zone"){{
+        speedZone = new StatusEffect("speed-boost"){{
             color = Pal.lancerLaser;
-            speedMultiplier = 1.5f;
-            reloadMultiplier = 1.5f;
+            speedMultiplier = 1.25f;
+            reloadMultiplier = 1.25f;
+            effect = Fx.overclocked;
+        }};
+
+        strengthZone = new StatusEffect("strength-boost"){{
+            color = Pal.redderDust;
+            damageMultiplier = 1.25f;
             effect = Fx.overclocked;
         }};
 
