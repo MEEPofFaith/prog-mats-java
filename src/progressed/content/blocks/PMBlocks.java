@@ -1362,12 +1362,15 @@ public class PMBlocks implements ContentList{
 
             craftTime = 60f;
             hasPower = hasLiquids = true;
-            accelerationSpeed = 0.0008f;
+            accelerationSpeed = 0.0004f;
             decelerationSpeed = 0.003125f;
 
-            drawer = new DrawImpact();
+            drawer = new DrawImpact(){{
+                plasma1 = Items.titanium.color;
+                plasma2 = Items.thorium.color;
+            }};
             onCraft = tile -> {
-                Tmp.v1.setToRandomDirection().setLength(size * 2f);
+                Tmp.v1.setToRandomDirection().setLength(30f / 4f);
                 PMFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
             };
 

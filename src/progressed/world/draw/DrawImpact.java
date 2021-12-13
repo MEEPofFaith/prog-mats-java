@@ -37,7 +37,7 @@ public class DrawImpact extends DrawBlock{
         for(int i = 0; i < plasmaRegions.length; i++){ //Haha draw code stolen from Impact Reactor
             float r = Mathf.absin(b.totalActivity, 2f + i * 1f, oscMag - i * oscMagDec);
 
-            Draw.color(plasma1, plasma2, (float)i / plasmaRegions.length);
+            Draw.color(plasma1, plasma2, (float)i / (plasmaRegions.length - 1f));
             Draw.alpha((0.3f + Mathf.absin(Time.time, 2f + i * 2f, 0.3f + i * 0.05f)) * warmup);
             TextureRegion reg = plasmaRegions[i];
             Draw.rect(
@@ -52,5 +52,10 @@ public class DrawImpact extends DrawBlock{
 
         Draw.z(Layer.block + 1);
         Draw.rect(b.block.region, b.x, b.y);
+    }
+
+    @Override
+    public TextureRegion[] icons(Block block){
+        return new TextureRegion[]{bottom, block.region};
     }
 }

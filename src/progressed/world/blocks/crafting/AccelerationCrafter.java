@@ -1,20 +1,34 @@
 package progressed.world.blocks.crafting;
 
+import arc.*;
 import arc.func.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 
 public class AccelerationCrafter extends GenericCrafter{
     public float accelerationSpeed = 0.03f, decelerationSpeed = 0.05f;
-    public Interp interp = Interp.pow3Out;
+    public Interp interp = Interp.smoother;
 
     public Cons<AcceleratingCrafterBuild> onCraft = tile -> {};
 
     public AccelerationCrafter(String name){
         super(name);
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        bars.add("speed", (AcceleratingCrafterBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-craft-speed", Mathf.round(entity.getSpeed() * 100f)),
+            () -> Pal.surge,
+            entity::getSpeed
+        ));
     }
 
     public class AcceleratingCrafterBuild extends GenericCrafterBuild{
