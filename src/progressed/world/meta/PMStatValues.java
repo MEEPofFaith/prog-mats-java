@@ -130,7 +130,7 @@ public class PMStatValues{
                         }
 
                         if(type.status != StatusEffects.none){
-                            sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
                         }
 
                         if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but stat display is only run once so whatever
@@ -230,6 +230,10 @@ public class PMStatValues{
                 table.row();
             }
         };
+    }
+
+    public static StatValue statusEffect(StatusEffect effect){
+        return table -> table.add((effect.minfo.mod == null ? effect.emoji() : "") + "[white]" + effect.localizedName);
     }
 
     public static StatValue fuelEfficiency(Floor floor, float multiplier){

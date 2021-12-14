@@ -1499,52 +1499,79 @@ public class PMBlocks implements ContentList{
             consumes.power(42.5f);
         }};
 
-        healZone = new EffectZone("rejuvination-beacon"){{
-            requirements(Category.effect, empty);
-            size = 2;
-            range = 16f * tilesize;
-            height = 0.125f;
-            baseColor = Pal.heal;
+        healZone = new EffectZone("rejuvination-beacon"){
+            final float healing = 100f;
 
-            zoneEffect = tile -> {
-                if(!all.contains(Healthc::damaged)) return;
-                all.each(u -> {
-                    if(!u.damaged()) return;
-                    u.heal(55f * tile.heat);
-                    Fx.heal.at(u);
-                });
-                Fx.healWaveDynamic.at(tile, range);
-            };
+            {
+                requirements(Category.effect, empty);
+                size = 2;
+                range = 16f * tilesize;
+                height = 0.125f;
+                baseColor = Pal.heal;
+                reload = 40f;
 
-            consumes.power(2f);
-        }};
+                zoneEffect = tile -> {
+                    if(!all.contains(Healthc::damaged)) return;
+                    all.each(u -> {
+                        if(!u.damaged()) return;
+                        u.heal(healing * tile.heat);
+                        Fx.heal.at(u);
+                    });
+                    Fx.healWaveDynamic.at(tile, range);
+                };
 
-        speedZone = new EffectZone("speed-zone"){{
-            requirements(Category.effect, empty);
-            size = 2;
-            range = 16f * tilesize;
-            height = 0.125f;
+                activate = () -> all.contains(Healthc::damaged);
+            }
 
-            zoneEffect = tile -> {
-                all.each(u -> u.apply(PMStatusEffects.speedZone, 25f * tile.heat));
-            };
+            @Override
+            public void setStats(){
+                super.setStats();
 
-            consumes.power(2f);
-        }};
+                stats.add(Stat.repairSpeed, healing * (60f / reload), StatUnit.perSecond);
+            }
+        };
 
-        strengthZone = new EffectZone("strength-zone"){{
-            requirements(Category.effect, empty);
-            size = 2;
-            range = 16f * tilesize;
-            height = 0.125f;
-            baseColor = Pal.redderDust;
+        speedZone = new EffectZone("speed-zone"){
+            {
+                requirements(Category.effect, empty);
+                size = 2;
+                range = 16f * tilesize;
+                height = 0.125f;
 
-            zoneEffect = tile -> {
-                all.each(u -> u.apply(PMStatusEffects.strengthZone, 25f * tile.heat));
-            };
+                zoneEffect = tile -> {
+                    all.each(u -> u.apply(PMStatusEffects.speedZone, 25f * tile.heat));
+                };
+            }
 
-            consumes.power(2f);
-        }};
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.speedZone));
+            }
+        };
+
+        strengthZone = new EffectZone("strength-zone"){
+            {
+                requirements(Category.effect, empty);
+                size = 2;
+                range = 16f * tilesize;
+                height = 0.125f;
+                baseColor = Pal.redderDust;
+
+                zoneEffect = tile -> {
+                    all.each(u -> u.apply(PMStatusEffects.strengthZone, 25f * tile.heat));
+                };
+            }
+
+
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.strengthZone));
+            }
+        };
 
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(

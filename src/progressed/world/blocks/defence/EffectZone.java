@@ -17,19 +17,22 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class EffectZone extends Block{
+    protected static final Seq<Unit> all = new Seq<>();
+
     public float reload = 20f;
     public float range = 10f * 8f;
+    public float powerUse = 1f;
     public boolean affectEnemyTeam, affectOwnTeam = true;
 
     public Color
         baseColor = Pal.lancerLaser,
         topColor;
     public float height = 0.25f;
-    public float zoneLayer = Layer.blockOver + 1f, ringLayer = Layer.flyingUnit + 1f;
+    public float zoneLayer = -1f, ringLayer = Layer.flyingUnit + 0.5f;
 
     public Cons<EffectZoneBuild> zoneEffect = tile -> {};
 
-    protected Seq<Unit> all = new Seq<>();
+    public Boolp activate = all::any;
 
     public EffectZone(String name){
         super(name);
@@ -43,10 +46,20 @@ public class EffectZone extends Block{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+    }
+
+    @Override
     public void init(){
+        if(powerUse > 0) consumes.powerCond(powerUse, EffectZoneBuild::isActive);
+
         super.init();
 
         if(topColor == null) topColor = baseColor.cpy().a(0f);
+        if(zoneLayer < 0) zoneLayer = ringLayer - 0.1f;
 
         clipSize = Math.max(clipSize, (range + 4f) * 2f);
     }
@@ -79,10 +92,14 @@ public class EffectZone extends Block{
                 Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
                     if(affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team) all.add(other);
                 });
-                active = all.any();
+                active = activate.get();
 
                 zoneEffect.get(this);
             }
+        }
+
+        public boolean isActive(){
+            return active;
         }
 
         @Override
