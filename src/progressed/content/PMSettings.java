@@ -14,7 +14,7 @@ import progressed.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class SettingAdder{
+public class PMSettings{
     public SettingsTable progm;
 
     public void init(){
@@ -22,7 +22,8 @@ public class SettingAdder{
         dialog.addCloseButton();
 
         progm = new SettingsTable();
-        progm.sliderPref("pm-swordopacity", 100, 20, 100, 5, s -> s + "%");
+        progm.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
+        progm.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
         progm.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
         progm.checkPref("pm-tesla-range", true);
         progm.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 100f)); //haha, yes LOUD FART

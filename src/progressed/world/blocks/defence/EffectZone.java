@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -107,13 +108,13 @@ public class EffectZone extends Block{
         public void draw(){
             super.draw();
 
-            if(smoothEfficiency < 0.01f) return;
+            float opacity = Core.settings.getInt("pm-zone-opacity", 100) / 100f;
 
             if(activeHeat > 0.01f){
                 Draw.z(zoneLayer);
                 float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
-                Tmp.c1.set(baseColor).a(baseColor.a * scl * activeHeat);
-                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * activeHeat);
+                Tmp.c1.set(baseColor).a(baseColor.a * scl * activeHeat * opacity);
+                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * activeHeat * opacity);
                 Fill.light(
                     x, y,
                     Lines.circleVertices(range),
@@ -123,8 +124,8 @@ public class EffectZone extends Block{
 
             if(smoothEfficiency > 0.01f){
                 Draw.z(ringLayer);
-                Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency);
-                Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency);
+                Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency * opacity);
+                Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency * opacity);
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);

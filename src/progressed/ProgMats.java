@@ -17,7 +17,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class ProgMats extends Mod{
-    public static SettingAdder settingAdder = new SettingAdder();
+    public static PMSettings settings = new PMSettings();
 
     private final ContentList[] pmContent = {
         new PMStatusEffects(),
@@ -33,7 +33,7 @@ public class ProgMats extends Mod{
     public ProgMats(){
         super();
         Events.on(ClientLoadEvent.class, e -> {
-            settingAdder.init();
+            settings.init();
             PMPal.init();
         });
 
@@ -70,7 +70,7 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 PMUtls.godHood(PMUnitTypes.everythingUnit);
 
-                if(settings.getBool("pm-farting")){
+                if(Core.settings.getBool("pm-farting")){
                     content.blocks().each(b -> {
                         b.destroySound = Sounds.wind3;
                     });

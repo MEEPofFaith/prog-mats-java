@@ -249,11 +249,11 @@ public class SwordTurret extends BaseTurret{
             Draw.rect(region, x, y, lookAngle);
 
             //Swords
-            float swordOpacity = settings.getInt("pm-swordopacity") / 100f;
+            float opacity = settings.getInt("pm-sword-opacity", 100) / 100f;
 
             tr.trns(lookAngle + 90f, baseLength);
             Lines.stroke(connectorStroke);
-            Draw.color(Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, swordOpacity / 4f));
+            Draw.color(Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, opacity / 4f));
             Draw.z(Layer.flyingUnit + 0.002f);
 
             Lines.line(x + tr.x, y + tr.y, curPos.x, curPos.y);
@@ -266,7 +266,7 @@ public class SwordTurret extends BaseTurret{
             Fill.circle(x + tr.x, y + tr.y, connectorStroke / 2f);
             Fill.circle(curPos.x, curPos.y, connectorStroke / 2f);
 
-            Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, swordOpacity);
+            Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, opacity);
 
             Draw.z(Layer.flyingUnit + 0.003f);
             for(PMTrail t : trails){
@@ -281,9 +281,9 @@ public class SwordTurret extends BaseTurret{
                 float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
 
                 Draw.z(Layer.flyingUnit + 0.001f);
-                PMDrawf.shadowAlpha(outlineRegion, sX - swordElevation, sY - swordElevation, rot + getRotation(), swordOpacity);
+                PMDrawf.shadowAlpha(outlineRegion, sX - swordElevation, sY - swordElevation, rot + getRotation(), opacity);
 
-                Draw.alpha(swordOpacity);
+                Draw.alpha(opacity);
                 Draw.z(Layer.flyingUnit + 0.004f);
                 Draw.rect(outlineRegion, sX, sY, rot + getRotation());
             }
@@ -295,12 +295,12 @@ public class SwordTurret extends BaseTurret{
 
                 float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
 
-                Draw.alpha(swordOpacity);
+                Draw.alpha(opacity);
                 Draw.z(Layer.flyingUnit + 0.005f);
                 Draw.rect(swordRegion, sX, sY, rot + getRotation());
 
                 if(ready && heat > 0f){
-                    Draw.color(heatColor, heat * swordOpacity);
+                    Draw.color(heatColor, heat * opacity);
                     Draw.blend(Blending.additive);
                     Draw.rect(heatRegion, sX, sY, rot + getRotation());
                     Draw.color();
