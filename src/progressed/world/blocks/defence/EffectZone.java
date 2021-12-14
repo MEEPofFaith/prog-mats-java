@@ -40,8 +40,8 @@ public class EffectZone extends Block{
         solid = true;
         update = true;
         group = BlockGroup.projectors;
-        emitLight = true;
-        lightRadius = 50f;
+        canOverdrive = false;
+        lightRadius = -1f;
         envEnabled |= Env.space;
     }
 
@@ -60,6 +60,7 @@ public class EffectZone extends Block{
 
         if(topColor == null) topColor = baseColor.cpy().a(0f);
         if(zoneLayer < 0) zoneLayer = ringLayer - 0.1f;
+        if(lightRadius < 0) lightRadius = range * 2f;
 
         clipSize = Math.max(clipSize, (range + 4f) * 2f);
     }
@@ -133,6 +134,14 @@ public class EffectZone extends Block{
 
         public float realHeight(){
             return height * activeHeight;
+        }
+
+        @Override
+        public void drawLight(){
+            super.drawLight();
+
+            if(activeHeat < 0.01f) return;
+            Drawf.light(team, x, y, lightRadius, baseColor,  0.8f * activeHeat);
         }
 
         @Override
