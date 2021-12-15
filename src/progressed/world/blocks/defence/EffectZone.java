@@ -42,6 +42,7 @@ public class EffectZone extends Block{
         update = true;
         group = BlockGroup.projectors;
         canOverdrive = false;
+        emitLight = true;
         lightRadius = -1f;
         envEnabled |= Env.space;
     }
@@ -56,12 +57,12 @@ public class EffectZone extends Block{
     @Override
     public void init(){
         if(powerUse > 0) consumes.powerCond(powerUse, EffectZoneBuild::isActive);
+        if(lightRadius < 0) lightRadius = range * 2f;
 
         super.init();
 
         if(topColor == null) topColor = baseColor.cpy().a(0f);
         if(zoneLayer < 0) zoneLayer = ringLayer - 0.1f;
-        if(lightRadius < 0) lightRadius = range * 2f;
 
         clipSize = Math.max(clipSize, (range + 4f) * 2f);
     }
