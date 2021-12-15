@@ -131,11 +131,14 @@ public class PMBlocks implements ContentList{
     igneousPillar,
 
     // endregion
+    // region Units
+
+    healZone, speedZone, strengthZone,
+
+    // endregion
     // region Effect
 
     coreCovalence,
-
-    healZone, speedZone, strengthZone,
 
     fence, web,
 
@@ -1481,29 +1484,15 @@ public class PMBlocks implements ContentList{
         ((PillarFieldBulletType)(PMBullets.pillarField)).pillar = (IgneousPillar)igneousPillar;
 
         // endregion
-        // region Effect
-        coreCovalence = new CoreLink("core-covalence"){{
-            requirements(Category.effect, with(
-                Items.copper, 6000,
-                Items.lead, 6000,
-                Items.silicon, 3000,
-                Items.thorium, 2000,
-                Items.phaseFabric, 1000,
-                PMItems.tenelium, 3000
-            ));
-            size = 4;
-            portalRad = 3f * tilesize / 2f * 0.625f;
-            clouds = 15;
-            minCloudSize = 0.5f;
-            maxCloudSize = 1.25f;
-            consumes.power(42.5f);
-        }};
+        // region Units
+
+
 
         healZone = new EffectZone("rejuvination-beacon"){
             final float healing = 100f;
 
             {
-                requirements(Category.effect, empty);
+                requirements(Category.units, empty);
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;
@@ -1531,15 +1520,15 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        speedZone = new EffectZone("speed-zone"){
+        speedZone = new EffectZone("speed-field"){
             {
-                requirements(Category.effect, empty);
+                requirements(Category.units, empty);
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;
 
                 zoneEffect = tile -> {
-                    all.each(u -> u.apply(PMStatusEffects.speedZone, 25f * tile.heat));
+                    all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
                 };
             }
 
@@ -1547,20 +1536,20 @@ public class PMBlocks implements ContentList{
             public void setStats(){
                 super.setStats();
 
-                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.speedZone));
+                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.speedBoost));
             }
         };
 
-        strengthZone = new EffectZone("strength-zone"){
+        strengthZone = new EffectZone("strength-emmiter"){
             {
-                requirements(Category.effect, empty);
+                requirements(Category.units, empty);
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;
                 baseColor = Pal.redderDust;
 
                 zoneEffect = tile -> {
-                    all.each(u -> u.apply(PMStatusEffects.strengthZone, 25f * tile.heat));
+                    all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
                 };
             }
 
@@ -1569,9 +1558,28 @@ public class PMBlocks implements ContentList{
             public void setStats(){
                 super.setStats();
 
-                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.strengthZone));
+                stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.strengthBoost));
             }
         };
+
+        // endregion
+        // region Effect
+        coreCovalence = new CoreLink("core-covalence"){{
+            requirements(Category.effect, with(
+                Items.copper, 6000,
+                Items.lead, 6000,
+                Items.silicon, 3000,
+                Items.thorium, 2000,
+                Items.phaseFabric, 1000,
+                PMItems.tenelium, 3000
+            ));
+            size = 4;
+            portalRad = 3f * tilesize / 2f * 0.625f;
+            clouds = 15;
+            minCloudSize = 0.5f;
+            maxCloudSize = 1.25f;
+            consumes.power(42.5f);
+        }};
 
         fence = new StaticNode("fence"){{
             requirements(Category.effect, with(
