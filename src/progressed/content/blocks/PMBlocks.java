@@ -1540,7 +1540,7 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        strengthZone = new EffectZone("strength-emmiter"){
+        strengthZone = new EffectZone("strength-emitter"){
             {
                 requirements(Category.units, empty);
                 size = 2;

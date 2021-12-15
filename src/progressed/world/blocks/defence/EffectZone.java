@@ -35,6 +35,8 @@ public class EffectZone extends Block{
 
     public Boolp activate = all::any;
 
+    public TextureRegion topRegion;
+
     public EffectZone(String name){
         super(name);
 
@@ -45,6 +47,12 @@ public class EffectZone extends Block{
         emitLight = true;
         lightRadius = -1f;
         envEnabled |= Env.space;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        topRegion = Core.atlas.find(name + "-top");
     }
 
     @Override
@@ -84,8 +92,8 @@ public class EffectZone extends Block{
         public void updateTile(){
             smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency(), 0.08f);
             heat = Mathf.lerpDelta(heat, Mathf.num(consValid()), 0.08f);
-            activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(active), 0.08f);
-            activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(active) * smoothEfficiency, 0.08f);
+            activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(consValid() && active), 0.08f);
+            activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(consValid() && active) * smoothEfficiency, 0.08f);
             charge += heat * Time.delta;
 
             if(charge >= reload){
@@ -93,7 +101,7 @@ public class EffectZone extends Block{
 
                 all.clear();
                 Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
-                    if(affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team) all.add(other);
+                    if(!other.dead && (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)) all.add(other);
                 });
                 active = activate.get();
 
@@ -109,13 +117,20 @@ public class EffectZone extends Block{
         public void draw(){
             super.draw();
 
+            float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
             float opacity = Core.settings.getInt("pm-zone-opacity", 100) / 100f;
+
+            Draw.color(baseColor);
+            Draw.alpha(heat * scl * 0.5f);
+            Draw.rect(topRegion, x, y);
+            Draw.color();
+            Draw.alpha(1f);
 
             if(activeHeat > 0.01f){
                 Draw.z(zoneLayer);
-                float scl = Mathf.absin(Time.time, 50f / Mathf.PI2, 0.125f);
-                Tmp.c1.set(baseColor).a(baseColor.a * scl * activeHeat * opacity);
-                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * activeHeat * opacity);
+                float a = activeHeat * smoothEfficiency * opacity;
+                Tmp.c1.set(baseColor).a(baseColor.a * scl * a);
+                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * a);
                 Fill.light(
                     x, y,
                     Lines.circleVertices(range),
@@ -125,13 +140,17 @@ public class EffectZone extends Block{
 
             if(smoothEfficiency > 0.01f){
                 Draw.z(ringLayer);
-                Tmp.c1.set(baseColor).a(baseColor.a * smoothEfficiency * opacity);
-                Tmp.c2.set(topColor).a(topColor.a * smoothEfficiency * opacity);
+                float a = smoothEfficiency * opacity;
+                Tmp.c1.set(baseColor).a(baseColor.a * a);
+                Tmp.c2.set(topColor).a(topColor.a * a);
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);
                 Draw3D.cylinder(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
             }
+
+            Draw.color();
+            Draw.alpha(1f);
         }
 
         public float realHeight(){
