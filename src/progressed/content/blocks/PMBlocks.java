@@ -1436,7 +1436,11 @@ public class PMBlocks implements ContentList{
 
             size = 5;
             ambientSound = Sounds.machine;
-            products = Seq.with(PMPayloads.emptyRocket, PMPayloads.emptyMissile, PMPayloads.emptyNuke);
+            recipes(
+                PMPayloads.emptyRocket,
+                PMPayloads.emptyMissile,
+                PMPayloads.emptyNuke
+            );
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
@@ -1452,11 +1456,13 @@ public class PMBlocks implements ContentList{
             size = 5;
             hideDetails = false;
             ambientSound = Sounds.machine;
-            products = Seq.with(
+            liquidCapacity = 80f;
+            recipes(
                 PMPayloads.basicRocket, PMPayloads.incendiaryRocket, PMPayloads.bomberRocket,
                 PMPayloads.basicMissile, PMPayloads.recursiveMissile,
                 PMPayloads.basicNuke, PMPayloads.clusterNuke
             );
+            recipes.get(1).liquidCost = new LiquidStack[]{new LiquidStack(Liquids.slag, 40f)};
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{
@@ -1469,8 +1475,13 @@ public class PMBlocks implements ContentList{
 
             size = 3;
             blockBuild = false;
-            products = Seq.with(PMPayloads.basicSentry, PMPayloads.missileSentry, PMPayloads.dashSentry);
+            recipes(
+                PMPayloads.basicSentry,
+                PMPayloads.missileSentry,
+                PMPayloads.dashSentry
+            );
         }};
+
         // endregion
         // region Defense
 
@@ -1485,8 +1496,6 @@ public class PMBlocks implements ContentList{
 
         // endregion
         // region Units
-
-
 
         healZone = new EffectZone("rejuvination-beacon"){
             final float healing = 100f;
@@ -1564,6 +1573,7 @@ public class PMBlocks implements ContentList{
 
         // endregion
         // region Effect
+
         coreCovalence = new CoreLink("core-covalence"){{
             requirements(Category.effect, with(
                 Items.copper, 6000,

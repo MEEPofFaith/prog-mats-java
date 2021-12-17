@@ -91,6 +91,12 @@ public class SandboxWall extends Wall{
     }
 
     @Override
+    public void setBars(){
+        super.setBars();
+        bars.remove("health");
+    }
+
+    @Override
     public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
         if(req.config instanceof byte[] b){
             //draw floating items to represent active mode

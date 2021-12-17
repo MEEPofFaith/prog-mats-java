@@ -16,6 +16,7 @@ import mindustry.gen.*;
 import mindustry.maps.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
@@ -323,46 +324,48 @@ public class PMStatValues{
         };
     }
 
-    public static StatValue payloadProducts(Seq<Missile> products){
+    public static StatValue payloadProducts(Seq<Recipe> products){
         return table -> {
             table.row();
-            products.each(p -> {
-                if(p.unlockedNow()){
-                    table.image(icon(p)).padRight(4).right().top();
+            products.each(r -> {
+                Block b = r.outputBlock;
+                boolean unlocked = r.requiresUnlock && !b.unlockedNow();
+                if(unlocked){
+                    table.image(icon(b)).padRight(4).right().top();
                 }else{
-                    table.add(PMElements.imageStack(icon(p), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
+                    table.add(PMElements.imageStack(icon(b), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
                 }
-                table.add(p.unlockedNow() ? p.localizedName : "@pm-missing-research").padRight(10).left().top();
+                table.add(unlocked ? b.localizedName : "@pm-missing-research").padRight(10).left().top();
 
-                if(p.unlockedNow()){
+                if(unlocked){
                     table.table(ct -> {
                         ct.left().defaults().padRight(3).left();
 
                         ct.table(it -> {
                             it.add("[lightgray]" + Stat.input.localized() + ": []");
-                            for(ItemStack stack: p.requirements){
+                            for(ItemStack stack: r.buildCost){
                                 it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
                             }
                         });
 
-                        if(p.prev != null){
+                        if(r.inputBlock != null){
                             ct.row();
                             ct.table(pt -> {
-                                if(p.prev.unlockedNow()){
-                                    pt.image(icon(p.prev)).padLeft(60f).padRight(4).right().top();
+                                if(r.inputBlock.unlockedNow()){
+                                    pt.image(icon(r.inputBlock)).padLeft(60f).padRight(4).right().top();
                                 }else{
-                                    pt.add(PMElements.imageStack(icon(p.prev), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
+                                    pt.add(PMElements.imageStack(icon(r.inputBlock), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
                                 }
-                                pt.add(p.prev.unlockedNow() ? p.prev.localizedName : "@pm-missing-research").padRight(10).left().top();
+                                pt.add(r.inputBlock.unlockedNow() ? r.inputBlock.localizedName : "@pm-missing-research").padRight(10).left().top();
                             });
                         }
-                        if(p.constructTime > 0){
+                        if(r.craftTime > 0){
                             ct.row();
-                            ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(p.constructTime / 60f) + " " + StatUnit.seconds.localized());
+                            ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(r.craftTime / 60f) + " " + StatUnit.seconds.localized());
                         }
-                        if(p.powerUse > 0){
+                        if(r.powerUse > 0){
                             ct.row();
-                            ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(p.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
+                            ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(r.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
                         }
                     }).padTop(-9).left().get().background(Tex.underline);
                 }

@@ -22,21 +22,24 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.ui.*;
+import progressed.world.blocks.consumers.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class PayloadCrafter extends BlockProducer{
+public class PayloadCrafter extends PayloadBlock{
+    private static final LiquidStack[] emptyLiquidStack = {};
     private float scrollPos;
 
-    public Seq<Missile> products;
+    public Seq<Recipe> recipes;
     public boolean hasTop = true, blockBuild = true;
-
-    public int[] capacities = {};
 
     public PayloadCrafter(String name){
         super(name);
 
+        size = 3;
+        update = true;
+        rotate = true;
         configurable = logicConfigurable = true;
 
         config(Block.class, (PayloadCrafterBuild tile, Block block) -> {
@@ -52,19 +55,24 @@ public class PayloadCrafter extends BlockProducer{
         });
     }
 
+    public void recipes(Block... blocks){
+        recipes = new Seq<>();
+        for(Block b : blocks){
+            recipes.add(new Recipe(b));
+        }
+    }
+
     @Override
     public void init(){
         consumes.add(new PayloadCrafterConsumePower());
+        consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
+        consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().liquidCost != null ? e.recipe().liquidCost : emptyLiquidStack));
 
-        capacities = new int[content.items().size];
-        products.each(r -> {
-            for(ItemStack stack : r.requirements){
-                capacities[stack.item.id] = Math.max(capacities[stack.item.id], stack.amount * 2);
-                itemCapacity = Math.max(itemCapacity, stack.amount * 2);
-            }
-        });
-
-        if(products.contains(m -> m.prev != null)) acceptsPayload = true;
+        if(recipes.contains(r -> r.powerUse > 0)) hasPower = true;
+        if(recipes.contains(r -> r.buildCost != null)) hasItems = true;
+        if(recipes.contains(r -> r.liquidCost != null)) hasLiquids = true;
+        if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
+        if(recipes.contains(r -> r.outputBlock != null)) outputsPayload = true;
 
         super.init();
     }
@@ -80,7 +88,7 @@ public class PayloadCrafter extends BlockProducer{
 
     @Override
     public TextureRegion[] icons(){
-        if(products.contains(b -> b.prev != null)){
+        if(recipes.contains(Recipe::hasInputBlock)){
             return new TextureRegion[]{region, inRegion, outRegion, topRegion};
         }
         return new TextureRegion[]{region, outRegion, topRegion};
@@ -91,38 +99,40 @@ public class PayloadCrafter extends BlockProducer{
         super.setStats();
         stats.remove(Stat.powerUse);
 
-        stats.add(Stat.input, PMStatValues.payloadProducts(products));
+        stats.add(Stat.input, PMStatValues.payloadProducts(recipes));
     }
 
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("progress");
-        bars.add("progress", (PayloadCrafterBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe() == null ? 0f : (entity.progress / ((Missile)(entity.recipe())).constructTime)));
+
+        bars.add("progress", (PayloadCrafterBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe() == null ? 0f : (entity.progress / entity.recipe().craftTime)));
     }
 
     @Override
     public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
-        if(products.contains(b -> b.prev != null)) Draw.rect(inRegion, req.drawx(), req.drawy(), req.rotation * 90);
+        if(recipes.contains(r -> r.inputBlock != null)) Draw.rect(inRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(topRegion, req.drawx(), req.drawy());
     }
 
     public boolean canProduce(Block b){
-        if(b instanceof Missile m){
-            return (!m.requiresUnlock || m.unlockedNow()) && products.contains(m);
+        boolean hasRecipe = recipes.contains(r -> r.outputBlock == b);
+        if(hasRecipe){
+            Recipe recipe = recipes.find(r -> r.outputBlock == b);
+            return recipe.requiresUnlock && recipe.outputBlock.unlockedNow();
         }
         return false;
     }
 
-    public class PayloadCrafterBuild extends BlockProducerBuild{
+    public class PayloadCrafterBuild extends PayloadBlockBuild<BuildPayload>{
+        public float progress, time, heat;
         public @Nullable Block recipe;
         public boolean produce;
 
-        @Override
-        public @Nullable Block recipe(){
-            return recipe;
+        public @Nullable Recipe recipe(){
+            return recipes.find(r -> r.outputBlock == recipe);
         }
 
         @Override
@@ -134,31 +144,27 @@ public class PayloadCrafter extends BlockProducer{
 
         @Override
         public void updateTile(){
-            var recipe = recipe();
-            produce = recipe instanceof Missile m && consValid() && (m.prev != null ? (payload != null && hasArrived() && payload.block() == m.prev) : payload == null);
+            super.updateTile();
+            Recipe recipe = recipe();
+            produce = recipe != null && consValid() && (recipe.inputBlock != null ? (payload != null && hasArrived() && payload.block() == recipe.inputBlock) : payload == null);
 
-            if(recipe instanceof Missile m){
-                if(payload != null && payload.block() != m.prev){
+            if(recipe != null){
+                if(payload != null && payload.block() != recipe.inputBlock){
                     moveOutPayload();
                 }
-            }else if(payload != null && !products.contains(b -> b.prev == payload.block())){
+            }else if(payload != null && !recipes.contains(r -> r.inputBlock == payload.block())){
                 moveOutPayload();
             }
 
-            if(recipe instanceof Missile m && m.prev != null && payload != null && payload.block() != m){
+            if(recipe != null && recipe.inputBlock != null && payload != null && payload.block() != recipe.outputBlock){
                 moveInPayload(false);
             }
 
-            if(produce){
+            if(produce && recipe != null){
                 progress += edelta();
 
-                assert recipe instanceof Missile;
-                Missile m = (Missile)recipe;
-                if(progress >= m.constructTime){
-                    consume();
-                    payload = new BuildPayload(recipe, team);
-                    payVector.setZero();
-                    progress %= 1f;
+                if(progress >= recipe.craftTime){
+                    craft(recipe);
                 }
             }else if(recipe == null || !consValid()){
                 progress = 0f;
@@ -168,8 +174,16 @@ public class PayloadCrafter extends BlockProducer{
             time += heat * delta();
         }
 
+        public void craft(Recipe recipe){
+            consume();
+
+            payload = new BuildPayload(recipe.outputBlock, team);
+            payVector.setZero();
+            progress %= 1f;
+        }
+
         public float powerUse(){
-            return recipe instanceof Missile m ? m.powerUse : 0f;
+            return recipe() != null ? recipe().powerUse : 0f;
         }
 
         @Override
@@ -222,18 +236,35 @@ public class PayloadCrafter extends BlockProducer{
             drawPayload();
         }
 
-        @Override
-        public void drawSelect(){
-            // Do not
+        public boolean curInput(){
+            return recipe() != null && recipe().inputBlock != null;
         }
 
-        public boolean curInput(){
-            return recipe instanceof Missile m && m.prev != null;
+        @Override
+        public boolean acceptItem(Building source, Item item){
+            return items != null && items.get(item) < getMaximumAccepted(item);
         }
 
         @Override
         public int getMaximumAccepted(Item item){
-            return capacities[item.id];
+            if(recipe() == null) return 0;
+            for(ItemStack stack : recipe().buildCost){
+                if(stack.item == item) return stack.amount * 2;
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean acceptLiquid(Building source, Liquid liquid){
+            return liquids != null && liquids.get(liquid) < getMaxLiquidAccepted(liquid);
+        }
+
+        public float getMaxLiquidAccepted(Liquid liquid){
+            if(recipe() == null) return 0f;
+            for(LiquidStack stack : recipe().liquidCost){
+                if(stack.liquid == liquid) return stack.amount * 2f;
+            }
+            return 0f;
         }
 
         @Override
@@ -246,20 +277,21 @@ public class PayloadCrafter extends BlockProducer{
             int i = 0;
 
             for(Block b : content.blocks()){
-                if(b instanceof Missile m && products.contains(m)){
+                if(recipes.contains(r -> r.outputBlock == b)){
                     Cell<ImageButton> cell = cont.button(Tex.whiteui, Styles.clearToggleTransi, 24, () -> {}).group(group);
                     ImageButton button = cell.get();
-                    button.update(() -> button.setChecked(recipe == m));
+                    Recipe r = recipes.find(rec -> rec.outputBlock == b);
+                    button.update(() -> button.setChecked(recipe == b));
 
-                    if(m.requiresUnlock && !m.unlockedNow()){
+                    if(r.requiresUnlock && !r.outputBlock.unlockedNow()){
                         button.getStyle().imageUp = new TextureRegionDrawable(Core.atlas.find("clear"));
-                        button.replaceImage(PMElements.imageStack(m.uiIcon, Icon.tree.getRegion(), Color.red));
+                        button.replaceImage(PMElements.imageStack(b.uiIcon, Icon.tree.getRegion(), Color.red));
                         cell.tooltip("@pm-missing-research");
                     }else{
-                        button.getStyle().imageUp = new TextureRegionDrawable(m.uiIcon);
-                        cell.tooltip(m.localizedName);
+                        button.getStyle().imageUp = new TextureRegionDrawable(b.uiIcon);
+                        cell.tooltip(b.localizedName);
                     }
-                    button.changed(() -> configure(button.isChecked() ? m : null));
+                    button.changed(() -> configure(button.isChecked() ? b : null));
 
                     if(i++ % 4 == 3){
                         cont.row();
