@@ -1272,27 +1272,6 @@ public class PMBlocks implements ContentList{
             researchCostMultiplier = 300f;
         }};
 
-        dronePad = new DronePad("drone-pad"){{
-            requirements(Category.units, with(
-                Items.titanium, 600,
-                Items.thorium, 300,
-                Items.plastanium, 300,
-                Items.silicon, 550,
-                Items.lead, 500,
-                Items.surgeAlloy, 90,
-                PMItems.tenelium, 150
-            ));
-            size = 4;
-            chargeX = chargeY = 41f / 4f;
-            beamWidth = 0.5f;
-            droneType = (DroneUnitType)PMUnitTypes.transportDrone;
-            chargeRate = 12f; //5 second charge time
-            constructTime = 10f * 60f;
-            constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
-            hideDetails = false;
-            squareSprite = false;
-        }};
-
         itemDroneStation = new ItemDroneStation("drone-station-items"){{
             requirements(Category.distribution, with(
                 Items.titanium, 300,
@@ -1304,34 +1283,6 @@ public class PMBlocks implements ContentList{
             ));
             size = 3;
             itemCapacity = 500;
-            squareSprite = false;
-        }};
-
-        liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
-            requirements(Category.liquid, with(
-                Items.titanium, 250,
-                Items.plastanium, 125,
-                Items.silicon, 125,
-                Items.lead, 300,
-                Items.metaglass, 175,
-                PMItems.tenelium, 75
-            ));
-            size = 3;
-            liquidCapacity = 1000f;
-            squareSprite = false;
-        }};
-
-        payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
-            requirements(Category.units, with(
-                Items.titanium, 300,
-                Items.plastanium, 175,
-                Items.silicon, 100,
-                Items.lead, 250,
-                Items.thorium, 125,
-                PMItems.tenelium, 100
-            ));
-            size = 5;
-            maxPayloadSize = 4f;
             squareSprite = false;
         }};
 
@@ -1350,6 +1301,22 @@ public class PMBlocks implements ContentList{
             delay = 0.75f;
             range = 560f;
             consumes.power(2.75f);
+        }};
+        // endregion
+
+        // region Liquids
+        liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
+            requirements(Category.liquid, with(
+                Items.titanium, 250,
+                Items.plastanium, 125,
+                Items.silicon, 125,
+                Items.lead, 300,
+                Items.metaglass, 175,
+                PMItems.tenelium, 75
+            ));
+            size = 3;
+            liquidCapacity = 1000f;
+            squareSprite = false;
         }};
         // endregion
 
@@ -1481,10 +1448,9 @@ public class PMBlocks implements ContentList{
                 PMPayloads.dashSentry
             );
         }};
-
         // endregion
-        // region Defense
 
+        // region Defense
         igneousPillar = new IgneousPillar("igneous-pillar"){{
             health = 30 * 4; //4 is wallHealthMultiplier in Blocks.java
             destroySound = PMSounds.rockExplode;
@@ -1493,10 +1459,9 @@ public class PMBlocks implements ContentList{
         }};
 
         ((PillarFieldBulletType)(PMBullets.pillarField)).pillar = (IgneousPillar)igneousPillar;
-
         // endregion
-        // region Units
 
+        // region Units
         healZone = new EffectZone("rejuvination-beacon"){
             final float healing = 100f;
 
@@ -1571,9 +1536,43 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        // endregion
-        // region Effect
+        dronePad = new DronePad("drone-pad"){{
+            requirements(Category.units, with(
+                Items.titanium, 600,
+                Items.thorium, 300,
+                Items.plastanium, 300,
+                Items.silicon, 550,
+                Items.lead, 500,
+                Items.surgeAlloy, 90,
+                PMItems.tenelium, 150
+            ));
+            size = 4;
+            chargeX = chargeY = 41f / 4f;
+            beamWidth = 0.5f;
+            droneType = (DroneUnitType)PMUnitTypes.transportDrone;
+            chargeRate = 12f; //5 second charge time
+            constructTime = 10f * 60f;
+            constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
+            hideDetails = false;
+            squareSprite = false;
+        }};
 
+        payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
+            requirements(Category.units, with(
+                Items.titanium, 300,
+                Items.plastanium, 175,
+                Items.silicon, 100,
+                Items.lead, 250,
+                Items.thorium, 125,
+                PMItems.tenelium, 100
+            ));
+            size = 5;
+            maxPayloadSize = 4f;
+            squareSprite = false;
+        }};
+        // endregion
+
+        // region Effect
         coreCovalence = new CoreLink("core-covalence"){{
             requirements(Category.effect, with(
                 Items.copper, 6000,
@@ -1760,7 +1759,7 @@ public class PMBlocks implements ContentList{
             speedBoost = 100f;
         }};
 
-        /// Wall
+        /// Defense
         sandboxWall = new SandboxWall("sandbox-wall");
 
         sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
