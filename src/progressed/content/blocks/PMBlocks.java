@@ -1241,9 +1241,14 @@ public class PMBlocks implements ContentList{
 
         // region Production
         smartDrill = new SmartDrill("smart-drill"){{
-            requirements(Category.production, empty);
+            requirements(Category.production, with(
+                Items.copper, 45,
+                Items.graphite, 40,
+                Items.silicon, 45,
+                PMItems.tenelium, 35
+            ));
             size = 3;
-            drillTime = 280;
+            drillTime = 260;
             hasPower = true;
             tier = 5;
             updateEffect = Fx.pulverizeMedium;
@@ -1330,6 +1335,7 @@ public class PMBlocks implements ContentList{
 
             craftTime = 60f;
             hasPower = hasLiquids = true;
+            liquidCapacity = 50f;
             accelerationSpeed = 0.0004f;
             decelerationSpeed = 0.003125f;
 
@@ -1338,7 +1344,7 @@ public class PMBlocks implements ContentList{
                 plasma2 = Items.thorium.color;
             }};
             onCraft = tile -> {
-                Tmp.v1.setToRandomDirection().setLength(30f / 4f);
+                Tmp.v1.setToRandomDirection().setLength(28f / 4f);
                 PMFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
             };
 
@@ -1464,7 +1470,11 @@ public class PMBlocks implements ContentList{
             final float healing = 100f;
 
             {
-                requirements(Category.units, empty);
+                requirements(Category.units, with(
+                    Items.silicon, 60,
+                    Items.plastanium, 35,
+                    PMItems.tenelium, 50
+                ));
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;
@@ -1494,7 +1504,11 @@ public class PMBlocks implements ContentList{
 
         speedZone = new EffectZone("speed-field"){
             {
-                requirements(Category.units, empty);
+                requirements(Category.units, with(
+                    Items.silicon, 25,
+                    Items.titanium, 30,
+                    Items.lead, 30
+                ));
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;
@@ -1514,7 +1528,12 @@ public class PMBlocks implements ContentList{
 
         strengthZone = new EffectZone("strength-emitter"){
             {
-                requirements(Category.units, empty);
+                requirements(Category.units, with(
+                    Items.silicon, 40,
+                    PMItems.tenelium, 35,
+                    Items.lead, 35,
+                    Items.phaseFabric, 20
+                ));
                 size = 2;
                 range = 16f * tilesize;
                 height = 0.125f;

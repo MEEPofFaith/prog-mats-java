@@ -203,6 +203,12 @@ public class PMTechTree implements ContentList{
             node(allure);
         });
 
+        // Drills
+        vanillaNode(laserDrill, () -> {
+            //Smart Drill
+            node(smartDrill);
+        });
+
         // Distribution
         vanillaNode(armoredConveyor, () -> {
             //Floating Conveyor
@@ -240,6 +246,15 @@ public class PMTechTree implements ContentList{
         vanillaNode(siliconCrucible, () -> {
            //Forge
            node(pyroclastForge);
+        });
+
+        // Units
+        vanillaNode(repairPoint, () -> {
+            //Zones
+            node(healZone);
+            node(speedZone, () -> {
+                node(strengthZone);
+            });
         });
 
         // Effect
