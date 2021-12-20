@@ -3,7 +3,7 @@ package progressed.type.statuseffects;
 import arc.struct.*;
 import mindustry.type.*;
 
-public class ExclusiveStatusEffect extends StatusEffect{
+public class ExclusiveStatusEffect extends PMStatusEffect{
     public Seq<StatusEffect> exclusives;
 
     public ExclusiveStatusEffect(String name){

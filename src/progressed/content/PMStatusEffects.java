@@ -23,7 +23,7 @@ public class PMStatusEffects implements ContentList{
 
     @Override
     public void load(){
-        incendiaryBurn = new StatusEffect("incend-burn"){{
+        incendiaryBurn = new PMStatusEffect("incend-burn"){{
             color = Pal.lightPyraFlame;
             damage = 3.6f;
             effect = PMFx.incendBurning;
@@ -71,14 +71,14 @@ public class PMStatusEffects implements ContentList{
         }};
 
         //buff zone effects
-        speedBoost = new StatusEffect("speed-boost"){{
+        speedBoost = new PMStatusEffect("speed-boost"){{
             color = Pal.lancerLaser;
             speedMultiplier = 1.25f;
             reloadMultiplier = 1.25f;
             effect = Fx.overclocked;
         }};
 
-        strengthBoost = new StatusEffect("strength-boost"){{
+        strengthBoost = new PMStatusEffect("strength-boost"){{
             color = Pal.redderDust;
             damageMultiplier = 1.25f;
             effect = Fx.overclocked;

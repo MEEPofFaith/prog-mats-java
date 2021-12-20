@@ -12,9 +12,8 @@ public class Outliner{
      * Outlines a given textureRegion. Run in createIcons.
      * @author Sunny
      * */
-    public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
+    public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name, int radius){
         if(tex == null) return;
-        final int radius = 4;
         PixmapRegion region = Core.atlas.getPixmap(tex);
         Pixmap out = new Pixmap(region.width, region.height);
         Color color = new Color();
@@ -28,7 +27,7 @@ public class Outliner{
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.get(rx + x, ry + y)).a > 0.01f){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius + 0.5f) && color.set(region.get(rx + x, ry + y)).a > 0.01f){
                                 found = true;
                                 break outer;
                             }
@@ -43,13 +42,21 @@ public class Outliner{
         packer.add(MultiPacker.PageType.main, name, out);
     }
 
+    public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
+        outlineRegion(packer, tex, outlineColor, name, 4);
+    }
+
     /**
      * Outlines a list of regions. Run in createIcons.
      * @author Sunny
      * */
-    public static void outlineRegions(MultiPacker packer, TextureRegion[] textures, Color outlineColor, String name){
+    public static void outlineRegions(MultiPacker packer, TextureRegion[] textures, Color outlineColor, String name, int radius){
         for(int i = 0; i < textures.length; i++){
-            outlineRegion(packer, textures[i], outlineColor, name + "-" + i);
+            outlineRegion(packer, textures[i], outlineColor, name + "-" + i, radius);
         }
+    }
+
+    public static void outlineRegions(MultiPacker packer, TextureRegion[] textures, Color outlineColor, String name){
+        outlineRegions(packer, textures, outlineColor, name, 4);
     }
 }
