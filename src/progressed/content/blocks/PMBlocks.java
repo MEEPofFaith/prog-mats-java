@@ -1242,18 +1242,16 @@ public class PMBlocks implements ContentList{
         // region Production
         smartDrill = new SmartDrill("smart-drill"){{
             requirements(Category.production, empty);
-            size = 4;
+            size = 3;
             drillTime = 280;
             hasPower = true;
             tier = 5;
-            updateEffect = Fx.pulverizeRed;
-            updateEffectChance = 0.03f;
-            drillEffect = Fx.mineHuge;
-            rotateSpeed = 6f;
-            warmupSpeed = 0.01f;
+            updateEffect = Fx.pulverizeMedium;
+            drillEffect = Fx.mineBig;
+            rotateSpeed = -4f;
 
-            consumes.power(3f);
-            consumes.liquid(Liquids.water, 0.1f).boost();
+            consumes.powerCond(1.8f, SmartDrillBuild::isDrilling);
+            consumes.liquid(Liquids.water, 0.08f).boost();
         }};
         // endregion
 

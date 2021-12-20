@@ -95,12 +95,6 @@ public class SmartDrill extends Drill{
                 Draw.reset();
                 Draw.rect(item.fullIcon, dx, dy, s, s);
             }
-
-            if(drawMineItem){
-                Draw.color(returnItem.color);
-                Draw.rect(itemRegion, tile.worldx() + offset, tile.worldy() + offset);
-                Draw.color();
-            }
         }else{
             Tile to = tile.getLinkedTilesAs(this, tempTiles).find(t -> t.drop() != null && t.drop().hardness > tier);
             Item item = to == null ? null : to.drop();
@@ -154,7 +148,7 @@ public class SmartDrill extends Drill{
 
         @Override
         public void updateTile(){
-            if(dominantItem == null){ //Literally the only thing changed from the original code. Wind down for deselecting.
+            if(!isDrilling()){ //Literally the only thing changed from the original code. Wind down for deselecting.
                 timeDrilled += warmup * delta();
                 lastDrillSpeed = 0f;
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
@@ -198,6 +192,10 @@ public class SmartDrill extends Drill{
 
                 drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
             }
+        }
+
+        public boolean isDrilling(){
+            return dominantItem != null;
         }
 
         @Override
