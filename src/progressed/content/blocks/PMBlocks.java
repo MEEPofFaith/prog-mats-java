@@ -1251,7 +1251,7 @@ public class PMBlocks implements ContentList{
             rotateSpeed = -4f;
 
             consumes.powerCond(1.8f, SmartDrillBuild::isDrilling);
-            consumes.liquid(Liquids.water, 0.08f).boost();
+            consumes.liquid(Liquids.water, 0.09f).boost();
         }};
         // endregion
 
@@ -1460,7 +1460,7 @@ public class PMBlocks implements ContentList{
         // endregion
 
         // region Units
-        healZone = new EffectZone("rejuvination-beacon"){
+        healZone = new EffectZone("rejuvenation-beacon"){
             final float healing = 100f;
 
             {
