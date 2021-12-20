@@ -1513,9 +1513,7 @@ public class PMBlocks implements ContentList{
                 range = 16f * tilesize;
                 height = 0.125f;
 
-                zoneEffect = tile -> {
-                    all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
-                };
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
             }
 
             @Override
@@ -1539,9 +1537,7 @@ public class PMBlocks implements ContentList{
                 height = 0.125f;
                 baseColor = Pal.redderDust;
 
-                zoneEffect = tile -> {
-                    all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
-                };
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
             }
 
 
