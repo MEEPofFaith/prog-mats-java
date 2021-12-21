@@ -1433,7 +1433,7 @@ public class PMBlocks implements ContentList{
                 PMPayloads.basicMissile, PMPayloads.recursiveMissile,
                 PMPayloads.basicNuke, PMPayloads.clusterNuke
             );
-            recipes.get(1).liquidCost = new LiquidStack[]{new LiquidStack(Liquids.slag, 40f)};
+            recipes.get(1).liquidCost = new LiquidStack(Liquids.slag, 40f);
         }};
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{

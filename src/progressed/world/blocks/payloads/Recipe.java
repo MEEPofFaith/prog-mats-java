@@ -8,7 +8,7 @@ public class Recipe{
     public boolean requiresUnlock;
 
     public ItemStack[] buildCost;
-    public LiquidStack[] liquidCost;
+    public LiquidStack liquidCost;
     public float powerUse;
     public Block inputBlock;
 
@@ -24,6 +24,10 @@ public class Recipe{
             powerUse = m.powerUse;
             inputBlock = m.prev;
         }
+    }
+
+    public boolean hasLiquidInput(Liquid liquid){
+        return liquidCost != null && liquidCost.liquid == liquid;
     }
 
     public boolean hasInputBlock(){

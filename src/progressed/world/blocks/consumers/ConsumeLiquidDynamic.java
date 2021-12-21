@@ -3,7 +3,6 @@ package progressed.world.blocks.consumers;
 import arc.func.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -14,10 +13,10 @@ import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
 public class ConsumeLiquidDynamic extends Consume{
-    public final Func<Building, LiquidStack[]> liquids;
+    public final Func<Building, LiquidStack> liquids;
 
-    public <T extends Building>  ConsumeLiquidDynamic(Func<T, LiquidStack[]> liquids){
-        this.liquids = (Func<Building, LiquidStack[]>)liquids;
+    public <T extends Building>  ConsumeLiquidDynamic(Func<T, LiquidStack> liquids){
+        this.liquids = (Func<Building, LiquidStack>)liquids;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class ConsumeLiquidDynamic extends Consume{
 
     @Override
     public void build(Building tile, Table table){
-        LiquidStack[][] current = {liquids.get(tile)};
+        LiquidStack[] current = {liquids.get(tile)};
 
         table.table(cont -> {
             table.update(() -> {
@@ -48,13 +47,11 @@ public class ConsumeLiquidDynamic extends Consume{
 
     private void rebuild(Building tile, Table table){
         table.clear();
-        int i = 0;
 
-        for(LiquidStack stack : liquids.get(tile)){
+        LiquidStack stack = liquids.get(tile);
+        if(stack != null)
             table.add(new ReqImage(stack.liquid.uiIcon,
                 () -> tile.liquids != null && tile.liquids.get(stack.liquid) >= stack.amount)).size(iconMed).top().left();
-            if(++i % 4 == 0) table.row();
-        }
     }
 
     @Override
@@ -69,23 +66,17 @@ public class ConsumeLiquidDynamic extends Consume{
 
     @Override
     public void trigger(Building entity){
-        for(LiquidStack stack : liquids.get(entity)){
+        LiquidStack stack = liquids.get(entity);
+        if(stack != null)
             entity.liquids.remove(stack.liquid, stack.amount);
-        }
     }
 
     @Override
     public boolean valid(Building entity){
         if(entity.liquids == null) return false;
 
-        for(LiquidStack stack : liquids.get(entity)){
-            Log.info("@ < @", entity.liquids.get(stack.liquid), stack.amount);
-            if(entity.liquids.get(stack.liquid) < stack.amount){
-                return false;
-            }
-        }
-
-        return true;
+        LiquidStack stack = liquids.get(entity);
+        return stack == null || !(entity.liquids.get(stack.liquid) < stack.amount);
     }
 
     @Override

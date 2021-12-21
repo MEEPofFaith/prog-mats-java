@@ -329,7 +329,7 @@ public class PMStatValues{
             table.row();
             products.each(r -> {
                 Block b = r.outputBlock;
-                boolean unlocked = r.requiresUnlock && !b.unlockedNow();
+                boolean unlocked = b.unlockedNow() || !r.requiresUnlock;
                 if(unlocked){
                     table.image(icon(b)).padRight(4).right().top();
                 }else{
@@ -341,12 +341,16 @@ public class PMStatValues{
                     table.table(ct -> {
                         ct.left().defaults().padRight(3).left();
 
-                        ct.table(it -> {
-                            it.add("[lightgray]" + Stat.input.localized() + ": []");
-                            for(ItemStack stack: r.buildCost){
-                                it.add(PMElements.itemImage(stack.item.uiIcon, () -> stack.amount == 0 ? "" : stack.amount + ""));
-                            }
-                        });
+                        if(r.buildCost != null || r.liquidCost != null){
+                            ct.table(it -> {
+                                it.add("[lightgray]" + Stat.input.localized() + ": []");
+                                if(r.buildCost != null)
+                                    for(ItemStack stack: r.buildCost){
+                                        it.add(new ItemImage(stack.item.uiIcon, stack.amount));
+                                    }
+                                if(r.liquidCost != null) it.add(new ItemImage(r.liquidCost.liquid.uiIcon, (int)r.liquidCost.amount));
+                            });
+                        }
 
                         if(r.inputBlock != null){
                             ct.row();

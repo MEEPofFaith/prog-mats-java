@@ -28,7 +28,6 @@ import progressed.world.meta.*;
 import static mindustry.Vars.*;
 
 public class PayloadCrafter extends PayloadBlock{
-    private static final LiquidStack[] emptyLiquidStack = {};
     private float scrollPos;
 
     public Seq<Recipe> recipes;
@@ -64,13 +63,18 @@ public class PayloadCrafter extends PayloadBlock{
 
     @Override
     public void init(){
-        consumes.add(new PayloadCrafterConsumePower());
-        consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
-        consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().liquidCost != null ? e.recipe().liquidCost : emptyLiquidStack));
-
-        if(recipes.contains(r -> r.powerUse > 0)) hasPower = true;
-        if(recipes.contains(r -> r.buildCost != null)) hasItems = true;
-        if(recipes.contains(r -> r.liquidCost != null)) hasLiquids = true;
+        if(recipes.contains(r -> r.powerUse > 0)){
+            consumes.add(new PayloadCrafterConsumePower());
+            hasPower = true;
+        }
+        if(recipes.contains(r -> r.buildCost != null)){
+            consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
+            hasItems = true;
+        }
+        if(recipes.contains(r -> r.liquidCost != null)){
+            consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.recipe() != null ? e.recipe().liquidCost : null));
+            hasLiquids = true;
+        }
         if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
         if(recipes.contains(r -> r.outputBlock != null)) outputsPayload = true;
 
@@ -106,7 +110,23 @@ public class PayloadCrafter extends PayloadBlock{
     public void setBars(){
         super.setBars();
 
-        bars.add("progress", (PayloadCrafterBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe() == null ? 0f : (entity.progress / entity.recipe().craftTime)));
+        if(hasLiquids){
+            bars.remove("liquid");
+            bars.add("liquid", (PayloadCrafterBuild entity) -> {
+                Liquid l = entity.recipe() != null ? entity.recipe().liquidCost.liquid : null;
+                return new Bar(
+                    () -> l != null ? l.localizedName : Core.bundle.get("bar.liquid"),
+                    () -> l != null ? l.barColor() : Color.white,
+                    () -> entity.liquids == null || l == null ? 0f : entity.liquids.get(l) / liquidCapacity
+                );
+            });
+        }
+
+        bars.add("progress", (PayloadCrafterBuild entity) -> new Bar(
+            "bar.progress",
+            Pal.ammo,
+            () -> entity.recipe() == null ? 0f : (entity.progress / entity.recipe().craftTime)
+        ));
     }
 
     @Override
@@ -256,15 +276,7 @@ public class PayloadCrafter extends PayloadBlock{
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return liquids != null && liquids.get(liquid) < getMaxLiquidAccepted(liquid);
-        }
-
-        public float getMaxLiquidAccepted(Liquid liquid){
-            if(recipe() == null) return 0f;
-            for(LiquidStack stack : recipe().liquidCost){
-                if(stack.liquid == liquid) return stack.amount * 2f;
-            }
-            return 0f;
+            return liquids != null && recipe() != null && recipe().hasLiquidInput(liquid);
         }
 
         @Override
