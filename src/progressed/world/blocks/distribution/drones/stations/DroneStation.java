@@ -327,7 +327,7 @@ public class DroneStation extends Block{
         }
     }
 
-    public enum StationState{
+    public static enum StationState{
         origin,
         destination,
         disconnected;

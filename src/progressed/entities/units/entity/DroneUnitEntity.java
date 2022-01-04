@@ -300,7 +300,7 @@ public class DroneUnitEntity extends PayloadUnit{
         }
     }
 
-    public enum DroneState{
+    public static enum DroneState{
         /** 0 - Heading to drone pad to charge */
         charging,
         /** 1 - Heading to order origin station */
