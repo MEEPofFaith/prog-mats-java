@@ -15,6 +15,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.*;
@@ -117,7 +118,7 @@ public class InfernoTurret extends PowerTurret{
         if(minRange < 0) minRange = size * tilesize * 2f;
 
         if(cells.size == 0){
-            throw new RuntimeException(name + " does not have any cells!");
+            ProgMats.uhOhSpeghettiOh(name + " does not have any cells!");
         }
     }
 
