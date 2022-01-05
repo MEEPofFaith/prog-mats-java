@@ -39,6 +39,8 @@ public class TurretModulePayload extends Block{
         if(elevation < 0) elevation = size / 3f;
 
         super.init();
+        module.init();
+        module.mountID = id;
     }
 
     @Override
