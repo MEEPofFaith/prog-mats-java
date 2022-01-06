@@ -89,8 +89,4 @@ public class ProgMats extends Mod{
             list.load();
         }
     }
-
-    public static void uhOhSpeghettiOh(String ohno){
-        throw new RuntimeException(ohno);
-    }
 }

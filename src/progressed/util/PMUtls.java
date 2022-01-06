@@ -168,4 +168,8 @@ public class PMUtls{
         float i = 1f - n;
         return a * i + b * n;
     }
+
+    public static void uhOhSpeghettiOh(String ohno){
+        throw new RuntimeException(ohno);
+    }
 }

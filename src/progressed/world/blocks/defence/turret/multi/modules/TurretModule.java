@@ -4,10 +4,15 @@ import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.world.blocks.payloads.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.multi.*;
 
@@ -16,6 +21,7 @@ public class TurretModule implements Cloneable{
     /** Automatically set */
     public short mountID;
 
+    public float deployTime;
     public float range;
     public boolean hasLiquid;
 
@@ -46,12 +52,22 @@ public class TurretModule implements Cloneable{
         if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
     }
 
-    public void draw(float x, float y, TurretMount mount){
+    public void update(Team t, float x, float y, TurretMount mount){
+        mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
+    }
+
+    public void draw(Team t, float x, float y, TurretMount mount){
         Vec2 tr = Tmp.v1;
 
         float rot = mount.rotation;
 
         Draw.z(Layer.turret + layerOffset);
+
+        if(mount.progress < deployTime){
+            Drawf.construct(x, y, region, 0f, mount.progress / deployTime, 1f, mount.progress);
+            return;
+        }
+
         tr.trns(rot, -mount.recoil);
 
         Drawf.shadow(region, x + tr.x, y + tr.y - elevation, rot - 90);
@@ -79,6 +95,18 @@ public class TurretModule implements Cloneable{
         heatRegion = Core.atlas.find(name + "-heat");
     }
 
+    public boolean acceptItem(Item item, TurretMount mount){
+        return false;
+    }
+
+    public boolean acceptLiquid(Liquid liquid, TurretMount mount){
+        return false;
+    }
+
+    public boolean acceptPayload(BuildPayload payload, TurretMount mount){
+        return false;
+    }
+
     public void writeAll(Writes write, TurretMount mount){
         write.s(mountID);
         write.b(version());
@@ -93,11 +121,13 @@ public class TurretModule implements Cloneable{
     }
 
     public void write(Writes write, TurretMount mount){
+        write.f(mount.progress);
         write.f(mount.reload);
         write.f(mount.rotation);
     }
 
     public void read(Reads read, byte revision, TurretMount mount){
+        mount.progress = read.f();
         mount.reload = read.f();
         mount.rotation = read.f();
     }

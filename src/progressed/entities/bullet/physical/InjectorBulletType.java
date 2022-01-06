@@ -6,7 +6,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import progressed.*;
+import progressed.util.*;
 
 public class InjectorBulletType extends BasicBulletType{
     public Vaccine[] vaccines;
@@ -25,7 +25,7 @@ public class InjectorBulletType extends BasicBulletType{
         super.init();
 
         if(vaccines == null){
-            ProgMats.uhOhSpeghettiOh("Injector bullet " + this + " does not have any nanomachines!");
+            PMUtls.uhOhSpeghettiOh("Injector bullet " + this + " does not have any nanomachines!");
         }
     }
 

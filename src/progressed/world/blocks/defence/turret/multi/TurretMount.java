@@ -10,6 +10,8 @@ public class TurretMount{
     public final TurretModule module;
     /** Liquid module of the mount. Primarily used for cooling. */
     public LiquidModule liquids;
+    /** deploy progress */
+    public float progress;
     /** reload in frames; 0 means ready to fire */
     public float reload;
     /** rotation relative to the unit this mount is on */

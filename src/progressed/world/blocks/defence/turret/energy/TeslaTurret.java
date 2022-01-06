@@ -17,11 +17,11 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.content.*;
 import progressed.content.PMFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
+import progressed.util.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -113,10 +113,10 @@ public class TeslaTurret extends Block{
     @Override
     public void init(){
         if(rings.size <= 0){
-            ProgMats.uhOhSpeghettiOh(name + " does not have any rings!");
+            PMUtls.uhOhSpeghettiOh(name + " does not have any rings!");
         }
         if(maxTargets <= 0){
-            ProgMats.uhOhSpeghettiOh("The 'maxTargets' of " + name + " is 0!");
+            PMUtls.uhOhSpeghettiOh("The 'maxTargets' of " + name + " is 0!");
         }
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
