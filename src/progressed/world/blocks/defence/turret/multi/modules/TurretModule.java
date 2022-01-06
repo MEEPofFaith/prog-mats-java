@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.multi.*;
@@ -76,6 +77,33 @@ public class TurretModule implements Cloneable{
     public void load(){
         region = Core.atlas.find(name);
         heatRegion = Core.atlas.find(name + "-heat");
+    }
+
+    public void writeAll(Writes write, TurretMount mount){
+        write.s(mountID);
+        write.b(version());
+        if(mount.liquids != null) mount.liquids.write(write);
+        write(write, mount);
+    }
+
+    public void readAll(Reads read, TurretMount mount){
+        byte revision = read.b();
+        if(mount.liquids != null) mount.liquids.read(read);
+        read(read, revision, mount);
+    }
+
+    public void write(Writes write, TurretMount mount){
+        write.f(mount.reload);
+        write.f(mount.rotation);
+    }
+
+    public void read(Reads read, byte revision, TurretMount mount){
+        mount.reload = read.f();
+        mount.rotation = read.f();
+    }
+
+    public byte version(){
+        return 0;
     }
 
     /** Modular Turrets have mounts of 3 sizes. */
