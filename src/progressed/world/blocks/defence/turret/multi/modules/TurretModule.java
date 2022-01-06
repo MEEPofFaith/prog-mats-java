@@ -8,13 +8,18 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.entities.*;
+import mindustry.entities.Units.*;
+import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.payloads.*;
 import progressed.graphics.*;
+import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.*;
+import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 
 public class TurretModule implements Cloneable{
     public String name;
@@ -24,6 +29,11 @@ public class TurretModule implements Cloneable{
     public float deployTime;
     public float range;
     public boolean hasLiquid;
+
+    public boolean targetAir = true, targetGround = true, targetHealing;
+    public boolean accurateDelay;
+
+    public float chargeTime = -1f;
 
     public ModuleSize size = ModuleSize.small;
 
@@ -40,6 +50,8 @@ public class TurretModule implements Cloneable{
     public boolean outlineIcon;
     public Color outlineColor = Color.valueOf("404049");
 
+    public Sortf unitSort = UnitSorts.closest;
+
     public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
     public TurretModule(String name){
@@ -55,7 +67,25 @@ public class TurretModule implements Cloneable{
         if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
     }
 
-    public void update(Team t, TurretMount mount){
+    public void targetPosition(ModularTurretBuild parent, TurretMount mount, Posc pos){
+        if(!mount.hasAmmo(parent) || pos == null) return;
+        BulletType bullet = mount.peekAmmo();
+
+        var offset = Tmp.v1.setZero();
+
+        //when delay is accurate, assume unit has moved by chargeTime already
+        if(accurateDelay && pos instanceof Hitboxc h){
+            offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
+        }
+
+        mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
+
+        if(mount.targetPos.isZero()){
+            mount.targetPos.set(pos);
+        }
+    }
+
+    public void update(ModularTurretBuild parent, TurretMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
 
         if(mount.progress < deployTime) return;
@@ -64,11 +94,26 @@ public class TurretModule implements Cloneable{
         mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
     }
 
-    public void draw(Team t, TurretMount mount){
+    public void findTarget(ModularTurretBuild parent, TurretMount mount){
+        if(!mount.hasAmmo(parent)) return;
+        float x = mount.x,
+            y = mount.y;
+        if(targetAir && !targetGround){
+            mount.target = Units.bestEnemy(parent.team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
+        }else{
+            mount.target = Units.bestTarget(parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround, unitSort);
+
+            if(mount.target == null && mount.canHeal(parent)){
+                mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
+            }
+        }
+    }
+
+    public void draw(ModularTurretBuild parent, TurretMount mount){
         Vec2 tr = Tmp.v1;
-        float x = mount.x;
-        float y = mount.y;
-        float rot = mount.rotation;
+        float x = mount.x,
+            y = mount.y,
+            rot = mount.rotation;
 
         Draw.z(Layer.turret + layerOffset);
 
@@ -115,6 +160,12 @@ public class TurretModule implements Cloneable{
     public boolean acceptPayload(BuildPayload payload, TurretMount mount){
         return false;
     }
+
+    public void handleItem(Item item, TurretMount mount){}
+
+    public void handleLiquid(Liquid liquid, TurretMount mount){}
+
+    public void handlePayload(BuildPayload payload, TurretMount mount){}
 
     public void writeAll(Writes write, TurretMount mount){
         write.s(mountID);

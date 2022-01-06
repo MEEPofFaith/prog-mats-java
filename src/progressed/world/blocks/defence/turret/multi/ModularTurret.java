@@ -14,6 +14,9 @@ import progressed.world.blocks.defence.turret.multi.modules.TurretModule.*;
 import progressed.world.blocks.payloads.*;
 
 public class ModularTurret extends PayloadBlock{
+    public final int timerTarget = timers++;
+    public int targetInterval = 20;
+
     public float[] smallMountPos, mediumMountPos, largeMountPos;
 
     public ModularTurret(String name){
@@ -28,18 +31,28 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void updateTile(){
-            smallMounts.each(m -> m.module.update(team, m));
-            mediumMounts.each(m -> m.module.update(team, m));
-            largeMounts.each(m -> m.module.update(team, m));
+            //Have all mounts retarget at the same time for less laggyness.
+            if(timer(timerTarget, targetInterval)){
+                allMounts.each(m -> m.findTarget(this));
+            }
+
+            allMounts.each(m -> m.update(this));
+        }
+
+        public void retarget(float x, float y){
+            allMounts.each(m -> m.targetPos.set(x, y));
         }
 
         @Override
         public void draw(){
             Draw.rect(region, x, y); //region is the base
 
-            smallMounts.each(m -> m.module.draw(team, m));
-            mediumMounts.each(m -> m.module.draw(team, m));
-            largeMounts.each(m -> m.module.draw(team, m));
+            drawTeamTop();
+
+            //Draw in order of small/medium/large
+            smallMounts.each(m -> m.draw(this));
+            mediumMounts.each(m -> m.draw(this));
+            largeMounts.each(m -> m.draw(this));
         }
 
         /** @return the module it adds. */

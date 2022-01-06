@@ -2,12 +2,15 @@ package progressed.util;
 
 import arc.math.Interp.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import progressed.entities.bullet.energy.*;
 
@@ -167,6 +170,15 @@ public class PMUtls{
         float n = s * (l - 1) - (int)(s * (l - 1));
         float i = 1f - n;
         return a * i + b * n;
+    }
+
+    public static Vec2 intercept(float x, float y, Position dst, float offsetx, float offsety, float v){
+        float ddx = 0, ddy = 0;
+        if(dst instanceof Hitboxc h){
+            ddx += h.deltaX();
+            ddy += h.deltaY();
+        }
+        return Predict.intercept(x, y, dst.getX() + offsetx, dst.getY() + offsety, ddx, ddy, v);
     }
 
     public static void uhOhSpeghettiOh(String ohno){
