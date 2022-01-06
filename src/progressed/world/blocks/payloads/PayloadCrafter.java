@@ -113,7 +113,7 @@ public class PayloadCrafter extends PayloadBlock{
         if(hasLiquids){
             bars.remove("liquid");
             bars.add("liquid", (PayloadCrafterBuild entity) -> {
-                Liquid l = entity.recipe() != null ? entity.recipe().liquidCost.liquid : null;
+                Liquid l = entity.recipe() != null ? entity.recipe().getLiquidInput() : null;
                 return new Bar(
                     () -> l != null ? l.localizedName : Core.bundle.get("bar.liquid"),
                     () -> l != null ? l.barColor() : Color.white,

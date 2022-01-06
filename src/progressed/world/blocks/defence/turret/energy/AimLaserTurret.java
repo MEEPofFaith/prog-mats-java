@@ -23,6 +23,7 @@ public class AimLaserTurret extends PowerTurret{
     public float aimStroke = 2f, aimRnd;
     public float chargeVolume = 1f, minPitch = 1f, maxPitch = 1f, shootSoundVolume = 1f;
     public float warningDelay, warningVolume = 1f;
+    public Color aimColor = Pal.remove, chargeColor = Pal.lancerLaser;
     public Sound warningSound = Sounds.none;
 
     public AimLaserTurret(String name){
@@ -54,7 +55,7 @@ public class AimLaserTurret extends PowerTurret{
 
         bars.add("pm-charge", (AimLaserTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
-            () -> Color.sky,
+            () -> chargeColor,
             () -> entity.charge
         ));
     }
@@ -75,12 +76,12 @@ public class AimLaserTurret extends PowerTurret{
             if(alpha > 0.01f){
                 Draw.mixcol();
 
-                Draw.z(Layer.effect);
+                Draw.z(Layer.bullet - 0.01f);
 
                 float c = Interp.pow2Out.apply(drawCharge);
                 float a = Interp.pow2Out.apply(alpha);
 
-                Lines.stroke(aimStroke * a, team.color);
+                Lines.stroke(aimStroke * a, aimColor);
 
                 float dst = shootType.range() + shootLength;
                 Healthc box = PMDamage.linecast(targetGround, targetAir, team, x, y, rotation, dst);
@@ -105,7 +106,7 @@ public class AimLaserTurret extends PowerTurret{
                     Fill.circle(u.x, u.y, aimStroke / 2f * a);
                     Fill.circle(targetPos.x, targetPos.y, aimStroke / 2f * a);
 
-                    Draw.mixcol(team.color, 1f);
+                    Draw.mixcol(aimColor, 1f);
                     Draw.rect(u.type.fullIcon, targetPos.x, targetPos.y, u.rotation - 90f);
                     Draw.mixcol();
                     Draw.alpha(1f);
@@ -152,13 +153,13 @@ public class AimLaserTurret extends PowerTurret{
             useAmmo();
             tr.trns(rotation, shootLength);
             drawCharge = 0;
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, team.color, self());
+            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
                     if(!isValid()) return;
                     tr.trns(rotation, shootLength);
-                    chargeEffect.at(x + tr.x, y + tr.y, rotation, team.color, self());
+                    chargeEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
                 });
             }
 
