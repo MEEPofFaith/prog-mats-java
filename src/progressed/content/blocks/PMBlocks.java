@@ -917,7 +917,7 @@ public class PMBlocks implements ContentList{
             hideDetails = false;
             health = 120 * size * size;
             
-            shootLength = 11f;
+            shootLength = 34f / 4f;
             range = 328f;
             reloadTime = 600f;
 
@@ -933,6 +933,7 @@ public class PMBlocks implements ContentList{
             chargeEffects = 30;
             chargeMaxDelay = PMFx.aimChargeBegin.lifetime - PMFx.aimCharge.lifetime;
 
+            heatColor = Pal.lancerLaser;
             chargeSound = Sounds.techloop;
             shootSound = Sounds.laserblast;
             chargeVolume = 2f;
@@ -951,16 +952,6 @@ public class PMBlocks implements ContentList{
 
             shootType = PMBullets.sentinelLaser;
             unitSort = UnitSorts.strongest;
-
-            heatDrawer = tile -> {
-                if(tile.heat <= 0.00001f) return;
-        
-                Draw.color(tile.team.color, tile.heat);
-                Draw.blend(Blending.additive);
-                Draw.rect(heatRegion, tile.x + tr2.x, tile.y + tr2.y, tile.rotation - 90);
-                Draw.blend();
-                Draw.color();
-            };
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{

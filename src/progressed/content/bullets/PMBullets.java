@@ -203,7 +203,7 @@ public class PMBullets implements ContentList{
             };
         }};
 
-        sentinelLaser = new TeamLaserBlastBulletType(12f, 150f){{
+        sentinelLaser = new LaserBlastBulletType(12f, 150f){{
             lifetime = 36f;
             splashDamage = 1870f;
             splashDamageRadius = 6f * 8f;
@@ -212,6 +212,7 @@ public class PMBullets implements ContentList{
             trailLength = 12;
             makeFire = true;
             hittable = false;
+            trailColor = hitColor = Pal.lancerLaser;
             hitEffect = PMFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
