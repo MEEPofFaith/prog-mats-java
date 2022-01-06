@@ -687,7 +687,7 @@ public class PMFx{
 
             color();
         }
-    }),
+    }).layer(Layer.bullet - 0.01f),
     
     aimCharge = new Effect(30f, e -> {
         if(e.data instanceof AimLaserTurretBuild d){
@@ -700,9 +700,9 @@ public class PMFx{
 
             color();
         }
-    }),
+    }).layer(Layer.bullet - 0.01f),
     
-    sentinelBlast = new Effect(80f, e -> {
+    sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);
 
         e.scaled(50f, s -> {
