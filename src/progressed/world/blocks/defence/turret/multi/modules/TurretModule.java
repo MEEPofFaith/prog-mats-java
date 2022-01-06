@@ -27,6 +27,9 @@ public class TurretModule implements Cloneable{
 
     public ModuleSize size = ModuleSize.small;
 
+    public float recoilAmount = 1f;
+    public float restitution = 0.02f;
+    public float cooldown = 0.02f;
     public float elevation = -1f;
     public float layerOffset;
     public Color heatColor = Pal.turretHeat;
@@ -54,13 +57,17 @@ public class TurretModule implements Cloneable{
 
     public void update(Team t, TurretMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
+
+        if(mount.progress < deployTime) return;
+
+        mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
+        mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
     }
 
     public void draw(Team t, TurretMount mount){
         Vec2 tr = Tmp.v1;
         float x = mount.x;
         float y = mount.y;
-
         float rot = mount.rotation;
 
         Draw.z(Layer.turret + layerOffset);
