@@ -37,7 +37,7 @@ public class TurretModule implements Cloneable{
     public boolean outlineIcon;
     public Color outlineColor = Color.valueOf("404049");
 
-    public Func<TurretModule, TurretMount> mountType = TurretMount::new;
+    public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
     public TurretModule(String name){
         this.name = name;
@@ -52,12 +52,14 @@ public class TurretModule implements Cloneable{
         if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
     }
 
-    public void update(Team t, float x, float y, TurretMount mount){
+    public void update(Team t, TurretMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
     }
 
-    public void draw(Team t, float x, float y, TurretMount mount){
+    public void draw(Team t, TurretMount mount){
         Vec2 tr = Tmp.v1;
+        float x = mount.x;
+        float y = mount.y;
 
         float rot = mount.rotation;
 
