@@ -26,6 +26,10 @@ public class Recipe{
         }
     }
 
+    public Liquid getLiquidInput(){
+        return liquidCost != null ? liquidCost.liquid : null;
+    }
+
     public boolean hasLiquidInput(Liquid liquid){
         return liquidCost != null && liquidCost.liquid == liquid;
     }
