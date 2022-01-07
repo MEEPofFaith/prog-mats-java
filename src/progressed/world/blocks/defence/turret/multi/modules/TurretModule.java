@@ -67,6 +67,10 @@ public class TurretModule implements Cloneable{
         if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
     }
 
+    protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
+        return !Units.invalidateTarget(mount.target, mount.canHeal(parent) ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
+    }
+
     public void targetPosition(ModularTurretBuild parent, TurretMount mount, Posc pos){
         if(!mount.hasAmmo(parent) || pos == null) return;
         BulletType bullet = mount.peekAmmo();

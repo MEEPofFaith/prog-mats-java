@@ -1,14 +1,18 @@
 package progressed.world.blocks.defence.turret.multi;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.io.*;
 import mindustry.*;
+import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
@@ -16,6 +20,9 @@ import progressed.world.blocks.defence.turret.multi.modules.TurretModule.*;
 import progressed.world.blocks.payloads.*;
 
 public class ModularTurret extends PayloadBlock{
+    //after being logic-controlled and this amount of time passes, the turret will resume normal AI
+    public final static float logicControlCooldown = 60 * 2;
+
     public final int timerTarget = timers++;
     public int targetInterval = 20;
 
@@ -36,8 +43,48 @@ public class ModularTurret extends PayloadBlock{
         super.init();
     }
 
-    public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements Ranged{
+    public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
         public Seq<TurretMount> smallMounts = new Seq<>(), mediumMounts = new Seq<>(), largeMounts = new Seq<>(), allMounts = new Seq<>();
+        public float logicControlTime;
+        public boolean logicShooting = false;
+        public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
+
+        @Override
+        public Unit unit(){
+            //make sure stats are correct
+            unit.tile(this);
+            unit.team(team);
+            return (Unit)unit;
+        }
+
+        public boolean logicControlled(){
+            return logicControlTime > 0;
+        }
+
+        @Override
+        public void control(LAccess type, double p1, double p2, double p3, double p4){
+            if(type == LAccess.shoot && !unit.isPlayer()){
+                retarget(World.unconv((float)p1), World.unconv((float)p2));
+                logicControlTime = logicControlCooldown;
+                logicShooting = !Mathf.zero(p3);
+            }
+
+            super.control(type, p1, p2, p3, p4);
+        }
+
+        @Override
+        public void control(LAccess type, Object p1, double p2, double p3, double p4){
+            if(type == LAccess.shootp && (unit == null || !unit.isPlayer())){
+                logicControlTime = logicControlCooldown;
+                logicShooting = !Mathf.zero(p2);
+
+                if(p1 instanceof Posc pos){
+                    retarget(pos);
+                }
+            }
+
+            super.control(type, p1, p2, p3, p4);
+        }
 
         @Override
         public void updateTile(){
@@ -61,6 +108,10 @@ public class ModularTurret extends PayloadBlock{
 
         public void retarget(float x, float y){
             allMounts.each(m -> m.targetPos.set(x, y));
+        }
+
+        public void retarget(Posc p){
+            allMounts.each(m -> m.module.targetPosition(this, m, p));
         }
 
         @Override
