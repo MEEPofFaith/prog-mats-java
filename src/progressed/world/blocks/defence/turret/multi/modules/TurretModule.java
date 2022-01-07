@@ -163,9 +163,16 @@ public class TurretModule implements Cloneable{
 
     public void handleItem(Item item, TurretMount mount){}
 
-    public void handleLiquid(Liquid liquid, TurretMount mount){}
+    /** @return amount of liquid accepted */
+    public float handleLiquid(Liquid liquid, float amount, TurretMount mount){
+        return 0;
+    }
 
     public void handlePayload(BuildPayload payload, TurretMount mount){}
+
+    public float powerUse(TurretMount mount){
+        return 0f;
+    }
 
     public void writeAll(Writes write, TurretMount mount){
         write.s(mountID);

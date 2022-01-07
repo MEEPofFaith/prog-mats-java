@@ -5,10 +5,12 @@ import arc.struct.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.TurretModule.*;
 import progressed.world.blocks.payloads.*;
@@ -24,6 +26,14 @@ public class ModularTurret extends PayloadBlock{
 
         acceptsPayload = true;
         outputsPayload = false;
+        rotate = false;
+    }
+
+    @Override
+    public void init(){
+        consumes.add(new ModularTurretConsumePower());
+
+        super.init();
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements Ranged{
@@ -31,6 +41,16 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void updateTile(){
+            if(moveInPayload()){
+                if(payload.block() instanceof TurretModulePayload module && acceptModule(module.module)){
+                    addModule(module.module);
+                }else{
+                    TurretMount mount = allMounts.find(m -> m.module.acceptPayload(payload, m));
+                    mount.module.handlePayload(payload, mount);
+                }
+                payload = null;
+            }
+
             //Have all mounts retarget at the same time for less laggyness.
             if(timer(timerTarget, targetInterval)){
                 allMounts.each(m -> m.findTarget(this));
@@ -47,7 +67,17 @@ public class ModularTurret extends PayloadBlock{
         public void draw(){
             Draw.rect(region, x, y); //region is the base
 
-            drawTeamTop();
+            //draw input
+            for(int i = 0; i < 4; i++){
+                if(blends(i)){
+                    Draw.rect(inRegion, x, y, (i * 90f) - 180f);
+                }
+            }
+
+            drawPayload();
+
+            Draw.z(Layer.blockOver + 0.1f);
+            Draw.rect(topRegion, x, y);
 
             //Draw in order of small/medium/large
             smallMounts.each(m -> m.draw(this));
@@ -117,6 +147,30 @@ public class ModularTurret extends PayloadBlock{
         }
 
         @Override
+        public void handleItem(Building source, Item item){
+            TurretMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
+            mount.module.handleItem(item, mount);
+        }
+
+        @Override
+        public void handleLiquid(Building source, Liquid liquid, float amount){
+            float a = amount;
+            while(a > 0){ //Distribute overflow from one mount to the next
+                TurretMount mount = allMounts.find(m -> m.module.acceptLiquid(liquid, m));
+                if(mount == null) break;
+                a -= mount.module.handleLiquid(liquid, a, mount);
+            }
+        }
+
+        public float powerUse(){
+            float use = 0f;
+            for(TurretMount mount : allMounts){
+                use += mount.module.powerUse(mount);
+            }
+            return use;
+        }
+
+        @Override
         public float range(){
             if(allMounts.isEmpty()) return 0;
 
@@ -149,6 +203,14 @@ public class ModularTurret extends PayloadBlock{
                     mount.module.readAll(read, mount);
                 }
             }
+        }
+    }
+
+    public class ModularTurretConsumePower extends ConsumePower{
+        @Override
+        public float requestedPower(Building entity){
+            if(entity instanceof ModularTurretBuild m) return m.powerUse();
+            return 0f;
         }
     }
 }
