@@ -90,8 +90,7 @@ public class TurretModule implements Cloneable{
     public float elevation = -1f;
     public float layerOffset;
 
-    public TextureRegion region;
-    public TextureRegion heatRegion;
+    public TextureRegion region, heatRegion, liquidRegion, topRegion;
 
     /** Usually shares sprite with the module payload, so default to false. */
     public boolean outlineIcon;
@@ -150,6 +149,8 @@ public class TurretModule implements Cloneable{
     public int size(){
         return size.ordinal() + 1;
     }
+
+    public void onProximityAdded(TurretMount mount){}
 
     protected boolean validateTarget(TurretMount mount){
         return !Units.invalidateTarget(mount.target, mount.canHeal() ? Team.derelict : mount.parent.team, mount.x, mount.y) || mount.parent.isControlled() || mount.parent.logicControlled();
@@ -226,8 +227,23 @@ public class TurretModule implements Cloneable{
         }
     }
 
+    public void updateCooling(TurretMount mount){
+        if(mount.reload < reloadTime && !mount.charging){
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            Liquid liquid = mount.liquids.current();
+
+            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
+            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
+            mount.liquids.remove(liquid, used);
+
+            if(Mathf.chance(0.06 * used)){
+                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
+            }
+        }
+    }
+
     public void updateShooting(TurretMount mount){
-        mount.reload += mount.parent.delta() * peekAmmo(mount).reloadMultiplier;
+        mount.reload += mount.parent.delta() * peekAmmo(mount).reloadMultiplier * reloadSpeedScl(mount);
 
         if(mount.reload >= reloadTime && !mount.charging){
             BulletType type = peekAmmo(mount);
@@ -347,6 +363,7 @@ public class TurretModule implements Cloneable{
         AmmoEntry entry = mount.ammo.peek();
         entry.amount -= 1;
         if(entry.amount <= 0) mount.ammo.pop();
+        mount.totalAmmo--;
         ejectEffects(mount);
         return entry.type();
     }
@@ -361,27 +378,16 @@ public class TurretModule implements Cloneable{
         return mount.ammo.size > 0;
     }
 
-    public void updateCooling(TurretMount mount){
-        if(mount.reload < reloadTime && !mount.charging){
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = mount.liquids.current();
-
-            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
-            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
-            mount.liquids.remove(liquid, used);
-
-            if(Mathf.chance(0.06 * used)){
-                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
-            }
-        }
-    }
-
     public boolean shouldTurn(TurretMount mount){
         return !mount.charging;
     }
 
     public void turnToTarget(TurretMount mount, float targetRot){
-        mount.rotation = Mathf.approachDelta(mount.rotation, targetRot, rotateSpeed * mount.parent.delta());
+        mount.rotation = Mathf.approachDelta(mount.rotation, targetRot, rotateSpeed * mount.parent.delta() * reloadSpeedScl(mount));
+    }
+
+    public float reloadSpeedScl(TurretMount mount){
+        return 1f;
     }
 
     public void findTarget(TurretMount mount){
@@ -424,6 +430,12 @@ public class TurretModule implements Cloneable{
             Draw.blend();
             Draw.color();
         }
+
+        if(liquidRegion.found())
+            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
+
+        if(topRegion.found())
+            Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
     }
 
     public void display(Table table, TurretMount mount){
@@ -462,6 +474,10 @@ public class TurretModule implements Cloneable{
     public void load(){
         region = Core.atlas.find(name);
         heatRegion = Core.atlas.find(name + "-heat");
+    }
+
+    public int acceptStack(Item item, int amount, TurretMount mount){
+        return 0;
     }
 
     public boolean acceptItem(Item item, TurretMount mount){

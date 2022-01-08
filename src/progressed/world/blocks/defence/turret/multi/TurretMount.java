@@ -3,7 +3,6 @@ package progressed.world.blocks.defence.turret.multi;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.modules.*;
@@ -19,6 +18,7 @@ public class TurretMount{
     public final float x, y;
     /** Ammo in the mount */
     public Seq<AmmoEntry> ammo = new Seq<>();
+    public int totalAmmo;
     /** Liquid module of the mount. Primarily used for cooling. */
     public LiquidModule liquids;
     /** Deploy progress */
@@ -44,6 +44,10 @@ public class TurretMount{
         this.x = x;
         this.y = y;
         if(module.hasLiquids) liquids = new LiquidModule();
+    }
+
+    public void onProximityAdded(){
+        module.onProximityAdded(this);
     }
 
     public void update(){

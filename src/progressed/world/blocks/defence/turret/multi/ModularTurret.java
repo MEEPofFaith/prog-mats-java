@@ -51,6 +51,13 @@ public class ModularTurret extends PayloadBlock{
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
 
         @Override
+        public void onProximityAdded(){
+            super.onProximityAdded();
+
+            allMounts.each(TurretMount::onProximityAdded);
+        }
+
+        @Override
         public Unit unit(){
             //make sure stats are correct
             unit.tile(this);
@@ -192,6 +199,14 @@ public class ModularTurret extends PayloadBlock{
         }
 
         @Override
+        public int acceptStack(Item item, int amount, Teamc source){
+            TurretMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
+
+            if(mount == null) return 0;
+            return mount.module.acceptStack(item, amount, mount);
+        }
+
+        @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
             return allMounts.contains(m -> m.module.acceptLiquid(liquid, m));
         }
@@ -208,6 +223,19 @@ public class ModularTurret extends PayloadBlock{
         public void handleItem(Building source, Item item){
             TurretMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
             mount.module.handleItem(item, mount);
+        }
+
+        @Override
+        public int removeStack(Item item, int amount){
+            //Cannot remove items
+            return 0;
+        }
+
+        @Override
+        public void handleStack(Item item, int amount, Teamc source){
+            TurretMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
+
+            if(mount != null) mount.module.handleItem(item, mount);
         }
 
         @Override
