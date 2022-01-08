@@ -8,6 +8,8 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
 import mindustry.entities.bullet.*;
@@ -16,6 +18,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.*;
@@ -32,6 +35,17 @@ public class TurretModule implements Cloneable{
 
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
+    public float reloadTime = 30f;
+    public float rotateSpeed = 6f;
+    public float shootCone = 8f;
+    public float shootLength = -1f;
+
+    public boolean acceptCoolant = true;
+    public float coolantUsage = 0.2f;
+    /** How much reload is lowered by for each unit of liquid of heat capacity. */
+    public float coolantMultiplier = 5f;
+    /** Effect displayed when coolant is used. */
+    public Effect coolEffect = Fx.fuelburn;
 
     public float chargeTime = -1f;
 
@@ -54,17 +68,29 @@ public class TurretModule implements Cloneable{
 
     public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
+    public final Consumers consumes = new Consumers();
+
     public TurretModule(String name){
         this.name = name;
     }
 
     public void init(){
         //small = 1, medium = 2, large = 3
-        if(elevation < 0) elevation = size.ordinal() + 1;
+        if(elevation < 0) elevation = size();
+        if(shootLength < 0) shootLength = size() * Vars.tilesize / 2f;
+
+        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
+            consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
+        }
+        consumes.init();
     }
 
     public void createIcons(MultiPacker packer){
         if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
+    }
+
+    public int size(){
+        return size.ordinal() + 1;
     }
 
     protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
@@ -82,6 +108,7 @@ public class TurretModule implements Cloneable{
             offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
         }
 
+        Tmp.v2.trns(mount.rotation, shootLength);
         mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
 
         if(mount.targetPos.isZero()){
@@ -94,8 +121,85 @@ public class TurretModule implements Cloneable{
 
         if(mount.progress < deployTime) return;
 
+        if(!validateTarget(parent, mount)) mount.target = null;
+
+        mount.wasShooting = false;
+
         mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
         mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
+
+        if(mount.hasAmmo(parent)){
+            if(Float.isNaN(mount.reload)) mount.rotation = 0;
+
+            if(validateTarget(parent, mount)){
+                boolean canShoot = true;
+
+                if(parent.isControlled()){ //player behavior
+                    mount.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
+                    canShoot = parent.unit.isShooting();
+                }else if(parent.logicControlled()){ //logic behavior
+                    canShoot = parent.logicShooting;
+                }else{ //default AI behavior
+                    targetPosition(parent, mount, mount.target);
+
+                    if(Float.isNaN(mount.rotation)) mount.rotation = 0;
+                }
+
+                float targetRot = Angles.angle(mount.x, mount.y, mount.targetPos.x, mount.targetPos.y);
+
+                if(shouldTurn(mount)){
+                    turnToTarget(parent, mount, targetRot);
+                }
+
+                if(Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
+                    mount.wasShooting = true;
+                    updateShooting(parent, mount);
+                }
+            }
+        }
+
+        if(acceptCoolant){
+            updateCooling(parent, mount);
+        }
+    }
+
+    public void updateShooting(ModularTurretBuild parent, TurretMount mount){
+        mount.reload += parent.delta() * mount.peekAmmo().reloadMultiplier;
+
+        if(mount.reload >= reloadTime && !mount.charging){
+            BulletType type = mount.peekAmmo();
+
+            shoot(parent, mount, type);
+
+            mount.reload %= reloadTime;
+        }
+    }
+
+    public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
+        //TODO
+    }
+
+    public void updateCooling(ModularTurretBuild parent, TurretMount mount){
+        if(mount.reload < reloadTime && !mount.charging){
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            Liquid liquid = mount.liquids.current();
+
+            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
+            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
+            mount.liquids.remove(liquid, used);
+
+            if(Mathf.chance(0.06 * used)){
+                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
+            }
+        }
+    }
+
+    public boolean shouldTurn(TurretMount mount){
+        return !mount.charging;
+    }
+
+    public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
+        mount.rotation = Mathf.approachDelta(mount.rotation, targetRot, rotateSpeed * parent.delta());
     }
 
     public void findTarget(ModularTurretBuild parent, TurretMount mount){

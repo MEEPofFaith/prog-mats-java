@@ -3,6 +3,7 @@ package progressed.world.blocks.defence.turret.multi;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -96,6 +97,13 @@ public class ModularTurret extends PayloadBlock{
                     mount.module.handlePayload(payload, mount);
                 }
                 payload = null;
+            }
+
+            unit.tile(this);
+            unit.team(team);
+
+            if(logicControlTime > 0){
+                logicControlTime -= Time.delta;
             }
 
             //Have all mounts retarget at the same time for less laggyness.

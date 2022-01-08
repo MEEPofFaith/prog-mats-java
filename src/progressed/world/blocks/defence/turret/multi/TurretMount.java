@@ -29,6 +29,7 @@ public class TurretMount{
     public float rotation;
     /** Weapon recoil */
     public float recoil;
+    public boolean wasShooting, charging;
     /** Target */
     public @Nullable Posc target;
     /** Aim position */
