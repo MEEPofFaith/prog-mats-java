@@ -105,10 +105,10 @@ public class ModularTurret extends PayloadBlock{
 
             //Have all mounts retarget at the same time for less laggyness.
             if(timer(timerTarget, targetInterval)){
-                allMounts.each(m -> m.findTarget(this));
+                allMounts.each(TurretMount::findTarget);
             }
 
-            allMounts.each(m -> m.update(this));
+            allMounts.each(TurretMount::update);
         }
 
         public void retarget(float x, float y){
@@ -116,7 +116,7 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void retarget(Posc p){
-            allMounts.each(m -> m.module.targetPosition(this, m, p));
+            allMounts.each(m -> m.module.targetPosition(m, p));
         }
 
         @Override
@@ -136,14 +136,16 @@ public class ModularTurret extends PayloadBlock{
             Draw.rect(topRegion, x, y);
 
             //Draw in order of small/medium/large
-            smallMounts.each(m -> m.draw(this));
-            mediumMounts.each(m -> m.draw(this));
-            largeMounts.each(m -> m.draw(this));
+            smallMounts.each(TurretMount::draw);
+            mediumMounts.each(TurretMount::draw);
+            largeMounts.each(TurretMount::draw);
         }
 
         /** @return the module it adds. */
         public TurretMount addModule(TurretModule module){
-            TurretMount mount = module.mountType.get(module,
+            TurretMount mount = module.mountType.get(
+                this,
+                module,
                 x + newModuleX(module.size),
                 y + newModuleY(module.size)
             );
@@ -221,7 +223,7 @@ public class ModularTurret extends PayloadBlock{
         public float powerUse(){
             float use = 0f;
             for(TurretMount mount : allMounts){
-                use += mount.module.powerUse(this, mount);
+                use += mount.module.powerUse(mount);
             }
             return use;
         }

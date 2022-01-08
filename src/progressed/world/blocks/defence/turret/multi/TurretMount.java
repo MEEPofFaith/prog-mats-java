@@ -11,6 +11,8 @@ import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 
 public class TurretMount{
+    /** The base this mount is on. */
+    public final ModularTurretBuild parent;
     /** Turret module associated with this mount. */
     public final TurretModule module;
     /** Position of the mount */
@@ -27,6 +29,7 @@ public class TurretMount{
     public float rotation;
     /** Weapon recoil */
     public float recoil;
+    public int shotCounter;
     public boolean wasShooting, charging;
     /** Target */
     public @Nullable Posc target;
@@ -35,36 +38,27 @@ public class TurretMount{
     /** Current heat, 0 to 1*/
     public float heat;
 
-    public TurretMount(TurretModule module, float x, float y){
+    public TurretMount(ModularTurretBuild parent, TurretModule module, float x, float y){
+        this.parent = parent;
         this.module = module;
         this.x = x;
         this.y = y;
         if(module.hasLiquids) liquids = new LiquidModule();
     }
 
-    public void update(ModularTurretBuild parent){
-        module.update(parent, this);
+    public void update(){
+        module.update(this);
     }
 
-    public void draw(ModularTurretBuild parent){
-        module.draw(parent, this);
+    public void draw(){
+        module.draw(this);
     }
 
-    /** @return the ammo type that will be returned if useAmmo is called. */
-    public BulletType peekAmmo(){
-        return ammo.peek().type();
+    public boolean canHeal(){
+        return module.targetHealing && module.hasAmmo(this) && module.peekAmmo(this).collidesTeam && module.peekAmmo(this).healPercent > 0;
     }
 
-    /** @return whether the turret has ammo. */
-    public boolean hasAmmo(ModularTurretBuild parent){
-        return ammo.size > 0;
-    }
-
-    public boolean canHeal(ModularTurretBuild parent){
-        return module.targetHealing && hasAmmo(parent) && peekAmmo().collidesTeam && peekAmmo().healPercent > 0;
-    }
-
-    public void findTarget(ModularTurretBuild parent){
-        module.findTarget(parent, this);
+    public void findTarget(){
+        module.findTarget(this);
     }
 }
