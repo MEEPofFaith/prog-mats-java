@@ -6,10 +6,13 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
 import mindustry.entities.bullet.*;
@@ -17,21 +20,25 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.meta.*;
 
 public class TurretModule implements Cloneable{
-    public String name;
+    public String name, localizedName;
     /** Automatically set */
     public short mountID;
 
     public float deployTime;
     public float range;
-    public boolean hasLiquid;
+    public boolean hasLiquids, hasPower;
+    public float powerUse;
 
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
@@ -41,6 +48,7 @@ public class TurretModule implements Cloneable{
     public float shootLength = -1f;
 
     public boolean acceptCoolant = true;
+    public float liquidCapacity = 10f;
     public float coolantUsage = 0.2f;
     /** How much reload is lowered by for each unit of liquid of heat capacity. */
     public float coolantMultiplier = 5f;
@@ -68,10 +76,13 @@ public class TurretModule implements Cloneable{
 
     public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
+    public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();
 
     public TurretModule(String name){
         this.name = name;
+
+        localizedName = Core.bundle.get("pmturretmodule." + name + ".name", name);
     }
 
     public void init(){
@@ -82,7 +93,29 @@ public class TurretModule implements Cloneable{
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
             consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
         }
+
+        setBars();
+
         consumes.init();
+    }
+
+    public void setBars(){
+        if(hasLiquids){
+            Func<TurretMount, Liquid> current = mount -> mount.liquids == null ? Liquids.water : mount.liquids.current();
+            bars.add("liquid", (entity, mount) -> new Bar(
+                () -> mount.liquids.get(current.get(mount)) <= 0.001f ? Core.bundle.get("bar.liquid") : current.get(mount).localizedName,
+                () -> current.get(mount).barColor(),
+                () -> mount == null || mount.liquids == null ? 0f : mount.liquids.get(current.get(mount)) / liquidCapacity
+            ));
+        }
+
+        if(hasPower){
+            bars.add("power", (entity, mount) -> new Bar(
+                () -> Core.bundle.get("bar.power"),
+                () -> Pal.powerBar,
+                () -> entity.power.status
+            ));
+        }
     }
 
     public void createIcons(MultiPacker packer){
@@ -95,6 +128,10 @@ public class TurretModule implements Cloneable{
 
     protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
         return !Units.invalidateTarget(mount.target, mount.canHeal(parent) ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
+    }
+
+    public boolean isActive(ModularTurretBuild parent, TurretMount mount){
+        return (mount.target != null || mount.wasShooting) && parent.enabled;
     }
 
     public void targetPosition(ModularTurretBuild parent, TurretMount mount, Posc pos){
@@ -244,6 +281,31 @@ public class TurretModule implements Cloneable{
         }
     }
 
+    public void display(Table table, ModularTurretBuild parent, TurretMount mount){
+        table.table(t -> {
+            t.left();
+            t.add(new Image(region)).size(8 * 4);
+            t.labelWrap(localizedName).left().width(190f).padLeft(5);
+        });
+
+        table.table(bars -> {
+            bars.defaults().growX().height(18f).pad(4f);
+
+            displayBars(table, parent, mount);
+        }).growX();
+    }
+
+    public void displayBars(Table table, ModularTurretBuild parent, TurretMount mount){
+        for(Func2<ModularTurretBuild, TurretMount, Bar> bar : bars.list()){
+            try{
+                table.add(bar.get(parent, mount)).growX();
+                table.row();
+            }catch(ClassCastException e){
+                break;
+            }
+        }
+    }
+
     public TurretModule copy(){
         try{
             return (TurretModule)clone();
@@ -262,24 +324,20 @@ public class TurretModule implements Cloneable{
     }
 
     public boolean acceptLiquid(Liquid liquid, TurretMount mount){
-        return false;
-    }
-
-    public boolean acceptPayload(BuildPayload payload, TurretMount mount){
-        return false;
+        return hasLiquids && consumes.liquidfilters.get(liquid.id) && mount.liquids.get(liquid) < liquidCapacity;
     }
 
     public void handleItem(Item item, TurretMount mount){}
 
     /** @return amount of liquid accepted */
     public float handleLiquid(Liquid liquid, float amount, TurretMount mount){
-        return 0;
+        float added = Math.min(amount, liquidCapacity - mount.liquids.get(liquid));
+        mount.liquids.add(liquid, added);
+        return amount - added;
     }
 
-    public void handlePayload(BuildPayload payload, TurretMount mount){}
-
-    public float powerUse(TurretMount mount){
-        return 0f;
+    public float powerUse(ModularTurretBuild parent, TurretMount mount){
+        return Mathf.num(isActive(parent, mount)) * powerUse;
     }
 
     public void writeAll(Writes write, TurretMount mount){

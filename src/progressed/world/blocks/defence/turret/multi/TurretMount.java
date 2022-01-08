@@ -3,9 +3,7 @@ package progressed.world.blocks.defence.turret.multi;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.modules.*;
@@ -41,7 +39,7 @@ public class TurretMount{
         this.module = module;
         this.x = x;
         this.y = y;
-        if(module.hasLiquid) liquids = new LiquidModule();
+        if(module.hasLiquids) liquids = new LiquidModule();
     }
 
     public void update(ModularTurretBuild parent){

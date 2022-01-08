@@ -92,9 +92,6 @@ public class ModularTurret extends PayloadBlock{
             if(moveInPayload()){
                 if(payload.block() instanceof TurretModulePayload module && acceptModule(module.module)){
                     addModule(module.module);
-                }else{
-                    TurretMount mount = allMounts.find(m -> m.module.acceptPayload(payload, m));
-                    mount.module.handlePayload(payload, mount);
                 }
                 payload = null;
             }
@@ -201,8 +198,8 @@ public class ModularTurret extends PayloadBlock{
         public boolean acceptPayload(Building source, Payload payload){
             return super.acceptPayload(source, payload) &&
                 payload instanceof BuildPayload p &&
-                ((p.block() instanceof TurretModulePayload module && acceptModule(module.module)) ||
-                allMounts.contains(m -> m.module.acceptPayload(p, m)));
+                p.block() instanceof TurretModulePayload module &&
+                acceptModule(module.module);
         }
 
         @Override
@@ -224,7 +221,7 @@ public class ModularTurret extends PayloadBlock{
         public float powerUse(){
             float use = 0f;
             for(TurretMount mount : allMounts){
-                use += mount.module.powerUse(mount);
+                use += mount.module.powerUse(this, mount);
             }
             return use;
         }

@@ -13,8 +13,9 @@ public class TurretModulePayload extends Block{
 
     public float elevation = -1f;
 
-    public TurretModulePayload(String name){
+    public TurretModulePayload(String name, TurretModule module){
         super(name);
+        this.module = module;
 
         buildVisibility = BuildVisibility.sandboxOnly;
         category = Category.units;
