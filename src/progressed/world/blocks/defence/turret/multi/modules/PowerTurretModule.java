@@ -19,7 +19,7 @@ public class PowerTurretModule extends TurretModule{
     @Override
     public boolean hasAmmo(TurretMount mount){
         //you can always rotate, but never shoot if there's no power
-        return true;
+        return isDeployed(mount);
     }
 
     @Override

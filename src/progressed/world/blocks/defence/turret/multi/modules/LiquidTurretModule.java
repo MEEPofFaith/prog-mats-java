@@ -100,8 +100,8 @@ public class LiquidTurretModule extends TurretModule{
 
     @Override
     public boolean acceptLiquid(Liquid liquid, TurretMount mount){
-        return ammoTypes.get(liquid) != null
-            && (mount.liquids.current() == liquid || (ammoTypes.containsKey(liquid)
-            && (!ammoTypes.containsKey(mount.liquids.current()) || mount.liquids.get(mount.liquids.current()) <= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier + 0.001f)));
+        return isDeployed(mount) && ammoTypes.get(liquid) != null
+            && (mount.liquids.current() == liquid
+            || (ammoTypes.containsKey(liquid) && (!ammoTypes.containsKey(mount.liquids.current()) || mount.liquids.get(mount.liquids.current()) <= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier + 0.001f)));
     }
 }

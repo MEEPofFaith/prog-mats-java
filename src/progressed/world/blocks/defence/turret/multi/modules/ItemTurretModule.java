@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.multi.modules;
 
 import arc.*;
 import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -50,7 +51,7 @@ public class ItemTurretModule extends TurretModule{
     public int acceptStack(Item item, int amount, TurretMount mount){
         BulletType type = ammoTypes.get(item);
 
-        if(type == null) return 0;
+        if(type == null || !isDeployed(mount)) return 0;
 
         return Math.min((int)((maxAmmo - mount.totalAmmo) / ammoTypes.get(item).ammoMultiplier), amount);
     }
@@ -67,7 +68,7 @@ public class ItemTurretModule extends TurretModule{
 
         //find ammo entry by type
         for(int i = 0; i < mount.ammo.size; i++){
-            ItemEntry entry = (ItemEntry)mount.ammo.get(i);
+            ModuleItemEntry entry = (ModuleItemEntry)mount.ammo.get(i);
 
             //if found, put it to the right
             if(entry.item == item){
@@ -78,12 +79,12 @@ public class ItemTurretModule extends TurretModule{
         }
 
         //must not be found
-        mount.ammo.add(new ItemEntry(item, (int)type.ammoMultiplier));
+        mount.ammo.add(new ModuleItemEntry(item, (int)type.ammoMultiplier));
     }
 
     @Override
     public boolean acceptItem(Item item, TurretMount mount){
-        return ammoTypes.get(item) != null && mount.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
+        return isDeployed(mount) && ammoTypes.get(item) != null && mount.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
     }
 
     @Override
@@ -92,7 +93,7 @@ public class ItemTurretModule extends TurretModule{
 
         write.b(mount.ammo.size);
         for(AmmoEntry entry : mount.ammo){
-            ItemEntry i = (ItemEntry)entry;
+            ModuleItemEntry i = (ModuleItemEntry)entry;
             write.s(i.item.id);
             write.s(i.amount);
         }
@@ -112,15 +113,15 @@ public class ItemTurretModule extends TurretModule{
             //only add ammo if this is a valid ammo type
             if(item != null && ammoTypes.containsKey(item)){
                 mount.totalAmmo += a;
-                mount.ammo.add(new ItemEntry(item, a));
+                mount.ammo.add(new ModuleItemEntry(item, a));
             }
         }
     }
 
-    public class ItemEntry extends AmmoEntry{
+    public class ModuleItemEntry extends AmmoEntry{
         public Item item;
 
-        ItemEntry(Item item, int amount){
+        ModuleItemEntry(Item item, int amount){
             this.item = item;
             this.amount = amount;
         }

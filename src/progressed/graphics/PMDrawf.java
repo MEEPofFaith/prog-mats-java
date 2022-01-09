@@ -11,7 +11,9 @@ import arc.scene.ui.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.world.blocks.payloads.*;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -117,6 +119,20 @@ public class PMDrawf{
 
     public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
         laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
+    }
+
+    public static void build(float x, float y, TextureRegion region, float rotation, float progress){
+        build(x, y, region, Pal.accent, rotation, progress);
+    }
+
+    public static void build(float x, float y, TextureRegion region, Color color, float rotation, float progress){
+        Shaders.blockbuild.region = region;
+        Shaders.blockbuild.progress = progress;
+
+        Draw.color(color);
+        Draw.shader(Shaders.blockbuild);
+        Draw.rect(region, x, y, rotation);
+        Draw.flush();
     }
 
     public static void vertConstruct(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time){

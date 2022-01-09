@@ -34,6 +34,7 @@ import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
+import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
@@ -89,6 +90,9 @@ public class PMBlocks implements ContentList{
 
     //Misc
     blackhole, excalibur,
+
+    //Modular
+    aaa,
 
     //Payload
     sergeant, arbalest,
@@ -170,11 +174,16 @@ public class PMBlocks implements ContentList{
 
     // endregion
 
-    private final ContentList payloads = new PMPayloads();
+    private final ContentList[] otherBlocks = {
+        new PMPayloads(),
+        new PMModules()
+    };
 
     @Override
     public void load(){
-        payloads.load();
+        for(ContentList blockList : otherBlocks){
+            blockList.load();
+        }
 
         // region Turrets
         minigun = new MinigunTurret("minigun"){{
@@ -1023,6 +1032,17 @@ public class PMBlocks implements ContentList{
                 baseRegion = Core.atlas.find("prog-mats-block-" + size);
             }
         };
+
+        aaa = new ModularTurret("aaa"){{
+            requirements(Category.turret, empty);
+            size = 5;
+            smallMountPos = new float[]{
+                -10, 10,
+                10, 10,
+                -10, -10,
+                10, -10
+            };
+        }};
 
         sergeant = new PayloadLaunchTurret("tinker"){{
             requirements(Category.turret, with(

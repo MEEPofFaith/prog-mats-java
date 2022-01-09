@@ -199,9 +199,7 @@ public class DronePad extends Block{
             super.draw();
 
             if(buildup > 0.01 || build > 0.01){
-                Draw.draw(Layer.blockOver, () -> {
-                    Drawf.construct(x, y, droneType.fullIcon, 0f, Math.max(build / constructTime, 0.02f), buildup, total);
-                });
+                Draw.draw(Layer.blockOver, () -> Drawf.construct(x, y, droneType.fullIcon, 0f, Math.max(build / constructTime, 0.02f), buildup, total));
             }
 
             if(drone != null){

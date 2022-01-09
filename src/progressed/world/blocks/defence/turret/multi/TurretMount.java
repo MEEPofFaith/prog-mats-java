@@ -26,7 +26,7 @@ public class TurretMount{
     /** Reload in frames; 0 means ready to fire */
     public float reload;
     /** Rotation relative to the unit this mount is on */
-    public float rotation;
+    public float rotation = 90;
     /** Weapon recoil */
     public float recoil;
     public int shotCounter;

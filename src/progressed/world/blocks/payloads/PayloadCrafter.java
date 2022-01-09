@@ -21,6 +21,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.world.blocks.consumers.*;
 import progressed.world.meta.*;
@@ -227,12 +228,7 @@ public class PayloadCrafter extends PayloadBlock{
                         Draw.color(Pal.accent);
 
                         for(TextureRegion region : recipe.getGeneratedIcons()){
-                            Shaders.blockbuild.region = region;
-                            Shaders.blockbuild.progress = progress / ((Missile)recipe).constructTime;
-
-                            Draw.shader(Shaders.blockbuild);
-                            Draw.rect(region, x, y, recipe.rotate ? rotdeg() : 0);
-                            Draw.flush();
+                            PMDrawf.build(x, y, region, recipe.rotate ? rotdeg() : 0, progress / ((Missile)recipe).constructTime);
                         }
 
                         Draw.color();

@@ -34,6 +34,8 @@ public class ModularTurret extends PayloadBlock{
 
         acceptsPayload = true;
         outputsPayload = false;
+        hasLiquids = true;
+        outputsLiquid = false;
         rotate = false;
     }
 
@@ -42,6 +44,12 @@ public class ModularTurret extends PayloadBlock{
         consumes.add(new ModularTurretConsumePower());
 
         super.init();
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+        bars.remove("liquid");
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{

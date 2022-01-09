@@ -34,15 +34,15 @@ public class TurretModule implements Cloneable{
     /** Automatically set */
     public short mountID;
 
-    public float deployTime;
-    public float range;
+    public float deployTime = 120f;
+    public float range = 80f;
     public boolean hasLiquids, hasPower;
     public float powerUse;
 
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
     public float reloadTime = 30f;
-    public float rotateSpeed = 6f;
+    public float rotateSpeed = 5f;
     public float shootCone = 8f;
 
     public float shootLength = -1f;
@@ -115,12 +115,20 @@ public class TurretModule implements Cloneable{
         if(shootLength < 0) shootLength = size() * Vars.tilesize / 2f;
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
+            hasLiquids = true;
             consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
         }
 
         setBars();
 
         consumes.init();
+    }
+
+    public void load(){
+        region = Core.atlas.find("prog-mats-" + name);
+        heatRegion = Core.atlas.find("prog-mats-" + name + "-heat");
+        liquidRegion = Core.atlas.find("prog-mats-" + name + "-liquid");
+        topRegion = Core.atlas.find("prog-mats-" + name + "-top");
     }
 
     public void setBars(){
@@ -157,7 +165,7 @@ public class TurretModule implements Cloneable{
     }
 
     public boolean isActive(TurretMount mount){
-        return (mount.target != null || mount.wasShooting) && mount.parent.enabled;
+        return isDeployed(mount) && (mount.target != null || mount.wasShooting) && mount.parent.enabled;
     }
 
     public void targetPosition(TurretMount mount, Posc pos){
@@ -179,10 +187,14 @@ public class TurretModule implements Cloneable{
         }
     }
 
+    public boolean isDeployed(TurretMount mount){
+        return mount.progress >= deployTime;
+    }
+
     public void update(TurretMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
 
-        if(mount.progress < deployTime) return;
+        if(!isDeployed(mount)) return;
 
         if(!validateTarget(mount)) mount.target = null;
 
@@ -193,7 +205,7 @@ public class TurretModule implements Cloneable{
 
         ModularTurretBuild parent = mount.parent;
         if(hasAmmo(mount)){
-            if(Float.isNaN(mount.reload)) mount.rotation = 0;
+            if(Float.isNaN(mount.reload)) mount.reload = 0;
 
             if(validateTarget(mount)){
                 boolean canShoot = true;
@@ -316,6 +328,8 @@ public class TurretModule implements Cloneable{
             tr.trns(rot, shootLength, Mathf.range(xRand));
             bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * spread);
         }
+
+        useAmmo(mount);
     }
 
     protected void bullet(TurretMount mount, BulletType type, float angle){
@@ -363,7 +377,7 @@ public class TurretModule implements Cloneable{
         AmmoEntry entry = mount.ammo.peek();
         entry.amount -= 1;
         if(entry.amount <= 0) mount.ammo.pop();
-        mount.totalAmmo--;
+        mount.totalAmmo = Math.max(mount.totalAmmo - 1, 0);
         ejectEffects(mount);
         return entry.type();
     }
@@ -414,7 +428,7 @@ public class TurretModule implements Cloneable{
         Draw.z(Layer.turret + layerOffset);
 
         if(mount.progress < deployTime){
-            Drawf.construct(x, y, region, 0f, mount.progress / deployTime, 1f, mount.progress);
+            Draw.draw(Draw.z(), () -> PMDrawf.build(x, y, region, 0f, mount.progress / deployTime));
             return;
         }
 
@@ -471,11 +485,6 @@ public class TurretModule implements Cloneable{
         }
     }
 
-    public void load(){
-        region = Core.atlas.find(name);
-        heatRegion = Core.atlas.find(name + "-heat");
-    }
-
     public int acceptStack(Item item, int amount, TurretMount mount){
         return 0;
     }
@@ -485,7 +494,7 @@ public class TurretModule implements Cloneable{
     }
 
     public boolean acceptLiquid(Liquid liquid, TurretMount mount){
-        return hasLiquids && consumes.liquidfilters.get(liquid.id) && mount.liquids.get(liquid) < liquidCapacity;
+        return isDeployed(mount) && hasLiquids && consumes.liquidfilters.get(liquid.id) && mount.liquids.get(liquid) < liquidCapacity;
     }
 
     public void handleItem(Item item, TurretMount mount){}
