@@ -308,6 +308,7 @@ public class TurretModule implements Cloneable{
                         basicShoot(mount, type, ii);
                     });
                 }else{
+                    if(parent.dead || !hasAmmo(mount)) return;
                     basicShoot(mount, type, i);
                 }
             }
@@ -397,7 +398,7 @@ public class TurretModule implements Cloneable{
     }
 
     public void turnToTarget(TurretMount mount, float targetRot){
-        mount.rotation = Mathf.approachDelta(mount.rotation, targetRot, rotateSpeed * mount.parent.delta() * reloadSpeedScl(mount));
+        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * mount.parent.delta() * reloadSpeedScl(mount));
     }
 
     public float reloadSpeedScl(TurretMount mount){
@@ -428,7 +429,7 @@ public class TurretModule implements Cloneable{
         Draw.z(Layer.turret + layerOffset);
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.build(x, y, region, 0f, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> PMDrawf.build(x, y, region, rot - 90, mount.progress / deployTime));
             return;
         }
 

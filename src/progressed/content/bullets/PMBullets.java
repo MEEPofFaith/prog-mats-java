@@ -33,6 +33,7 @@ public class PMBullets implements ContentList{
 
     private final ContentList[] bulletLists = {
         new MinigunBullets(),
+        new ModuleBullets(),
         new SniperBullets(),
         new PayloadBullets()
     };

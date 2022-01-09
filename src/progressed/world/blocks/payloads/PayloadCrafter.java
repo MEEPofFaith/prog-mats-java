@@ -225,13 +225,9 @@ public class PayloadCrafter extends PayloadBlock{
             if(recipe != null){
                 Draw.draw(Layer.blockBuilding, () -> {
                     if(blockBuild){
-                        Draw.color(Pal.accent);
-
                         for(TextureRegion region : recipe.getGeneratedIcons()){
                             PMDrawf.build(x, y, region, recipe.rotate ? rotdeg() : 0, progress / ((Missile)recipe).constructTime);
                         }
-
-                        Draw.color();
                     }else{
                         Drawf.construct(this, recipe.fullIcon, 0, progress / ((Missile)recipe).constructTime, heat, time);
                     }

@@ -63,6 +63,7 @@ public class TurretMount{
     }
 
     public void findTarget(){
+        if(!module.hasAmmo(this)) return;
         module.findTarget(this);
     }
 }

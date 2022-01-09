@@ -4,28 +4,40 @@ import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
-import mindustry.type.*;
+import progressed.content.bullets.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.payloads.*;
 
 public class PMModules implements ContentList{
     public static TurretModulePayload
 
-    //small
-    itemtest, liquidtest, bifurcation;
+    //Region Small
+
+    shrapnel, liquidtest, bifurcation,
+
+    //Region Medium
+
+    airburst;
+
+    //Region Large
 
     @Override
     public void load(){
-        itemtest = new TurretModulePayload("item-test"){{
-            module = new ItemTurretModule("item-test"){{
+        shrapnel = new TurretModulePayload("shrapnel"){{
+            module = new ItemTurretModule("shrapnel"){{
                 ammo(
-                    Items.copper, Bullets.standardCopper,
-                    Items.titanium, Bullets.artilleryExplosive
+                    Items.copper, ModuleBullets.shotgunCopper,
+                    Items.graphite, ModuleBullets.shotgunDense,
+                    Items.titanium, ModuleBullets.shotgunTitanium,
+                    Items.thorium, ModuleBullets.shotunThorium
                 );
+                limitRange();
 
-                reloadTime = 60f;
-                shots = 3;
-                inaccuracy = 15;
+                reloadTime = 90f;
+                shootCone = 15;
+                range = 120f;
+                shots = 5;
+                inaccuracy = 12;
             }};
         }};
 
@@ -55,11 +67,31 @@ public class PMModules implements ContentList{
                 shootCone = 40f;
                 powerUse = 3.5f;
                 targetAir = false;
-                range = 90f;
+                range = 100f;
                 barrels = shots = 2;
                 spread = 3;
                 shootEffect = Fx.lightningShoot;
                 recoilAmount = 1f;
+            }};
+        }};
+
+        airburst = new TurretModulePayload("airburst"){{
+            size = 2;
+
+            module = new ItemTurretModule("airburst"){{
+                ammo(
+                    Items.graphite, ModuleBullets.swarmDense
+                );
+                size = ModuleSize.medium;
+
+                reloadTime = 60f;
+                range = 200f;
+                shots = 7;
+                xRand = 4f;
+                burstSpacing = 1f;
+                inaccuracy = 7f;
+                velocityInaccuracy = 0.4f;
+                recoilAmount = 4f;
             }};
         }};
     }

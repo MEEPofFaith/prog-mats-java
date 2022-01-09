@@ -132,7 +132,8 @@ public class PMDrawf{
         Draw.color(color);
         Draw.shader(Shaders.blockbuild);
         Draw.rect(region, x, y, rotation);
-        Draw.flush();
+        Draw.shader();
+        Draw.color();
     }
 
     public static void vertConstruct(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time){

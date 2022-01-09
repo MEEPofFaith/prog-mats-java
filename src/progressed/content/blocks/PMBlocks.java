@@ -92,7 +92,7 @@ public class PMBlocks implements ContentList{
     blackhole, excalibur,
 
     //Modular
-    aaa,
+    council, congress,
 
     //Payload
     sergeant, arbalest,
@@ -1033,15 +1033,28 @@ public class PMBlocks implements ContentList{
             }
         };
 
-        aaa = new ModularTurret("aaa"){{
+        council = new ModularTurret("council"){{
             requirements(Category.turret, empty);
             size = 5;
+            float p1 = 39f / 4f,
+                p2 = 49f / 4f;
             smallMountPos = new float[]{
-                -10, 10,
-                10, 10,
-                -10, -10,
-                10, -10
+                -p1, p1,
+                0, p2,
+                p1, p1,
+                p2, 0,
+                p1, -p1,
+                0, -p2,
+                -p1, -p1,
+                -p2, 0
             };
+            mediumMountPos = new float[]{0, 0};
+        }};
+
+        congress = new ModularTurret("congress"){{
+            requirements(Category.turret, empty);
+            size = 7;
+            //TODO
         }};
 
         sergeant = new PayloadLaunchTurret("tinker"){{
