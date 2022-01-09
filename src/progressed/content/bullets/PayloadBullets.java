@@ -192,7 +192,7 @@ public class PayloadBullets implements ContentList{
             splashDamageRadius = 64f;
             homingPower = 0.05f;
             homingRange = 330f;
-            lifetime = 180f;
+            lifetime = 360f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
@@ -217,7 +217,7 @@ public class PayloadBullets implements ContentList{
             splashDamageRadius = 48f;
             homingPower = 0.05f;
             homingRange = 330f;
-            lifetime = 135f;
+            lifetime = 270f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
             despawnEffect = PMFx.missileExplosion;
@@ -240,12 +240,12 @@ public class PayloadBullets implements ContentList{
             splitBullets = 3;
             splitVelocityMin = 0.8f;
             splitVelocityMax = 1.2f;
-            splitBullet = new ArcMissileBulletType(3f, 80f, "prog-mats-recursive-missile"){{
+            splitBullet = new ArcMissileBulletType(2.5f, 80f, "prog-mats-recursive-missile"){{
                 splashDamage = 100f;
                 splashDamageRadius = 40f;
                 homingPower = 0.07f;
                 homingRange = 330f;
-                lifetime = 90f;
+                lifetime = 135f;
                 hitSound = Sounds.explosionbig;
                 hitShake = 5f;
                 despawnEffect = PMFx.missileExplosion;
@@ -260,7 +260,7 @@ public class PayloadBullets implements ContentList{
                 fallEngineSize = 8f;
                 elevation = 2f;
                 shadowOffset = 260f;
-                riseTime = 0f;
+                riseTime = -1f;
                 fallTime = 30f;
                 randRot = true;
 
@@ -269,12 +269,12 @@ public class PayloadBullets implements ContentList{
                 splitBullets = 3;
                 splitVelocityMin = 0.8f;
                 splitVelocityMax = 1.2f;
-                splitBullet = new ArcMissileBulletType(4f, 80f, "prog-mats-recursive-missile"){{
+                splitBullet = new ArcMissileBulletType(3f, 80f, "prog-mats-recursive-missile"){{
                     splashDamage = 50f;
                     splashDamageRadius = 32f;
                     homingPower = 0.1f;
                     homingRange = 330f;
-                    lifetime = 70f;
+                    lifetime = 96f;
                     hitSound = Sounds.explosionbig;
                     hitShake = 5f;
                     despawnEffect = PMFx.missileExplosion;
@@ -289,8 +289,8 @@ public class PayloadBullets implements ContentList{
                     fallEngineSize = 8f;
                     elevation = 2f;
                     shadowOffset = 230f;
-                    riseTime = 0f;
-                    fallTime = 20f;
+                    riseTime = -1f;
+                    fallTime = 30f;
                     randRot = true;
 
                     unitSort = UnitSorts.strongest;
@@ -349,9 +349,10 @@ public class PayloadBullets implements ContentList{
 
                 autoDropRadius = stopRadius = -1f;
                 fallEngineSize = 8f;
+                elevation = 3f;
                 shadowOffset = 900f;
                 riseTime = -1f;
-                fallTime = 75;
+                fallTime = 30;
             }};
             splitVelocityMin = 0.1f;
             splitVelocityMax = 1f;

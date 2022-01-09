@@ -1155,7 +1155,7 @@ public class PMBlocks implements ContentList{
             hideDetails = false;
             health = 160 * size * size;
             reloadTime = 60f;
-            range = 330f;
+            range = 656f;
             shootSound = Sounds.artillery;
             cooldown = 0.01f;
             shootShake = 5f;
