@@ -10,8 +10,6 @@ import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 
 public class TurretMount{
-    /** The base this mount is on. */
-    public final ModularTurretBuild parent;
     /** Turret module associated with this mount. */
     public final TurretModule module;
     /** Offset of the mount compared to the base. */
@@ -40,22 +38,24 @@ public class TurretMount{
     /** Current heat, 0 to 1*/
     public float heat;
 
-    public TurretMount(ModularTurretBuild parent, TurretModule module, float offsetX, float offsetY){
-        this.parent = parent;
+    public TurretMount(TurretModule module, float offsetX, float offsetY){
         this.module = module;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         if(module.hasLiquids) liquids = new LiquidModule();
     }
 
-    public void onProximityAdded(){
-        module.onProximityAdded(this);
+    public void onProximityAdded(ModularTurretBuild parent){
+        module.onProximityAdded(parent, this);
     }
 
-    public void update(){
+    public void update(ModularTurretBuild parent){
+        module.update(parent, this);
+    }
+
+    public void updatePos(ModularTurretBuild parent){
         x = parent.x + offsetX;
         y = parent.y + offsetY;
-        module.update(this);
     }
 
     public void draw(){
@@ -66,8 +66,8 @@ public class TurretMount{
         return module.targetHealing && module.hasAmmo(this) && module.peekAmmo(this).collidesTeam && module.peekAmmo(this).healPercent > 0;
     }
 
-    public void findTarget(){
+    public void findTarget(ModularTurretBuild parent){
         if(!module.hasAmmo(this)) return;
-        module.findTarget(this);
+        module.findTarget(parent, this);
     }
 }

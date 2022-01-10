@@ -11,6 +11,7 @@ import mindustry.game.EventType.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import progressed.world.blocks.defence.turret.multi.*;
+import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 
 public class ItemTurretModule extends TurretModule{
     public ObjectMap<Item, BulletType> ammoTypes = new ObjectMap<>();
@@ -41,8 +42,8 @@ public class ItemTurretModule extends TurretModule{
     }
 
     @Override
-    public void onProximityAdded(TurretMount mount){
-        if(mount.parent.cheating() && mount.ammo.size > 0){
+    public void onProximityAdded(ModularTurretBuild parent, TurretMount mount){
+        if(parent.cheating() && mount.ammo.size > 0){
             handleItem(ammoTypes.entries().next().key, mount);
         }
     }

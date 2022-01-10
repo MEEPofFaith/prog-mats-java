@@ -13,6 +13,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import progressed.world.blocks.defence.turret.multi.*;
+import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 
 public class LiquidTurretModule extends TurretModule{
     public ObjectMap<Liquid, BulletType> ammoTypes = new ObjectMap<>();
@@ -32,7 +33,7 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    public void findTarget(TurretMount mount){
+    public void findTarget(ModularTurretBuild parent, TurretMount mount){
         if(extinguish && mount.liquids.current().canExtinguish()){
             int tx = World.toTile(mount.x), ty = World.toTile(mount.y);
             Fire result = null;
@@ -44,7 +45,7 @@ public class LiquidTurretModule extends TurretModule{
                     var fire = Fires.get(x + tx, y + ty);
                     float dst = fire == null ? 0 : Mathf.dst2(mount.x, mount.y, fire.x ,fire.y);
                     //do not extinguish fires on other team blocks
-                    if(other != null && fire != null && Fires.has(other.x, other.y) && dst <= range * range && (result == null || dst < mindst) && (other.build == null || other.team() == mount.parent.team)){
+                    if(other != null && fire != null && Fires.has(other.x, other.y) && dst <= range * range && (result == null || dst < mindst) && (other.build == null || other.team() == parent.team)){
                         result = fire;
                         mindst = dst;
                     }
@@ -58,7 +59,7 @@ public class LiquidTurretModule extends TurretModule{
             }
         }
 
-        super.findTarget(mount);
+        super.findTarget(parent, mount);
     }
 
     @Override
@@ -81,8 +82,8 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    public BulletType useAmmo(TurretMount mount){
-        if(mount.parent.cheating()) return ammoTypes.get(mount.liquids.current());
+    public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
+        if(parent.cheating()) return ammoTypes.get(mount.liquids.current());
         BulletType type = ammoTypes.get(mount.liquids.current());
         mount.liquids.remove(mount.liquids.current(), 1f / type.ammoMultiplier);
         return type;

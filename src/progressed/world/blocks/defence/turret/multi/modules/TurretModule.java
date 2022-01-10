@@ -99,7 +99,7 @@ public class TurretModule implements Cloneable{
 
     public Sortf unitSort = UnitSorts.closest;
 
-    public Func4<ModularTurretBuild, TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
+    public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
     public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();
@@ -160,14 +160,14 @@ public class TurretModule implements Cloneable{
         return size.ordinal() + 1;
     }
 
-    public void onProximityAdded(TurretMount mount){}
+    public void onProximityAdded(ModularTurretBuild parent, TurretMount mount){}
 
-    protected boolean validateTarget(TurretMount mount){
-        return !Units.invalidateTarget(mount.target, mount.canHeal() ? Team.derelict : mount.parent.team, mount.x, mount.y) || mount.parent.isControlled() || mount.parent.logicControlled();
+    protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
+        return !Units.invalidateTarget(mount.target, mount.canHeal() ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
     }
 
-    public boolean isActive(TurretMount mount){
-        return isDeployed(mount) && (mount.target != null || mount.wasShooting) && mount.parent.enabled;
+    public boolean isActive(ModularTurretBuild parent, TurretMount mount){
+        return isDeployed(mount) && (mount.target != null || mount.wasShooting) && parent.enabled;
     }
 
     public void targetPosition(TurretMount mount, Posc pos){
@@ -193,23 +193,22 @@ public class TurretModule implements Cloneable{
         return mount.progress >= deployTime;
     }
 
-    public void update(TurretMount mount){
+    public void update(ModularTurretBuild parent, TurretMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
 
         if(!isDeployed(mount)) return;
 
-        if(!validateTarget(mount)) mount.target = null;
+        if(!validateTarget(parent, mount)) mount.target = null;
 
         mount.wasShooting = false;
 
         mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
         mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
 
-        ModularTurretBuild parent = mount.parent;
         if(hasAmmo(mount)){
             if(Float.isNaN(mount.reload)) mount.reload = 0;
 
-            if(validateTarget(mount)){
+            if(validateTarget(parent, mount)){
                 boolean canShoot = true;
 
                 if(parent.isControlled()){ //player behavior
@@ -226,12 +225,12 @@ public class TurretModule implements Cloneable{
                 float targetRot = Angles.angle(mount.x, mount.y, mount.targetPos.x, mount.targetPos.y);
 
                 if(shouldTurn(mount)){
-                    turnToTarget(mount, targetRot);
+                    turnToTarget(parent, mount, targetRot);
                 }
 
                 if(Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
                     mount.wasShooting = true;
-                    updateShooting(mount);
+                    updateShooting(parent, mount);
                 }
             }
         }
@@ -256,20 +255,19 @@ public class TurretModule implements Cloneable{
         }
     }
 
-    public void updateShooting(TurretMount mount){
-        mount.reload += mount.parent.delta() * peekAmmo(mount).reloadMultiplier * reloadSpeedScl(mount);
+    public void updateShooting(ModularTurretBuild parent, TurretMount mount){
+        mount.reload += parent.delta() * peekAmmo(mount).reloadMultiplier * reloadSpeedScl(parent, mount);
 
         if(mount.reload >= reloadTime && !mount.charging){
             BulletType type = peekAmmo(mount);
 
-            shoot(mount, type);
+            shoot(parent, mount, type);
 
             mount.reload %= reloadTime;
         }
     }
 
-    public void shoot(TurretMount mount, BulletType type){
-        ModularTurretBuild parent = mount.parent;
+    public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
         Vec2 tr = Tmp.v1;
         float x = mount.x,
             y = mount.y,
@@ -277,7 +275,7 @@ public class TurretModule implements Cloneable{
 
         //when charging is enabled, use the charge shoot pattern
         if(chargeTime > 0){
-            useAmmo(mount);
+            useAmmo(parent, mount);
 
             tr.trns(rot, shootLength);
             chargeBeginEffect.at(x + tr.x, y + tr.y, rot);
@@ -296,7 +294,7 @@ public class TurretModule implements Cloneable{
             Time.run(chargeTime, () -> {
                 if(parent.dead) return;
                 tr.trns(rot, shootLength);
-                bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
+                bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
                 mount.charging = false;
             });
         }else{
@@ -305,11 +303,11 @@ public class TurretModule implements Cloneable{
                 if(burstSpacing > 0.0001f){
                     Time.run(burstSpacing * i, () -> {
                         if(parent.dead || !hasAmmo(mount)) return;
-                        basicShoot(mount, type, ii);
+                        basicShoot(parent, mount, type, ii);
                     });
                 }else{
                     if(parent.dead || !hasAmmo(mount)) return;
-                    basicShoot(mount, type, i);
+                    basicShoot(parent, mount, type, i);
                 }
             }
 
@@ -317,23 +315,23 @@ public class TurretModule implements Cloneable{
         }
     }
 
-    public void basicShoot(TurretMount mount, BulletType type, int count){
+    public void basicShoot(ModularTurretBuild parent, TurretMount mount, BulletType type, int count){
         Vec2 tr = Tmp.v1;
         float rot = mount.rotation;
         float b = (mount.shotCounter % barrels) - (barrels - 1) / 2f;
 
         tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength);
-        bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
+        bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
-        useAmmo(mount);
+        useAmmo(parent, mount);
     }
 
-    protected void bullet(TurretMount mount, BulletType type, float angle){
+    protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
         float x = mount.x, y = mount.y;
         Vec2 tr = Tmp.v1;
         float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, mount.targetPos.x, mount.targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
-        type.create(mount.parent, mount.parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
 
         mount.recoil = recoilAmount;
         mount.heat = 1f;
@@ -367,8 +365,8 @@ public class TurretModule implements Cloneable{
     }
 
     /** Consume ammo and return a type. */
-    public BulletType useAmmo(TurretMount mount){
-        if(mount.parent.cheating()) return peekAmmo(mount);
+    public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
+        if(parent.cheating()) return peekAmmo(mount);
 
         AmmoEntry entry = mount.ammo.peek();
         entry.amount -= 1;
@@ -392,25 +390,25 @@ public class TurretModule implements Cloneable{
         return !mount.charging;
     }
 
-    public void turnToTarget(TurretMount mount, float targetRot){
-        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * mount.parent.delta() * reloadSpeedScl(mount));
+    public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
+        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * reloadSpeedScl(parent, mount));
     }
 
-    public float reloadSpeedScl(TurretMount mount){
+    public float reloadSpeedScl(ModularTurretBuild parent, TurretMount mount){
         return 1f;
     }
 
-    public void findTarget(TurretMount mount){
+    public void findTarget(ModularTurretBuild parent, TurretMount mount){
         if(!hasAmmo(mount)) return;
         float x = mount.x,
             y = mount.y;
         if(targetAir && !targetGround){
-            mount.target = Units.bestEnemy(mount.parent.team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
+            mount.target = Units.bestEnemy(parent.team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
         }else{
-            mount.target = Units.bestTarget(mount.parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround, unitSort);
+            mount.target = Units.bestTarget(parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround, unitSort);
 
             if(mount.target == null && mount.canHeal()){
-                mount.target = Units.findAllyTile(mount.parent.team, x, y, range, b -> b.damaged() && b != mount.parent);
+                mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
             }
         }
     }
@@ -448,7 +446,7 @@ public class TurretModule implements Cloneable{
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
     }
 
-    public void display(Table table, TurretMount mount){
+    public void display(ModularTurretBuild parent, Table table, TurretMount mount){
         table.table(t -> {
             t.left();
             t.add(new Image(region)).size(8 * 4);
@@ -458,14 +456,14 @@ public class TurretModule implements Cloneable{
         table.table(bars -> {
             bars.defaults().growX().height(18f).pad(4f);
 
-            displayBars(table, mount);
+            displayBars(parent, table, mount);
         }).growX();
     }
 
-    public void displayBars(Table table, TurretMount mount){
+    public void displayBars(ModularTurretBuild parent, Table table, TurretMount mount){
         for(Func2<ModularTurretBuild, TurretMount, Bar> bar : bars.list()){
             try{
-                table.add(bar.get(mount.parent, mount)).growX();
+                table.add(bar.get(parent, mount)).growX();
                 table.row();
             }catch(ClassCastException e){
                 break;
@@ -502,8 +500,8 @@ public class TurretModule implements Cloneable{
         return amount - added;
     }
 
-    public float powerUse(TurretMount mount){
-        return Mathf.num(isActive(mount)) * powerUse;
+    public float powerUse(ModularTurretBuild parent, TurretMount mount){
+        return Mathf.num(isActive(parent, mount)) * powerUse;
     }
 
     public void writeAll(Writes write, TurretMount mount){

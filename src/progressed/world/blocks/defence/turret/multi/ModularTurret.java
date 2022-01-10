@@ -62,7 +62,7 @@ public class ModularTurret extends PayloadBlock{
         public void onProximityAdded(){
             super.onProximityAdded();
 
-            allMounts.each(TurretMount::onProximityAdded);
+            allMounts.each(m -> m.onProximityAdded(this));
         }
 
         @Override
@@ -118,12 +118,11 @@ public class ModularTurret extends PayloadBlock{
                 logicControlTime -= Time.delta;
             }
 
-            //Have all mounts retarget at the same time for less laggyness.
             if(timer(timerTarget, targetInterval)){
-                allMounts.each(TurretMount::findTarget);
+                allMounts.each(m -> m.findTarget(this));
             }
 
-            allMounts.each(TurretMount::update);
+            allMounts.each(m -> m.update(this));
         }
 
         public void retarget(float x, float y){
@@ -150,6 +149,8 @@ public class ModularTurret extends PayloadBlock{
             Draw.z(Layer.blockOver + 0.1f);
             Draw.rect(topRegion, x, y);
 
+            if(isPayload()) allMounts.each(m -> m.updatePos(this));
+
             //Draw in order of small/medium/large
             smallMounts.each(TurretMount::draw);
             mediumMounts.each(TurretMount::draw);
@@ -159,7 +160,6 @@ public class ModularTurret extends PayloadBlock{
         /** @return the module it adds. */
         public TurretMount addModule(TurretModule module){
             TurretMount mount = module.mountType.get(
-                this,
                 module,
                 newModuleX(module.size),
                 newModuleY(module.size)
@@ -256,10 +256,15 @@ public class ModularTurret extends PayloadBlock{
             }
         }
 
+        @Override
+        public void dropped(){
+            allMounts.each(m -> m.updatePos(this));
+        }
+
         public float powerUse(){
             float use = 0f;
             for(TurretMount mount : allMounts){
-                use += mount.module.powerUse(mount);
+                use += mount.module.powerUse(this, mount);
             }
             return use;
         }
