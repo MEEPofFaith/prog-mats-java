@@ -160,6 +160,7 @@ public class ModularTurret extends PayloadBlock{
         /** @return the module it adds. */
         public TurretMount addModule(TurretModule module){
             TurretMount mount = module.mountType.get(
+                this,
                 module,
                 newModuleX(module.size),
                 newModuleY(module.size)
@@ -302,6 +303,8 @@ public class ModularTurret extends PayloadBlock{
                     mount.module.readAll(read, mount);
                 }
             }
+
+            allMounts.each(m -> m.updatePos(this));
         }
     }
 

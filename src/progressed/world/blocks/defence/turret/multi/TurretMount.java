@@ -38,10 +38,11 @@ public class TurretMount{
     /** Current heat, 0 to 1*/
     public float heat;
 
-    public TurretMount(TurretModule module, float offsetX, float offsetY){
+    public TurretMount(ModularTurretBuild parent, TurretModule module, float offsetX, float offsetY){
         this.module = module;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
+        updatePos(parent);
         if(module.hasLiquids) liquids = new LiquidModule();
     }
 

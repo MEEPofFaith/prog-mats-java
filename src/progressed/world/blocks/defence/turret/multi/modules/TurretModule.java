@@ -99,7 +99,7 @@ public class TurretModule implements Cloneable{
 
     public Sortf unitSort = UnitSorts.closest;
 
-    public Func3<TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
+    public Func4<ModularTurretBuild, TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
 
     public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();
