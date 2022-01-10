@@ -161,8 +161,8 @@ public class ModularTurret extends PayloadBlock{
             TurretMount mount = module.mountType.get(
                 this,
                 module,
-                x + newModuleX(module.size),
-                y + newModuleY(module.size)
+                newModuleX(module.size),
+                newModuleY(module.size)
             );
             switch(module.size){
                 case small -> smallMounts.add(mount);
