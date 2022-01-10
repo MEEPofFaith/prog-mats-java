@@ -10,7 +10,7 @@ public class ModuleBullets implements ContentList{
 
     shotgunCopper, shotgunDense, shotgunTitanium, shotunThorium,
 
-    swarmDense;
+    swarmDense, swarmBlast;
 
     @Override
     public void load(){
@@ -49,15 +49,35 @@ public class ModuleBullets implements ContentList{
             lifetime = 120f;
         }};
 
-        swarmDense = new MissileBulletType(4.2f, 13){{
+        swarmDense = new MissileBulletType(4.2f, 19){{
             homingPower = 0.12f;
             width = 8f;
             height = 8f;
             shrinkX = shrinkY = 0f;
+            drag = -0.003f;
+            homingRange = 80f;
+            splashDamageRadius = 20f;
+            splashDamage = 24f;
+            lifetime = 62f;
+            trailColor = Pal.bulletYellowBack;
+            backColor = Pal.bulletYellowBack;
+            frontColor = Pal.bulletYellow;
+            hitEffect = Fx.blastExplosion;
+            despawnEffect = Fx.blastExplosion;
+            weaveScale = 8f;
+            weaveMag = 2f;
+        }};
+
+        swarmBlast = new MissileBulletType(4.6f, 23){{
+            homingPower = 0.15f;
+            width = 9f;
+            height = 10f;
+            shrinkX = shrinkY = 0f;
             drag = -0.005f;
             homingRange = 80f;
-            splashDamageRadius = 35f;
-            splashDamage = 27f;
+            splashDamageRadius = 28f;
+            splashDamage = 34f;
+            ammoMultiplier = 3f;
             lifetime = 62f;
             trailColor = Pal.bulletYellowBack;
             backColor = Pal.bulletYellowBack;

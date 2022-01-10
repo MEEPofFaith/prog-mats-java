@@ -80,7 +80,8 @@ public class PMModules implements ContentList{
 
             module = new ItemTurretModule("airburst"){{
                 ammo(
-                    Items.graphite, ModuleBullets.swarmDense
+                    Items.graphite, ModuleBullets.swarmDense,
+                    Items.blastCompound, ModuleBullets.swarmBlast
                 );
                 size = ModuleSize.medium;
 
@@ -88,7 +89,7 @@ public class PMModules implements ContentList{
                 range = 200f;
                 shots = 7;
                 xRand = 4f;
-                burstSpacing = 1f;
+                burstSpacing = 2f;
                 inaccuracy = 7f;
                 velocityInaccuracy = 0.4f;
                 recoilAmount = 4f;
