@@ -69,7 +69,7 @@ public class PMModules implements ContentList{
                 targetAir = false;
                 range = 100f;
                 barrels = shots = 2;
-                spread = 3;
+                barrelSpacing = 3;
                 shootEffect = Fx.lightningShoot;
                 recoilAmount = 1f;
             }};

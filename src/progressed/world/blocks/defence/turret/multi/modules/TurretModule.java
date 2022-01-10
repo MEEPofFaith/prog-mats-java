@@ -47,7 +47,8 @@ public class TurretModule implements Cloneable{
 
     public float shootLength = -1f;
     public int shots = 1;
-    public float spread;
+    public boolean countAfter;
+    public float barrelSpacing, angleSpread;
     public float shootShake;
     public float xRand;
     /** Currently used for artillery only. */
@@ -113,6 +114,7 @@ public class TurretModule implements Cloneable{
         //small = 1, medium = 2, large = 3
         if(elevation < 0) elevation = size();
         if(shootLength < 0) shootLength = size() * Vars.tilesize / 2f;
+        if(barrels < 1) barrels = 1; //Do not
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
             hasLiquids = true;
@@ -297,8 +299,6 @@ public class TurretModule implements Cloneable{
                 bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
                 mount.charging = false;
             });
-
-            //when burst spacing is enabled, use the burst pattern
         }else{
             for(int i = 0; i < shots; i++){
                 int ii = i;
@@ -313,22 +313,17 @@ public class TurretModule implements Cloneable{
                 }
             }
 
+            if(countAfter) mount.shotCounter++;
         }
     }
 
     public void basicShoot(TurretMount mount, BulletType type, int count){
         Vec2 tr = Tmp.v1;
         float rot = mount.rotation;
+        float b = (mount.shotCounter % barrels) - (barrels - 1) / 2f;
 
-        if(barrels > 1){
-            float i = (mount.shotCounter % barrels) - (barrels - 1)/2f;
-
-            tr.trns(rot - 90, spread * i + Mathf.range(xRand), shootLength);
-            bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
-        }else{
-            tr.trns(rot, shootLength, Mathf.range(xRand));
-            bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * spread);
-        }
+        tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength);
+        bullet(mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
         useAmmo(mount);
     }
@@ -342,7 +337,7 @@ public class TurretModule implements Cloneable{
 
         mount.recoil = recoilAmount;
         mount.heat = 1f;
-        mount.shotCounter++;
+        if(!countAfter) mount.shotCounter++;
         effects(mount);
     }
 
