@@ -63,6 +63,11 @@ public class ModularTurret extends PayloadBlock{
     }
 
     @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{region, inRegion, topRegion};
+    }
+
+    @Override
     public void setBars(){
         super.setBars();
         bars.remove("liquid");

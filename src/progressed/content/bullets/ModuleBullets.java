@@ -60,7 +60,7 @@ public class ModuleBullets implements ContentList{
             homingRange = 80f;
             splashDamageRadius = 20f;
             splashDamage = 24f;
-            ammoMultiplier = 3f;
+            ammoMultiplier = 5f;
             lifetime = 46f;
             hitEffect = Fx.blastExplosion;
             weaveScale = 8f;
@@ -79,8 +79,8 @@ public class ModuleBullets implements ContentList{
             drag = -0.005f;
             homingRange = 80f;
             splashDamageRadius = 28f;
-            splashDamage = 34f;
-            ammoMultiplier = 4f;
+            splashDamage = 29f;
+            ammoMultiplier = 5f;
             lifetime = 40f;
             hitEffect = Fx.blastExplosion;
             weaveScale = 8f;

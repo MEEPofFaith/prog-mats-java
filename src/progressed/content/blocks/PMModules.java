@@ -20,7 +20,7 @@ public class PMModules implements ContentList{
 
     //Region Small
 
-        miniOverdrive, shrapnel, liquidtest, bifurcation,
+    miniOverdrive, shrapnel, froth, bifurcation,
 
     //Region Medium
 
@@ -78,8 +78,8 @@ public class PMModules implements ContentList{
             }};
         }};
 
-        liquidtest = new ModulePayload("liquid-test"){{
-            module = new LiquidTurretModule("item-test"){{
+        froth = new ModulePayload("froth"){{
+            module = new LiquidTurretModule("froth"){{
                 ammo(
                     Liquids.water, Bullets.standardThorium,
                     Liquids.slag, Bullets.fragSurge

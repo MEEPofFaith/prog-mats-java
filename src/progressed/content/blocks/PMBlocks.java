@@ -92,7 +92,7 @@ public class PMBlocks implements ContentList{
     blackhole, excalibur,
 
     //Modular
-    council, congress,
+    council, congress, pantheon,
 
     //Payload
     sergeant, arbalest,
@@ -1054,6 +1054,31 @@ public class PMBlocks implements ContentList{
         congress = new ModularTurret("congress"){{
             requirements(Category.turret, empty);
             size = 7;
+            float p1 = 76f / 4f,
+                p2 = 49f / 4f;
+            smallMountPos = new float[]{
+                -p1, p2,
+                -p2, p1,
+                p2, p1,
+                p1, p2,
+                p1, -p2,
+                p2, -p1,
+                -p2, -p1,
+                -p1, -p2
+            };
+            float p3 = 71f / 4f;
+            mediumMountPos = new float[]{
+                0f, p3,
+                p3, 0f,
+                0f, -p3,
+                -p3, 0f
+            };
+            largeMountPos = new float[]{0, 0};
+        }};
+
+        pantheon = new ModularTurret("pantheon"){{
+            requirements(Category.turret, empty);
+            size = 9;
             //TODO
         }};
 

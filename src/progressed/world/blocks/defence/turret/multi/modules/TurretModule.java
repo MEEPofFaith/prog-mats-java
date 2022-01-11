@@ -247,13 +247,16 @@ public class TurretModule extends BaseModule{
                     Time.run(burstSpacing * i, () -> {
                         if(parent.dead || !hasAmmo(mount)) return;
                         basicShoot(parent, mount, peekAmmo(mount), ii);
+                        useAmmo(parent, mount);
+                        effects(mount);
                     });
                 }else{
-                    if(parent.dead || !hasAmmo(mount)) return;
-                    basicShoot(parent, mount, peekAmmo(mount), i);
+                    if(parent.dead) return;
+                    basicShoot(parent, mount, type, i);
                 }
             }
 
+            if(burstSpacing <= 0.0001f) effects(mount);
             if(countAfter) mount.shotCounter++;
         }
     }
@@ -265,7 +268,9 @@ public class TurretModule extends BaseModule{
         tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength - mount.recoil);
         bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
-        useAmmo(parent, mount);
+        mount.recoil = recoilAmount;
+        mount.heat = 1f;
+        if(!countAfter) mount.shotCounter++;
     }
 
     protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
@@ -273,11 +278,6 @@ public class TurretModule extends BaseModule{
         float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, mount.targetPos.x, mount.targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
         type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
-
-        mount.recoil = recoilAmount;
-        mount.heat = 1f;
-        if(!countAfter) mount.shotCounter++;
-        effects(mount);
     }
 
     protected void effects(TurretMount mount){
