@@ -8,12 +8,12 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 
-public class TurretModulePayload extends Block{
-    public TurretModule module;
+public class ModulePayload extends Block{
+    public BaseModule module;
 
     public float elevation = -1f;
 
-    public TurretModulePayload(String name){
+    public ModulePayload(String name){
         super(name);
         requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
 

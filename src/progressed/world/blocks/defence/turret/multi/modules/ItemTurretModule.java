@@ -2,7 +2,6 @@ package progressed.world.blocks.defence.turret.multi.modules;
 
 import arc.*;
 import arc.struct.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -10,8 +9,8 @@ import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
-import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.mounts.*;
 
 public class ItemTurretModule extends TurretModule{
     public ObjectMap<Item, BulletType> ammoTypes = new ObjectMap<>();
@@ -42,58 +41,66 @@ public class ItemTurretModule extends TurretModule{
     }
 
     @Override
-    public void onProximityAdded(ModularTurretBuild parent, TurretMount mount){
-        if(parent.cheating() && mount.ammo.size > 0){
+    public void onProximityAdded(ModularTurretBuild parent, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return;
+
+        if(parent.cheating() && m.ammo.size > 0){
             handleItem(ammoTypes.entries().next().key, mount);
         }
     }
 
     @Override
-    public int acceptStack(Item item, int amount, TurretMount mount){
+    public int acceptStack(Item item, int amount, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return 0;
+
         BulletType type = ammoTypes.get(item);
 
         if(type == null || !isDeployed(mount)) return 0;
 
-        return Math.min((int)((maxAmmo - mount.totalAmmo) / ammoTypes.get(item).ammoMultiplier), amount);
+        return Math.min((int)((maxAmmo - m.totalAmmo) / ammoTypes.get(item).ammoMultiplier), amount);
     }
 
     @Override
-    public void handleItem(Item item, TurretMount mount){
+    public void handleItem(Item item, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return;
+
         if(item == Items.pyratite){
             Events.fire(Trigger.flameAmmo);
         }
 
         BulletType type = ammoTypes.get(item);
         if(type == null) return;
-        mount.totalAmmo += type.ammoMultiplier;
+        m.totalAmmo += type.ammoMultiplier;
 
         //find ammo entry by type
-        for(int i = 0; i < mount.ammo.size; i++){
-            ModuleItemEntry entry = (ModuleItemEntry)mount.ammo.get(i);
+        for(int i = 0; i < m.ammo.size; i++){
+            ModuleItemEntry entry = (ModuleItemEntry)m.ammo.get(i);
 
             //if found, put it to the right
             if(entry.item == item){
                 entry.amount += type.ammoMultiplier;
-                mount.ammo.swap(i, mount.ammo.size - 1);
+                m.ammo.swap(i, m.ammo.size - 1);
                 return;
             }
         }
 
         //must not be found
-        mount.ammo.add(new ModuleItemEntry(item, (int)type.ammoMultiplier));
+        m.ammo.add(new ModuleItemEntry(item, (int)type.ammoMultiplier));
     }
 
     @Override
-    public boolean acceptItem(Item item, TurretMount mount){
-        return isDeployed(mount) && ammoTypes.get(item) != null && mount.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
+    public boolean acceptItem(Item item, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return false;
+        return isDeployed(mount) && ammoTypes.get(item) != null && m.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
     }
 
     @Override
-    public void write(Writes write, TurretMount mount){
+    public void write(Writes write, BaseMount mount){
         super.write(write, mount);
+        if(!(mount instanceof TurretMount m)) return;
 
-        write.b(mount.ammo.size);
-        for(AmmoEntry entry : mount.ammo){
+        write.b(m.ammo.size);
+        for(AmmoEntry entry : m.ammo){
             ModuleItemEntry i = (ModuleItemEntry)entry;
             write.s(i.item.id);
             write.s(i.amount);
@@ -101,11 +108,12 @@ public class ItemTurretModule extends TurretModule{
     }
 
     @Override
-    public void read(Reads read, byte revision, TurretMount mount){
+    public void read(Reads read, byte revision, BaseMount mount){
         super.read(read, revision, mount);
+        if(!(mount instanceof TurretMount m)) return;
 
-        mount.ammo.clear();
-        mount.totalAmmo = 0;
+        m.ammo.clear();
+        m.totalAmmo = 0;
         int amount = read.ub();
         for(int i = 0; i < amount; i++){
             Item item = Vars.content.item(read.s());
@@ -113,8 +121,8 @@ public class ItemTurretModule extends TurretModule{
 
             //only add ammo if this is a valid ammo type
             if(item != null && ammoTypes.containsKey(item)){
-                mount.totalAmmo += a;
-                mount.ammo.add(new ModuleItemEntry(item, a));
+                m.totalAmmo += a;
+                m.ammo.add(new ModuleItemEntry(item, a));
             }
         }
     }

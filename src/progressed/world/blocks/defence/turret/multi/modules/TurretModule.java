@@ -2,13 +2,9 @@ package progressed.world.blocks.defence.turret.multi.modules;
 
 import arc.*;
 import arc.audio.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
-import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
@@ -20,24 +16,15 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.consumers.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.*;
-import progressed.world.meta.*;
+import progressed.world.blocks.defence.turret.multi.mounts.*;
 
-public class TurretModule implements Cloneable{
-    public String name, localizedName;
-    /** Automatically set */
-    public short mountID;
-
-    public float deployTime = 120f;
+public class TurretModule extends BaseModule{
     public float range = 80f;
-    public boolean hasLiquids, hasPower;
-    public float powerUse;
 
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
@@ -54,14 +41,10 @@ public class TurretModule implements Cloneable{
     /** Currently used for artillery only. */
     public float minRange = 0f;
     public float burstSpacing = 0;
-    /** <= 1 does nothing.
-     * Switches to alternate shooting if > 1. */
     public int barrels = 1;
-    public float inaccuracy = 0f;
-    public float velocityInaccuracy = 0f;
+    public float inaccuracy, velocityInaccuracy;
 
     public boolean acceptCoolant = true;
-    public float liquidCapacity = 10f;
     public float coolantUsage = 0.2f;
     /** How much reload is lowered by for each unit of liquid of heat capacity. */
     public float coolantMultiplier = 5f;
@@ -83,33 +66,21 @@ public class TurretModule implements Cloneable{
     public Effect chargeBeginEffect = Fx.none;
     public Sound chargeSound = Sounds.none;
 
-    public ModuleSize size = ModuleSize.small;
-
     public float recoilAmount = 1f;
     public float restitution = 0.02f;
     public float cooldown = 0.02f;
     public float elevation = -1f;
-    public float layerOffset;
 
-    public TextureRegion region, heatRegion, liquidRegion, topRegion;
-
-    /** Usually shares sprite with the module payload, so default to false. */
-    public boolean outlineIcon;
-    public Color outlineColor = Color.valueOf("404049");
+    public TextureRegion heatRegion, liquidRegion, topRegion;
 
     public Sortf unitSort = UnitSorts.closest;
 
-    public Func4<ModularTurretBuild, TurretModule, Float, Float, TurretMount> mountType = TurretMount::new;
-
-    public final MountBars bars = new MountBars();
-    public final Consumers consumes = new Consumers();
-
     public TurretModule(String name){
-        this.name = name;
-
-        localizedName = Core.bundle.get("pmturretmodule." + name + ".name", name);
+        super(name);
+        mountType = TurretMount::new;
     }
 
+    @Override
     public void init(){
         //small = 1, medium = 2, large = 3
         if(elevation < 0) elevation = size();
@@ -121,53 +92,29 @@ public class TurretModule implements Cloneable{
             consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
         }
 
-        setBars();
-
-        consumes.init();
+        super.init();
     }
 
+    @Override
     public void load(){
-        region = Core.atlas.find("prog-mats-" + name);
+        super.load();
         heatRegion = Core.atlas.find("prog-mats-" + name + "-heat");
         liquidRegion = Core.atlas.find("prog-mats-" + name + "-liquid");
         topRegion = Core.atlas.find("prog-mats-" + name + "-top");
     }
 
-    public void setBars(){
-        if(hasLiquids){
-            Func<TurretMount, Liquid> current = mount -> mount.liquids == null ? Liquids.water : mount.liquids.current();
-            bars.add("liquid", (entity, mount) -> new Bar(
-                () -> mount.liquids.get(current.get(mount)) <= 0.001f ? Core.bundle.get("bar.liquid") : current.get(mount).localizedName,
-                () -> current.get(mount).barColor(),
-                () -> mount == null || mount.liquids == null ? 0f : mount.liquids.get(current.get(mount)) / liquidCapacity
-            ));
-        }
-
-        if(hasPower){
-            bars.add("power", (entity, mount) -> new Bar(
-                () -> Core.bundle.get("bar.power"),
-                () -> Pal.powerBar,
-                () -> entity.power.status
-            ));
-        }
+    public boolean canHeal(TurretMount mount){
+        return targetHealing && hasAmmo(mount) && peekAmmo(mount).collidesTeam && peekAmmo(mount).healPercent > 0;
     }
-
-    public void createIcons(MultiPacker packer){
-        if(outlineIcon) Outliner.outlineRegion(packer, region, outlineColor, name);
-    }
-
-    public int size(){
-        return size.ordinal() + 1;
-    }
-
-    public void onProximityAdded(ModularTurretBuild parent, TurretMount mount){}
 
     protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
-        return !Units.invalidateTarget(mount.target, mount.canHeal() ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
+        return !Units.invalidateTarget(mount.target, canHeal(mount) ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
     }
 
-    public boolean isActive(ModularTurretBuild parent, TurretMount mount){
-        return isDeployed(mount) && (mount.target != null || mount.wasShooting) && parent.enabled;
+    @Override
+    public boolean isActive(ModularTurretBuild parent, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return false;
+        return isDeployed(m) && (m.target != null || m.wasShooting) && parent.enabled;
     }
 
     public void targetPosition(TurretMount mount, Posc pos){
@@ -181,7 +128,7 @@ public class TurretModule implements Cloneable{
             offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
         }
 
-        Tmp.v2.trns(mount.rotation, shootLength);
+        tr2.trns(mount.rotation, shootLength - mount.recoil);
         mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
 
         if(mount.targetPos.isZero()){
@@ -189,54 +136,51 @@ public class TurretModule implements Cloneable{
         }
     }
 
-    public boolean isDeployed(TurretMount mount){
-        return mount.progress >= deployTime;
-    }
+    @Override
+    public void update(ModularTurretBuild parent, BaseMount mount){
+        super.update(parent, mount);
 
-    public void update(ModularTurretBuild parent, TurretMount mount){
-        mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
+        if(!isDeployed(mount) || !(mount instanceof TurretMount m)) return;
 
-        if(!isDeployed(mount)) return;
+        if(!validateTarget(parent, m)) m.target = null;
 
-        if(!validateTarget(parent, mount)) mount.target = null;
+        m.wasShooting = false;
 
-        mount.wasShooting = false;
+        m.recoil = Mathf.lerpDelta(m.recoil, 0f, restitution);
+        m.heat = Mathf.lerpDelta(m.heat, 0f, cooldown);
 
-        mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
-        mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
+        if(hasAmmo(m)){
+            if(Float.isNaN(m.reload)) m.reload = 0;
 
-        if(hasAmmo(mount)){
-            if(Float.isNaN(mount.reload)) mount.reload = 0;
-
-            if(validateTarget(parent, mount)){
+            if(validateTarget(parent, m)){
                 boolean canShoot = true;
 
                 if(parent.isControlled()){ //player behavior
-                    mount.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
+                    m.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
                     canShoot = parent.unit.isShooting();
                 }else if(parent.logicControlled()){ //logic behavior
                     canShoot = parent.logicShooting;
                 }else{ //default AI behavior
-                    targetPosition(mount, mount.target);
+                    targetPosition(m, m.target);
 
-                    if(Float.isNaN(mount.rotation)) mount.rotation = 0;
+                    if(Float.isNaN(m.rotation)) m.rotation = 0;
                 }
 
-                float targetRot = Angles.angle(mount.x, mount.y, mount.targetPos.x, mount.targetPos.y);
+                float targetRot = Angles.angle(m.x, m.y, m.targetPos.x, m.targetPos.y);
 
-                if(shouldTurn(mount)){
-                    turnToTarget(parent, mount, targetRot);
+                if(shouldTurn(m)){
+                    turnToTarget(parent, m, targetRot);
                 }
 
-                if(Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
-                    mount.wasShooting = true;
-                    updateShooting(parent, mount);
+                if(Angles.angleDist(m.rotation, targetRot) < shootCone && canShoot){
+                    m.wasShooting = true;
+                    updateShooting(parent, m);
                 }
             }
         }
 
         if(acceptCoolant){
-            updateCooling(mount);
+            updateCooling(m);
         }
     }
 
@@ -256,7 +200,7 @@ public class TurretModule implements Cloneable{
     }
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
-        mount.reload += parent.delta() * peekAmmo(mount).reloadMultiplier * reloadSpeedScl(parent, mount);
+        mount.reload += parent.delta() * peekAmmo(mount).reloadMultiplier * speedScl(parent, mount);
 
         if(mount.reload >= reloadTime && !mount.charging){
             BulletType type = peekAmmo(mount);
@@ -268,7 +212,6 @@ public class TurretModule implements Cloneable{
     }
 
     public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
-        Vec2 tr = Tmp.v1;
         float x = mount.x,
             y = mount.y,
             rot = mount.rotation;
@@ -293,7 +236,7 @@ public class TurretModule implements Cloneable{
 
             Time.run(chargeTime, () -> {
                 if(parent.dead) return;
-                tr.trns(rot, shootLength);
+                tr.trns(rot, shootLength - mount.recoil);
                 bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
                 mount.charging = false;
             });
@@ -303,11 +246,11 @@ public class TurretModule implements Cloneable{
                 if(burstSpacing > 0.0001f){
                     Time.run(burstSpacing * i, () -> {
                         if(parent.dead || !hasAmmo(mount)) return;
-                        basicShoot(parent, mount, type, ii);
+                        basicShoot(parent, mount, peekAmmo(mount), ii);
                     });
                 }else{
                     if(parent.dead || !hasAmmo(mount)) return;
-                    basicShoot(parent, mount, type, i);
+                    basicShoot(parent, mount, peekAmmo(mount), i);
                 }
             }
 
@@ -316,11 +259,10 @@ public class TurretModule implements Cloneable{
     }
 
     public void basicShoot(ModularTurretBuild parent, TurretMount mount, BulletType type, int count){
-        Vec2 tr = Tmp.v1;
         float rot = mount.rotation;
         float b = (mount.shotCounter % barrels) - (barrels - 1) / 2f;
 
-        tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength);
+        tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength - mount.recoil);
         bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
         useAmmo(parent, mount);
@@ -328,7 +270,6 @@ public class TurretModule implements Cloneable{
 
     protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
         float x = mount.x, y = mount.y;
-        Vec2 tr = Tmp.v1;
         float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, mount.targetPos.x, mount.targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
         type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
@@ -341,7 +282,6 @@ public class TurretModule implements Cloneable{
 
     protected void effects(TurretMount mount){
         float x = mount.x, y = mount.y;
-        Vec2 tr = Tmp.v1;
 
         Effect fshootEffect = shootEffect == Fx.none ? peekAmmo(mount).shootEffect : shootEffect;
         Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo(mount).smokeEffect : smokeEffect;
@@ -360,8 +300,8 @@ public class TurretModule implements Cloneable{
     protected void ejectEffects(TurretMount mount){
         float scl = Mathf.sign(alternate && mount.shotCounter % 2 == 0);
 
-        Tmp.v2.trns(mount.rotation - 90, ammoEjectX, ammoEjectY);
-        ammoUseEffect.at(mount.x + Tmp.v2.x, mount.y + Tmp.v2.y, mount.rotation * scl);
+        tr2.trns(mount.rotation - 90, ammoEjectX, ammoEjectY);
+        ammoUseEffect.at(mount.x + tr2.x, mount.y + tr2.y, mount.rotation * scl);
     }
 
     /** Consume ammo and return a type. */
@@ -391,11 +331,7 @@ public class TurretModule implements Cloneable{
     }
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
-        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * reloadSpeedScl(parent, mount));
-    }
-
-    public float reloadSpeedScl(ModularTurretBuild parent, TurretMount mount){
-        return 1f;
+        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * speedScl(parent, mount));
     }
 
     public void findTarget(ModularTurretBuild parent, TurretMount mount){
@@ -407,32 +343,32 @@ public class TurretModule implements Cloneable{
         }else{
             mount.target = Units.bestTarget(parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround, unitSort);
 
-            if(mount.target == null && mount.canHeal()){
+            if(mount.target == null && canHeal(mount)){
                 mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
             }
         }
     }
 
-    public void draw(TurretMount mount){
-        Vec2 tr = Tmp.v1;
-        float x = mount.x,
-            y = mount.y,
-            rot = mount.rotation;
+    @Override
+    public void draw(BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return;
 
-        Draw.z(Layer.turret + layerOffset);
+        float x = m.x,
+            y = m.y,
+            rot = m.rotation;
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.build(x, y, region, rot - 90, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> PMDrawf.build(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
             return;
         }
 
-        tr.trns(rot, -mount.recoil);
+        tr.trns(rot, -m.recoil);
 
         Drawf.shadow(region, x + tr.x, y + tr.y - elevation, rot - 90);
         Draw.rect(region, x + tr.x, y + tr.y, rot - 90);
 
-        if(heatRegion.found() && mount.heat > 0.001f){
-            Draw.color(heatColor, mount.heat);
+        if(heatRegion.found() && m.heat > 0.001f){
+            Draw.color(heatColor, m.heat);
             Draw.blend(Blending.additive);
             Draw.rect(heatRegion, x + tr.x, y + tr.y, rot - 90);
             Draw.blend();
@@ -440,101 +376,23 @@ public class TurretModule implements Cloneable{
         }
 
         if(liquidRegion.found())
-            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
+            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, m.liquids.total() / liquidCapacity, m.liquids.current().color, rot - 90);
 
         if(topRegion.found())
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
     }
 
-    public void display(ModularTurretBuild parent, Table table, TurretMount mount){
-        table.table(t -> {
-            t.left();
-            t.add(new Image(region)).size(8 * 4);
-            t.labelWrap(localizedName).left().width(190f).padLeft(5);
-        });
+    @Override
+    public void write(Writes write, BaseMount mount){
+        super.write(write, mount);
 
-        table.table(bars -> {
-            bars.defaults().growX().height(18f).pad(4f);
-
-            displayBars(parent, table, mount);
-        }).growX();
+        if(mount instanceof TurretMount m) write.f(m.reload);
     }
 
-    public void displayBars(ModularTurretBuild parent, Table table, TurretMount mount){
-        for(Func2<ModularTurretBuild, TurretMount, Bar> bar : bars.list()){
-            try{
-                table.add(bar.get(parent, mount)).growX();
-                table.row();
-            }catch(ClassCastException e){
-                break;
-            }
-        }
-    }
+    @Override
+    public void read(Reads read, byte revision, BaseMount mount){
+        super.read(read, revision, mount);
 
-    public TurretModule copy(){
-        try{
-            return (TurretModule)clone();
-        }catch(CloneNotSupportedException suck){
-            throw new RuntimeException("very good language design", suck);
-        }
-    }
-
-    public int acceptStack(Item item, int amount, TurretMount mount){
-        return 0;
-    }
-
-    public boolean acceptItem(Item item, TurretMount mount){
-        return false;
-    }
-
-    public boolean acceptLiquid(Liquid liquid, TurretMount mount){
-        return isDeployed(mount) && hasLiquids && consumes.liquidfilters.get(liquid.id) && mount.liquids.get(liquid) < liquidCapacity;
-    }
-
-    public void handleItem(Item item, TurretMount mount){}
-
-    /** @return amount of liquid accepted */
-    public float handleLiquid(Liquid liquid, float amount, TurretMount mount){
-        float added = Math.min(amount, liquidCapacity - mount.liquids.get(liquid));
-        mount.liquids.add(liquid, added);
-        return amount - added;
-    }
-
-    public float powerUse(ModularTurretBuild parent, TurretMount mount){
-        return Mathf.num(isActive(parent, mount)) * powerUse;
-    }
-
-    public void writeAll(Writes write, TurretMount mount){
-        write.s(mountID);
-        write.b(version());
-        if(mount.liquids != null) mount.liquids.write(write);
-        write(write, mount);
-    }
-
-    public void readAll(Reads read, TurretMount mount){
-        byte revision = read.b();
-        if(mount.liquids != null) mount.liquids.read(read);
-        read(read, revision, mount);
-    }
-
-    public void write(Writes write, TurretMount mount){
-        write.f(mount.progress);
-        write.f(mount.reload);
-        write.f(mount.rotation);
-    }
-
-    public void read(Reads read, byte revision, TurretMount mount){
-        mount.progress = read.f();
-        mount.reload = read.f();
-        mount.rotation = read.f();
-    }
-
-    public byte version(){
-        return 0;
-    }
-
-    /** Modular Turrets have mounts of 3 sizes. */
-    public static enum ModuleSize{
-        small, medium, large
+        if(mount instanceof TurretMount m) m.reload = read.f();
     }
 }

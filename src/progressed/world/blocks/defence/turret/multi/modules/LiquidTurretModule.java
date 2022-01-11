@@ -12,8 +12,8 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.mounts.*;
 
 public class LiquidTurretModule extends TurretModule{
     public ObjectMap<Liquid, BulletType> ammoTypes = new ObjectMap<>();
@@ -100,7 +100,7 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    public boolean acceptLiquid(Liquid liquid, TurretMount mount){
+    public boolean acceptLiquid(Liquid liquid, BaseMount mount){
         return isDeployed(mount) && ammoTypes.get(liquid) != null
             && (mount.liquids.current() == liquid
             || (ammoTypes.containsKey(liquid) && (!ammoTypes.containsKey(mount.liquids.current()) || mount.liquids.get(mount.liquids.current()) <= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier + 0.001f)));

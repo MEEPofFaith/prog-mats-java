@@ -99,6 +99,15 @@ public class PMFx{
         Draw.color();
     }),
 
+    flameShoot = new Effect(12f, e -> {
+        color(Color.white, Pal.remove, e.fin());
+        stroke(e.fout() * 0.7f + 0.3f);
+
+        randLenVectors(e.id, 7, 25f * e.finpow(), e.rotation, 50f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 3f + 1f);
+        });
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

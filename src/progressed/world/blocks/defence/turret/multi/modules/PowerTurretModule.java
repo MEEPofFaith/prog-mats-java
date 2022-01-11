@@ -1,8 +1,8 @@
 package progressed.world.blocks.defence.turret.multi.modules;
 
 import mindustry.entities.bullet.*;
-import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.mounts.*;
 
 public class PowerTurretModule extends TurretModule{
     public BulletType shootType;
@@ -29,7 +29,7 @@ public class PowerTurretModule extends TurretModule{
     }
 
     @Override
-    public float reloadSpeedScl(ModularTurretBuild parent, TurretMount mount){
+    public float speedScl(ModularTurretBuild parent, BaseMount mount){
         return parent.efficiency();
     }
 }

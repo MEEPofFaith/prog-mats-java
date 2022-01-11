@@ -25,9 +25,13 @@ public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
 
     public static void plus(float x, float y, float diameter, float angle, Color color, float alpha){
+        plus(x, y, diameter / 3f, diameter, angle, color, alpha);
+    }
+
+    public static void plus(float x, float y, float stroke, float diameter, float angle, Color color, float alpha){
         color(color, alpha);
         for(int i = 0; i < 2; i++){
-            Fill.rect(x, y, diameter / 3, diameter, angle + i * 90f);
+            Fill.rect(x, y, stroke, diameter, angle + i * 90f);
         }
     }
 

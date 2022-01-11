@@ -10,14 +10,14 @@ public class ModuleBullets implements ContentList{
 
     shotgunCopper, shotgunDense, shotgunTitanium, shotunThorium,
 
-    swarmDense, swarmBlast;
+    swarmIncendiary, swarmBlast;
 
     @Override
     public void load(){
         shotgunCopper = new BasicBulletType(4f, 9){{
             width = 7f;
             height = 9f;
-            lifetime = 120f;
+            lifetime = 240f;
             shootEffect = Fx.shootSmall;
             smokeEffect = Fx.shootSmallSmoke;
             ammoMultiplier = 2;
@@ -28,7 +28,7 @@ public class ModuleBullets implements ContentList{
             height = 12f;
             reloadMultiplier = 0.6f;
             ammoMultiplier = 4;
-            lifetime = 120f;
+            lifetime = 240f;
         }};
 
         shotgunTitanium = new BasicBulletType(5f, 16f){{
@@ -37,7 +37,7 @@ public class ModuleBullets implements ContentList{
             shootEffect = Fx.shootBig;
             smokeEffect = Fx.shootBigSmoke;
             ammoMultiplier = 3;
-            lifetime = 120;
+            lifetime = 240;
         }};
 
         shotunThorium = new BasicBulletType(7f, 29){{
@@ -46,44 +46,43 @@ public class ModuleBullets implements ContentList{
             shootEffect = Fx.shootBig;
             smokeEffect = Fx.shootBigSmoke;
             ammoMultiplier = 3;
-            lifetime = 120f;
+            lifetime = 240f;
         }};
 
-        swarmDense = new MissileBulletType(4.2f, 19){{
+        swarmIncendiary = new MissileBulletType(4.2f, 19){{
+            frontColor = Pal.lightishOrange;
+            backColor = trailColor = Pal.lightOrange;
             homingPower = 0.12f;
-            width = 8f;
-            height = 8f;
+            width = 4f;
+            height = 4.5f;
             shrinkX = shrinkY = 0f;
             drag = -0.003f;
             homingRange = 80f;
             splashDamageRadius = 20f;
             splashDamage = 24f;
-            lifetime = 62f;
-            trailColor = Pal.bulletYellowBack;
-            backColor = Pal.bulletYellowBack;
-            frontColor = Pal.bulletYellow;
+            ammoMultiplier = 3f;
+            lifetime = 46f;
             hitEffect = Fx.blastExplosion;
-            despawnEffect = Fx.blastExplosion;
             weaveScale = 8f;
             weaveMag = 2f;
+            makeFire = true;
+            status = StatusEffects.burning;
         }};
 
         swarmBlast = new MissileBulletType(4.6f, 23){{
+            frontColor = Pal.bulletYellow;
+            backColor = trailColor = Pal.bulletYellowBack;
             homingPower = 0.15f;
-            width = 9f;
-            height = 10f;
+            width = 4.5f;
+            height = 5f;
             shrinkX = shrinkY = 0f;
             drag = -0.005f;
             homingRange = 80f;
             splashDamageRadius = 28f;
             splashDamage = 34f;
-            ammoMultiplier = 3f;
-            lifetime = 62f;
-            trailColor = Pal.bulletYellowBack;
-            backColor = Pal.bulletYellowBack;
-            frontColor = Pal.bulletYellow;
+            ammoMultiplier = 4f;
+            lifetime = 40f;
             hitEffect = Fx.blastExplosion;
-            despawnEffect = Fx.blastExplosion;
             weaveScale = 8f;
             weaveMag = 2f;
         }};
