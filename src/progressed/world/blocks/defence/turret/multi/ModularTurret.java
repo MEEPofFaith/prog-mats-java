@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -31,7 +32,8 @@ public class ModularTurret extends PayloadBlock{
     public final int timerTarget = timers++;
     public int targetInterval = 20;
 
-    public float[] smallMountPos, mediumMountPos, largeMountPos;
+    public ModuleGroup[] moduleGroups;
+    public Vec2[] smallMountPos, mediumMountPos, largeMountPos;
     public Color mountColor1 = PMPal.darkGray, mountColor2 = Pal.accent;
 
     public TextureRegion[] mountBases = new TextureRegion[3];
@@ -51,6 +53,46 @@ public class ModularTurret extends PayloadBlock{
         consumes.add(new ModularTurretConsumePower());
 
         super.init();
+
+        if(moduleGroups == null) return;
+
+        int sLen = 0, mLen = 0, lLen = 0;
+
+        for(ModuleGroup group : moduleGroups){
+            switch(group.size){
+                case small -> sLen += group.amount();
+                case medium -> mLen += group.amount();
+                case large -> lLen += group.amount();
+            };
+        }
+
+        int sCount = 0, mCount = 0, lCount = 0;
+
+        for(ModuleGroup group : moduleGroups){
+            switch(group.size){
+                case small -> {
+                    if(smallMountPos == null) smallMountPos = new Vec2[sLen];
+                    for(int i = 0; i < group.amount(); i++){
+                        smallMountPos[sCount] = group.pos(i);
+                        sCount++;
+                    }
+                }
+                case medium -> {
+                    if(mediumMountPos == null) mediumMountPos = new Vec2[mLen];
+                    for(int i = 0; i < group.amount(); i++){
+                        mediumMountPos[mCount] = group.pos(i);
+                        mCount++;
+                    }
+                }
+                case large -> {
+                    if(largeMountPos == null) largeMountPos = new Vec2[lLen];
+                    for(int i = 0; i < group.amount(); i++){
+                        largeMountPos[lCount] = group.pos(i);
+                        lCount++;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -205,26 +247,26 @@ public class ModularTurret extends PayloadBlock{
 
         public float nextModuleX(ModuleSize size){
             return switch(size){
-                case small -> smallMountPos[allMounts.count(BaseMount::isSmall) * 2];
-                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium) * 2];
-                case large -> largeMountPos[allMounts.count(BaseMount::isLarge) * 2];
+                case small -> smallMountPos[allMounts.count(BaseMount::isSmall)].x;
+                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium)].x;
+                case large -> largeMountPos[allMounts.count(BaseMount::isLarge)].x;
             };
         }
 
         public float nextModuleY(ModuleSize size){
             return switch(size){
-                case small -> smallMountPos[allMounts.count(BaseMount::isSmall) * 2 + 1];
-                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium) * 2 + 1];
-                case large -> largeMountPos[allMounts.count(BaseMount::isLarge) * 2 + 1];
+                case small -> smallMountPos[allMounts.count(BaseMount::isSmall)].y;
+                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium)].y;
+                case large -> largeMountPos[allMounts.count(BaseMount::isLarge)].y;
             };
         }
 
         /** @return if a module can be added. */
         public boolean acceptModule(ModuleSize size){
             return switch(size){
-                case small -> smallMountPos != null && allMounts.count(BaseMount::isSmall) + 1 <= smallMountPos.length / 2;
-                case medium -> mediumMountPos != null && allMounts.count(BaseMount::isMedium) + 1 <= mediumMountPos.length / 2;
-                case large -> largeMountPos != null && allMounts.count(BaseMount::isLarge) + 1 <= largeMountPos.length / 2;
+                case small -> smallMountPos != null && allMounts.count(BaseMount::isSmall) + 1 <= smallMountPos.length;
+                case medium -> mediumMountPos != null && allMounts.count(BaseMount::isMedium) + 1 <= mediumMountPos.length;
+                case large -> largeMountPos != null && allMounts.count(BaseMount::isLarge) + 1 <= largeMountPos.length;
             };
         }
 
@@ -342,6 +384,60 @@ public class ModularTurret extends PayloadBlock{
         public float requestedPower(Building entity){
             if(entity instanceof ModularTurretBuild m) return m.mountPower();
             return 0f;
+        }
+    }
+
+    public static class ModuleGroup{
+        public ModuleSize size;
+        public ModuleGroupType groupType;
+        public float offsetX, offsetY;
+
+        public ModuleGroup(ModuleSize size, ModuleGroupType groupType, float offsetX, float offsetY){
+            this.size = size;
+            this.groupType = groupType;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+        }
+
+        public ModuleGroup(ModuleSize size){
+            this(size, ModuleGroupType.single, 0f, 0f);
+        }
+
+        public Vec2 pos(int pos){
+            float x = switch(groupType){
+                case single -> offsetX;
+                case quad -> -offsetX;
+                case circle -> pos % 2 == 0 ? -offsetX : 0f;
+                case oct -> pos % 2 == 0 ? -offsetX : -offsetY;
+            };
+            float y = switch(groupType){
+                case single, quad -> offsetY;
+                case circle -> pos % 2 == 0 ? offsetX : offsetY;
+                case oct -> pos % 2 == 0 ? offsetY : offsetX;
+            };
+
+            Vec2 output = new Vec2(x, y);
+            switch(groupType){
+                case quad -> output.rotate(pos * -90f);
+                case circle, oct -> output.rotate(Mathf.floor(pos/ 2f) * -90f);
+            }
+
+            return output;
+        }
+
+        public int amount(){
+            return switch(groupType){
+                case single -> 1;
+                case quad -> 4;
+                case circle, oct -> 8;
+            };
+        }
+
+        public enum ModuleGroupType{
+            single,
+            quad,
+            circle,
+            oct
         }
     }
 }

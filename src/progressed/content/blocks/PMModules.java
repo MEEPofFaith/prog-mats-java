@@ -139,6 +139,7 @@ public class PMModules implements ContentList{
                 inaccuracy = 20;
                 velocityInaccuracy = 0.2f;
                 rotateSpeed = 9f;
+                shootSound = Sounds.shootBig;
 
                 limitRange(5f);
             }};

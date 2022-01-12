@@ -35,6 +35,9 @@ import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.multi.*;
+import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.ModularTurret.ModuleGroup.*;
+import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
@@ -1036,44 +1039,22 @@ public class PMBlocks implements ContentList{
         council = new ModularTurret("council"){{
             requirements(Category.turret, empty);
             size = 5;
-            float p1 = 39f / 4f,
-                p2 = 49f / 4f;
-            smallMountPos = new float[]{
-                -p1, p1,
-                0, p2,
-                p1, p1,
-                p2, 0,
-                p1, -p1,
-                0, -p2,
-                -p1, -p1,
-                -p2, 0
+
+            moduleGroups = new ModuleGroup[]{
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.circle, 39f/ 4f, 49f/ 4f),
+                new ModuleGroup(ModuleSize.medium)
             };
-            mediumMountPos = new float[]{0, 0};
         }};
 
         congress = new ModularTurret("congress"){{
             requirements(Category.turret, empty);
             size = 7;
-            float p1 = 76f / 4f,
-                p2 = 49f / 4f;
-            smallMountPos = new float[]{
-                -p1, p2,
-                -p2, p1,
-                p2, p1,
-                p1, p2,
-                p1, -p2,
-                p2, -p1,
-                -p2, -p1,
-                -p1, -p2
+
+            moduleGroups = new ModuleGroup[]{
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 76f / 4f, 49f / 4f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 71f / 4f),
+                new ModuleGroup(ModuleSize.large)
             };
-            float p3 = 71f / 4f;
-            mediumMountPos = new float[]{
-                0f, p3,
-                p3, 0f,
-                0f, -p3,
-                -p3, 0f
-            };
-            largeMountPos = new float[]{0, 0};
         }};
 
         pantheon = new ModularTurret("pantheon"){{
