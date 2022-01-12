@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
@@ -164,7 +165,7 @@ public class BaseModule implements Cloneable{
     public float handleLiquid(Liquid liquid, float amount, BaseMount mount){
         float added = Math.min(amount, liquidCapacity - mount.liquids.get(liquid));
         mount.liquids.add(liquid, added);
-        return amount - added;
+        return added;
     }
 
     public float powerUse(ModularTurretBuild parent, BaseMount mount){

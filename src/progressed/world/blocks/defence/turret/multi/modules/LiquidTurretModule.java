@@ -65,7 +65,6 @@ public class LiquidTurretModule extends TurretModule{
     @Override
     protected void effects(TurretMount mount){
         float x = mount.x, y = mount.y;
-        Vec2 tr = Tmp.v1;
 
         Effect fshootEffect = shootEffect == Fx.none ? peekAmmo(mount).shootEffect : shootEffect;
         Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo(mount).smokeEffect : smokeEffect;
@@ -101,8 +100,8 @@ public class LiquidTurretModule extends TurretModule{
 
     @Override
     public boolean acceptLiquid(Liquid liquid, BaseMount mount){
-        return isDeployed(mount) && ammoTypes.get(liquid) != null
-            && (mount.liquids.current() == liquid
-            || (ammoTypes.containsKey(liquid) && (!ammoTypes.containsKey(mount.liquids.current()) || mount.liquids.get(mount.liquids.current()) <= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier + 0.001f)));
+        return isDeployed(mount) && mount.liquids.get(liquid) < liquidCapacity && ammoTypes.get(liquid) != null
+            && (mount.liquids.current() == liquid || (ammoTypes.containsKey(liquid) &&
+            (!ammoTypes.containsKey(mount.liquids.current()) || mount.liquids.get(mount.liquids.current()) <= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier + 0.001f)));
     }
 }

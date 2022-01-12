@@ -75,7 +75,7 @@ public class SniperBullets implements ContentList{
             height = 14f;
             pierceCap = 12;
             critMultiplier = 3f;
-            critEffect = PMFx.sniperCritMini;
+            critEffect = PMFx.miniCrit;
         }};
 
         sniperBoltValexitite = new CritBulletType(13f, 800f){

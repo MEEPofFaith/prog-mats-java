@@ -256,7 +256,10 @@ public class TurretModule extends BaseModule{
                 }
             }
 
-            if(burstSpacing <= 0.0001f) effects(mount);
+            if(burstSpacing <= 0.0001f){
+                useAmmo(parent, mount);
+                effects(mount);
+            }
             if(countAfter) mount.shotCounter++;
         }
     }

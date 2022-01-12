@@ -4,49 +4,118 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
+import progressed.content.*;
+import progressed.entities.bullet.physical.*;
 
 public class ModuleBullets implements ContentList{
     public static BulletType
 
-    shotgunCopper, shotgunDense, shotgunTitanium, shotunThorium,
+    shotgunCopper, shotgunDense, shotgunTitanium, shotgunThorium,
+
+    shotgunCopperCrit, shotgunDenseCrit, shotgunTitaniumCrit, shotgunThoriumCrit,
 
     swarmIncendiary, swarmBlast;
 
     @Override
     public void load(){
-        shotgunCopper = new BasicBulletType(4f, 9){{
+        shotgunCopper = new BasicBulletType(5f, 9){{
+            width = 7f;
+            height = 9f;
+            lifetime = 240f;
+            ammoMultiplier = 1;
+        }};
+
+        shotgunDense = new BasicBulletType(6.5f, 18){{
+            width = 9f;
+            height = 12f;
+            reloadMultiplier = 0.6f;
+            ammoMultiplier = 3;
+            lifetime = 240f;
+        }};
+
+        shotgunTitanium = new BasicBulletType(6f, 16f){{
+            width = 8;
+            height = 10;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootBigSmoke;
+            hitEffect = Fx.hitBulletSmall;
+            ammoMultiplier = 2;
+            lifetime = 240;
+        }};
+
+        shotgunThorium = new BasicBulletType(7f, 29){{
+            width = 10f;
+            height = 13f;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootBigSmoke;
+            hitEffect = Fx.hitBulletSmall;
+            ammoMultiplier = 3;
+            lifetime = 240f;
+        }};
+
+        shotgunCopperCrit = new CritBulletType(5f, 9){{
             width = 7f;
             height = 9f;
             lifetime = 240f;
             shootEffect = Fx.shootSmall;
             smokeEffect = Fx.shootSmallSmoke;
-            ammoMultiplier = 2;
+            hitEffect = Fx.hitBulletSmall;
+            ammoMultiplier = 1;
+            trailLength = 3;
+            pierce = pierceBuilding = false;
+
+            critChance = 0.04f;
+            critMultiplier = 2f;
+            critEffect = PMFx.miniCrit;
         }};
 
-        shotgunDense = new BasicBulletType(6f, 18){{
+        shotgunDenseCrit = new CritBulletType(6.5f, 18){{
             width = 9f;
             height = 12f;
             reloadMultiplier = 0.6f;
-            ammoMultiplier = 4;
+            ammoMultiplier = 3;
             lifetime = 240f;
+            shootEffect = Fx.shootSmall;
+            smokeEffect = Fx.shootSmallSmoke;
+            hitEffect = Fx.hitBulletSmall;
+            trailLength = 3;
+            pierce = pierceBuilding = false;
+
+            critChance = 0.01f;
+            critMultiplier = 7f;
+            critEffect = PMFx.miniCrit;
         }};
 
-        shotgunTitanium = new BasicBulletType(5f, 16f){{
+        shotgunTitaniumCrit = new CritBulletType(6f, 16f){{
             width = 8;
             height = 10;
+            ammoMultiplier = 2;
+            lifetime = 240;
             shootEffect = Fx.shootBig;
             smokeEffect = Fx.shootBigSmoke;
-            ammoMultiplier = 3;
-            lifetime = 240;
+            hitEffect = Fx.hitBulletSmall;
+            trailLength = 3;
+            pierce = pierceBuilding = false;
+
+            critChance = 0.03f;
+            critMultiplier = 3f;
+            critEffect = PMFx.miniCrit;
         }};
 
-        shotunThorium = new BasicBulletType(7f, 29){{
+        shotgunThoriumCrit = new CritBulletType(7f, 29){{
             width = 10f;
             height = 13f;
-            shootEffect = Fx.shootBig;
-            smokeEffect = Fx.shootBigSmoke;
             ammoMultiplier = 3;
             lifetime = 240f;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootBigSmoke;
+            hitEffect = Fx.hitBulletSmall;
+            trailLength = 3;
+            pierce = pierceBuilding = false;
+
+            critChance = 0.02f;
+            critMultiplier = 4f;
+            critEffect = PMFx.miniCrit;
         }};
 
         swarmIncendiary = new MissileBulletType(4.2f, 19){{

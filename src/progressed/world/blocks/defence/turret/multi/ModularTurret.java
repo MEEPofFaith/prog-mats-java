@@ -279,9 +279,9 @@ public class ModularTurret extends PayloadBlock{
         @Override
         public void handleLiquid(Building source, Liquid liquid, float amount){
             float a = amount;
-            while(a > 0){ //Distribute overflow from one mount to the next
+            while(a > 0 && allMounts.contains(m -> m.module.acceptLiquid(liquid, m))){ //Distribute overflow from one mount to the next
                 BaseMount mount = allMounts.find(m -> m.module.acceptLiquid(liquid, m));
-                if(mount == null) break;
+                if(mount == null) continue;
                 a -= mount.module.handleLiquid(liquid, a, mount);
             }
         }

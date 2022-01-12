@@ -63,7 +63,7 @@ public class PMModules implements ContentList{
                     Items.copper, ModuleBullets.shotgunCopper,
                     Items.graphite, ModuleBullets.shotgunDense,
                     Items.titanium, ModuleBullets.shotgunTitanium,
-                    Items.thorium, ModuleBullets.shotunThorium
+                    Items.thorium, ModuleBullets.shotgunThorium
                 );
 
                 reloadTime = 90f;
@@ -81,12 +81,18 @@ public class PMModules implements ContentList{
         froth = new ModulePayload("froth"){{
             module = new LiquidTurretModule("froth"){{
                 ammo(
-                    Liquids.water, Bullets.standardThorium,
-                    Liquids.slag, Bullets.fragSurge
+                    Liquids.water, Bullets.waterShot,
+                    Liquids.slag, Bullets.slagShot,
+                    Liquids.cryofluid, Bullets.cryoShot,
+                    Liquids.oil, Bullets.oilShot
                 );
 
-                reloadTime = 3f;
+                reloadTime = 5f;
+                range = 92f;
                 inaccuracy = 8;
+                recoilAmount = 0f;
+                shootCone = 50f;
+                shootEffect = Fx.shootLiquid;
             }};
         }};
 
@@ -118,17 +124,18 @@ public class PMModules implements ContentList{
 
             module = new ItemTurretModule("blunderbuss"){{
                 ammo(
-                    Items.copper, ModuleBullets.shotgunCopper,
-                    Items.graphite, ModuleBullets.shotgunDense,
-                    Items.titanium, ModuleBullets.shotgunTitanium,
-                    Items.thorium, ModuleBullets.shotunThorium
+                    Items.copper, ModuleBullets.shotgunCopperCrit,
+                    Items.graphite, ModuleBullets.shotgunDenseCrit,
+                    Items.titanium, ModuleBullets.shotgunTitaniumCrit,
+                    Items.thorium, ModuleBullets.shotgunThoriumCrit
                 );
+                size = ModuleSize.medium;
 
                 reloadTime = 75f;
-                shootCone = 15;
+                shootCone = 25;
                 range = 200f;
-                shots = 8;
-                inaccuracy = 16;
+                shots = 6;
+                inaccuracy = 20;
                 velocityInaccuracy = 0.2f;
                 rotateSpeed = 9f;
 
@@ -170,6 +177,7 @@ public class PMModules implements ContentList{
                 recoilAmount = 2f;
                 rotateSpeed = 6.5f;
                 shootSound = Sounds.shotgun;
+                heatColor = Color.red;
 
                 float brange = range + 10f;
 

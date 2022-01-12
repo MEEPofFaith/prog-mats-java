@@ -389,7 +389,7 @@ public class PMFx{
         );
     }),
     
-    sniperCritMini = new Effect(90f, e -> {
+    miniCrit = new Effect(90f, e -> {
         v1.trns(e.rotation + 90f, 0f, 32f * e.fin(Interp.pow2Out));
         
         randLenVectors(e.id, 2, 18f, (x, y) -> {
@@ -400,7 +400,7 @@ public class PMFx{
         });
     }),
     
-    sniperCrit = new Effect(120f, e -> {
+    crit = new Effect(120f, e -> {
         v1.trns(e.rotation + 90f, 0f, 48f * e.fin(Interp.pow2Out));
         
         randLenVectors(e.id, 6, 24f, (x, y) -> {
