@@ -14,6 +14,8 @@ public class ModuleBullets implements ContentList{
 
     shotgunCopperCrit, shotgunDenseCrit, shotgunTitaniumCrit, shotgunThoriumCrit,
 
+    waterShotMini, cryoShotMini, slagShotMini, oilShotMini,
+
     swarmIncendiary, swarmBlast;
 
     @Override
@@ -116,6 +118,48 @@ public class ModuleBullets implements ContentList{
             critChance = 0.02f;
             critMultiplier = 4f;
             critEffect = PMFx.miniCrit;
+        }};
+
+        waterShotMini = new LiquidBulletType(Liquids.water){{
+            lifetime = 40f;
+            speed = 3f;
+            knockback = 0.3f;
+            drag = 0.01f;
+            puddleSize = 4f;
+            orbSize = 2f;
+            ammoMultiplier = 1.2f;
+            statusDuration = 60f;
+        }};
+
+        cryoShotMini = new LiquidBulletType(Liquids.cryofluid){{
+            lifetime = 40f;
+            speed = 3f;
+            drag = 0.01f;
+            puddleSize = 4f;
+            orbSize = 2f;
+            ammoMultiplier = 1.2f;
+            statusDuration = 60f;
+        }};
+
+        slagShotMini = new LiquidBulletType(Liquids.slag){{
+            lifetime = 40f;
+            speed = 3f;
+            drag = 0.01f;
+            puddleSize = 4f;
+            orbSize = 2f;
+            ammoMultiplier = 1.2f;
+            statusDuration = 60f;
+            damage = 2.5f;
+        }};
+
+        oilShotMini = new LiquidBulletType(Liquids.oil){{
+            lifetime = 40f;
+            speed = 3f;
+            drag = 0.01f;
+            puddleSize = 4f;
+            orbSize = 2f;
+            ammoMultiplier = 1.2f;
+            statusDuration = 60f;
         }};
 
         swarmIncendiary = new MissileBulletType(4.2f, 19){{

@@ -81,14 +81,15 @@ public class PMModules implements ContentList{
         froth = new ModulePayload("froth"){{
             module = new LiquidTurretModule("froth"){{
                 ammo(
-                    Liquids.water, Bullets.waterShot,
-                    Liquids.slag, Bullets.slagShot,
-                    Liquids.cryofluid, Bullets.cryoShot,
-                    Liquids.oil, Bullets.oilShot
+                    Liquids.water, ModuleBullets.waterShotMini,
+                    Liquids.slag, ModuleBullets.slagShotMini,
+                    Liquids.cryofluid, ModuleBullets.cryoShotMini,
+                    Liquids.oil, ModuleBullets.oilShotMini
                 );
 
                 reloadTime = 5f;
-                range = 92f;
+                range = 96f;
+                targetAir = false;
                 inaccuracy = 8;
                 recoilAmount = 0f;
                 shootCone = 50f;
@@ -182,9 +183,9 @@ public class PMModules implements ContentList{
                 float brange = range + 10f;
 
                 shootType = new ShrapnelBulletType(){{
-                    damage = 53f;
+                    damage = 67f;
                     length = brange;
-                    width = 7f;
+                    width = 12f;
                     toColor = Pal.remove;
                     shootEffect = smokeEffect = PMFx.flameShoot;
                     makeFire = true;

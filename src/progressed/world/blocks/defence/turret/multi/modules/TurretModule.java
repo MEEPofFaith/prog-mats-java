@@ -238,6 +238,7 @@ public class TurretModule extends BaseModule{
                 if(parent.dead) return;
                 tr.trns(rot, shootLength - mount.recoil);
                 bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
+                effects(mount, type);
                 mount.charging = false;
             });
         }else{
@@ -247,8 +248,8 @@ public class TurretModule extends BaseModule{
                     Time.run(burstSpacing * i, () -> {
                         if(parent.dead || !hasAmmo(mount)) return;
                         basicShoot(parent, mount, peekAmmo(mount), ii);
+                        effects(mount, peekAmmo(mount));
                         useAmmo(parent, mount);
-                        effects(mount);
                     });
                 }else{
                     if(parent.dead) return;
@@ -257,8 +258,8 @@ public class TurretModule extends BaseModule{
             }
 
             if(burstSpacing <= 0.0001f){
+                effects(mount, type);
                 useAmmo(parent, mount);
-                effects(mount);
             }
             if(countAfter) mount.shotCounter++;
         }
@@ -283,11 +284,11 @@ public class TurretModule extends BaseModule{
         type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
     }
 
-    protected void effects(TurretMount mount){
+    protected void effects(TurretMount mount, BulletType type){
         float x = mount.x, y = mount.y;
 
-        Effect fshootEffect = shootEffect == Fx.none ? peekAmmo(mount).shootEffect : shootEffect;
-        Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo(mount).smokeEffect : smokeEffect;
+        Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
+        Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
         fshootEffect.at(x + tr.x, y + tr.y, mount.rotation);
         fsmokeEffect.at(x + tr.x, y + tr.y, mount.rotation);

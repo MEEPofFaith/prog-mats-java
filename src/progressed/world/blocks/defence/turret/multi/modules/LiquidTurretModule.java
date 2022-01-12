@@ -63,11 +63,11 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    protected void effects(TurretMount mount){
+    protected void effects(TurretMount mount, BulletType type){
         float x = mount.x, y = mount.y;
 
-        Effect fshootEffect = shootEffect == Fx.none ? peekAmmo(mount).shootEffect : shootEffect;
-        Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo(mount).smokeEffect : smokeEffect;
+        Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
+        Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
         fshootEffect.at(x + tr.x, y + tr.y, mount.rotation, mount.liquids.current().color);
         fsmokeEffect.at(x + tr.x, y + tr.y, mount.rotation, mount.liquids.current().color);
