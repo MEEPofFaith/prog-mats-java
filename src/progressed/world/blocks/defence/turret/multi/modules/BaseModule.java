@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.multi.modules;
 
 import arc.*;
+import arc.audio.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -10,7 +11,9 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -32,6 +35,9 @@ public class BaseModule implements Cloneable{
     public float liquidCapacity = 10f;
     public float layerOffset;
 
+    public Sound loopSound = Sounds.none;
+    public float loopSoundVolume = 1f;
+
     public ModuleSize size;
 
     public Func4<ModularTurretBuild, BaseModule, Float, Float, BaseMount> mountType = BaseMount::new;
@@ -48,7 +54,7 @@ public class BaseModule implements Cloneable{
     public static final Vec2 tr = new Vec2(), tr2 = new Vec2();
 
     public BaseModule(String name, ModuleSize size){
-        this.name = name;
+        this.name = "prog-mats-" + name;
         this.size = size;
         localizedName = Core.bundle.get("pmturretmodule." + name + ".name", name);
     }
@@ -66,7 +72,7 @@ public class BaseModule implements Cloneable{
     }
 
     public void load(){
-        region = Core.atlas.find("prog-mats-" + name);
+        region = Core.atlas.find(name);
     }
 
     public void setBars(){
@@ -104,6 +110,14 @@ public class BaseModule implements Cloneable{
 
     public void update(ModularTurretBuild parent, BaseMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
+
+        if(!Vars.headless && mount.sound != null) mount.sound.update(mount.x, mount.y, shouldLoopSound(parent, mount));
+    }
+
+    public void remove(ModularTurretBuild parent, BaseMount mount){
+        if(mount.sound != null){
+            mount.sound.stop();
+        }
     }
 
     public boolean isDeployed(BaseMount mount){
@@ -175,6 +189,10 @@ public class BaseModule implements Cloneable{
 
     public float powerUse(ModularTurretBuild parent, BaseMount mount){
         return Mathf.num(isActive(parent, mount)) * powerUse;
+    }
+
+    public boolean shouldLoopSound(ModularTurretBuild parent, BaseMount mount){
+        return false;
     }
 
     public void writeAll(Writes write, BaseMount mount){

@@ -1,6 +1,8 @@
 package progressed.content.blocks;
 
+import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -10,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
@@ -36,10 +39,30 @@ public class PMModules implements ContentList{
     public void load(){
         miniOverdrive = new ModulePayload("mini-overdrive"){{
             module = new SingleModule("mini-overdrive"){
+                TextureRegion topRegion;
+
                 {
                     mountType = ChargeMount::new;
 
                     powerUse = 0.75f;
+                }
+
+                @Override
+                public void load(){
+                    super.load();
+                    topRegion = Core.atlas.find(name + "-top");
+                }
+
+                @Override
+                public void draw(BaseMount mount){
+                    super.draw(mount);
+
+                    ChargeMount m = (ChargeMount)mount;
+
+                    Draw.color(PMPal.overdrive);
+                    Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+                    Draw.rect(topRegion, m.x, m.y);
+                    Draw.color();
                 }
 
                 @Override
@@ -94,7 +117,7 @@ public class PMModules implements ContentList{
                 targetAir = false;
                 inaccuracy = 8;
                 recoilAmount = 0f;
-                shootCone = 50f;
+                shootCone = 20f;
                 shootEffect = Fx.shootLiquid;
             }};
         }};
@@ -156,6 +179,7 @@ public class PMModules implements ContentList{
 
                 reloadTime = 60f;
                 range = 200f;
+                shootCone = 45;
                 shots = 7;
                 xRand = 4f;
                 burstSpacing = 2f;

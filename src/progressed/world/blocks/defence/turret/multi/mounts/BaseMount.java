@@ -1,6 +1,8 @@
 package progressed.world.blocks.defence.turret.multi.mounts;
 
 import arc.graphics.g2d.*;
+import mindustry.audio.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.modules.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
@@ -22,13 +24,16 @@ public class BaseMount{
     public float rotation = 90;
     /** Current heat, 0 to 1*/
     public float heat;
+    public SoundLoop sound;
 
     public BaseMount(ModularTurretBuild parent, BaseModule module, float offsetX, float offsetY){
         this.module = module;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         updatePos(parent);
+
         if(module.hasLiquids) liquids = new LiquidModule();
+        if(module.loopSound != Sounds.none) sound = new SoundLoop(module.loopSound, module.loopSoundVolume);
     }
 
     public void onProximityAdded(ModularTurretBuild parent){

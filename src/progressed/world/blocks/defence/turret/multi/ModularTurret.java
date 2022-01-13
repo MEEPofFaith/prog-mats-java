@@ -198,6 +198,13 @@ public class ModularTurret extends PayloadBlock{
         }
 
         @Override
+        public void remove(){
+            super.remove();
+
+            allMounts.each(m -> m.module.remove(this, m));
+        }
+
+        @Override
         public void draw(){
             Draw.rect(region, x, y); //region is the base
 

@@ -24,6 +24,10 @@ public class LiquidTurretModule extends TurretModule{
 
         acceptCoolant = false;
         hasLiquids = true;
+        loopSound = Sounds.spray;
+        shootSound = Sounds.none;
+        smokeEffect = Fx.none;
+        shootEffect = Fx.none;
     }
 
     public LiquidTurretModule(String name){
@@ -33,6 +37,12 @@ public class LiquidTurretModule extends TurretModule{
     /** Initializes accepted ammo map. Format: [liquid1, bullet1, liquid2, bullet2...] */
     public void ammo(Object... objects){
         ammoTypes = ObjectMap.of(objects);
+    }
+
+    @Override
+    public boolean shouldLoopSound(ModularTurretBuild parent, BaseMount mount){
+        if(!(mount instanceof TurretMount m)) return false;
+        return m.wasShooting && parent.enabled;
     }
 
     @Override

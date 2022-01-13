@@ -101,9 +101,9 @@ public class TurretModule extends BaseTurretModule{
     @Override
     public void load(){
         super.load();
-        heatRegion = Core.atlas.find("prog-mats-" + name + "-heat");
-        liquidRegion = Core.atlas.find("prog-mats-" + name + "-liquid");
-        topRegion = Core.atlas.find("prog-mats-" + name + "-top");
+        heatRegion = Core.atlas.find(name + "-heat");
+        liquidRegion = Core.atlas.find(name + "-liquid");
+        topRegion = Core.atlas.find(name + "-top");
     }
 
     public boolean canHeal(TurretMount mount){
