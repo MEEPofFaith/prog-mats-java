@@ -49,9 +49,9 @@ public class BaseMount{
         y = parent.y + offsetY;
     }
 
-    public void draw(){
+    public void draw(ModularTurretBuild parent){
         Draw.z(Layer.turret + module.layerOffset);
-        module.draw(this);
+        module.draw(parent, this);
     }
 
     //Method reference shorter and cleaner.

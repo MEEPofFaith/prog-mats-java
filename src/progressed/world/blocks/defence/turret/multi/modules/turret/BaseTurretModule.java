@@ -25,7 +25,7 @@ public class BaseTurretModule extends BaseModule{
     }
 
     @Override
-    public void draw(BaseMount mount){
+    public void draw(ModularTurretBuild parent, BaseMount mount){
         if(mount instanceof TurretMount m) drawTurret(m);
     }
 

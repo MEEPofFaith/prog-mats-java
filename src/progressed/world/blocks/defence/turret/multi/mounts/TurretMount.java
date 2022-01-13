@@ -21,8 +21,7 @@ public class TurretMount extends BaseMount{
     public int shotCounter;
     public boolean wasShooting, charging;
     /** Target */
-    public @Nullable
-    Posc target;
+    public @Nullable Posc target;
     /** Aim position */
     public Vec2 targetPos = new Vec2();
 

@@ -11,6 +11,7 @@ import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -19,6 +20,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
@@ -46,6 +48,9 @@ public class ModularTurret extends PayloadBlock{
         hasLiquids = true;
         outputsLiquid = false;
         rotate = false;
+        priority = TargetPriority.turret;
+        group = BlockGroup.turrets;
+        flags = EnumSet.of(BlockFlag.turret);
     }
 
     @Override
@@ -233,9 +238,9 @@ public class ModularTurret extends PayloadBlock{
             if(isPayload()) allMounts.each(m -> m.updatePos(this));
 
             //Draw in order of small/medium/large
-            allMounts.each(BaseMount::isSmall, BaseMount::draw);
-            allMounts.each(BaseMount::isMedium, BaseMount::draw);
-            allMounts.each(BaseMount::isLarge, BaseMount::draw);
+            allMounts.each(BaseMount::isSmall, m -> m.draw(this));
+            allMounts.each(BaseMount::isMedium, m -> m.draw(this));
+            allMounts.each(BaseMount::isLarge, m -> m.draw(this));
         }
 
         /** @return the module it adds. */

@@ -29,7 +29,7 @@ public class PMModules implements ContentList{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan,
+    blunderbuss, airburst, vulcan, gravity,
 
     //Region Large
 
@@ -54,8 +54,8 @@ public class PMModules implements ContentList{
                 }
 
                 @Override
-                public void draw(BaseMount mount){
-                    super.draw(mount);
+                public void draw(ModularTurretBuild parent, BaseMount mount){
+                    super.draw(parent, mount);
 
                     ChargeMount m = (ChargeMount)mount;
 
@@ -212,6 +212,21 @@ public class PMModules implements ContentList{
                     makeFire = true;
                     status = StatusEffects.burning;
                 }};
+            }};
+        }};
+
+        gravity = new ModulePayload("gravity"){{
+            size = 2;
+
+            module = new ForceModule("gravity", ModuleSize.medium){{
+                range = 180f;
+                damage = 0.2f;
+                powerUse = 2f;
+                radius = 5f;
+                laserWidth = 0.3f;
+                maxTargets = 6;
+                force = 8f;
+                scaledForce = 5f;
             }};
         }};
     }
