@@ -11,9 +11,7 @@ import arc.scene.ui.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.world.blocks.payloads.*;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;

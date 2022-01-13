@@ -6,11 +6,13 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 
@@ -53,6 +55,16 @@ public class ForceModule extends BaseModule{
 
         laserEnd = Core.atlas.find(name + "-laser-end", "parallax-laser-end");
         laser = Core.atlas.find(name + "-laser", "parallax-laser");
+    }
+
+    @Override
+    public void setStats(Stats stats){
+        super.setStats(stats);
+
+        stats.add(Stat.shootRange, range / Vars.tilesize, StatUnit.blocks);
+        stats.add(Stat.targetsAir, targetAir);
+        stats.add(Stat.targetsGround, targetGround);
+        stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
     }
 
     @Override

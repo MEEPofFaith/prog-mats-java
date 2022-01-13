@@ -1,6 +1,8 @@
 package progressed.world.blocks.defence.turret.multi.modules.turret;
 
+import mindustry.*;
 import mindustry.gen.*;
+import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
@@ -15,6 +17,13 @@ public class BaseTurretModule extends BaseModule{
 
     public BaseTurretModule(String name){
         this(name, ModuleSize.small);
+    }
+
+    @Override
+    public void setStats(Stats stats){
+        super.setStats(stats);
+
+        stats.add(Stat.shootRange, range / Vars.tilesize, StatUnit.blocks);
     }
 
     @Override

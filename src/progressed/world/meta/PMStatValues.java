@@ -52,7 +52,7 @@ public class PMStatValues{
 
                 BulletType type = map.get(t);
                 //no point in displaying unit icon twice
-                if(!compact && !(t instanceof PowerTurret)){
+                if(!compact && !(t instanceof PowerTurret || t instanceof ModulePayload)){
                     if(payload){
                         if(t.unlockedNow()){
                             table.image(icon(t)).padRight(4).right().top();

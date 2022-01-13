@@ -24,7 +24,6 @@ public class ModuleBullets implements ContentList{
             width = 7f;
             height = 9f;
             lifetime = 240f;
-            ammoMultiplier = 1;
         }};
 
         shotgunDense = new BasicBulletType(6.5f, 18){{
@@ -41,7 +40,6 @@ public class ModuleBullets implements ContentList{
             shootEffect = Fx.shootBig;
             smokeEffect = Fx.shootBigSmoke;
             hitEffect = Fx.hitBulletSmall;
-            ammoMultiplier = 2;
             lifetime = 240;
         }};
 
@@ -62,11 +60,10 @@ public class ModuleBullets implements ContentList{
             shootEffect = Fx.shootSmall;
             smokeEffect = Fx.shootSmallSmoke;
             hitEffect = Fx.hitBulletSmall;
-            ammoMultiplier = 1;
             trailLength = 3;
             pierce = pierceBuilding = false;
 
-            critChance = 0.04f;
+            critChance = 0.05f;
             critMultiplier = 2f;
             critEffect = PMFx.miniCrit;
         }};
@@ -83,7 +80,7 @@ public class ModuleBullets implements ContentList{
             trailLength = 3;
             pierce = pierceBuilding = false;
 
-            critChance = 0.01f;
+            critChance = 0.02f;
             critMultiplier = 7f;
             critEffect = PMFx.miniCrit;
         }};
@@ -91,7 +88,6 @@ public class ModuleBullets implements ContentList{
         shotgunTitaniumCrit = new CritBulletType(6f, 16f){{
             width = 8;
             height = 10;
-            ammoMultiplier = 2;
             lifetime = 240;
             shootEffect = Fx.shootBig;
             smokeEffect = Fx.shootBigSmoke;
@@ -99,7 +95,7 @@ public class ModuleBullets implements ContentList{
             trailLength = 3;
             pierce = pierceBuilding = false;
 
-            critChance = 0.03f;
+            critChance = 0.04f;
             critMultiplier = 3f;
             critEffect = PMFx.miniCrit;
         }};
@@ -115,7 +111,7 @@ public class ModuleBullets implements ContentList{
             trailLength = 3;
             pierce = pierceBuilding = false;
 
-            critChance = 0.02f;
+            critChance = 0.03f;
             critMultiplier = 4f;
             critEffect = PMFx.miniCrit;
         }};

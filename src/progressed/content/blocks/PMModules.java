@@ -10,12 +10,13 @@ import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.turret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 import progressed.world.blocks.payloads.*;
@@ -40,6 +41,7 @@ public class PMModules implements ContentList{
         miniOverdrive = new ModulePayload("mini-overdrive"){{
             module = new SingleModule("mini-overdrive"){
                 TextureRegion topRegion;
+                final float speedBoost = 1.25f;
 
                 {
                     mountType = ChargeMount::new;
@@ -51,6 +53,13 @@ public class PMModules implements ContentList{
                 public void load(){
                     super.load();
                     topRegion = Core.atlas.find(name + "-top");
+                }
+
+                @Override
+                public void setStats(Stats stats){
+                    super.setStats(stats);
+
+                    stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
                 }
 
                 @Override
@@ -75,7 +84,7 @@ public class PMModules implements ContentList{
 
                         if(m.charge >= 60f){
                             m.charge = 0f;
-                            parent.applyBoost(1.25f * parent.efficiency(), 61f);
+                            parent.applyBoost(speedBoost * parent.efficiency(), 61f);
                         }
                     }
                 }

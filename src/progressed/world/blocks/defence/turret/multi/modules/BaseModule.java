@@ -9,7 +9,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -18,6 +17,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
@@ -73,6 +73,12 @@ public class BaseModule implements Cloneable{
 
     public void load(){
         region = Core.atlas.find(name);
+    }
+
+    public void setStats(Stats stats){
+        if(powerUse > 0) stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
+
+        consumes.display(stats);
     }
 
     public void setBars(){

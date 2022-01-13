@@ -43,6 +43,13 @@ public class ModulePayload extends Block{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+
+        module.setStats(stats);
+    }
+
+    @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
         module.createIcons(packer);

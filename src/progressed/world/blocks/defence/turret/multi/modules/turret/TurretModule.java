@@ -18,10 +18,10 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 
 public class TurretModule extends BaseTurretModule{
@@ -104,6 +104,20 @@ public class TurretModule extends BaseTurretModule{
         heatRegion = Core.atlas.find(name + "-heat");
         liquidRegion = Core.atlas.find(name + "-liquid");
         topRegion = Core.atlas.find(name + "-top");
+    }
+
+    @Override
+    public void setStats(Stats stats){
+        super.setStats(stats);
+
+        stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
+        stats.add(Stat.reload, 60f / (reloadTime) * shots, StatUnit.perSecond);
+        stats.add(Stat.targetsAir, targetAir);
+        stats.add(Stat.targetsGround, targetGround);
+
+        if(acceptCoolant){
+            stats.add(Stat.booster, StatValues.boosters(reloadTime, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
+        }
     }
 
     public boolean canHeal(TurretMount mount){
