@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.multi.modules.turret;
 
 import arc.*;
 import arc.struct.*;
@@ -17,8 +17,12 @@ public class ItemTurretModule extends TurretModule{
 
     public int maxAmmo = 30;
 
+    public ItemTurretModule(String name, ModuleSize size){
+        super(name, size);
+    }
+
     public ItemTurretModule(String name){
-        super(name);
+        this(name, ModuleSize.small);
     }
 
     /** Initializes accepted ammo map. Format: [item1, bullet1, item2, bullet2...] */

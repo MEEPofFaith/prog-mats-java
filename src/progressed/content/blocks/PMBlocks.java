@@ -35,7 +35,6 @@ import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.multi.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.*;

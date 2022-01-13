@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.multi.modules.turret;
 
 import mindustry.entities.bullet.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
@@ -7,8 +7,12 @@ import progressed.world.blocks.defence.turret.multi.mounts.*;
 public class PowerTurretModule extends TurretModule{
     public BulletType shootType;
 
+    public PowerTurretModule(String name, ModuleSize size){
+        super(name, size);
+    }
+
     public PowerTurretModule(String name){
-        super(name);
+        this(name, ModuleSize.small);
     }
 
     @Override

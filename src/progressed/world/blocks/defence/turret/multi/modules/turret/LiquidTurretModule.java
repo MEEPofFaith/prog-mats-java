@@ -1,9 +1,7 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.multi.modules.turret;
 
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
@@ -13,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 
 public class LiquidTurretModule extends TurretModule{
@@ -20,11 +19,15 @@ public class LiquidTurretModule extends TurretModule{
 
     public boolean extinguish = true;
 
-    public LiquidTurretModule(String name){
-        super(name);
+    public LiquidTurretModule(String name, ModuleSize size){
+        super(name, size);
 
         acceptCoolant = false;
         hasLiquids = true;
+    }
+
+    public LiquidTurretModule(String name){
+        this(name, ModuleSize.small);
     }
 
     /** Initializes accepted ammo map. Format: [liquid1, bullet1, liquid2, bullet2...] */
@@ -69,9 +72,9 @@ public class LiquidTurretModule extends TurretModule{
         Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
         Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
-        fshootEffect.at(x + tr.x, y + tr.y, mount.rotation, mount.liquids.current().color);
-        fsmokeEffect.at(x + tr.x, y + tr.y, mount.rotation, mount.liquids.current().color);
-        shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+        fshootEffect.at(x + BaseModule.tr.x, y + BaseModule.tr.y, mount.rotation, mount.liquids.current().color);
+        fsmokeEffect.at(x + BaseModule.tr.x, y + BaseModule.tr.y, mount.rotation, mount.liquids.current().color);
+        shootSound.at(x + BaseModule.tr.x, y + BaseModule.tr.y, Mathf.random(0.9f, 1.1f));
 
         if(shootShake > 0){
             Effect.shake(shootShake, shootShake, x, y);

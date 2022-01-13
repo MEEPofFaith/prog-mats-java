@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.multi.modules.turret;
 
 import arc.*;
 import arc.audio.*;
@@ -21,11 +21,10 @@ import mindustry.world.consumers.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
+import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 
-public class TurretModule extends BaseModule{
-    public float range = 80f;
-
+public class TurretModule extends BaseTurretModule{
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
     public float reloadTime = 30f;
@@ -66,7 +65,7 @@ public class TurretModule extends BaseModule{
     public Effect chargeBeginEffect = Fx.none;
     public Sound chargeSound = Sounds.none;
 
-    public float recoilAmount = 1f;
+    public float recoilAmount;
     public float restitution = 0.02f;
     public float cooldown = 0.02f;
     public float elevation = -1f;
@@ -75,9 +74,13 @@ public class TurretModule extends BaseModule{
 
     public Sortf unitSort = UnitSorts.closest;
 
+    public TurretModule(String name, ModuleSize size){
+        super(name, size);
+        recoilAmount = size();
+    }
+
     public TurretModule(String name){
-        super(name);
-        mountType = TurretMount::new;
+        this(name, ModuleSize.small);
     }
 
     @Override
@@ -117,6 +120,7 @@ public class TurretModule extends BaseModule{
         return isDeployed(m) && (m.target != null || m.wasShooting) && parent.enabled;
     }
 
+    @Override
     public void targetPosition(TurretMount mount, Posc pos){
         if(!hasAmmo(mount) || pos == null) return;
         BulletType bullet = peekAmmo(mount);
@@ -137,50 +141,48 @@ public class TurretModule extends BaseModule{
     }
 
     @Override
-    public void update(ModularTurretBuild parent, BaseMount mount){
-        super.update(parent, mount);
+    public void updateTurret(ModularTurretBuild parent, TurretMount mount){
+        if(!isDeployed(mount)) return;
 
-        if(!isDeployed(mount) || !(mount instanceof TurretMount m)) return;
+        if(!validateTarget(parent, mount)) mount.target = null;
 
-        if(!validateTarget(parent, m)) m.target = null;
+        mount.wasShooting = false;
 
-        m.wasShooting = false;
+        mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
+        mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
 
-        m.recoil = Mathf.lerpDelta(m.recoil, 0f, restitution);
-        m.heat = Mathf.lerpDelta(m.heat, 0f, cooldown);
+        if(hasAmmo(mount)){
+            if(Float.isNaN(mount.reload)) mount.reload = 0;
 
-        if(hasAmmo(m)){
-            if(Float.isNaN(m.reload)) m.reload = 0;
-
-            if(validateTarget(parent, m)){
+            if(validateTarget(parent, mount)){
                 boolean canShoot = true;
 
                 if(parent.isControlled()){ //player behavior
-                    m.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
+                    mount.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
                     canShoot = parent.unit.isShooting();
                 }else if(parent.logicControlled()){ //logic behavior
                     canShoot = parent.logicShooting;
                 }else{ //default AI behavior
-                    targetPosition(m, m.target);
+                    targetPosition(mount, mount.target);
 
-                    if(Float.isNaN(m.rotation)) m.rotation = 0;
+                    if(Float.isNaN(mount.rotation)) mount.rotation = 0;
                 }
 
-                float targetRot = Angles.angle(m.x, m.y, m.targetPos.x, m.targetPos.y);
+                float targetRot = Angles.angle(mount.x, mount.y, mount.targetPos.x, mount.targetPos.y);
 
-                if(shouldTurn(m)){
-                    turnToTarget(parent, m, targetRot);
+                if(shouldTurn(mount)){
+                    turnToTarget(parent, mount, targetRot);
                 }
 
-                if(Angles.angleDist(m.rotation, targetRot) < shootCone && canShoot){
-                    m.wasShooting = true;
-                    updateShooting(parent, m);
+                if(Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
+                    mount.wasShooting = true;
+                    updateShooting(parent, mount);
                 }
             }
         }
 
         if(acceptCoolant){
-            updateCooling(m);
+            updateCooling(mount);
         }
     }
 
@@ -326,6 +328,7 @@ public class TurretModule extends BaseModule{
     }
 
     /** @return whether the turret has ammo. */
+    @Override
     public boolean hasAmmo(TurretMount mount){
         return mount.ammo.size > 0;
     }
@@ -338,6 +341,7 @@ public class TurretModule extends BaseModule{
         mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * speedScl(parent, mount));
     }
 
+    @Override
     public void findTarget(ModularTurretBuild parent, TurretMount mount){
         if(!hasAmmo(mount)) return;
         float x = mount.x,
@@ -354,25 +358,23 @@ public class TurretModule extends BaseModule{
     }
 
     @Override
-    public void draw(BaseMount mount){
-        if(!(mount instanceof TurretMount m)) return;
-
-        float x = m.x,
-            y = m.y,
-            rot = m.rotation;
+    public void drawTurret(TurretMount mount){
+        float x = mount.x,
+            y = mount.y,
+            rot = mount.rotation;
 
         if(mount.progress < deployTime){
             Draw.draw(Draw.z(), () -> PMDrawf.build(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
             return;
         }
 
-        tr.trns(rot, -m.recoil);
+        tr.trns(rot, -mount.recoil);
 
         Drawf.shadow(region, x + tr.x, y + tr.y - elevation, rot - 90);
         Draw.rect(region, x + tr.x, y + tr.y, rot - 90);
 
-        if(heatRegion.found() && m.heat > 0.001f){
-            Draw.color(heatColor, m.heat);
+        if(heatRegion.found() && mount.heat > 0.001f){
+            Draw.color(heatColor, mount.heat);
             Draw.blend(Blending.additive);
             Draw.rect(heatRegion, x + tr.x, y + tr.y, rot - 90);
             Draw.blend();
@@ -380,7 +382,7 @@ public class TurretModule extends BaseModule{
         }
 
         if(liquidRegion.found())
-            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, m.liquids.total() / liquidCapacity, m.liquids.current().color, rot - 90);
+            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
 
         if(topRegion.found())
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);

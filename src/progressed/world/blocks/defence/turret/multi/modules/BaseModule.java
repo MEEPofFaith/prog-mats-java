@@ -32,7 +32,7 @@ public class BaseModule implements Cloneable{
     public float liquidCapacity = 10f;
     public float layerOffset;
 
-    public ModuleSize size = ModuleSize.small;
+    public ModuleSize size;
 
     public Func4<ModularTurretBuild, BaseModule, Float, Float, BaseMount> mountType = BaseMount::new;
 
@@ -47,9 +47,14 @@ public class BaseModule implements Cloneable{
 
     public static final Vec2 tr = new Vec2(), tr2 = new Vec2();
 
-    public BaseModule(String name){
+    public BaseModule(String name, ModuleSize size){
         this.name = name;
+        this.size = size;
         localizedName = Core.bundle.get("pmturretmodule." + name + ".name", name);
+    }
+
+    public BaseModule(String name){
+        this(name, ModuleSize.small);
     }
 
     public void init(){

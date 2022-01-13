@@ -7,9 +7,10 @@ import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
+import progressed.world.blocks.defence.turret.multi.modules.turret.*;
 
 public class TurretMount extends BaseMount{
-    public final TurretModule module;
+    public final BaseTurretModule module;
     /** Ammo in the mount */
     public Seq<AmmoEntry> ammo = new Seq<>();
     public int totalAmmo;
@@ -27,7 +28,7 @@ public class TurretMount extends BaseMount{
 
     public TurretMount(ModularTurretBuild parent, BaseModule module, float offsetX, float offsetY){
         super(parent, module, offsetX, offsetY);
-        this.module = (TurretModule)module;
+        this.module = (BaseTurretModule)module;
     }
 
     public void findTarget(ModularTurretBuild parent){

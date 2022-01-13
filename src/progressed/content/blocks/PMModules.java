@@ -12,6 +12,8 @@ import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
+import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.multi.modules.turret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 import progressed.world.blocks.payloads.*;
 
@@ -28,7 +30,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    sunrise;
+    idk;
 
     @Override
     public void load(){
@@ -115,7 +117,6 @@ public class PMModules implements ContentList{
                 barrelSpacing = 3;
                 shootEffect = Fx.lightningShoot;
                 heatColor = Color.red;
-                recoilAmount = 1f;
                 shootSound = Sounds.spark;
             }};
         }};
@@ -123,14 +124,13 @@ public class PMModules implements ContentList{
         blunderbuss = new ModulePayload("blunderbuss"){{
             size = 2;
 
-            module = new ItemTurretModule("blunderbuss"){{
+            module = new ItemTurretModule("blunderbuss", ModuleSize.medium){{
                 ammo(
                     Items.copper, ModuleBullets.shotgunCopperCrit,
                     Items.graphite, ModuleBullets.shotgunDenseCrit,
                     Items.titanium, ModuleBullets.shotgunTitaniumCrit,
                     Items.thorium, ModuleBullets.shotgunThoriumCrit
                 );
-                size = ModuleSize.medium;
 
                 reloadTime = 75f;
                 shootCone = 25;
@@ -148,12 +148,11 @@ public class PMModules implements ContentList{
         airburst = new ModulePayload("airburst"){{
             size = 2;
 
-            module = new ItemTurretModule("airburst"){{
+            module = new ItemTurretModule("airburst", ModuleSize.medium){{
                 ammo(
                     Items.pyratite, ModuleBullets.swarmIncendiary,
                     Items.blastCompound, ModuleBullets.swarmBlast
                 );
-                size = ModuleSize.medium;
 
                 reloadTime = 60f;
                 range = 200f;
@@ -163,7 +162,6 @@ public class PMModules implements ContentList{
                 inaccuracy = 7f;
                 velocityInaccuracy = 0.2f;
                 rotateSpeed = 3f;
-                recoilAmount = 2f;
                 shootSound = Sounds.missile;
             }};
         }};
@@ -171,12 +169,10 @@ public class PMModules implements ContentList{
         vulcan = new ModulePayload("vulcan"){{
             size = 2;
 
-            module = new PowerTurretModule("vulcan"){{
-                size = ModuleSize.medium;
+            module = new PowerTurretModule("vulcan", ModuleSize.medium){{
                 reloadTime = 43f;
                 powerUse = 10f;
                 range = 116;
-                recoilAmount = 2f;
                 rotateSpeed = 6.5f;
                 shootSound = Sounds.shotgun;
                 heatColor = Color.red;
