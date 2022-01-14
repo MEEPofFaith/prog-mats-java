@@ -206,8 +206,12 @@ public class ModuleBullets implements ContentList{
             acceleration = 0.05f;
             backSpeed = thrustDelay = 0f;
 
-            splashDamage = 74f;
-            splashDamageRadius = 3.5f * tilesize;
+            splashDamage = 104f;
+            splashDamageRadius = 4.5f * tilesize;
+
+            homingDelay = 3f;
+            homingPower = 0.15f;
+            homingRange = 26f * tilesize;
 
             trailLength = 3;
             trailWidth = thrusterSize = 0.75f;
