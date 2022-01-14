@@ -201,7 +201,7 @@ public class ModuleBullets implements ContentList{
             weaveMag = 2f;
         }};
 
-        tridentMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trident-missile"){{
+        tridentMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trifecta-missile"){{
             lifetime = 40f;
             acceleration = 0.05f;
             backSpeed = thrustDelay = 0f;

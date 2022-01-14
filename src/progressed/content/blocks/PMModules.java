@@ -36,7 +36,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    trident;
+    trifecta;
 
     @Override
     public void load(){
@@ -241,10 +241,10 @@ public class PMModules implements ContentList{
             }};
         }};
 
-        trident = new ModulePayload("trident"){{
+        trifecta = new ModulePayload("trifecta"){{
             size = 3;
 
-            module = new ItemTurretModule("trident", ModuleSize.large){
+            module = new ItemTurretModule("trifecta", ModuleSize.large){
                 {
                     ammo(
                         Items.blastCompound, ModuleBullets.tridentMissile
@@ -265,9 +265,9 @@ public class PMModules implements ContentList{
                 public void createIcons(MultiPacker packer){
                     Outliner.outlineRegion(
                         packer,
-                        Core.atlas.find("prog-mats-trident-missile"),
+                        Core.atlas.find("prog-mats-trifecta-missile"),
                         outlineColor,
-                        "prog-mats-trident-missile-outline"
+                        "prog-mats-trifecta-missile-outline"
                     );
                     super.createIcons(packer);
                 }
