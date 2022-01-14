@@ -6,6 +6,7 @@ import mindustry.world.*;
 public class Recipe{
     public float craftTime;
     public boolean requiresUnlock;
+    public boolean blockBuild = true, centerBuild;
 
     public ItemStack[] buildCost;
     public LiquidStack liquidCost;

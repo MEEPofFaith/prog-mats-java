@@ -68,23 +68,17 @@ public class Missile extends Block{
     public void createIcons(MultiPacker packer){
         if(outlined){
             Outliner.outlineRegion(packer, region, outlineColor, name + "-outline");
-            region = Core.atlas.find(name + "-outline"); //For icon. Putting outlineRegion in icons() does not work properly.
+            outlineRegion = Core.atlas.find(name + "-outline");
         }
         super.createIcons(packer);
     }
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[]{region, topRegion};
-    }
-
-    public void drawBase(Tile tile){
-        TextureRegion reg = outlined ? outlineRegion : region; //Using region directly will not have an outline, even if an outline was created. Not sure why.
-        Draw.z(Layer.blockUnder - 1f);
-        Drawf.shadow(reg, tile.drawx() - elevation, tile.drawy() - elevation);
-        Draw.z(Layer.block);
-        Draw.rect(reg, tile.drawx(), tile.drawy());
-        if(topRegion.found()) Draw.rect(topRegion, tile.drawx(), tile.drawy());
+        return new TextureRegion[]{
+            outlined ? outlineRegion : region,
+            topRegion
+        };
     }
 
     @Override
@@ -93,6 +87,15 @@ public class Missile extends Block{
     }
 
     public class MissileBuild extends Building{
+        @Override
+        public void draw(){
+            TextureRegion reg = outlined ? outlineRegion : region;
+            Draw.z(Layer.blockUnder - 1f);
+            Drawf.shadow(reg, x - elevation, y - elevation);
+            Draw.z(Layer.block);
+            Draw.rect(reg, x, y);
+        }
+
         @Override
         public void drawCracks(){
             if(explosion != null){

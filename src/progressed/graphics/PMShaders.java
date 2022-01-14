@@ -9,9 +9,11 @@ import static mindustry.Vars.*;
 
 public class PMShaders{
     public static VerticalBuildShader vertBuild;
+    public static BlockBuildCenteShader blockBuildCenter;
 
     public static void load(){
         vertBuild = new VerticalBuildShader();
+        blockBuildCenter = new BlockBuildCenteShader();
     }
 
     public static class VerticalBuildShader extends PMLoadShader{
@@ -30,6 +32,25 @@ public class PMShaders{
             setUniformf("u_progress", progress);
             setUniformf("u_uv", region.u, region.v);
             setUniformf("u_uv2", region.u2, region.v2);
+            setUniformf("u_texsize", region.texture.width, region.texture.height);
+        }
+    }
+
+    public static class BlockBuildCenteShader extends PMLoadShader{
+        public float progress;
+        public TextureRegion region = new TextureRegion();
+        public float time;
+
+        BlockBuildCenteShader(){
+            super("blockbuildcenter");
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_progress", progress);
+            setUniformf("u_uv", region.u, region.v);
+            setUniformf("u_uv2", region.u2, region.v2);
+            setUniformf("u_time", time);
             setUniformf("u_texsize", region.texture.width, region.texture.height);
         }
     }

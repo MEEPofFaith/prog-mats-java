@@ -140,7 +140,7 @@ public class BaseModule implements Cloneable{
 
     public void draw(ModularTurretBuild parent, BaseMount mount){
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.build(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
             return;
         }
 

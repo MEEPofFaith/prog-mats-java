@@ -32,7 +32,7 @@ public class PayloadCrafter extends PayloadBlock{
     private float scrollPos;
 
     public Seq<Recipe> recipes;
-    public boolean hasTop = true, blockBuild = true;
+    public boolean hasTop = true;
 
     public PayloadCrafter(String name){
         super(name);
@@ -223,17 +223,22 @@ public class PayloadCrafter extends PayloadBlock{
             Draw.rect(outRegion, x, y, rotdeg());
 
             if(recipe != null){
+                Recipe r = recipe();
                 Draw.draw(Layer.blockBuilding, () -> {
-                    if(blockBuild){
+                    if(r.blockBuild){
                         for(TextureRegion region : recipe.getGeneratedIcons()){
-                            PMDrawf.build(x, y, region, recipe.rotate ? rotdeg() : 0, progress / ((Missile)recipe).constructTime);
+                            if(r.centerBuild){
+                                PMDrawf.blockBuildCenter(x, y, region, recipe.rotate ? rotdeg() : 0, progress / r.craftTime);
+                            }else{
+                                PMDrawf.blockBuild(x, y, region, recipe.rotate ? rotdeg() : 0, progress / r.craftTime);
+                            }
                         }
                     }else{
-                        Drawf.construct(this, recipe.fullIcon, 0, progress / ((Missile)recipe).constructTime, heat, time);
+                        Drawf.construct(this, recipe.fullIcon, 0, progress / r.craftTime, heat, time);
                     }
                 });
 
-                if(blockBuild){
+                if(r.blockBuild){
                     Draw.z(Layer.blockBuilding + 0.01f);
                     Draw.color(Pal.accent, heat);
 
@@ -327,7 +332,8 @@ public class PayloadCrafter extends PayloadBlock{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return this.payload == null && recipe instanceof Missile m && payload instanceof BuildPayload p && p.block() == m.prev;
+            Recipe r= recipe();
+            return this.payload == null && r != null && payload instanceof BuildPayload p && p.block() == r.inputBlock;
         }
 
         @Override

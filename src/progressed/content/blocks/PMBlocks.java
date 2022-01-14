@@ -1441,6 +1441,8 @@ public class PMBlocks implements ContentList{
                 PMPayloads.emptyMissile,
                 PMPayloads.emptyNuke
             );
+
+            recipes.each(r -> r.centerBuild = true);
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
@@ -1474,12 +1476,13 @@ public class PMBlocks implements ContentList{
             ));
 
             size = 3;
-            blockBuild = false;
             recipes(
                 PMPayloads.basicSentry,
                 PMPayloads.missileSentry,
                 PMPayloads.dashSentry
             );
+
+            recipes.each(r -> r.blockBuild = false);
         }};
         // endregion
 

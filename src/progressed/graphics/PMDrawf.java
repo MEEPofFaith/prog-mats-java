@@ -123,16 +123,33 @@ public class PMDrawf{
         laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
     }
 
-    public static void build(float x, float y, TextureRegion region, float rotation, float progress){
-        build(x, y, region, Pal.accent, rotation, progress);
+    public static void blockBuild(float x, float y, TextureRegion region, float rotation, float progress){
+        blockBuild(x, y, region, Pal.accent, rotation, progress);
     }
 
-    public static void build(float x, float y, TextureRegion region, Color color, float rotation, float progress){
+    public static void blockBuild(float x, float y, TextureRegion region, Color color, float rotation, float progress){
         Shaders.blockbuild.region = region;
         Shaders.blockbuild.progress = progress;
 
         Draw.color(color);
         Draw.shader(Shaders.blockbuild);
+        Draw.rect(region, x, y, rotation);
+        Draw.shader();
+        Draw.color();
+    }
+
+
+
+    public static void blockBuildCenter(float x, float y, TextureRegion region, float rotation, float progress){
+        blockBuildCenter(x, y, region, Pal.accent, rotation, progress);
+    }
+
+    public static void blockBuildCenter(float x, float y, TextureRegion region, Color color, float rotation, float progress){
+        PMShaders.blockBuildCenter.region = region;
+        PMShaders.blockBuildCenter.progress = progress;
+
+        Draw.color(color);
+        Draw.shader(PMShaders.blockBuildCenter);
         Draw.rect(region, x, y, rotation);
         Draw.shader();
         Draw.color();

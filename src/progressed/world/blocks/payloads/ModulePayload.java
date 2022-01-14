@@ -55,14 +55,20 @@ public class ModulePayload extends Block{
         module.createIcons(packer);
     }
 
-    public void drawBase(Tile tile){
-        Draw.z(Layer.blockUnder - 1f);
-        Drawf.shadow(region, tile.drawx() - elevation, tile.drawy() - elevation);
-        Draw.z(Layer.block);
-        Draw.rect(region, tile.drawx(), tile.drawy());
+    @Override
+    public boolean canBeBuilt(){
+        return false;
     }
 
     public class TurretModulePayloadBuild extends Building{
+        @Override
+        public void draw(){
+            Draw.z(Layer.blockUnder - 1f);
+            Drawf.shadow(region, x - elevation, y - elevation);
+            Draw.z(Layer.block);
+            Draw.rect(region, x, y);
+        }
+
         @Override
         public void drawCracks(){
             //don't

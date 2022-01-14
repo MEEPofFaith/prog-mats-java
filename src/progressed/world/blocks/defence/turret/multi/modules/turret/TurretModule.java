@@ -378,7 +378,7 @@ public class TurretModule extends BaseTurretModule{
             rot = mount.rotation;
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.build(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
             return;
         }
 
