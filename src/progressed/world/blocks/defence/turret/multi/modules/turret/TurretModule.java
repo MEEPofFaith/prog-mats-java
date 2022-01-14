@@ -396,12 +396,14 @@ public class TurretModule extends BaseTurretModule{
             Draw.color();
         }
 
-        if(liquidRegion.found())
+        if(liquidRegion.found()){
             Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
+        }
 
-        if(topRegion.found())
+        if(topRegion.found()){
             Draw.z(Layer.turret + topLayerOffset);
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
+        }
     }
 
     @Override

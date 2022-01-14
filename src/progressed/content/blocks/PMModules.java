@@ -263,7 +263,12 @@ public class PMModules implements ContentList{
 
                 @Override
                 public void createIcons(MultiPacker packer){
-                    Outliner.outlineRegion(packer, Core.atlas.find("prog-mats-trident-missile"), outlineColor, "prog-mats-trident-missile-outline");
+                    Outliner.outlineRegion(
+                        packer,
+                        Core.atlas.find("prog-mats-trident-missile"),
+                        outlineColor,
+                        "prog-mats-trident-missile-outline"
+                    );
                     super.createIcons(packer);
                 }
             };
