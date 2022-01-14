@@ -21,6 +21,8 @@ import progressed.world.blocks.defence.turret.multi.modules.turret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 import progressed.world.blocks.payloads.*;
 
+import static mindustry.Vars.*;
+
 public class PMModules implements ContentList{
     public static ModulePayload
 
@@ -34,7 +36,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    idk;
+    trident;
 
     @Override
     public void load(){
@@ -237,6 +239,34 @@ public class PMModules implements ContentList{
                 force = 8f;
                 scaledForce = 5f;
             }};
+        }};
+
+        trident = new ModulePayload("trident"){{
+            size = 3;
+
+            module = new ItemTurretModule("trident", ModuleSize.large){
+                {
+                    ammo(
+                        Items.blastCompound, ModuleBullets.tridentMissile
+                    );
+
+                    range = 34f * tilesize;
+                    reloadTime = 120f;
+                    shots = 3;
+                    barrels = 3;
+                    barrelSpacing = 6f;
+                    burstSpacing = 15f;
+                    shootLength -= 6f;
+                    topLayerOffset = 0.30f;
+                    shootSound = Sounds.artillery;
+                }
+
+                @Override
+                public void createIcons(MultiPacker packer){
+                    Outliner.outlineRegion(packer, Core.atlas.find("prog-mats-trident-missile"), outlineColor, "prog-mats-trident-missile-outline");
+                    super.createIcons(packer);
+                }
+            };
         }};
     }
 }

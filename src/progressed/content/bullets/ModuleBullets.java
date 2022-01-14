@@ -5,7 +5,10 @@ import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
+
+import static mindustry.Vars.*;
 
 public class ModuleBullets implements ContentList{
     public static BulletType
@@ -16,7 +19,9 @@ public class ModuleBullets implements ContentList{
 
     waterShotMini, cryoShotMini, slagShotMini, oilShotMini,
 
-    swarmIncendiary, swarmBlast;
+    swarmIncendiary, swarmBlast,
+
+    tridentMissile;
 
     @Override
     public void load(){
@@ -194,6 +199,25 @@ public class ModuleBullets implements ContentList{
             hitEffect = Fx.blastExplosion;
             weaveScale = 8f;
             weaveMag = 2f;
+        }};
+
+        tridentMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trident-missile"){{
+            lifetime = 40f;
+            acceleration = 0.05f;
+            backSpeed = thrustDelay = 0f;
+
+            splashDamage = 74f;
+            splashDamageRadius = 3.5f * tilesize;
+
+            trailLength = 3;
+            trailWidth = thrusterSize = 0.75f;
+            trailParam = thrusterSize * 2f * 1.5f;
+            trailOffset = thrusterOffset = 6f;
+
+            layer = Layer.turret + 0.015f;
+            riseStart = thrusterGrowth;
+            riseEnd = thrusterGrowth + 10f;
+            targetLayer = Layer.bullet - 1;
         }};
     }
 }

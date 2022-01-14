@@ -90,7 +90,7 @@ public class PayloadBullets implements ContentList{
 
             @Override
             public void hit(Bullet b, float x, float y){
-                PMFx.flameRing.at(x, y, b.rotation(), hitColor);
+                if(!b.absorbed) PMFx.flameRing.at(x, y, b.rotation(), hitColor);
                 super.hit(b, x, y);
             }
         };

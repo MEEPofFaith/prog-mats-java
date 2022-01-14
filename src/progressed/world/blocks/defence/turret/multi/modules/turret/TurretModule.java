@@ -31,7 +31,7 @@ public class TurretModule extends BaseTurretModule{
     public float rotateSpeed = 5f;
     public float shootCone = 8f;
 
-    public float shootLength = -1f;
+    public float shootLength;
     public int shots = 1;
     public boolean countAfter;
     public float barrelSpacing, angleSpread;
@@ -57,6 +57,7 @@ public class TurretModule extends BaseTurretModule{
     public Effect ammoUseEffect = Fx.none;
     public boolean alternate = false;
     public float ammoEjectX = 1f, ammoEjectY = -1f;
+    public float topLayerOffset;
 
     public float chargeTime = -1f;
     public int chargeEffects = 5;
@@ -77,6 +78,7 @@ public class TurretModule extends BaseTurretModule{
     public TurretModule(String name, ModuleSize size){
         super(name, size);
         recoilAmount = size();
+        shootLength = size() * Vars.tilesize / 2f;
     }
 
     public TurretModule(String name){
@@ -87,7 +89,6 @@ public class TurretModule extends BaseTurretModule{
     public void init(){
         //small = 1, medium = 2, large = 3
         if(elevation < 0) elevation = size();
-        if(shootLength < 0) shootLength = size() * Vars.tilesize / 2f;
         if(barrels < 1) barrels = 1; //Do not
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
@@ -399,6 +400,7 @@ public class TurretModule extends BaseTurretModule{
             Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
 
         if(topRegion.found())
+            Draw.z(Layer.turret + topLayerOffset);
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
     }
 
