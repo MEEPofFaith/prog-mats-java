@@ -12,8 +12,10 @@ import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
 public class BaseMount{
     /** Turret module associated with this mount. */
     public final BaseModule module;
+    /** The mount's offset array term. */
+    public short mountNumber;
     /** Offset of the mount compared to the base. */
-    public final float offsetX, offsetY;
+    public float offsetX, offsetY;
     /** Position of the mount */
     public float x, y;
     /** Liquid module of the mount. Primarily used for cooling. */
@@ -26,8 +28,9 @@ public class BaseMount{
     public float heat;
     public SoundLoop sound;
 
-    public BaseMount(ModularTurretBuild parent, BaseModule module, float offsetX, float offsetY){
+    public BaseMount(ModularTurretBuild parent, BaseModule module, short mountNumber, float offsetX, float offsetY){
         this.module = module;
+        this.mountNumber = mountNumber;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         updatePos(parent);
@@ -57,6 +60,10 @@ public class BaseMount{
     //Method reference shorter and cleaner.
     public boolean isSmall(){
         return module.size == ModuleSize.small;
+    }
+
+    public boolean checkSize(ModuleSize size){
+        return size == module.size;
     }
 
     public boolean isMedium(){

@@ -25,8 +25,8 @@ public class TurretMount extends BaseMount{
     /** Aim position */
     public Vec2 targetPos = new Vec2();
 
-    public TurretMount(ModularTurretBuild parent, BaseModule module, float offsetX, float offsetY){
-        super(parent, module, offsetX, offsetY);
+    public TurretMount(ModularTurretBuild parent, BaseModule module, short moduleNumber, float offsetX, float offsetY){
+        super(parent, module, moduleNumber, offsetX, offsetY);
         this.module = (BaseTurretModule)module;
     }
 

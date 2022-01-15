@@ -68,7 +68,7 @@ public class ModularTurret extends PayloadBlock{
                 case small -> sLen += group.amount();
                 case medium -> mLen += group.amount();
                 case large -> lLen += group.amount();
-            };
+            }
         }
 
         int sCount = 0, mCount = 0, lCount = 0;
@@ -227,8 +227,8 @@ public class ModularTurret extends PayloadBlock{
 
             for(ModuleSize s : ModuleSize.values()){
                 if(acceptModule(s)){
-                    float mX = x + nextModuleX(s),
-                        mY = y + nextModuleY(s);
+                    float mX = x + nextMountX(s),
+                        mY = y + nextMountY(s);
                     Draw.color(mountColor1, mountColor2, Mathf.absin(60f / Mathf.PI2, 1f));
                     Draw.rect(mountBases[s.ordinal()], mX, mY);
                     Draw.color();
@@ -245,11 +245,17 @@ public class ModularTurret extends PayloadBlock{
 
         /** @return the module it adds. */
         public BaseMount addModule(BaseModule module){
+            return addModule(module, nextMount(module.size));
+        }
+
+        /** @return the module it adds. */
+        public BaseMount addModule(BaseModule module, short pos){
             BaseMount mount = module.mountType.get(
                 this,
                 module,
-                nextModuleX(module.size),
-                nextModuleY(module.size)
+                pos,
+                nextMountX(module.size, pos),
+                nextMountY(module.size, pos)
             );
             if(mount instanceof TurretMount t) turretMounts.add(t);
             allMounts.add(mount);
@@ -257,19 +263,37 @@ public class ModularTurret extends PayloadBlock{
             return mount;
         }
 
-        public float nextModuleX(ModuleSize size){
+        public short nextMount(ModuleSize size){
+            short mount = 0;
+            for(BaseMount m : allMounts){
+                if(m.checkSize(size) && m.mountNumber == mount){
+                    mount = (short)(m.mountNumber + 1);
+                }
+            }
+            return mount;
+        }
+
+        public float nextMountX(ModuleSize size){
+            return nextMountX(size, nextMount(size));
+        }
+
+        public float nextMountX(ModuleSize size, int pos){
             return switch(size){
-                case small -> smallMountPos[allMounts.count(BaseMount::isSmall)].x;
-                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium)].x;
-                case large -> largeMountPos[allMounts.count(BaseMount::isLarge)].x;
+                case small -> smallMountPos[pos].x;
+                case medium -> mediumMountPos[pos].x;
+                case large -> largeMountPos[pos].x;
             };
         }
 
-        public float nextModuleY(ModuleSize size){
+        public float nextMountY(ModuleSize size){
+            return nextMountY(size, nextMount(size));
+        }
+
+        public float nextMountY(ModuleSize size, int pos){
             return switch(size){
-                case small -> smallMountPos[allMounts.count(BaseMount::isSmall)].y;
-                case medium -> mediumMountPos[allMounts.count(BaseMount::isMedium)].y;
-                case large -> largeMountPos[allMounts.count(BaseMount::isLarge)].y;
+                case small -> smallMountPos[pos].y;
+                case medium -> mediumMountPos[pos].y;
+                case large -> largeMountPos[pos].y;
             };
         }
 
@@ -379,10 +403,11 @@ public class ModularTurret extends PayloadBlock{
             int len = read.i();
             for(int i = 0; i < len; i++){
                 short id = read.s();
+                short moduleNumber = read.s();
                 Block module = Vars.content.block(id);
                 //Note: Installing or uninstalling other mods can change id and break saves.
                 if(module instanceof ModulePayload p){
-                    BaseMount mount = addModule(p.module);
+                    BaseMount mount = addModule(p.module, moduleNumber);
                     mount.module.readAll(read, mount);
                 }
             }

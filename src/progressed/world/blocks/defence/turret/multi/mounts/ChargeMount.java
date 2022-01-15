@@ -6,7 +6,7 @@ import progressed.world.blocks.defence.turret.multi.modules.*;
 public class ChargeMount extends BaseMount{
     public float charge, heat;
 
-    public ChargeMount(ModularTurretBuild parent, BaseModule module, float offsetX, float offsetY){
-        super(parent, module, offsetX, offsetY);
+    public ChargeMount(ModularTurretBuild parent, BaseModule module, short moduleNumber, float offsetX, float offsetY){
+        super(parent, module, moduleNumber, offsetX, offsetY);
     }
 }

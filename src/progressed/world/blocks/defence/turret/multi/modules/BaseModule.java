@@ -40,7 +40,7 @@ public class BaseModule implements Cloneable{
 
     public ModuleSize size;
 
-    public Func4<ModularTurretBuild, BaseModule, Float, Float, BaseMount> mountType = BaseMount::new;
+    public Func5<ModularTurretBuild, BaseModule, Short, Float, Float, BaseMount> mountType = BaseMount::new;
 
     public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();
@@ -207,6 +207,7 @@ public class BaseModule implements Cloneable{
 
     public void writeAll(Writes write, BaseMount mount){
         write.s(mountID);
+        write.s(mount.mountNumber);
         write.b(version());
         if(mount.liquids != null) mount.liquids.write(write);
         write(write, mount);
