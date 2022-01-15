@@ -177,7 +177,7 @@ public class PayloadCrafter extends PayloadBlock{
                 moveOutPayload();
             }
 
-            if(recipe != null && recipe.inputBlock != null && payload != null && payload.block() != recipe.outputBlock){
+            if(recipe != null && payload != null && payload.block() == recipe.inputBlock){
                 moveInPayload(false);
             }
 
