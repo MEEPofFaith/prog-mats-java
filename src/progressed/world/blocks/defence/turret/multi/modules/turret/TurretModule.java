@@ -28,6 +28,7 @@ public class TurretModule extends BaseTurretModule{
     public boolean targetAir = true, targetGround = true, targetHealing;
     public boolean accurateDelay;
     public float reloadTime = 30f;
+    public boolean rotateShooting = true;
     public float rotateSpeed = 5f;
     public float shootCone = 8f;
 
@@ -189,15 +190,11 @@ public class TurretModule extends BaseTurretModule{
                     turnToTarget(parent, mount, targetRot);
                 }
 
-                if(Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
+                if(!mount.isShooting && Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
                     mount.wasShooting = true;
                     updateShooting(parent, mount);
                 }
             }
-        }
-
-        if(acceptCoolant){
-            updateCooling(mount);
         }
     }
 
@@ -225,6 +222,10 @@ public class TurretModule extends BaseTurretModule{
             shoot(parent, mount, type);
 
             mount.reload %= reloadTime;
+        }
+
+        if(acceptCoolant){
+            updateCooling(mount);
         }
     }
 
@@ -263,10 +264,15 @@ public class TurretModule extends BaseTurretModule{
                 int ii = i;
                 if(burstSpacing > 0.0001f){
                     Time.run(burstSpacing * i, () -> {
-                        if(parent.dead || !hasAmmo(mount)) return;
+                        mount.isShooting = true;
+                        if(parent.dead || !hasAmmo(mount)){
+                            mount.isShooting = false;
+                            return;
+                        }
                         basicShoot(parent, mount, peekAmmo(mount), ii);
                         effects(mount, peekAmmo(mount));
                         useAmmo(parent, mount);
+                        if(ii == shots - 1) mount.isShooting = false;
                     });
                 }else{
                     if(parent.dead) return;
@@ -349,7 +355,7 @@ public class TurretModule extends BaseTurretModule{
     }
 
     public boolean shouldTurn(TurretMount mount){
-        return !mount.charging;
+        return !mount.charging && (rotateShooting || !mount.isShooting);
     }
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){

@@ -255,6 +255,7 @@ public class PMModules implements ContentList{
                     shots = 3;
                     barrels = 3;
                     barrelSpacing = 6f;
+                    rotateShooting = false;
                     burstSpacing = 15f;
                     shootLength -= 6f;
                     topLayerOffset = 0.30f;

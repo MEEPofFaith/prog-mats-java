@@ -19,7 +19,7 @@ public class TurretMount extends BaseMount{
     /** Weapon recoil */
     public float recoil;
     public int shotCounter;
-    public boolean wasShooting, charging;
+    public boolean wasShooting, isShooting, charging;
     /** Target */
     public @Nullable Posc target;
     /** Aim position */
