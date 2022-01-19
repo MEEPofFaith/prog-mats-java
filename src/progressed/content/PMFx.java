@@ -113,6 +113,50 @@ public class PMFx{
         Fill.circle(e.x, e.y, 7f * e.fin(Interp.pow2Out));
     }).layer(Layer.bullet),
 
+    jupiterTrail = new Effect(60f, e -> {
+        color(Pal.lancerLaser, Color.white, e.fin());
+        v1.trns(e.rotation + 90f, Mathf.randomSeed(e.id, -3f, 3f));
+        v2.trns(e.rotation, -e.fin() * 8f);
+
+        Fill.circle(e.x + v1.x + v2.x, e.y + v1.y + v2.y, e.fout() * 4f);
+    }).layer(Layer.bullet - 0.01f),
+
+    jupiterHit = new Effect(14, e -> {
+        e.scaled(7f, s -> {
+            color(Color.white, Pal.lancerLaser, s.fin());
+            Lines.circle(e.x, e.y, s.fin() * 7f);
+        });
+
+        color(Color.white, Pal.lancerLaser, e.fin());
+        stroke(0.5f + e.fout());
+
+        randLenVectors(e.id, 7, e.fin() * 20f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+        });
+
+        Drawf.light(e.x, e.y, 25f, Pal.lancerLaser, 0.6f * e.fout());
+    }),
+
+    jupiterDespawn = new Effect(60f, e -> {
+        color(Color.white, Pal.lancerLaser, e.fin());
+        v1.trns(e.rotation, -e.fin() * 8f);
+
+        Fill.circle(e.x + v1.x, e.y + v1.y, 7f * e.fout());
+
+        e.scaled(26f, s -> {
+            color(Color.white, Pal.lancerLaser, s.fin());
+            stroke(s.fout() * 2f);
+
+            randLenVectors(e.id, 12, s.fin() * 14f, (x, y) -> {
+                float ang = Mathf.angle(x, y);
+                lineAngle(e.x + x, e.y + y, ang, s.fout() * 4 + 1f);
+            });
+        });
+
+        Drawf.light(e.x, e.y, 7f * 5f, Pal.lancerLaser, 0.6f * e.fout());
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

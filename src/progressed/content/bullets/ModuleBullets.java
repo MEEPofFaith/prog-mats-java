@@ -2,8 +2,11 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -235,11 +238,17 @@ public class ModuleBullets implements ContentList{
 
             {
                 lifetime = 5f * 60f;
-                hitSize = 14f;
+                hitSize = 7f;
                 pierce = pierceBuilding = true;
                 homingPower = 0.05f;
                 homingRange = 16f * 8f;
+                lightColor = Pal.lancerLaser;
                 shootEffect = smokeEffect = Fx.none;
+                hitEffect = PMFx.jupiterHit;
+                despawnEffect = PMFx.jupiterDespawn;
+                trailEffect = PMFx.jupiterTrail;
+                trailInterval = 1f;
+                trailRotation = true;
             }
 
             @Override
