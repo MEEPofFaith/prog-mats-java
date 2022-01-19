@@ -280,10 +280,11 @@ public class PMModules implements ContentList{
 
             module = new PowerTurretModule("jupiter", ModuleSize.large){
                 final float baseRad = 7.5f, jointRadMin = 9.5f, jointRadMax = 13f, endRadMin = 5f, endRadMax = 11.5f;
-                TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion;
+                TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion, fullArm;
 
                 {
                     reloadTime = 2.5f * 60f;
+                    range = 24f * 8f;
                     powerUse = 4f;
                     recoilAmount = shootLength = 0;
                     chargeTime = PMFx.jupiterCharge.lifetime;
@@ -300,6 +301,7 @@ public class PMModules implements ContentList{
                     jointRegion = Core.atlas.find(name + "-joint");
                     armRegion = Core.atlas.find(name + "-arm");
                     endRegion = Core.atlas.find(name + "-end");
+                    fullArm = Core.atlas.find(name + "-arm-full");
                 }
 
                 @Override
@@ -322,12 +324,36 @@ public class PMModules implements ContentList{
                 }
 
                 @Override
+                public boolean shouldTurn(TurretMount mount){
+                    return true;
+                }
+
+                @Override
+                public void drawPayload(ModulePayloadBuild payload){
+                    float x = payload.x,
+                        y = payload.y;
+
+                    Draw.rect(region, x, y);
+                    for(int i = 0; i < 4; i++){
+                        float rot = i * 90 - 45f;
+                        Draw.rect(fullArm, x, y, rot);
+                    }
+                }
+
+                @Override
                 public void drawTurret(TurretMount mount){
                     float x = mount.x,
                         y = mount.y;
 
                     if(mount.progress < deployTime){
-                        Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, 0, mount.progress / deployTime));
+                        Draw.draw(Draw.z(), () -> {
+                            float progress = mount.progress / deployTime;
+                            PMDrawf.blockBuildCenter(x, y, region, 0, progress);
+                            for(int i = 0; i < 4; i++){
+                                float rot = i * 90 - 45f;
+                                PMDrawf.blockBuildCenter(x, y, fullArm, rot, progress);
+                            }
+                        });
                         return;
                     }
 

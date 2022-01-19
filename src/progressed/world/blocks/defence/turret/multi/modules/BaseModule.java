@@ -22,6 +22,8 @@ import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.payloads.*;
+import progressed.world.blocks.payloads.ModulePayload.*;
 import progressed.world.meta.*;
 
 public class BaseModule implements Cloneable{
@@ -145,6 +147,10 @@ public class BaseModule implements Cloneable{
         }
 
         Draw.rect(region, mount.x, mount.y);
+    }
+
+    public void drawPayload(ModulePayloadBuild payload){
+        Draw.rect(region, payload.x, payload.y);
     }
 
     public void display(ModularTurretBuild parent, Table table, BaseMount mount){

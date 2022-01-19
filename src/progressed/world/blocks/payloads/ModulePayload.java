@@ -11,8 +11,6 @@ import progressed.world.blocks.defence.turret.multi.modules.*;
 public class ModulePayload extends Block{
     public BaseModule module;
 
-    public float elevation = -1f;
-
     public ModulePayload(String name){
         super(name);
         requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -35,8 +33,6 @@ public class ModulePayload extends Block{
 
     @Override
     public void init(){
-        if(elevation < 0) elevation = size / 3f;
-
         super.init();
         module.init();
         module.mountID = id;
@@ -60,13 +56,10 @@ public class ModulePayload extends Block{
         return false;
     }
 
-    public class TurretModulePayloadBuild extends Building{
+    public class ModulePayloadBuild extends Building{
         @Override
         public void draw(){
-            Draw.z(Layer.blockUnder - 1f);
-            Drawf.shadow(region, x - elevation, y - elevation);
-            Draw.z(Layer.block);
-            Draw.rect(region, x, y);
+            module.drawPayload(this);
         }
 
         @Override

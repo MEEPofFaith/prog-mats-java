@@ -1,8 +1,10 @@
 package progressed.content.bullets;
 
+import arc.graphics.g2d.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
 import progressed.entities.bullet.explosive.*;
@@ -226,16 +228,26 @@ public class ModuleBullets implements ContentList{
             targetLayer = Layer.bullet - 1;
         }};
 
-        jupiterOrb = new BasicBulletType(1f, 250f, "prog-mats-sphere"){{
-            lifetime = 10f * 60f;
-            width = height = 14f;
-            hitSize = 14f;
-            shrinkX = shrinkY = 0;
-            spin = 0.5f;
-            pierce = pierceBuilding = true;
-            homingPower = 0.01f;
-            backColor = Pal.lancerLaser;
-            shootEffect = smokeEffect = Fx.none;
-        }};
+        jupiterOrb = new BasicBulletType(1f, 750f){
+            {
+                lifetime = 5f * 60f;
+                width = height = 14f;
+                hitSize = 14f;
+                shrinkX = shrinkY = 0;
+                spin = 0.5f;
+                pierce = pierceBuilding = true;
+                homingPower = 0.05f;
+                homingRange = 16f * 8f;
+                backColor = Pal.lancerLaser;
+                shootEffect = smokeEffect = Fx.none;
+            }
+
+            @Override
+            public void draw(Bullet b){
+                drawTrail(b);
+                Draw.color(backColor);
+                Fill.circle(b.x, b.y, width / 2f);
+            }
+        };
     }
 }
