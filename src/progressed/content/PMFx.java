@@ -139,13 +139,13 @@ public class PMFx{
     }),
 
     jupiterDespawn = new Effect(60f, e -> {
-        color(Color.white, Pal.lancerLaser, e.fin());
+        color(Pal.lancerLaser, Color.white, e.fin());
         v1.trns(e.rotation, -e.fin() * 8f);
 
         Fill.circle(e.x + v1.x, e.y + v1.y, 7f * e.fout());
 
         e.scaled(26f, s -> {
-            color(Color.white, Pal.lancerLaser, s.fin());
+            color(Pal.lancerLaser, Color.white, s.fin());
             stroke(s.fout() * 2f);
 
             randLenVectors(e.id, 12, s.fin() * 14f, (x, y) -> {

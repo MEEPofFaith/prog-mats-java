@@ -42,7 +42,7 @@ public class BaseModule implements Cloneable{
 
     public ModuleSize size;
 
-    public Func5<ModularTurretBuild, BaseModule, Short, Float, Float, BaseMount> mountType = BaseMount::new;
+    public Func3<ModularTurretBuild, BaseModule, Short, BaseMount> mountType = BaseMount::new;
 
     public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();

@@ -253,12 +253,11 @@ public class ModularTurret extends PayloadBlock{
             BaseMount mount = module.mountType.get(
                 this,
                 module,
-                pos,
-                nextMountX(module.size, pos),
-                nextMountY(module.size, pos)
+                pos
             );
             if(mount instanceof TurretMount t) turretMounts.add(t);
             allMounts.add(mount);
+            mount.updatePos(this);
 
             return mount;
         }
@@ -273,16 +272,20 @@ public class ModularTurret extends PayloadBlock{
             return mount;
         }
 
+        public Vec2[] getMountPos(ModuleSize size){
+            return switch(size){
+                case small -> smallMountPos;
+                case medium -> mediumMountPos;
+                case large -> largeMountPos;
+            };
+        }
+
         public float nextMountX(ModuleSize size){
             return nextMountX(size, nextMount(size));
         }
 
         public float nextMountX(ModuleSize size, int pos){
-            return switch(size){
-                case small -> smallMountPos[pos].x;
-                case medium -> mediumMountPos[pos].x;
-                case large -> largeMountPos[pos].x;
-            };
+            return getMountPos(size)[pos].x;
         }
 
         public float nextMountY(ModuleSize size){
@@ -290,11 +293,7 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public float nextMountY(ModuleSize size, int pos){
-            return switch(size){
-                case small -> smallMountPos[pos].y;
-                case medium -> mediumMountPos[pos].y;
-                case large -> largeMountPos[pos].y;
-            };
+            return getMountPos(size)[pos].y;
         }
 
         /** @return if a module can be added. */

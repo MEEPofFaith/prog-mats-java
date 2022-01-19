@@ -45,6 +45,6 @@ public class PowerTurretModule extends TurretModule{
 
     @Override
     public float speedScl(ModularTurretBuild parent, BaseMount mount){
-        return super.speedScl(parent, mount) * efficiency(parent);
+        return efficiency(parent);
     }
 }

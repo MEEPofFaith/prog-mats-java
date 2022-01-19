@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.multi.mounts;
 
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -14,8 +15,6 @@ public class BaseMount{
     public final BaseModule module;
     /** The mount's offset array term. */
     public short mountNumber;
-    /** Offset of the mount compared to the base. */
-    public float offsetX, offsetY;
     /** Position of the mount */
     public float x, y;
     /** Liquid module of the mount. Primarily used for cooling. */
@@ -28,11 +27,9 @@ public class BaseMount{
     public float heat;
     public SoundLoop sound;
 
-    public BaseMount(ModularTurretBuild parent, BaseModule module, short mountNumber, float offsetX, float offsetY){
+    public BaseMount(ModularTurretBuild parent, BaseModule module, short mountNumber){
         this.module = module;
         this.mountNumber = mountNumber;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
         updatePos(parent);
 
         if(module.hasLiquids) liquids = new LiquidModule();
@@ -48,8 +45,9 @@ public class BaseMount{
     }
 
     public void updatePos(ModularTurretBuild parent){
-        x = parent.x + offsetX;
-        y = parent.y + offsetY;
+        Vec2 offset = parent.getMountPos(module.size)[mountNumber];
+        x = parent.x + offset.x;
+        y = parent.y + offset.y;
     }
 
     public void draw(ModularTurretBuild parent){

@@ -329,6 +329,11 @@ public class PMModules implements ContentList{
                 }
 
                 @Override
+                public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
+                    return super.shouldReload(parent, mount) && mount.charge == 0;
+                }
+
+                @Override
                 public void drawPayload(ModulePayloadBuild payload){
                     float x = payload.x,
                         y = payload.y;

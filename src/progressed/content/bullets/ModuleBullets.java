@@ -240,6 +240,7 @@ public class ModuleBullets implements ContentList{
                 lifetime = 5f * 60f;
                 hitSize = 7f;
                 pierce = pierceBuilding = true;
+                hittable = false;
                 homingPower = 0.05f;
                 homingRange = 16f * 8f;
                 lightColor = Pal.lancerLaser;

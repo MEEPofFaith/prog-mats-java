@@ -201,9 +201,10 @@ public class TurretModule extends BaseTurretModule{
     }
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
+        if(!shouldReload(parent, mount)) return;
         mount.reload += parent.delta() * peekAmmo(mount).reloadMultiplier * speedScl(parent, mount);
 
-        if(mount.reload >= reloadTime && !mount.charging){
+        if(mount.reload >= reloadTime){
             BulletType type = peekAmmo(mount);
 
             shoot(parent, mount, type);
@@ -244,9 +245,8 @@ public class TurretModule extends BaseTurretModule{
         }
     }
 
-    @Override
-    public float speedScl(ModularTurretBuild parent, BaseMount mount){
-        return Mathf.num(!((TurretMount)mount).charging) * Mathf.num(!((TurretMount)mount).isShooting);
+    public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
+        return !mount.charging && !mount.isShooting;
     }
 
     public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
