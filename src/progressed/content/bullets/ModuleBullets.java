@@ -21,7 +21,9 @@ public class ModuleBullets implements ContentList{
 
     swarmIncendiary, swarmBlast,
 
-    tridentMissile;
+    tridentMissile,
+
+    jupiterOrb;
 
     @Override
     public void load(){
@@ -222,6 +224,18 @@ public class ModuleBullets implements ContentList{
             riseStart = thrusterGrowth;
             riseEnd = thrusterGrowth + 10f;
             targetLayer = Layer.bullet - 1;
+        }};
+
+        jupiterOrb = new BasicBulletType(1f, 250f, "prog-mats-sphere"){{
+            lifetime = 10f * 60f;
+            width = height = 14f;
+            hitSize = 14f;
+            shrinkX = shrinkY = 0;
+            spin = 0.5f;
+            pierce = pierceBuilding = true;
+            homingPower = 0.01f;
+            backColor = Pal.lancerLaser;
+            shootEffect = smokeEffect = Fx.none;
         }};
     }
 }

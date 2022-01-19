@@ -196,21 +196,8 @@ public class TurretModule extends BaseTurretModule{
                 }
             }
         }
-    }
 
-    public void updateCooling(TurretMount mount){
-        if(mount.reload < reloadTime && !mount.charging){
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = mount.liquids.current();
-
-            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
-            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
-            mount.liquids.remove(liquid, used);
-
-            if(Mathf.chance(0.06 * used)){
-                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
-            }
-        }
+        updateCharging(parent, mount);
     }
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
@@ -229,6 +216,39 @@ public class TurretModule extends BaseTurretModule{
         }
     }
 
+    public void updateCooling(TurretMount mount){
+        if(mount.reload < reloadTime && mount.charge <= 0){
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            Liquid liquid = mount.liquids.current();
+
+            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
+            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
+            mount.liquids.remove(liquid, used);
+
+            if(Mathf.chance(0.06 * used)){
+                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
+            }
+        }
+    }
+
+    public void updateCharging(ModularTurretBuild parent, TurretMount mount){
+        if(mount.charging){
+            mount.charge += Time.delta;
+
+            if(mount.charge >= chargeTime){
+                mount.charging = false;
+                chargeShot(parent, mount);
+            }
+
+            mount.charge = 0;
+        }
+    }
+
+    @Override
+    public float speedScl(ModularTurretBuild parent, BaseMount mount){
+        return Mathf.num(!((TurretMount)mount).charging) * Mathf.num(!((TurretMount)mount).isShooting);
+    }
+
     public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
         float x = mount.x,
             y = mount.y,
@@ -237,6 +257,7 @@ public class TurretModule extends BaseTurretModule{
         //when charging is enabled, use the charge shoot pattern
         if(chargeTime > 0){
             useAmmo(parent, mount);
+            mount.chargeShot = type;
 
             tr.trns(rot, shootLength);
             chargeBeginEffect.at(x + tr.x, y + tr.y, rot);
@@ -251,14 +272,6 @@ public class TurretModule extends BaseTurretModule{
             }
 
             mount.charging = true;
-
-            Time.run(chargeTime, () -> {
-                if(parent.dead) return;
-                tr.trns(rot, shootLength - mount.recoil);
-                bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy));
-                effects(mount, type);
-                mount.charging = false;
-            });
         }else{
             for(int i = 0; i < shots; i++){
                 int ii = i;
@@ -298,6 +311,15 @@ public class TurretModule extends BaseTurretModule{
         mount.recoil = recoilAmount;
         mount.heat = 1f;
         if(!countAfter) mount.shotCounter++;
+    }
+
+    public void chargeShot(ModularTurretBuild parent, TurretMount mount){
+        if(!hasAmmo(mount)) return;
+        BulletType type = mount.chargeShot == null ? peekAmmo(mount) : mount.chargeShot;
+
+        tr.trns(mount.rotation, shootLength - mount.recoil);
+        bullet(parent, mount, type, mount.rotation + Mathf.range(inaccuracy + type.inaccuracy));
+        effects(mount, type);
     }
 
     protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
@@ -385,7 +407,7 @@ public class TurretModule extends BaseTurretModule{
             rot = mount.rotation;
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, mount.rotation - 90, mount.progress / deployTime));
             return;
         }
 
@@ -416,13 +438,19 @@ public class TurretModule extends BaseTurretModule{
     public void write(Writes write, BaseMount mount){
         super.write(write, mount);
 
-        if(mount instanceof TurretMount m) write.f(m.reload);
+        if(mount instanceof TurretMount m){
+            write.f(m.reload);
+            write.f(m.charge);
+        }
     }
 
     @Override
     public void read(Reads read, byte revision, BaseMount mount){
         super.read(read, revision, mount);
 
-        if(mount instanceof TurretMount m) m.reload = read.f();
+        if(mount instanceof TurretMount m){
+            m.reload = read.f();
+            m.charge = read.f();
+        }
     }
 }

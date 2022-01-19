@@ -3,6 +3,7 @@ package progressed.world.blocks.defence.turret.multi.mounts;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
@@ -16,6 +17,8 @@ public class TurretMount extends BaseMount{
     public int totalAmmo;
     /** Reload in frames; 0 means ready to fire */
     public float reload;
+    public float charge;
+    public BulletType chargeShot;
     /** Weapon recoil */
     public float recoil;
     public int shotCounter;

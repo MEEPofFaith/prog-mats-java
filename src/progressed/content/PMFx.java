@@ -108,6 +108,11 @@ public class PMFx{
         });
     }),
 
+    jupiterCharge = new Effect(300f, e -> {
+        color(Pal.lancerLaser);
+        Fill.circle(e.x, e.y, 7f * e.fin(Interp.pow2Out));
+    }).layer(Layer.bullet),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

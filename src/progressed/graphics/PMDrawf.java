@@ -43,6 +43,10 @@ public class PMDrawf{
         cross(x, y, size, size, angle);
     }
 
+    public static void stretch(TextureRegion region, float x, float y, float x2, float y2){
+        Lines.line(region, x, y, x2, y2, false);
+    }
+
     public static void shadowAlpha(TextureRegion region, float x, float y, float rotation, float alpha){
         color(Tmp.c1.set(Pal.shadow).mul(1f, 1f, 1f, alpha));
         rect(region, x, y, rotation);
@@ -137,8 +141,6 @@ public class PMDrawf{
         Draw.shader();
         Draw.color();
     }
-
-
 
     public static void blockBuildCenter(float x, float y, TextureRegion region, float rotation, float progress){
         blockBuildCenter(x, y, region, Pal.accent, rotation, progress);

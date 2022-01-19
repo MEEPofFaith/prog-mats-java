@@ -36,7 +36,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    trifecta;
+    trifecta, jupiter;
 
     @Override
     public void load(){
@@ -271,6 +271,87 @@ public class PMModules implements ContentList{
                         "prog-mats-trifecta-missile-outline"
                     );
                     super.createIcons(packer);
+                }
+            };
+        }};
+
+        jupiter = new ModulePayload("jupiter"){{
+            size = 3;
+
+            module = new PowerTurretModule("jupiter", ModuleSize.large){
+                final float baseRad = 7.5f, jointRadMin = 9.5f, jointRadMax = 13f, endRadMin = 5f, endRadMax = 11.5f;
+                TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion;
+
+                {
+                    reloadTime = 2.5f * 60f;
+                    powerUse = 4f;
+                    recoilAmount = shootLength = 0;
+                    chargeTime = PMFx.jupiterCharge.lifetime;
+                    chargeBeginEffect = PMFx.jupiterCharge;
+
+                    shootType = ModuleBullets.jupiterOrb;
+                }
+
+                @Override
+                public void load(){
+                    super.load();
+                    jointBaseRegion = Core.atlas.find(name + "-joint-base");
+                    armBaseRegion = Core.atlas.find(name + "-arm-base");
+                    jointRegion = Core.atlas.find(name + "-joint");
+                    armRegion = Core.atlas.find(name + "-arm");
+                    endRegion = Core.atlas.find(name + "-end");
+                }
+
+                @Override
+                public void updateCharging(ModularTurretBuild parent, TurretMount mount){
+                    if(!mount.charging){
+                        mount.charge = Mathf.approachDelta(mount.charge, 0f, 3f);
+                    }else{
+                        mount.charge = Mathf.approachDelta(mount.charge, chargeTime, 1f);
+
+                        if(mount.charge >= chargeTime){
+                            mount.charging = false;
+                            chargeShot(parent, mount);
+                        }
+                    }
+                }
+
+                @Override
+                public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
+                    mount.rotation = targetRot;
+                }
+
+                @Override
+                public void drawTurret(TurretMount mount){
+                    float x = mount.x,
+                        y = mount.y;
+
+                    if(mount.progress < deployTime){
+                        Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, 0, mount.progress / deployTime));
+                        return;
+                    }
+
+                    Draw.rect(region, x, y);
+
+                    Lines.stroke(6f);
+                    float charge = Interp.pow2Out.apply(mount.charge / chargeTime);
+                    for(int i = 0; i < 4; i++){
+                        float rot = i * 90 - 45f,
+                            joint = Mathf.lerp(jointRadMin, jointRadMax, charge),
+                            end = Mathf.lerp(endRadMin, endRadMax, charge);
+
+                        tr.trns(rot, baseRad);
+                        tr2.trns(rot, joint);
+
+                        Draw.rect(jointBaseRegion, x + tr.x, y + tr.y, rot);
+                        PMDrawf.stretch(armBaseRegion, x + tr.x, y + tr.y, x + tr2.x, y + tr2.y);
+                        Draw.rect(jointRegion, x + tr2.x, y + tr2.y, rot);
+
+                        tr.trns(rot, end);
+
+                        PMDrawf.stretch(armRegion, x + tr2.x, y + tr2.y, x + tr.x, y + tr.y);
+                        Draw.rect(endRegion, x + tr.x, y + tr.y, rot);
+                    }
                 }
             };
         }};
