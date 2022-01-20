@@ -221,6 +221,7 @@ public class PMModules implements ContentList{
                     length = brange;
                     width = 12f;
                     toColor = Pal.remove;
+                    displayAmmoMultiplier = false;
                     shootEffect = smokeEffect = PMFx.flameShoot;
                     makeFire = true;
                     status = StatusEffects.burning;

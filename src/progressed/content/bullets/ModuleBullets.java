@@ -91,7 +91,8 @@ public class ModuleBullets implements ContentList{
             smokeEffect = Fx.shootSmallSmoke;
             hitEffect = Fx.hitBulletSmall;
             trailLength = 3;
-            pierce = pierceBuilding = false;
+            pierceBuilding = false;
+            pierceCap = 3;
 
             critChance = 0.02f;
             critMultiplier = 7f;
@@ -106,7 +107,8 @@ public class ModuleBullets implements ContentList{
             smokeEffect = Fx.shootBigSmoke;
             hitEffect = Fx.hitBulletSmall;
             trailLength = 3;
-            pierce = pierceBuilding = false;
+            pierceBuilding = false;
+            pierceCap = 2;
 
             critChance = 0.04f;
             critMultiplier = 3f;
@@ -122,7 +124,8 @@ public class ModuleBullets implements ContentList{
             smokeEffect = Fx.shootBigSmoke;
             hitEffect = Fx.hitBulletSmall;
             trailLength = 3;
-            pierce = pierceBuilding = false;
+            pierceBuilding = false;
+            pierceCap = 3;
 
             critChance = 0.03f;
             critMultiplier = 4f;
@@ -243,6 +246,7 @@ public class ModuleBullets implements ContentList{
                 hittable = false;
                 homingPower = 0.05f;
                 homingRange = 16f * 8f;
+                displayAmmoMultiplier = false;
                 lightColor = Pal.lancerLaser;
                 shootEffect = smokeEffect = Fx.none;
                 hitEffect = PMFx.jupiterHit;
