@@ -471,10 +471,10 @@ public class PMStatValues{
         };
     }
 
-    private static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
+    public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
         return table.button("?", Styles.clearPartialt, () -> {
             ui.content.show(content);
-        }).size(size).left().grow().name("contentinfo");
+        }).size(size).left().name("contentinfo");
     }
 
     private static void sep(Table table, String text){

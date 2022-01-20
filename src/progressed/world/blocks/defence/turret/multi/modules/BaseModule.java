@@ -26,13 +26,15 @@ import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.payloads.ModulePayload.*;
 import progressed.world.meta.*;
 
+import java.util.*;
+
 public class BaseModule implements Cloneable{
     public String name, localizedName;
     /** Automatically set */
     public short mountID;
 
     public float deployTime = -1f;
-    public boolean hasLiquids, usePower;
+    public boolean hasLiquids;
     public float powerUse;
     public float liquidCapacity = 10f;
     public float layerOffset;
@@ -58,7 +60,8 @@ public class BaseModule implements Cloneable{
     public BaseModule(String name, ModuleSize size){
         this.name = "prog-mats-" + name;
         this.size = size;
-        localizedName = Core.bundle.get("pmturretmodule." + name + ".name", name);
+
+        localizedName = Core.bundle.get("module." + this.name + ".name", Core.bundle.get("block." + this.name + ".name", this.name));
     }
 
     public BaseModule(String name){
@@ -93,10 +96,10 @@ public class BaseModule implements Cloneable{
             ));
         }
 
-        if(usePower){
+        if(powerUse > 0){
             bars.add("power", (entity, mount) -> new Bar(
-                () -> Core.bundle.get("bar.power"),
-                () -> Pal.powerBar,
+                "bar.power",
+                Pal.powerBar,
                 () -> entity.power.status
             ));
         }
@@ -157,20 +160,23 @@ public class BaseModule implements Cloneable{
         table.table(t -> {
             t.left();
             t.add(new Image(region)).size(8 * 4);
-            t.labelWrap(localizedName).left().width(190f).padLeft(5);
-        });
+            t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").left().fillX().padLeft(5);
+            PMStatValues.infoButton(t, Vars.content.block(mountID), 4f * 8f).left().padLeft(5f);
+        }).growX().top().left();
+
+        table.row();
 
         table.table(bars -> {
             bars.defaults().growX().height(18f).pad(4f);
 
-            displayBars(parent, table, mount);
-        }).growX();
+            displayBars(parent, bars, mount);
+        }).growX().top().left();
     }
 
     public void displayBars(ModularTurretBuild parent, Table table, BaseMount mount){
         for(Func2<ModularTurretBuild, BaseMount, Bar> bar : bars.list()){
             try{
-                table.add(bar.get(parent, mount)).growX();
+                table.add(bar.get(parent, mount));
                 table.row();
             }catch(ClassCastException e){
                 break;
@@ -249,6 +255,10 @@ public class BaseModule implements Cloneable{
 
     /** Modular Turrets have mounts of 3 sizes. */
     public enum ModuleSize{
-        small, medium, large
+        small, medium, large;
+
+        public String title(){
+            return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT));
+        }
     }
 }

@@ -5,6 +5,9 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -16,6 +19,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
@@ -40,6 +44,9 @@ public class ModularTurret extends PayloadBlock{
 
     public TextureRegion[] mountBases = new TextureRegion[3];
 
+    private static ModuleSize selSize;
+    private static int selNum;
+
     public ModularTurret(String name){
         super(name);
 
@@ -48,6 +55,7 @@ public class ModularTurret extends PayloadBlock{
         hasLiquids = true;
         outputsLiquid = false;
         rotate = false;
+        configurable = true;
         priority = TargetPriority.turret;
         group = BlockGroup.turrets;
         flags = EnumSet.of(BlockFlag.turret);
@@ -115,9 +123,16 @@ public class ModularTurret extends PayloadBlock{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.powerUse);
+    }
+
+    @Override
     public void setBars(){
         super.setBars();
         bars.remove("liquid");
+        bars.remove("power");
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
@@ -258,6 +273,7 @@ public class ModularTurret extends PayloadBlock{
             if(mount instanceof TurretMount t) turretMounts.add(t);
             allMounts.add(mount);
             mount.updatePos(this);
+            sort();
 
             return mount;
         }
@@ -294,6 +310,70 @@ public class ModularTurret extends PayloadBlock{
 
         public float nextMountY(ModuleSize size, int pos){
             return getMountPos(size)[pos].y;
+        }
+
+        public void sort(){
+            allMounts.sort(m -> m.module.size.ordinal() * 100 + m.mountNumber);
+        }
+
+        @Override
+        public void buildConfiguration(Table table){
+            if(!allMounts.any()) return;
+
+            selNum = 0;
+            selSize = allMounts.first() != null ? allMounts.first().module.size : ModuleSize.small;
+
+            table.table(this::rebuild).top().expandY();
+        }
+
+        public void rebuild(Table table){
+            table.clearChildren();
+            table.top();
+            table.table(t -> {
+                t.top();
+                for(ModuleSize mSize : ModuleSize.values()){
+                    t.button(mSize.title(), Styles.clearTogglet, () -> {
+                        selSize = mSize;
+                        selNum = allMounts.indexOf(m -> m.checkSize(mSize));
+                        rebuild(table);
+                    }).update(b -> {
+                        b.setChecked(selSize == mSize);
+                    }).size(80f, 40f);
+                }
+                t.button(Icon.settings, Styles.cleari, () -> {
+                    //TODO Module Reordering/Swapping
+                }).size(80f, 40f);
+            }).top().expandY();
+            table.row();
+            table.table(Styles.black6, t -> {
+                t.left();
+                t.table(m -> {
+                    m.left().top();
+                    allMounts.each(mount -> mount.checkSize(selSize), mount -> {
+                        ImageButton button = m.button(Tex.whiteui, Styles.clearTogglei, 32f, () -> {
+                            selNum = allMounts.indexOf(mount);
+                            rebuild(table);
+                        }).update(b -> {
+                            b.setChecked(selNum == allMounts.indexOf(mount));
+                        }).size(40f).get();
+                        button.getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
+                        m.row();
+                    });
+                }).left().top();
+
+                if(selNum >= 0){
+                    Table displayed = new Table();
+                    displayed.top().left();
+                    BaseMount mount = allMounts.get(selNum);
+                    mount.module.display(this, displayed, mount);
+
+                    ScrollPane pane = new ScrollPane(displayed, Styles.smallPane);
+                    pane.setScrollingDisabled(true, false);
+
+                    pane.setOverscroll(false, false);
+                    t.add(pane).top().left().grow();
+                }
+            }).top().fillX().expandY();
         }
 
         /** @return if a module can be added. */

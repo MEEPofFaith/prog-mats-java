@@ -105,6 +105,7 @@ public class PMModules implements ContentList{
                 reloadTime = 90f;
                 shootCone = 30;
                 range = 120f;
+                maxAmmo = 10;
                 shots = 5;
                 inaccuracy = 25;
                 velocityInaccuracy = 0.2f;
@@ -169,6 +170,7 @@ public class PMModules implements ContentList{
                 reloadTime = 75f;
                 shootCone = 25;
                 range = 200f;
+                maxAmmo = 10;
                 shots = 6;
                 inaccuracy = 20;
                 velocityInaccuracy = 0.2f;
@@ -252,6 +254,7 @@ public class PMModules implements ContentList{
 
                     range = 34f * tilesize;
                     reloadTime = 120f;
+                    maxAmmo = 12;
                     shots = 3;
                     barrels = 3;
                     barrelSpacing = 6f;

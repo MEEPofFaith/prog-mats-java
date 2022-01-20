@@ -7,7 +7,9 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
@@ -17,7 +19,7 @@ import progressed.world.meta.*;
 public class ItemTurretModule extends TurretModule{
     public ObjectMap<Item, BulletType> ammoTypes = new ObjectMap<>();
 
-    public int maxAmmo = 30;
+    public int maxAmmo = 20;
 
     public ItemTurretModule(String name, ModuleSize size){
         super(name, size);
@@ -32,6 +34,17 @@ public class ItemTurretModule extends TurretModule{
         super.setStats(stats);
 
         stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        bars.add("ammo", (entity, mount) -> new Bar(
+            "stat.ammo",
+            Pal.ammo,
+            () -> ((TurretMount)mount).totalAmmo / (float)maxAmmo
+        ));
     }
 
     /** Initializes accepted ammo map. Format: [item1, bullet1, item2, bullet2...] */
