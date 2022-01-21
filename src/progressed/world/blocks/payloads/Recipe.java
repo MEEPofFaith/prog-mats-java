@@ -27,6 +27,18 @@ public class Recipe{
         }
     }
 
+    public Recipe(Block block, ItemStack[] buildCost, float powerUse, float craftTime){
+        this(block);
+        this.buildCost = buildCost;
+        this.craftTime = craftTime;
+        this.powerUse = powerUse;
+    }
+
+    public Recipe(Block outputBlock, Block inputBlock, ItemStack[] buildCost, float powerUse, float craftTime){
+        this(outputBlock, buildCost, powerUse, craftTime);
+        this.inputBlock = inputBlock;
+    }
+
     public Liquid getLiquidInput(){
         return liquidCost != null ? liquidCost.liquid : null;
     }

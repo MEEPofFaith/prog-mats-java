@@ -293,6 +293,7 @@ public class PMModules implements ContentList{
                     recoilAmount = shootLength = 0;
                     chargeTime = PMFx.jupiterCharge.lifetime;
                     chargeBeginEffect = PMFx.jupiterCharge;
+                    shootSound = Sounds.laser;
 
                     shootType = ModuleBullets.jupiterOrb;
                 }

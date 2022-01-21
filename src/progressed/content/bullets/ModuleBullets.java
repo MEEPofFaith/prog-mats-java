@@ -76,7 +76,7 @@ public class ModuleBullets implements ContentList{
             trailLength = 3;
             pierce = pierceBuilding = false;
 
-            critChance = 0.05f;
+            critChance = 0.08f;
             critMultiplier = 2f;
             critEffect = PMFx.miniCrit;
         }};
@@ -94,7 +94,7 @@ public class ModuleBullets implements ContentList{
             pierceBuilding = false;
             pierceCap = 3;
 
-            critChance = 0.02f;
+            critChance = 0.03f;
             critMultiplier = 7f;
             critEffect = PMFx.miniCrit;
         }};
@@ -110,7 +110,7 @@ public class ModuleBullets implements ContentList{
             pierceBuilding = false;
             pierceCap = 2;
 
-            critChance = 0.04f;
+            critChance = 0.06f;
             critMultiplier = 3f;
             critEffect = PMFx.miniCrit;
         }};
@@ -127,7 +127,7 @@ public class ModuleBullets implements ContentList{
             pierceBuilding = false;
             pierceCap = 3;
 
-            critChance = 0.03f;
+            critChance = 0.05f;
             critMultiplier = 4f;
             critEffect = PMFx.miniCrit;
         }};

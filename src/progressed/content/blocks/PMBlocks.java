@@ -51,6 +51,8 @@ import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
+import static progressed.content.blocks.PMModules.*;
+import static progressed.content.blocks.PMPayloads.*;
 
 public class PMBlocks implements ContentList{
     public static Block
@@ -129,7 +131,7 @@ public class PMBlocks implements ContentList{
     mindronCollider, pyroclastForge,
 
     //Payloads
-    shellPress, missileFactory, sentryBuilder,
+    moduleAssembler, moduleFoundry, shellPress, missileFactory, sentryBuilder,
 
     // endregion
     // region defence
@@ -1428,6 +1430,31 @@ public class PMBlocks implements ContentList{
             );
         }};
 
+        moduleAssembler = new PayloadCrafter("module-assembler"){{
+            requirements(Category.crafting, empty);
+            size = 3;
+
+            recipes(
+                new Recipe(shrapnel, with(Items.copper, 1), 1f, 60f),
+                new Recipe(froth, with(Items.copper, 1), 1f, 60f),
+                new Recipe(bifurcation, with(Items.copper, 1), 1f, 60f),
+                new Recipe(miniOverdrive, with(Items.copper, 1), 1f, 60f)
+            );
+        }};
+
+        moduleFoundry = new PayloadCrafter("module-foundry"){{
+            requirements(Category.crafting, empty);
+            size = 5;
+
+            recipes(
+                new Recipe(blunderbuss, shrapnel, with(Items.copper, 1), 1f, 60f),
+                new Recipe(airburst, with(Items.copper, 1), 1f, 60f),
+                new Recipe(vulcan, with(Items.copper, 1), 1f, 60f),
+                new Recipe(trifecta, airburst, with(Items.copper, 1), 1f, 60f),
+                new Recipe(jupiter, with(Items.copper, 1), 1f, 60f)
+            );
+        }};
+
         shellPress = new PayloadCrafter("shell-press"){{
             requirements(Category.crafting, with(
                 Items.copper, 75,
@@ -1439,9 +1466,9 @@ public class PMBlocks implements ContentList{
             size = 5;
             ambientSound = Sounds.machine;
             recipes(
-                PMPayloads.emptyRocket,
-                PMPayloads.emptyMissile,
-                PMPayloads.emptyNuke
+                emptyRocket,
+                emptyMissile,
+                emptyNuke
             );
 
             recipes.each(r -> r.centerBuild = true);
@@ -1462,9 +1489,9 @@ public class PMBlocks implements ContentList{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                PMPayloads.basicRocket, PMPayloads.incendiaryRocket, PMPayloads.bomberRocket,
-                PMPayloads.basicMissile, PMPayloads.recursiveMissile,
-                PMPayloads.basicNuke, PMPayloads.clusterNuke
+                basicRocket, incendiaryRocket, bomberRocket,
+                basicMissile, recursiveMissile,
+                basicNuke, clusterNuke
             );
             recipes.get(1).liquidCost = new LiquidStack(Liquids.slag, 40f);
         }};
@@ -1479,9 +1506,9 @@ public class PMBlocks implements ContentList{
 
             size = 3;
             recipes(
-                PMPayloads.basicSentry,
-                PMPayloads.missileSentry,
-                PMPayloads.dashSentry
+                basicSentry,
+                missileSentry,
+                dashSentry
             );
 
             recipes.each(r -> r.blockBuild = false);

@@ -31,13 +31,12 @@ import static mindustry.Vars.*;
 public class PayloadCrafter extends PayloadBlock{
     private float scrollPos;
 
-    public Seq<Recipe> recipes;
+    public Seq<Recipe> recipes = new Seq<>();
     public boolean hasTop = true;
 
     public PayloadCrafter(String name){
         super(name);
 
-        size = 3;
         update = true;
         rotate = true;
         configurable = logicConfigurable = true;
@@ -56,9 +55,14 @@ public class PayloadCrafter extends PayloadBlock{
     }
 
     public void recipes(Block... blocks){
-        recipes = new Seq<>();
         for(Block b : blocks){
             recipes.add(new Recipe(b));
+        }
+    }
+
+    public void recipes(Recipe... newRecipes){
+        for(Recipe r : newRecipes){
+            recipes.add(r);
         }
     }
 
