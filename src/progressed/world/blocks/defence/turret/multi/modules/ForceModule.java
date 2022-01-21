@@ -145,7 +145,7 @@ public class ForceModule extends BaseModule{
         public Interval timer = new Interval(6);
         public Seq<Unit> targets = new Seq<>();
 
-        public ForceMount(ModularTurretBuild parent, BaseModule module, short moduleNumber){
+        public ForceMount(ModularTurretBuild parent, BaseModule module, int moduleNumber){
             super(parent, module, moduleNumber);
         }
     }

@@ -25,7 +25,9 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.graphics.*;
+import progressed.ui.dialogs.*;
 import progressed.world.blocks.defence.turret.multi.modules.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
@@ -59,6 +61,21 @@ public class ModularTurret extends PayloadBlock{
         priority = TargetPriority.turret;
         group = BlockGroup.turrets;
         flags = EnumSet.of(BlockFlag.turret);
+
+        config(Point3.class, (ModularTurretBuild build, Point3 swapped) -> {
+            ModuleSize mSize = ModuleSize.values()[swapped.x];
+            int sel1 = swapped.y,
+                sel2 = swapped.z;
+
+            BaseMount m1 = build.allMounts.find(m -> m.checkSize(mSize) && m.checkNumber(sel1)),
+                m2 = build.allMounts.find(m -> m.checkSize(mSize) && m.checkNumber(sel2));
+
+            if(m1 != null) m1.move(sel2);
+            if(m2 != null) m2.move(sel1);
+
+            build.updatePos();
+            build.sort();
+        });
     }
 
     @Override
@@ -250,12 +267,16 @@ public class ModularTurret extends PayloadBlock{
                 }
             }
 
-            if(isPayload()) allMounts.each(m -> m.updatePos(this));
+            if(isPayload()) updatePos();
 
             //Draw in order of small/medium/large
             allMounts.each(BaseMount::isSmall, m -> m.draw(this));
             allMounts.each(BaseMount::isMedium, m -> m.draw(this));
             allMounts.each(BaseMount::isLarge, m -> m.draw(this));
+        }
+
+        public void updatePos(){
+            allMounts.each(m -> m.updatePos(this));
         }
 
         /** @return the module it adds. */
@@ -264,7 +285,7 @@ public class ModularTurret extends PayloadBlock{
         }
 
         /** @return the module it adds. */
-        public BaseMount addModule(BaseModule module, short pos){
+        public BaseMount addModule(BaseModule module, int pos){
             BaseMount mount = module.mountType.get(
                 this,
                 module,
@@ -294,6 +315,10 @@ public class ModularTurret extends PayloadBlock{
                 case medium -> mediumMountPos;
                 case large -> largeMountPos;
             };
+        }
+
+        public int getMaxMounts(ModuleSize size){
+            return getMountPos(size).length;
         }
 
         public float nextMountX(ModuleSize size){
@@ -341,7 +366,7 @@ public class ModularTurret extends PayloadBlock{
                     }).size(80f, 40f);
                 }
                 t.button(Icon.settings, Styles.cleari, () -> {
-                    //TODO Module Reordering/Swapping
+                    ProgMats.swapDialog.show(this);
                 }).size(80f, 40f);
             }).top().expandY();
             table.row();

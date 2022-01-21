@@ -11,12 +11,15 @@ import progressed.content.*;
 import progressed.content.blocks.*;
 import progressed.content.bullets.*;
 import progressed.graphics.*;
+import progressed.ui.*;
+import progressed.ui.dialogs.*;
 import progressed.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class ProgMats extends Mod{
+    public static ModuleDialog swapDialog;
     public static PMSettings settings = new PMSettings();
 
     private final ContentList[] pmContent = {
@@ -69,6 +72,8 @@ public class ProgMats extends Mod{
 
             Events.on(ClientLoadEvent.class, e -> {
                 PMUtls.godHood(PMUnitTypes.everythingUnit);
+                PMStyles.load();
+                swapDialog = new ModuleDialog();
 
                 if(Core.settings.getBool("pm-farting")){
                     content.blocks().each(b -> {

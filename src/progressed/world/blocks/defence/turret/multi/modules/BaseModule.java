@@ -44,7 +44,7 @@ public class BaseModule implements Cloneable{
 
     public ModuleSize size;
 
-    public Func3<ModularTurretBuild, BaseModule, Short, BaseMount> mountType = BaseMount::new;
+    public Func3<ModularTurretBuild, BaseModule, Integer, BaseMount> mountType = BaseMount::new;
 
     public final MountBars bars = new MountBars();
     public final Consumers consumes = new Consumers();
@@ -258,7 +258,11 @@ public class BaseModule implements Cloneable{
         small, medium, large;
 
         public String title(){
-            return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT));
+            return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT) + ".short");
+        }
+
+        public String fullTitle(){
+            return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT) + ".full");
         }
     }
 }
