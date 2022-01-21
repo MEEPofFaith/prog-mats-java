@@ -1405,8 +1405,10 @@ public class PMBlocks implements ContentList{
             ambientSoundVolume = 1f; //Big flame louder sound. LIKE REALLY LOUD.
 
             drawer = new DrawSmelter(Color.valueOf("ffef99")){{
-                flameRadiusMag = 11f;
-                flameRadiusIn = 7f;
+                flameRadiusIn = 4f;
+                flameRadius = 7.5f;
+                flameRadiusMag = 2.5f;
+                flameRadiusScl = 8f;
             }};
 
             fuelItem = Items.pyratite;
