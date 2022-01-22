@@ -17,25 +17,24 @@ public class Recipe{
 
     public Recipe(Block block){
         outputBlock = block;
+        buildCost = block.requirements;
 
         if(block instanceof Missile m){
             craftTime = m.constructTime;
             requiresUnlock = m.requiresUnlock;
-            buildCost = m.requirements;
             powerUse = m.powerUse;
             inputBlock = m.prev;
         }
     }
 
-    public Recipe(Block block, ItemStack[] buildCost, float powerUse, float craftTime){
+    public Recipe(Block block, float powerUse, float craftTime){
         this(block);
-        this.buildCost = buildCost;
         this.craftTime = craftTime;
         this.powerUse = powerUse;
     }
 
-    public Recipe(Block outputBlock, Block inputBlock, ItemStack[] buildCost, float powerUse, float craftTime){
-        this(outputBlock, buildCost, powerUse, craftTime);
+    public Recipe(Block outputBlock, Block inputBlock, float powerUse, float craftTime){
+        this(outputBlock, powerUse, craftTime);
         this.inputBlock = inputBlock;
     }
 

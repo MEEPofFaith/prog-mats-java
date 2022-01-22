@@ -58,6 +58,7 @@ public class ModularTurret extends PayloadBlock{
         outputsLiquid = false;
         rotate = false;
         configurable = true;
+        solid = true;
         priority = TargetPriority.turret;
         group = BlockGroup.turrets;
         flags = EnumSet.of(BlockFlag.turret);

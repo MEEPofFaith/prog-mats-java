@@ -33,7 +33,6 @@ import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 import progressed.world.blocks.defence.turret.multi.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
@@ -1408,10 +1407,10 @@ public class PMBlocks implements ContentList{
             size = 3;
 
             recipes(
-                new Recipe(shrapnel, with(Items.copper, 1), 1f, 60f),
-                new Recipe(froth, with(Items.copper, 1), 1f, 60f),
-                new Recipe(bifurcation, with(Items.copper, 1), 1f, 60f),
-                new Recipe(miniOverdrive, with(Items.copper, 1), 1f, 60f)
+                new Recipe(shrapnel, 1f, 60f),
+                new Recipe(froth, 1f, 60f),
+                new Recipe(bifurcation, 1f, 60f),
+                new Recipe(overclocker, 1f, 60f)
             );
         }};
 
@@ -1420,11 +1419,11 @@ public class PMBlocks implements ContentList{
             size = 5;
 
             recipes(
-                new Recipe(blunderbuss, shrapnel, with(Items.copper, 1), 1f, 60f),
-                new Recipe(airburst, with(Items.copper, 1), 1f, 60f),
-                new Recipe(vulcan, with(Items.copper, 1), 1f, 60f),
-                new Recipe(trifecta, airburst, with(Items.copper, 1), 1f, 60f),
-                new Recipe(jupiter, with(Items.copper, 1), 1f, 60f)
+                new Recipe(blunderbuss, shrapnel, 1f, 60f),
+                new Recipe(airburst, 1f, 60f),
+                new Recipe(vulcan, 1f, 60f),
+                new Recipe(trifecta, airburst, 1f, 60f),
+                new Recipe(jupiter, 1f, 60f)
             );
         }};
 

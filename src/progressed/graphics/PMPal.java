@@ -14,6 +14,7 @@ public class PMPal{
     darkGray = valueOf("6E7080"),
     darkBrown = valueOf("4d2c0c"),
 
+    heal = Color.valueOf("84f491"),
     overdrive = valueOf("feb380"),
 
     darkOutline = Color.valueOf("2e3142"),

@@ -28,7 +28,7 @@ public class PMModules implements ContentList{
 
     //Region Small
 
-    miniOverdrive, shrapnel, froth, bifurcation,
+    shrapnel, froth, bifurcation, bandage, overclocker,
 
     //Region Medium
 
@@ -40,59 +40,7 @@ public class PMModules implements ContentList{
 
     @Override
     public void load(){
-        miniOverdrive = new ModulePayload("mini-overdrive"){{
-            module = new SingleModule("mini-overdrive"){
-                TextureRegion topRegion;
-                final float speedBoost = 1.25f;
-
-                {
-                    mountType = ChargeMount::new;
-
-                    powerUse = 0.75f;
-                }
-
-                @Override
-                public void load(){
-                    super.load();
-                    topRegion = Core.atlas.find(name + "-top");
-                }
-
-                @Override
-                public void setStats(Stats stats){
-                    super.setStats(stats);
-
-                    stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
-                }
-
-                @Override
-                public void draw(ModularTurretBuild parent, BaseMount mount){
-                    super.draw(parent, mount);
-
-                    ChargeMount m = (ChargeMount)mount;
-
-                    Draw.color(PMPal.overdrive);
-                    Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
-                    Draw.rect(topRegion, m.x, m.y);
-                    Draw.color();
-                }
-
-                @Override
-                public void update(ModularTurretBuild parent, BaseMount mount){
-                    super.update(parent, mount);
-
-                    if(isDeployed(mount) && mount instanceof ChargeMount m){
-                        m.heat = Mathf.lerpDelta(m.heat, Mathf.num(parent.consValid()), 0.08f);
-                        m.charge += Time.delta * m.heat;
-
-                        if(m.charge >= 60f){
-                            m.charge = 0f;
-                            parent.applyBoost(speedBoost * parent.efficiency(), 61f);
-                        }
-                    }
-                }
-            };
-        }};
-
+        //Region small
         shrapnel = new ModulePayload("shrapnel"){{
             module = new ItemTurretModule("shrapnel"){{
                 ammo(
@@ -156,6 +104,128 @@ public class PMModules implements ContentList{
             }};
         }};
 
+        //amazing name lmao
+        bandage = new ModulePayload("bandage"){{
+            module = new BaseModule("bandage"){
+                TextureRegion topRegion;
+                final float healPercent = 5f, reload = 150f;
+
+                {
+                    mountType = ChargeMount::new;
+
+                    powerUse = 0.75f;
+                }
+
+                @Override
+                public void load(){
+                    super.load();
+                    topRegion = Core.atlas.find(name + "-top");
+                }
+
+                @Override
+                public void setStats(Stats stats){
+                    super.setStats(stats);
+
+                    stats.add(Stat.repairTime, (int)(100f / healPercent * reload / 60f), StatUnit.seconds);
+                }
+
+                @Override
+                public void draw(ModularTurretBuild parent, BaseMount mount){
+                    super.draw(parent, mount);
+
+                    ChargeMount m = (ChargeMount)mount;
+
+                    Draw.color(PMPal.heal);
+                    Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+                    Draw.rect(topRegion, m.x, m.y);
+                    Draw.color();
+                }
+
+                @Override
+                public void update(ModularTurretBuild parent, BaseMount mount){
+                    super.update(parent, mount);
+
+                    if(isDeployed(mount) && mount instanceof ChargeMount m){
+                        m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
+                        if(parent.damaged()){
+                            m.charge += Time.delta * m.heat;
+
+                            if(m.charge >= reload){
+                                m.charge = 0f;
+                                parent.heal(parent.maxHealth() * healPercent / 100f * efficiency(parent));
+                                Fx.healBlockFull.at(parent.x, parent.y, parent.block.size, PMPal.heal);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public boolean isActive(ModularTurretBuild parent, BaseMount mount){
+                    return super.isActive(parent, mount) && parent.consValid() && parent.damaged();
+                }
+            };
+        }};
+
+        overclocker = new ModulePayload("mini-overdrive"){{
+            module = new SingleModule("mini-overdrive"){
+                TextureRegion topRegion;
+                final float speedBoost = 1.25f;
+
+                {
+                    mountType = ChargeMount::new;
+
+                    powerUse = 0.75f;
+                }
+
+                @Override
+                public void load(){
+                    super.load();
+                    topRegion = Core.atlas.find(name + "-top");
+                }
+
+                @Override
+                public void setStats(Stats stats){
+                    super.setStats(stats);
+
+                    stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
+                }
+
+                @Override
+                public void draw(ModularTurretBuild parent, BaseMount mount){
+                    super.draw(parent, mount);
+
+                    ChargeMount m = (ChargeMount)mount;
+
+                    Draw.color(PMPal.overdrive);
+                    Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+                    Draw.rect(topRegion, m.x, m.y);
+                    Draw.color();
+                }
+
+                @Override
+                public void update(ModularTurretBuild parent, BaseMount mount){
+                    super.update(parent, mount);
+
+                    if(isDeployed(mount) && mount instanceof ChargeMount m){
+                        m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
+                        m.charge += Time.delta * m.heat;
+
+                        if(m.charge >= 60f){
+                            m.charge = 0f;
+                            parent.applyBoost(speedBoost * parent.efficiency(), 61f);
+                        }
+                    }
+                }
+
+                @Override
+                public boolean isActive(ModularTurretBuild parent, BaseMount mount){
+                    return super.isActive(parent, mount) && parent.consValid();
+                }
+            };
+        }};
+        //endregion
+
+        //Region medium
         blunderbuss = new ModulePayload("blunderbuss"){{
             size = 2;
 
@@ -243,7 +313,9 @@ public class PMModules implements ContentList{
                 scaledForce = 5f;
             }};
         }};
+        //endregion
 
+        //Region Large
         trifecta = new ModulePayload("trifecta"){{
             size = 3;
 
@@ -391,5 +463,6 @@ public class PMModules implements ContentList{
                 }
             };
         }};
+        //endregion
     }
 }
