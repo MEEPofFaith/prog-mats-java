@@ -62,10 +62,11 @@ public class ModularTurret extends PayloadBlock{
         group = BlockGroup.turrets;
         flags = EnumSet.of(BlockFlag.turret);
 
-        config(Boolean.class, (ModularTurretBuild build, Boolean swap) -> {
-            build.updatePos();
-            build.sort();
+        config(Integer.class, (ModularTurretBuild build, Integer swap) -> {
+            build.allMounts.get(Point2.x(swap)).mountNumber = Point2.y(swap);
         });
+
+        config(Boolean.class, (ModularTurretBuild build, Boolean accordingToAllKnownLawsOfAviationThereIsNoWayThatABeeShouldBeAbleToFlyItsWingsAreTooSmallToGetItsFatLittleBodyOffTheGroundTheBeeOfCourseFliesAnywaysBecauseBeesDontCareWhatHumansThinkIsImpossible) -> build.sort());
     }
 
     @Override

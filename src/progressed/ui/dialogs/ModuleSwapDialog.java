@@ -1,5 +1,6 @@
 package progressed.ui.dialogs;
 
+import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -25,6 +26,14 @@ public class ModuleSwapDialog extends BaseDialog{
         });
         buttons.button("@confirm", Icon.flipX, () -> {
             hide();
+
+            base.updatePos();
+            //sync to server, send local mount numbers to everyone else
+            for(int i = 0; i < base.allMounts.size; i++){
+                base.configure(Point2.pack(i, base.allMounts.get(i).mountNumber));
+            }
+            base.sort();
+            //sync the sort as well
             base.configure(true);
         });
 
