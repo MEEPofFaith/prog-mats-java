@@ -9,17 +9,19 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.content.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
-import progressed.util.*;
+import progressed.ui.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 import progressed.world.blocks.payloads.*;
@@ -27,6 +29,8 @@ import progressed.world.blocks.payloads.ModulePayload.*;
 import progressed.world.meta.*;
 
 import java.util.*;
+
+import static mindustry.Vars.*;
 
 public class BaseModule implements Cloneable{
     public String name, localizedName;
@@ -122,7 +126,7 @@ public class BaseModule implements Cloneable{
     public void update(ModularTurretBuild parent, BaseMount mount){
         mount.progress = Mathf.approachDelta(mount.progress, deployTime, 1f);
 
-        if(!Vars.headless && mount.sound != null) mount.sound.update(mount.x, mount.y, shouldLoopSound(parent, mount));
+        if(!headless && mount.sound != null) mount.sound.update(mount.x, mount.y, shouldLoopSound(parent, mount));
     }
 
     public void remove(ModularTurretBuild parent, BaseMount mount){
@@ -156,12 +160,26 @@ public class BaseModule implements Cloneable{
         Draw.rect(region, payload.x, payload.y);
     }
 
-    public void display(ModularTurretBuild parent, Table table, BaseMount mount){
+    public void display(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){
         table.table(t -> {
             t.left();
             t.add(new Image(region)).size(8 * 4);
             t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").left().fillX().padLeft(5);
-            PMStatValues.infoButton(t, Vars.content.block(mountID), 4f * 8f).left().padLeft(5f);
+            PMStatValues.infoButton(t, content.block(mountID), 4f * 8f).left().padLeft(5f);
+            t.button("^", Styles.clearPartialt, () -> {
+                if(canPickUp(mount)){ //jeez this is a mess
+                    Payloadc p = (Payloadc)player.unit();
+                    BuildPayload module = new BuildPayload(content.block(mountID), parent.team);
+                    p.addPayload(module);
+                    Fx.unitPickup.at(mount.x, mount.y);
+                    Events.fire(new PickupEvent(player.unit(), module.build));
+                    parent.removeMount(mount);
+                    parent.resetSelection();
+                    parent.rebuild(parentTable);
+                }else{
+                    showPickupFail(mount);
+                }
+            }).size(4f * 8f).left().padLeft(5f).tooltip("@pm-pickup.label");
         }).growX().top().left();
 
         table.row();
@@ -171,6 +189,29 @@ public class BaseModule implements Cloneable{
 
             displayBars(parent, bars, mount);
         }).growX().top().left();
+    }
+
+    public boolean canPickUp(BaseMount mount){
+        Unit u = player.unit();
+        if(!(u instanceof Payloadc p)) return false;
+
+        ModulePayload mPay = (ModulePayload)content.block(mountID);
+        return p.payloadUsed() + mPay.size * mPay.size * tilePayload <= u.type.payloadCapacity + 0.01f
+            && u.within(mount.x, mount.y, tilesize * mPay.size * 1.2f);
+    }
+
+    public void showPickupFail(BaseMount mount){
+        Unit u = player.unit();
+        if(!(u instanceof Payloadc p)){
+            ui.showInfoToast("@pm-pickup.invalid", 2f);
+        }else{
+            ModulePayload mPay = (ModulePayload)content.block(mountID);
+            if(!player.unit().within(mount.x, mount.y, mPay.size * tilesize * 1.2f)){
+                ui.showInfoToast("@pm-pickup.toofar", 2f);
+            }else if(p.payloadUsed() + mPay.size * mPay.size * tilePayload > u.type.payloadCapacity + 0.01f){
+                ui.showInfoToast("@pm-pickup.full", 2f);
+            }
+        }
     }
 
     public void displayBars(ModularTurretBuild parent, Table table, BaseMount mount){

@@ -300,6 +300,12 @@ public class ModularTurret extends PayloadBlock{
             return mount;
         }
 
+        public void removeMount(BaseMount mount){
+            mount.module.remove(this, mount);
+            allMounts.remove(mount);
+            if(mount instanceof TurretMount t) turretMounts.remove(t);
+        }
+
         public short nextMount(ModuleSize size){
             short mount = 0;
             for(BaseMount m : allMounts){
@@ -346,8 +352,7 @@ public class ModularTurret extends PayloadBlock{
         public void buildConfiguration(Table table){
             if(!allMounts.any()) return;
 
-            selNum = 0;
-            selSize = allMounts.first() != null ? allMounts.first().module.size : ModuleSize.small;
+            resetSelection();
 
             table.table(this::rebuild).top().expandY();
         }
@@ -391,7 +396,7 @@ public class ModularTurret extends PayloadBlock{
                     Table displayed = new Table();
                     displayed.top().left();
                     BaseMount mount = allMounts.get(selNum);
-                    mount.module.display(this, displayed, mount);
+                    mount.module.display(this, displayed, table, mount);
 
                     ScrollPane pane = new ScrollPane(displayed, Styles.smallPane);
                     pane.setScrollingDisabled(true, false);
@@ -400,6 +405,11 @@ public class ModularTurret extends PayloadBlock{
                     t.add(pane).top().left().grow();
                 }
             }).top().fillX().expandY();
+        }
+
+        public void resetSelection(){
+            selNum = 0;
+            selSize = allMounts.first() != null ? allMounts.first().module.size : ModuleSize.small;
         }
 
         /** @return if a module can be added. */
