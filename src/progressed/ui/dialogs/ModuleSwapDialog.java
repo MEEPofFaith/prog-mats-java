@@ -1,28 +1,36 @@
 package progressed.ui.dialogs;
 
-import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import progressed.ui.*;
 import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
 import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.multi.mounts.*;
 
-public class ModuleDialog extends BaseDialog{
-    public static Point3 output = new Point3();
-
+public class ModuleSwapDialog extends BaseDialog{
     public int selFirst = -1;
     public ModuleSize selSize;
     protected ModularTurretBuild base;
 
-    public ModuleDialog(){
-        super("@pm-module-dialog");
+    public ModuleSwapDialog(){
+        super("@pm-swap.title");
 
-        addCloseButton();
+        buttons.defaults().size(210f, 64f);
+        buttons.button("@cancel", Icon.left, () -> {
+            hide();
+            base.resetSwap();
+        });
+        buttons.button("@confirm", Icon.flipX, () -> {
+            hide();
+            base.configure(true);
+        });
+
+        closeOnBack(() -> {
+            base.resetSwap();
+        });
 
         shown(this::setUp);
     }
@@ -55,11 +63,11 @@ public class ModuleDialog extends BaseDialog{
                         ib.setChecked(selSize == mSize && selFirst == ii);
                     }).size(64f).left();
 
-                    BaseMount mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkNumber(ii));
+                    BaseMount mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
 
                     if(mount != null){
                         button.get().getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
-                        button.tooltip(mount.module.localizedName + " (" + (mount.mountNumber + 1) + ")");
+                        button.tooltip(mount.module.localizedName + " (" + (mount.swapNumber + 1) + ")");
                     }
                 }
             }).left().padLeft(16f);
@@ -71,7 +79,12 @@ public class ModuleDialog extends BaseDialog{
         if(selFirst < 0){
             selFirst = sel;
         }else{
-            base.configure(output.set(selSize.ordinal(), selFirst, sel));
+            BaseMount m1 = base.allMounts.find(m -> m.checkSize(selSize) && m.checkSwap(selFirst)),
+                m2 = base.allMounts.find(m -> m.checkSize(selSize) && m.checkSwap(sel));
+
+            if(m1 != null) m1.swap(sel);
+            if(m2 != null) m2.swap(selFirst);
+
             setUp();
         }
     }

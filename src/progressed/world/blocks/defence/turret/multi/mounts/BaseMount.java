@@ -15,7 +15,7 @@ public class BaseMount{
     public final BaseModule module;
     /** The mount's offset array term. */
     public int mountNumber;
-    public int tempNumber;
+    public int swapNumber;
     /** Position of the mount */
     public float x, y;
     /** Liquid module of the mount. Primarily used for cooling. */
@@ -30,7 +30,7 @@ public class BaseMount{
 
     public BaseMount(ModularTurretBuild parent, BaseModule module, int mountNumber){
         this.module = module;
-        this.mountNumber = mountNumber;
+        this.mountNumber = swapNumber = mountNumber;
         updatePos(parent);
 
         if(module.hasLiquids) liquids = new LiquidModule();
@@ -46,6 +46,11 @@ public class BaseMount{
     }
 
     public void updatePos(ModularTurretBuild parent){
+        if(mountNumber != swapNumber){
+            mountNumber = swapNumber;
+            progress = 0;
+        }
+
         Vec2 offset = parent.getMountPos(module.size)[mountNumber];
         x = parent.x + offset.x;
         y = parent.y + offset.y;
@@ -56,9 +61,12 @@ public class BaseMount{
         module.draw(parent, this);
     }
 
-    public void move(int number){
-        mountNumber = number;
-        progress = 0;
+    public void unSwap(){
+        swapNumber = mountNumber;
+    }
+
+    public void swap(int number){
+        swapNumber = number;
     }
 
     //Method reference shorter and cleaner.
@@ -80,5 +88,9 @@ public class BaseMount{
 
     public boolean checkNumber(int number){
         return mountNumber == number;
+    }
+
+    public boolean checkSwap(int number){
+        return swapNumber == number;
     }
 }
