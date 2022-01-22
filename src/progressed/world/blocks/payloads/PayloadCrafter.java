@@ -108,7 +108,7 @@ public class PayloadCrafter extends PayloadBlock{
         super.setStats();
         stats.remove(Stat.powerUse);
 
-        stats.add(Stat.input, PMStatValues.payloadProducts(recipes));
+        stats.add(Stat.output, PMStatValues.payloadProducts(recipes));
     }
 
     @Override

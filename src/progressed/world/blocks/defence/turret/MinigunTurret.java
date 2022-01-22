@@ -17,7 +17,7 @@ import progressed.graphics.*;
 import progressed.util.*;
 
 public class MinigunTurret extends ItemTurret{
-    public float windupSpeed, windDownSpeed, minFiringSpeed, maxSpeed = 1f;
+    public float windupSpeed, windDownSpeed, minFiringSpeed, logicSpeedScl = 0.25f, maxSpeed = 1f;
     public float barX, barY, barStroke, barLength;
     public float[] shootLocs;
     public Color c1 = Color.darkGray;
@@ -113,6 +113,10 @@ public class MinigunTurret extends ItemTurret{
                 frameSpeed = Mathf.lerpDelta(frameSpeed, 0, windDownSpeed);
             }
 
+            if(frameSpeed > getMaxSpeed() && logicShooting){
+                frameSpeed = Mathf.lerpDelta(frameSpeed, getMaxSpeed(), windDownSpeed);
+            }
+
             trueFrame = trueFrame + frameSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) * Time.delta;
             frame = Mathf.floor(trueFrame % 3f);
             for(int i = 0; i < 4; i++){
@@ -129,24 +133,24 @@ public class MinigunTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(hasAmmo()){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            if(!hasAmmo()) return;
 
-                Liquid liquid = liquids.current();
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
 
-                float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
-                frameSpeed = Mathf.lerpDelta(frameSpeed, maxSpeed, windupSpeed * (1 + used) * liquid.heatCapacity * coolantMultiplier * peekAmmo().reloadMultiplier * timeScale);
-                liquids.remove(liquid, used);
+            Liquid liquid = liquids.current();
 
-                if(frame == 0 && shouldShoot && speedf() > minFiringSpeed){
-                    BulletType type = peekAmmo();
+            float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
+            if(frameSpeed < getMaxSpeed()) frameSpeed = Mathf.lerpDelta(frameSpeed, getMaxSpeed(), windupSpeed * (1 + used) * liquid.heatCapacity * coolantMultiplier * peekAmmo().reloadMultiplier * timeScale);
+            liquids.remove(liquid, used);
 
-                    shoot(type);
+            if(frame == 0 && shouldShoot && speedf() > minFiringSpeed){
+                BulletType type = peekAmmo();
 
-                    shouldShoot = false;
+                shoot(type);
 
-                    heats[Mathf.floor(trueFrame) % 12 / 3] = 1f;
-                }
+                shouldShoot = false;
+
+                heats[Mathf.floor(trueFrame) % 12 / 3] = 1f;
             }
         }
         
@@ -165,6 +169,10 @@ public class MinigunTurret extends ItemTurret{
         @Override
         protected void updateCooling(){
             //Do nothing, cooling is already in `updateShooting()`
+        }
+
+        protected float getMaxSpeed(){
+            return maxSpeed * (!isControlled() && logicShooting && target == null ? logicSpeedScl : 1f);
         }
 
         protected float speedf(){
