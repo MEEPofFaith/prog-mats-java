@@ -465,13 +465,6 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 200,
                 Items.thorium, 200
             ));
-            float h = 0.75f;
-            cells.add(
-                new EruptorCell(-h, -h),
-                new EruptorCell(h, -h),
-                new EruptorCell(-h, h),
-                new EruptorCell(h, h)
-            );
             size = 3;
             health = 210 * size * size;
             powerUse = 14f;
@@ -497,17 +490,6 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, 200,
                 PMItems.tenelium, 200
             ));
-            float h = 0.9f;
-            cells.addAll(
-                new EruptorCell(-h, -h),
-                new EruptorCell(h, -h),
-                new EruptorCell(-h, h),
-                new EruptorCell(h, h),
-                new EruptorCell(-h, 0f, 2),
-                new EruptorCell(h, 0f, 2),
-                new EruptorCell(-h, h, 2),
-                new EruptorCell(h, h, 2)
-            );
             size = 4;
             health = 190 * size * size;
             powerUse = 17f;
@@ -519,7 +501,6 @@ public class PMBlocks implements ContentList{
             rotateSpeed = 3.5f;
             recoilAmount = 4f;
             lightningStroke = 6f;
-            layers = 2;
             shootType = PMBullets.blazeMagma;
 
             consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 0.75f)).update(false);
@@ -536,13 +517,6 @@ public class PMBlocks implements ContentList{
                 Items.surgeAlloy, 650,
                 PMItems.tenelium, 600
             ));
-            float h = 0.5f;
-            cells.add(
-                new EruptorCell(-h, h),
-                new EruptorCell(h, h),
-                new EruptorCell(-h, h, 2),
-                new EruptorCell(h, h, 2)
-            );
             size = 4;
             health = 200 * size * size;
             powerUse = 23f;
@@ -553,7 +527,6 @@ public class PMBlocks implements ContentList{
             shootLength = 42f / 4f;
             shootDuration = 60f;
             rotateSpeed = 8f;
-            layers = 2;
             shootType = PMBullets.infernoMagma;
 
             consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f)).update(false);

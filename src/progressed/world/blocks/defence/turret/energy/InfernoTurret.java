@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.energy;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -31,15 +32,11 @@ public class InfernoTurret extends PowerTurret{
     public float lightningInterval = 2f, lightningStroke = 3f;
     public Color lightningColor = Color.valueOf("ff9c5a");
 
-    public int layers = 1;
-    public Seq<EruptorCell> cells = new Seq<>();
     public float windUp = 0.1f, windDown = 0.01f;
     public float rangeExtention = 32f;
     public float shootDuration = 60f;
-    public float capCloseRate = 0.01f;
 
     public TextureRegion bottomRegion, sideRegion, sideOutline, sideHeat;
-    public TextureRegion[] cellRegions, capRegions, outlineRegions, heatRegions;
 
     protected Vec2 tr3 = new Vec2();
 
@@ -79,24 +76,13 @@ public class InfernoTurret extends PowerTurret{
         sideRegion = atlas.find(name + "-side");
         sideOutline = atlas.find(name + "-side-outline");
         sideHeat = atlas.find(name + "-side-heat");
-        cellRegions = new TextureRegion[cells.size];
-        capRegions = new TextureRegion[cells.size];
-        outlineRegions = new TextureRegion[cells.size];
-        heatRegions = new TextureRegion[cells.size];
-        for(int i = 0; i < cells.size; i++){
-            cellRegions[i] = atlas.find(name + "-cell-" + i);
-            capRegions[i] = atlas.find(name + "-cap-" + i);
-            outlineRegions[i] = atlas.find(name + "-outline-" + i);
-            heatRegions[i] = atlas.find(name + "-cell-heat-" + i);
-        }
     }
 
     @Override
     public void createIcons(MultiPacker packer){
         Outliner.outlineRegion(packer, bottomRegion, outlineColor, name + "-bottom");
         Outliner.outlineRegion(packer, sideRegion, outlineColor, name + "-side-outline");
-        Outliner.outlineRegion(packer, atlas.find(name + "-caps"), outlineColor, name + "-caps");
-        Outliner.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
+        Outliner.outlineRegion(packer, Core.atlas.find(name + "-icon"), outlineColor, name + "-icon");
         super.createIcons(packer);
     }
 
@@ -104,9 +90,7 @@ public class InfernoTurret extends PowerTurret{
     public TextureRegion[] icons(){
         return new TextureRegion[]{
             baseRegion,
-            region,
-            atlas.find(name + "-cells"),
-            atlas.find(name + "-caps")
+            Core.atlas.find(name + "-icon")
         };
     }
 
@@ -115,10 +99,6 @@ public class InfernoTurret extends PowerTurret{
         super.init();
 
         if(minRange < 0) minRange = size * tilesize * 2f;
-
-        if(cells.size == 0){
-            PMUtls.uhOhSpeghettiOh(name + " does not have any cells!");
-        }
     }
 
     @Override
@@ -139,7 +119,6 @@ public class InfernoTurret extends PowerTurret{
     public class InfernoTurretBuild extends PowerTurretBuild{
         protected Seq<Bullet> bullets = new Seq<>();
         protected float bulletLife, speed;
-        protected float[] layerOpen = new float[cells.size];
 
         @Override
         public void draw(){
@@ -178,43 +157,6 @@ public class InfernoTurret extends PowerTurret{
                     Draw.color();
                 }
             }
-
-            for(int i = 0; i < layers; i++){
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    for(int k = 0; k < 4; k++){
-                        tr2.trns(rotation - 90f + k * 90f, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                        tr3.trns(rotation + k * 90f, recoil);
-                        Draw.rect(outlineRegions[j], x + tr2.x + tr3.x, y + tr2.y + tr3.y, rotation - 90f + k * 90f);
-                    }
-                }
-
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    for(int k = 0; k < 4; k++){
-                        tr3.trns(rotation + k * 90f, recoil);
-                        Draw.rect(cellRegions[j], x + tr3.x, y + tr3.y, rotation - 90f + k * 90f);
-                        if(heat > 0.00001f){
-                            Draw.blend(Blending.additive);
-                            Draw.color(heatColor, heat);
-                            Draw.rect(heatRegions[j], x + tr3.x, y + tr3.y, rotation - 90f + k * 90f);
-                            Draw.blend();
-                            Draw.color();
-                        }
-                    }
-                }
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    for(int k = 0; k < 4; k++){
-                        tr2.trns(rotation - 90f + k * 90f, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                        tr3.trns(rotation + k * 90f, recoil);
-                        Draw.rect(capRegions[j], x + tr2.x + tr3.x, y + tr2.y + tr3.y, rotation - 90f + k * 90f);
-                    }
-                }
-            }
         }
 
         @Override
@@ -223,19 +165,12 @@ public class InfernoTurret extends PowerTurret{
 
             if(bulletLife <= 0 || bullets.size == 0){
                 speed = Mathf.lerpDelta(speed, 0f, windDown);
-                for(int i = 0; i < layerOpen.length; i++){
-                    layerOpen[i] = Mathf.lerpDelta(layerOpen[i], 0f, capCloseRate);
-                }
             }
 
             if(bulletLife > 0 && bullets.size > 0){
                 wasShooting = true;
                 speed = Mathf.lerpDelta(speed, rotateSpeed, windUp);
                 bulletLife -= Time.delta / Math.max(efficiency(), 0.00001f);
-                for(int i = 0; i < layerOpen.length; i++){
-                    float offset = Mathf.absin(bulletLife / 6f + Mathf.randomSeed(bullets.get(0).id * 2), 1f, 1f);
-                    layerOpen[i] = i % 2 == 0 ? offset : 1f - offset;
-                }
                 heat = 1f;
                 boolean lightning = timer(lightningTimer, lightningInterval);
                 bullets.each(b -> {
@@ -296,9 +231,7 @@ public class InfernoTurret extends PowerTurret{
             if(targets.size > 0){
                 bulletLife = shootDuration;
                 recoil = recoilAmount; //Use recoil for the side expantion
-                targets.each(t -> {
-                    bullets.add(type.create(tile.build, team, t.x(), t.y(), 0f));
-                });
+                targets.each(t -> bullets.add(type.create(tile.build, team, t.x(), t.y(), 0f)));
             }
         }
 

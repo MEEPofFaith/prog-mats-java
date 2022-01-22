@@ -68,20 +68,6 @@ jar{
     }
 }
 
-task alphableed doFirst{
-    exec{
-        workingDir "$rootDir"
-        ignoreExitValue = true
-
-        println "Alpha-bleeding sprites..."
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            commandLine("cmd", "/c", "alpha-bleeding-windows.exe", "--replace", "./assets/sprites/")
-        }else{
-            commandLine("./alpha-bleed", "./assets/sprites/")
-        }
-    }
-}
-
 task deploy(type: Jar){
     dependsOn jarAndroid
     dependsOn jar
@@ -96,7 +82,3 @@ task deploy(type: Jar){
         }
     }
 }
-
-task bleedJar dependsOn "alphableed", "jar"
-
-task bleedDeploy dependsOn "alphableed", "deploy"

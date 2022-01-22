@@ -29,17 +29,8 @@ public class EruptorTurret extends PowerTurret{
     public float lightningInterval = 2f, lightningStroke = 4f;
     public Color lightningColor = Color.valueOf("ff9c5a");
 
-    public int layers = 1;
-    public Seq<EruptorCell> cells = new Seq<>();
     public float rangeExtention = 32f, extendSpeed = 2f;
     public float firingMoveFract = 0.5f, shootDuration = 100f;
-    public float capCloseRate = 0.01f;
-
-
-    public TextureRegion turretRegion, turretOutline;
-    public TextureRegion[] cellRegions, capRegions, outlineRegions, heatRegions;
-    
-    protected Vec2 tr3 = new Vec2();
 
     public EruptorTurret(String name){
         super(name);
@@ -66,31 +57,6 @@ public class EruptorTurret extends PowerTurret{
     }
 
     @Override
-    public void load(){
-        super.load();
-
-        turretRegion = atlas.find(name + "-turret");
-        turretOutline = atlas.find(name + "-turret-outline");
-        cellRegions = new TextureRegion[cells.size];
-        capRegions = new TextureRegion[cells.size];
-        outlineRegions = new TextureRegion[cells.size];
-        heatRegions = new TextureRegion[cells.size];
-        for(int i = 0; i < cells.size; i++){
-            cellRegions[i] = atlas.find(name + "-cell-" + i);
-            capRegions[i] = atlas.find(name + "-cap-" + i);
-            outlineRegions[i] = atlas.find(name + "-outline-" + i);
-            heatRegions[i] = atlas.find(name + "-cell-heat-" + i);
-        }
-    }
-
-    @Override
-    public void createIcons(MultiPacker packer){
-        super.createIcons(packer);
-        Outliner.outlineRegion(packer, turretRegion, outlineColor, name + "-turret-outline");
-        Outliner.outlineRegions(packer, capRegions, outlineColor, name + "-outline");
-    }
-
-    @Override
     public void init(){
         super.init();
 
@@ -101,18 +67,6 @@ public class EruptorTurret extends PowerTurret{
                 minRange = size * tilesize * 2f;
             }
         }
-
-        if(cells.size == 0){
-            PMUtls.uhOhSpeghettiOh(name + " does not have any cells!");
-        }
-    }
-
-    @Override
-    public TextureRegion[] icons(){
-        return new TextureRegion[]{
-            baseRegion,
-            atlas.find(name + "-icon")
-        };
     }
 
     @Override
@@ -130,86 +84,13 @@ public class EruptorTurret extends PowerTurret{
         ));
     }
 
-    public static class EruptorCell{
-        public int layer = 1;
-        public float xOffset, yOffset;
-
-        public EruptorCell(float x, float y){
-            xOffset = x;
-            yOffset = y;
-        }
-        
-        public EruptorCell(float x, float y, int layer){
-            xOffset = x;
-            yOffset = y;
-            this.layer = layer;
-        }
-    }
-
     public class EruptorTurretBuild extends PowerTurretBuild{
         protected Bullet bullet;
         protected float bulletLife, length;
-        protected float[] layerOpen = new float[layers];
-
-        @Override
-        public void draw(){
-            Draw.rect(baseRegion, x, y);
-
-            Draw.z(Layer.turret);
-            tr2.trns(rotation, -recoil);
-            float tx = x + tr2.x, ty = y + tr2.y;
-
-            Drawf.shadow(turretOutline, tx - elevation, ty - elevation, rotation - 90f);
-            Draw.rect(turretOutline, tx, ty, rotation - 90f);
-            Draw.rect(turretRegion, tx, ty, rotation - 90f);
-
-            if(heat > 0.00001f){
-                Draw.blend(Blending.additive);
-                Draw.color(heatColor, heat);
-                Draw.rect(heatRegion, tx, ty, rotation - 90f);
-                Draw.blend();
-                Draw.color();
-            }
-
-            for(int i = 0; i < layers; i++){
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    tr3.trns(rotation - 90, cell.xOffset * layerOpen[cell.layer - 1], cell.yOffset * layerOpen[cell.layer - 1]);
-                    Draw.rect(outlineRegions[j], tx + tr3.x, ty + tr3.y, rotation - 90f);
-                }
-
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    Draw.rect(cellRegions[j], tx, ty, rotation - 90f);
-                    if(heat > 0.00001f){
-                        Draw.blend(Blending.additive);
-                        Draw.color(heatColor, heat);
-                        Draw.rect(heatRegions[j], tx, ty, rotation - 90f);
-                        Draw.blend();
-                        Draw.color();
-                    }
-                }
-
-                for(int j = 0; j < cells.size; j++){
-                    EruptorCell cell = cells.get(j);
-                    if((cell.layer - 1) != i) continue;
-                    tr3.trns(rotation - 90, cell.xOffset * layerOpen[i], cell.yOffset * layerOpen[i]);
-                    Draw.rect(capRegions[j], tx + tr3.x, ty + tr3.y, rotation - 90f);
-                }
-            }
-        }
 
         @Override
         public void updateTile(){
             super.updateTile();
-
-            if(bulletLife <= 0 || bullet == null){
-                for(int i = 0; i < layerOpen.length; i++){
-                    layerOpen[i] = Mathf.lerpDelta(layerOpen[i], 0f, capCloseRate);
-                }
-            }
 
             if(bulletLife > 0 && bullet != null){
                 wasShooting = true;
@@ -219,10 +100,6 @@ public class EruptorTurret extends PowerTurret{
                 recoil = recoilAmount;
                 heat = 1f;
                 bulletLife -= Time.delta / Math.max(efficiency(), 0.00001f);
-                for(int i = 0; i < layerOpen.length; i++){
-                    float offset = Mathf.absin(bulletLife / 6f + Mathf.randomSeed(bullet.id * 2), 1f, 1f);
-                    layerOpen[i] = i % 2 == 0 ? offset : 1f - offset;
-                }
                 extendTo(Math.min(range + rangeExtention, dst(targetPos)));
                 if(timer(lightningTimer, lightningInterval)){
                     tr2.trns(rotation, shootLength - recoil);

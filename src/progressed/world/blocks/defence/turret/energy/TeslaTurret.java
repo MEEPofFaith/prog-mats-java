@@ -106,8 +106,9 @@ public class TeslaTurret extends Block{
 
     @Override
     public void createIcons(MultiPacker packer){
-        super.createIcons(packer);
+        if(hasSpinners) Outliner.outlineRegion(packer, bottomRegion, outlineColor, name + "-bottom");
         Outliner.outlineRegions(packer, ringRegions, outlineColor, name + "-outline");
+        super.createIcons(packer);
     }
 
     @Override
@@ -214,7 +215,7 @@ public class TeslaTurret extends Block{
                 }
             }
 
-            Draw.rect(topRegion, x, y);
+            Draw.rect(topRegion.found() ? topRegion : region, x, y);
 
             for(int i = 0; i < rings.size; i++){
                 TeslaRing ring = rings.get(i);
