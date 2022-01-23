@@ -121,7 +121,11 @@ public class BaseModule implements Cloneable{
     public void onProximityAdded(ModularTurretBuild parent, BaseMount mount){}
 
     public boolean isActive(ModularTurretBuild parent, BaseMount mount){
-        return isDeployed(mount);
+        return isDeployed(mount) && parent.enabled;
+    }
+
+    public boolean usePower(ModularTurretBuild parent, BaseMount mount){
+        return isActive(parent, mount);
     }
 
     public void update(ModularTurretBuild parent, BaseMount mount){
@@ -261,7 +265,7 @@ public class BaseModule implements Cloneable{
     }
 
     public float powerUse(ModularTurretBuild parent, BaseMount mount){
-        return Mathf.num(isActive(parent, mount)) * powerUse;
+        return Mathf.num(usePower(parent, mount)) * powerUse;
     }
 
     public boolean shouldLoopSound(ModularTurretBuild parent, BaseMount mount){

@@ -74,6 +74,10 @@ public class BaseMount{
         swapNumber = number;
     }
 
+    public boolean valid(ModularTurretBuild parent){
+        return parent != null && !parent.dead && parent.allMounts.contains(this);
+    }
+
     //Method reference shorter and cleaner.
     public boolean isSmall(){
         return module.size == ModuleSize.small;

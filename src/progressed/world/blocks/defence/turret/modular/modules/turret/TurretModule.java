@@ -27,7 +27,7 @@ import progressed.world.blocks.defence.turret.modular.mounts.*;
 public class TurretModule extends BaseTurretModule{
     public boolean targetAir = true, targetGround = true, targetBlocks = true,
         targetEnemies = true, targetHealing;
-    public boolean accurateDelay;
+    public boolean leadTargets = true, accurateDelay;
     public float reloadTime = 30f;
     public boolean rotateShooting = true;
     public float rotateSpeed = 5f;
@@ -131,8 +131,13 @@ public class TurretModule extends BaseTurretModule{
 
     @Override
     public boolean isActive(ModularTurretBuild parent, BaseMount mount){
-        if(!(mount instanceof TurretMount m)) return false;
-        return isDeployed(m) && (m.target != null || m.wasShooting) && parent.enabled;
+        TurretMount m = (TurretMount)mount;
+        return isDeployed(m) && (m.target != null || m.wasShooting);
+    }
+
+    @Override
+    public boolean usePower(ModularTurretBuild parent, BaseMount mount){
+        return super.usePower(parent, mount) && shouldReload(parent, (TurretMount)mount);
     }
 
     @Override
@@ -142,13 +147,15 @@ public class TurretModule extends BaseTurretModule{
 
         var offset = Tmp.v1.setZero();
 
-        //when delay is accurate, assume unit has moved by chargeTime already
-        if(accurateDelay && pos instanceof Hitboxc h){
-            offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
-        }
+        if(leadTargets){
+            //when delay is accurate, assume unit has moved by chargeTime already
+            if(accurateDelay && pos instanceof Hitboxc h){
+                offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
+            }
 
-        tr2.trns(mount.rotation, shootLength - mount.recoil);
-        mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
+            tr2.trns(mount.rotation, shootLength - mount.recoil);
+            mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
+        }
 
         if(mount.targetPos.isZero()){
             mount.targetPos.set(pos);
@@ -275,9 +282,10 @@ public class TurretModule extends BaseTurretModule{
             for(int i = 0; i < shots; i++){
                 int ii = i;
                 if(burstSpacing > 0.0001f){
+                    mount.isShooting = true;
                     Time.run(burstSpacing * i, () -> {
                         mount.isShooting = true;
-                        if(parent.dead || !hasAmmo(mount)){
+                        if(!mount.valid(parent) || !hasAmmo(mount)){
                             mount.isShooting = false;
                             return;
                         }

@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -32,11 +33,11 @@ public class PMModules implements ContentList{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, gravity,
+    blunderbuss, airburst, vulcan, iris, gravity,
 
     //Region Large
 
-    trifecta, iris, jupiter;
+    trifecta, jupiter;
 
     @Override
     public void load(){
@@ -246,6 +247,163 @@ public class PMModules implements ContentList{
             }};
         }};
 
+        iris = new ModulePayload("iris"){{
+            size = 2;
+
+            module = new PowerTurretModule("iris", ModuleSize.medium){
+                final float delay = 30f;
+                final Effect waveEffect = Fx.none;
+
+                {
+                    shots = 8;
+                    burstSpacing = 2f;
+                    minRange = 4f * 8f;
+                    range = 28f * 8f;
+                    powerUse = 12f;
+
+                    shootType = new MissileBulletType(){
+                        final float aimCone = 5f, aimRadius = 12f, aimHomingPower = 0.35f, launchedSpeed = 4.5f, launchedDrag = -0.005f;
+
+                        {
+                            frontColor = Color.white;
+                            backColor = trailColor = Pal.surge;
+                            lifetime = 60f;
+                            damage = 36f;
+                            speed = 5f;
+                            drag = 0.15f;
+                            homingPower = 0.15f;
+                            trailLength = 5;
+                        }
+
+                        @Override
+                        public void update(Bullet b){
+                            updateTrail(b);
+
+                            IrisData data = (IrisData)b.data;
+
+                            if(!data.fired){
+                                data.fired = b.time >= data.delay;
+                                if(data.fired){
+                                    b.time = 0f;
+                                    b.vel.setLength(launchedSpeed);
+                                    b.drag = launchedDrag;
+                                }
+                            }
+
+                            if(data.fired){
+                                if(!data.aimed){
+                                    float targetAngle = b.angleTo(Tmp.v1.set(data.x, data.y));
+
+                                    b.vel.setAngle(Angles.moveToward(b.rotation(), targetAngle, aimHomingPower * Time.delta * 50f));
+
+                                    boolean nearby = b.within(data.x, data.y, aimRadius);
+                                    if(Angles.angleDist(b.rotation(), targetAngle) <= aimCone || nearby) data.aimed = true;
+                                    if(nearby) data.homing = true;
+                                }else{
+                                    if(b.within(data.x, data.y, aimRadius)) data.homing = true;
+
+                                    if(data.homing){
+                                        Teamc target;
+                                        //home in on allies if possible
+                                        if(healPercent > 0){
+                                            target = Units.closestTarget(null, b.x, b.y, homingRange,
+                                                e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                                                t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
+                                            );
+                                        }else{
+                                            target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                                        }
+
+                                        if(target != null){
+                                            b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+
+                @Override
+                public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
+                    mount.rotation = targetRot;
+                }
+
+                @Override
+                public void drawTurret(ModularTurretBuild parent, TurretMount mount){
+                    float x = mount.x,
+                        y = mount.y;
+
+                    if(mount.progress < deployTime){
+                        Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, 0, mount.progress / deployTime));
+                        return;
+                    }
+
+                    Drawf.shadow(region, x - elevation, y - elevation);
+                    applyColor(parent, mount);
+                    Draw.rect(region, x, y);
+
+                    if(heatRegion.found() && mount.heat > 0.001f){
+                        Draw.color(heatColor, mount.heat);
+                        Draw.blend(Blending.additive);
+                        Draw.rect(heatRegion, x, y);
+                        Draw.blend();
+                        Draw.color();
+                    }
+
+                    Draw.mixcol();
+                }
+
+                @Override
+                public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
+                    float x = mount.x,
+                        y = mount.y;
+
+                    tr.set(mount.targetPos).sub(mount.x, mount.y);
+                    if(tr.len() < minRange) tr.setLength(minRange);
+                    tr.add(mount.x, mount.y);
+
+                    float aimX = tr.x,
+                        aimY = tr.y;
+
+                    for(int i = 0; i < shots; i++){
+                        mount.isShooting = true;
+                        float rot = 90f - 360f / shots * i;
+                        int ii = i;
+                        Time.run(burstSpacing * i, () -> {
+                            mount.isShooting = true;
+                            if(!mount.valid(parent)){
+                                mount.isShooting = false;
+                                return;
+                            }
+
+                            tr.trns(rot, shootLength);
+                            type.create(parent, parent.team, x + tr.x, y + tr.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new IrisData(aimX, aimY, delay - ii * burstSpacing));
+
+                            Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
+                            Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
+
+                            fshootEffect.at(x + tr.x, y + tr.y, rot);
+                            fsmokeEffect.at(x + tr.x, y + tr.y, rot);
+                            shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+
+                            if(shootShake > 0){
+                                Effect.shake(shootShake, shootShake, x, y);
+                            }
+
+                            mount.heat = 1f;
+
+                            if(ii == shots - 1) mount.isShooting = false;
+                        });
+                    }
+
+                    Time.run(delay, () -> {
+                        if(mount.valid(parent)) waveEffect.at(x, y);
+                    });
+                }
+            };
+        }};
+
         gravity = new ModulePayload("gravity"){{
             size = 2;
 
@@ -413,5 +571,16 @@ public class PMModules implements ContentList{
             };
         }};
         //endregion
+    }
+
+    static class IrisData{
+        final float x, y, delay;
+        boolean fired, aimed, homing;
+
+        public IrisData(float x, float y, float delay){
+            this.x = x;
+            this.y = y;
+            this.delay = delay;
+        }
     }
 }
