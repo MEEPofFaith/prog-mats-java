@@ -91,6 +91,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public Sortf unitSort = Unit::dst2;
 
+    protected float sort;
     protected Vec2 tr = new Vec2();
     protected Vec2 tr2 = new Vec2();
     protected Color tc = new Color();
@@ -653,7 +654,12 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         protected void findTarget(){
-            target = Units.bestTarget(team, x, y, range, e -> !e.dead(), b -> true, unitSort);
+            if(arcing || damaging || fading){
+                //When firing, use distance in relation to the laser instead of the nexus itself.
+                target = PMDamage.bestTarget(team, x, y, curPos.getX(), curPos.getY(), range, e -> !e.dead(), b -> true, unitSort);
+            }else{
+                target = Units.bestTarget(team, x, y, range, e -> !e.dead(), b -> true, unitSort);
+            }
         }
 
         @Override

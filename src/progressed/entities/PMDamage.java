@@ -7,6 +7,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.entities.*;
+import mindustry.entities.Units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -23,6 +24,7 @@ public class PMDamage{
     private static Tile furthest;
     private static Building tmpBuilding;
     private static Unit tmpUnit;
+    private static float tmpFloat;
     private static boolean check;
 
     public static void trueEachBlock(float wx, float wy, float range, Cons<Building> cons){
@@ -95,6 +97,54 @@ public class PMDamage{
         });
 
         return check;
+    }
+
+    public static Teamc bestTarget(Team team, float cx, float cy, float x, float y, float range, Boolf<Unit> unitPred, Boolf<Building> tilePred, Sortf sort){
+        if(team == Team.derelict) return null;
+
+        Unit unit = findEnemyUnit(team, cx, cy, x, y, range, unitPred, sort);
+        if(unit != null){
+            return unit;
+        }else{
+            return findEnemyTile(team, cx, cy, x, y, range, tilePred);
+        }
+    }
+
+    public static Unit findEnemyUnit(Team team, float cx, float cy, float x, float y, float range, Boolf<Unit> pred, Sortf unitSort){
+        tmpUnit = null;
+        tmpFloat = Float.NEGATIVE_INFINITY;
+
+        Units.nearbyEnemies(team, cx - range, cy - range, range * 2f, range * 2f, unit -> {
+            float cost = unitSort.cost(unit, x, y);
+            if(!unit.dead && tmpFloat < cost && unit.within(cx, cy, range + unit.hitSize / 2f)){
+                tmpUnit = unit;
+                tmpFloat = cost;
+            }
+        });
+
+        return tmpUnit;
+    }
+
+    public static Building findEnemyTile(Team team, float cx, float cy, float x, float y, float range, Boolf<Building> pred){
+        tmpBuilding = null;
+        tmpFloat = 0;
+
+        trueEachBlock(cx, cy, range, b -> {
+            if(!(b.team() == team || (b.team() == Team.derelict && !state.rules.coreCapture)) && pred.get(b)){
+                //if a block has the same priority, the closer one should be targeted
+                float dist = b.dst(x, y) - b.hitSize() / 2f;
+                if(tmpBuilding == null ||
+                    //if its closer and is at least equal priority
+                    (dist < tmpFloat && b.block.priority.ordinal() >= tmpBuilding.block.priority.ordinal()) ||
+                    // block has higher priority (so range doesnt matter)
+                    (b.block.priority.ordinal() > tmpBuilding.block.priority.ordinal())){
+                    tmpBuilding = b;
+                    tmpFloat = dist;
+                }
+            }
+        });
+
+        return tmpBuilding;
     }
 
     public static boolean collideLine(float damage, Team team, Effect effect, StatusEffect status, float statusDuration, float x, float y, float angle, float length, boolean ground, boolean air){
