@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.modular.modules;
 
 import arc.*;
 import arc.graphics.*;
@@ -13,11 +13,10 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 
-public class ForceModule extends BaseModule{
-    public float range = 80f;
+public class ForceModule extends RangedModule{
     public boolean targetGround, targetAir = true;
     public float radius = -1f;
     public float force = 5f;

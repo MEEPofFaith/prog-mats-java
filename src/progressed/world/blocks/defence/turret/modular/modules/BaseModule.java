@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules;
+package progressed.world.blocks.defence.turret.modular.modules;
 
 import arc.*;
 import arc.audio.*;
@@ -9,7 +9,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
@@ -21,9 +20,8 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
-import progressed.ui.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.payloads.ModulePayload.*;
 import progressed.world.meta.*;
@@ -42,6 +40,7 @@ public class BaseModule implements Cloneable{
     public float powerUse;
     public float liquidCapacity = 10f;
     public float layerOffset;
+    public float elevation = -1f;
 
     public Sound loopSound = Sounds.none;
     public float loopSoundVolume = 1f;
@@ -73,6 +72,8 @@ public class BaseModule implements Cloneable{
     }
 
     public void init(){
+        //small = 1, medium = 2, large = 3
+        if(elevation < 0) elevation = size();
         if(deployTime < 0) deployTime = size() * 2f * 60f;
 
         consumes.init();
@@ -153,11 +154,20 @@ public class BaseModule implements Cloneable{
             return;
         }
 
+        Drawf.shadow(region, mount.x - elevation, mount.y - elevation);
+        applyColor(parent, mount);
         Draw.rect(region, mount.x, mount.y);
+        Draw.mixcol();
     }
+
+    public void drawHighlight(ModularTurretBuild parent, BaseMount mount){}
 
     public void drawPayload(ModulePayloadBuild payload){
         Draw.rect(region, payload.x, payload.y);
+    }
+
+    public void applyColor(ModularTurretBuild parent, BaseMount mount){
+        if(mount.highlight) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f));
     }
 
     public void display(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){

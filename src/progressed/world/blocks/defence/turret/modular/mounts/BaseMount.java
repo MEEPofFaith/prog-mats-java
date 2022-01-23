@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.mounts;
+package progressed.world.blocks.defence.turret.modular.mounts;
 
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
@@ -6,9 +6,9 @@ import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.modules.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
-import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
+import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 
 public class BaseMount{
     /** Turret module associated with this mount. */
@@ -26,6 +26,7 @@ public class BaseMount{
     public float rotation = 90;
     /** Current heat, 0 to 1*/
     public float heat;
+    public boolean highlight;
     public SoundLoop sound;
 
     public BaseMount(ModularTurretBuild parent, BaseModule module, int mountNumber){
@@ -59,6 +60,10 @@ public class BaseMount{
     public void draw(ModularTurretBuild parent){
         Draw.z(Layer.turret + module.layerOffset);
         module.draw(parent, this);
+        if(highlight){
+            Draw.z(Layer.overlayUI);
+            module.drawHighlight(parent, this);
+        }
     }
 
     public void unSwap(){

@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules.turret;
+package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import arc.*;
 import arc.audio.*;
@@ -21,11 +21,12 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class TurretModule extends BaseTurretModule{
-    public boolean targetAir = true, targetGround = true, targetHealing;
+    public boolean targetAir = true, targetGround = true, targetBlocks = true,
+        targetEnemies = true, targetHealing;
     public boolean accurateDelay;
     public float reloadTime = 30f;
     public boolean rotateShooting = true;
@@ -70,7 +71,6 @@ public class TurretModule extends BaseTurretModule{
     public float recoilAmount;
     public float restitution = 0.02f;
     public float cooldown = 0.02f;
-    public float elevation = -1f;
 
     public TextureRegion heatRegion, liquidRegion, topRegion;
 
@@ -88,9 +88,8 @@ public class TurretModule extends BaseTurretModule{
 
     @Override
     public void init(){
-        //small = 1, medium = 2, large = 3
-        if(elevation < 0) elevation = size();
         if(barrels < 1) barrels = 1; //Do not
+        if(!targetEnemies) targetHealing = true;
 
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
             hasLiquids = true;
@@ -389,19 +388,23 @@ public class TurretModule extends BaseTurretModule{
         if(!hasAmmo(mount)) return;
         float x = mount.x,
             y = mount.y;
-        if(targetAir && !targetGround){
-            mount.target = Units.bestEnemy(parent.team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
-        }else{
-            mount.target = Units.bestTarget(parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround, unitSort);
+        if(targetEnemies){
+            if(targetAir && !targetGround){
+                mount.target = Units.bestEnemy(parent.team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
+            }else{
+                mount.target = Units.bestTarget(parent.team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetBlocks, unitSort);
 
-            if(mount.target == null && canHeal(mount)){
-                mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
+                if(mount.target == null && canHeal(mount)){
+                    mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
+                }
             }
+        }else{
+            mount.target = Units.findAllyTile(parent.team, x, y, range, b -> b.damaged() && b != parent);
         }
     }
 
     @Override
-    public void drawTurret(TurretMount mount){
+    public void drawTurret(ModularTurretBuild parent, TurretMount mount){
         float x = mount.x,
             y = mount.y,
             rot = mount.rotation;
@@ -413,7 +416,8 @@ public class TurretModule extends BaseTurretModule{
 
         tr.trns(rot, -mount.recoil);
 
-        Drawf.shadow(region, x + tr.x, y + tr.y - elevation, rot - 90);
+        Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot - 90);
+        applyColor(parent, mount);
         Draw.rect(region, x + tr.x, y + tr.y, rot - 90);
 
         if(heatRegion.found() && mount.heat > 0.001f){
@@ -432,6 +436,7 @@ public class TurretModule extends BaseTurretModule{
             Draw.z(Layer.turret + topLayerOffset);
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
         }
+        Draw.mixcol();
     }
 
     @Override

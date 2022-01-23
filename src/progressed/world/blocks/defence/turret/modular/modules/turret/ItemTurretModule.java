@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi.modules.turret;
+package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import arc.*;
 import arc.struct.*;
@@ -12,8 +12,8 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.meta.*;
 
 public class ItemTurretModule extends TurretModule{

@@ -1,15 +1,11 @@
-package progressed.world.blocks.defence.turret.multi.modules.turret;
+package progressed.world.blocks.defence.turret.modular.modules.turret;
 
-import arc.*;
-import arc.math.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.entities.bullet.*;
-import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.meta.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.meta.*;
 
 public class PowerTurretModule extends TurretModule{

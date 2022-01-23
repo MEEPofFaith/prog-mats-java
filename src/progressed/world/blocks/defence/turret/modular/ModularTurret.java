@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.multi;
+package progressed.world.blocks.defence.turret.modular;
 
 import arc.*;
 import arc.graphics.*;
@@ -27,9 +27,9 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.graphics.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
-import progressed.world.blocks.defence.turret.multi.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
+import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
 
 public class ModularTurret extends PayloadBlock{
@@ -260,10 +260,16 @@ public class ModularTurret extends PayloadBlock{
 
             if(isPayload()) updatePos();
 
-            //Draw in order of small/medium/large
-            allMounts.each(BaseMount::isSmall, m -> m.draw(this));
-            allMounts.each(BaseMount::isMedium, m -> m.draw(this));
-            allMounts.each(BaseMount::isLarge, m -> m.draw(this));
+            allMounts.each(m -> m.draw(this));
+        }
+
+        public void unHighlight(){
+            allMounts.each(m -> m.highlight = false);
+        }
+
+        public void highlightModule(){
+            unHighlight();
+            allMounts.get(selNum).highlight = true;
         }
 
         public void updatePos(){
@@ -352,6 +358,7 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void rebuild(Table table){
+            highlightModule();
             table.clearChildren();
             table.top();
             table.table(t -> {
@@ -394,6 +401,13 @@ public class ModularTurret extends PayloadBlock{
                     }).top().left().grow();
                 }
             }).top().fillX().expandY();
+        }
+
+        @Override
+        public boolean onConfigureTileTapped(Building other){
+            boolean close = super.onConfigureTileTapped(other);
+            if(close) unHighlight();
+            return close;
         }
 
         public void resetSelection(){

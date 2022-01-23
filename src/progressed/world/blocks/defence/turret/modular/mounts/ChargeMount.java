@@ -1,7 +1,7 @@
-package progressed.world.blocks.defence.turret.multi.mounts;
+package progressed.world.blocks.defence.turret.modular.mounts;
 
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
 
 public class ChargeMount extends BaseMount{
     public float charge, heat;

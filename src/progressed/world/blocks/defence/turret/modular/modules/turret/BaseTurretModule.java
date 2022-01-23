@@ -1,15 +1,13 @@
-package progressed.world.blocks.defence.turret.multi.modules.turret;
+package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.world.meta.*;
-import progressed.world.blocks.defence.turret.multi.ModularTurret.*;
-import progressed.world.blocks.defence.turret.multi.modules.*;
-import progressed.world.blocks.defence.turret.multi.mounts.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
+import progressed.world.blocks.defence.turret.modular.mounts.*;
 
-public class BaseTurretModule extends BaseModule{
-    public float range = 80f;
-
+public class BaseTurretModule extends RangedModule{
     public BaseTurretModule(String name, ModuleSize size){
         super(name, size);
         mountType = TurretMount::new;
@@ -23,6 +21,7 @@ public class BaseTurretModule extends BaseModule{
     public void setStats(Stats stats){
         super.setStats(stats);
 
+        stats.remove(Stat.range);
         stats.add(Stat.shootRange, range / Vars.tilesize, StatUnit.blocks);
     }
 
@@ -35,12 +34,12 @@ public class BaseTurretModule extends BaseModule{
 
     @Override
     public void draw(ModularTurretBuild parent, BaseMount mount){
-        if(mount instanceof TurretMount m) drawTurret(m);
+        if(mount instanceof TurretMount m) drawTurret(parent, m);
     }
 
     public void updateTurret(ModularTurretBuild parent, TurretMount mount){}
 
-    public void drawTurret(TurretMount mount){}
+    public void drawTurret(ModularTurretBuild parent, TurretMount mount){}
 
     public boolean hasAmmo(TurretMount mount){
         return false;
