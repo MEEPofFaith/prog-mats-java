@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.modular.modules;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -92,13 +93,13 @@ public class ForceModule extends RangedModule{
                 ) m.targets.add(u);
             });
 
-            m.targets.sort(u -> Mathf.dst2(m.x, m.y, u.x, u.y));
+            m.targets.sort((Floatf<Unit>)m::dst2);
             if(m.targets.size > maxTargets) m.targets.removeRange(maxTargets, m.targets.size - 1);
         }
 
         if(m.targets.any()){
             for(Unit u : m.targets){
-                if(u.within(m.x, m.y, range + u.hitSize / 2f)){
+                if(u.within(m, range + u.hitSize / 2f)){
                     if(damage > 0){
                         u.damageContinuous(damage * efficiency(parent));
                     }
@@ -107,8 +108,7 @@ public class ForceModule extends RangedModule{
                         u.apply(status, statusDuration);
                     }
 
-                    float ang = Mathf.mod(u.angleTo(m.x, m.y) + 180f, 360f);
-                    u.impulseNet(Tmp.v1.trns(ang, radius).add(m.x, m.y).sub(u).limit((force + (1f - u.dst(m.x, m.y) / range) * scaledForce) * efficiency(parent) * parent.delta()));
+                    u.impulseNet(Tmp.v1.trns(m.angleTo(u), radius).add(m.x, m.y).sub(u).limit((force + (1f - m.dst(u) / range) * scaledForce) * efficiency(parent) * parent.delta()));
                 }
             }
         }

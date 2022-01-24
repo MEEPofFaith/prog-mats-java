@@ -298,25 +298,20 @@ public class PMModules implements ContentList{
 
                                     boolean nearby = b.within(data.x, data.y, aimRadius);
                                     if(Angles.angleDist(b.rotation(), targetAngle) <= aimCone || nearby) data.aimed = true;
-                                    if(nearby) data.homing = true;
                                 }else{
-                                    if(b.within(data.x, data.y, aimRadius)) data.homing = true;
+                                    Teamc target;
+                                    //home in on allies if possible
+                                    if(healPercent > 0){
+                                        target = Units.closestTarget(null, b.x, b.y, homingRange,
+                                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                                            t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
+                                        );
+                                    }else{
+                                        target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                                    }
 
-                                    if(data.homing){
-                                        Teamc target;
-                                        //home in on allies if possible
-                                        if(healPercent > 0){
-                                            target = Units.closestTarget(null, b.x, b.y, homingRange,
-                                                e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                                                t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
-                                            );
-                                        }else{
-                                            target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
-                                        }
-
-                                        if(target != null){
-                                            b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                                        }
+                                    if(target != null){
+                                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
                                     }
                                 }
                             }
@@ -575,7 +570,7 @@ public class PMModules implements ContentList{
 
     static class IrisData{
         final float x, y, delay;
-        boolean fired, aimed, homing;
+        boolean fired, aimed;
 
         public IrisData(float x, float y, float delay){
             this.x = x;

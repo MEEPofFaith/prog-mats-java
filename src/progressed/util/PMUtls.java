@@ -172,15 +172,6 @@ public class PMUtls{
         return a * i + b * n;
     }
 
-    public static Vec2 intercept(float x, float y, Position dst, float offsetx, float offsety, float v){
-        float ddx = 0, ddy = 0;
-        if(dst instanceof Hitboxc h){
-            ddx += h.deltaX();
-            ddy += h.deltaY();
-        }
-        return Predict.intercept(x, y, dst.getX() + offsetx, dst.getY() + offsety, ddx, ddy, v);
-    }
-
     public static void uhOhSpeghettiOh(String ohno){
         throw new RuntimeException(ohno);
     }

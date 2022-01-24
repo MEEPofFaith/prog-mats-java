@@ -154,7 +154,7 @@ public class TurretModule extends BaseTurretModule{
             }
 
             tr2.trns(mount.rotation, shootLength - mount.recoil);
-            mount.targetPos.set(PMUtls.intercept(mount.x, mount.y, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
+            mount.targetPos.set(Predict.intercept(mount, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
         }
 
         if(mount.targetPos.isZero()){

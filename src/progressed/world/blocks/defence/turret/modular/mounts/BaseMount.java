@@ -10,7 +10,7 @@ import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 
-public class BaseMount{
+public class BaseMount implements Position{
     /** Turret module associated with this mount. */
     public final BaseModule module;
     /** The mount's offset array term. */
@@ -101,5 +101,15 @@ public class BaseMount{
 
     public boolean checkSwap(int number){
         return swapNumber == number;
+    }
+
+    @Override
+    public float getX(){
+        return x;
+    }
+
+    @Override
+    public float getY(){
+        return y;
     }
 }
