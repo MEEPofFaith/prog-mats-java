@@ -15,6 +15,7 @@ import static mindustry.Vars.*;
 public class LiquidDroneStation extends DroneStation{
     public float transportThreshold = 0.25f;
     public float constructTime = 60f;
+    public float outputFlow = -1f;
     public int loadSize = 2;
 
     public TextureRegion liquidRegion, tankBase, tankTop, tankFull;
@@ -28,6 +29,13 @@ public class LiquidDroneStation extends DroneStation{
         outputsLiquid = true;
         selectColor = Liquids.cryofluid.color;
         defName = "Liquid";
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(outputFlow < 0) outputFlow = liquidCapacity / 2f;
     }
 
     @Override
@@ -58,7 +66,7 @@ public class LiquidDroneStation extends DroneStation{
             super.updateTile();
 
             if(liquids.total() > 0.01f){
-                dumpLiquid(liquids.current());
+                dumpLiquid(liquids.current(), 1f);
                 if(dumping && liquids.total() <= 0.01f){
                     dumping = false;
                 }
@@ -74,6 +82,25 @@ public class LiquidDroneStation extends DroneStation{
                 }
             }
             open = isOrigin() ? build >= constructTime : build <= 0;
+        }
+
+        @Override
+        public void dumpLiquid(Liquid liquid, float scaling){
+            int dump = this.cdump;
+
+            if(liquids.get(liquid) <= 0.0001f) return;
+
+            if(!net.client() && state.isCampaign() && team == state.rules.defaultTeam) liquid.unlock();
+
+            for(int i = 0; i < proximity.size; i++){
+                incrementDump(proximity.size);
+                Building other = proximity.get((i + dump) % proximity.size);
+                other = other.getLiquidDestination(self(), liquid);
+
+                if(other != null && other.team == team && other.block.hasLiquids && canDumpLiquid(other, liquid) && other.liquids != null){
+                    transferLiquid(other, Math.min(liquids.get(liquid), outputFlow), liquid);
+                }
+            }
         }
 
         @Override
