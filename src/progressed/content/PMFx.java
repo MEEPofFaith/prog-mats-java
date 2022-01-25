@@ -108,6 +108,40 @@ public class PMFx{
         });
     }),
 
+    lotusShoot = new Effect(8f, e -> {
+        color(Color.white, Pal.surge, e.fin());
+        float w = 1f + 4f * e.fout();
+        Drawf.tri(e.x, e.y, w, 12f * e.fout(), e.rotation);
+        Drawf.tri(e.x, e.y, w, 2f * e.fout(), e.rotation + 180f);
+    }),
+
+    lotusShootSmoke = new Effect(20f, e -> {
+        color(Color.white, Pal.surge, e.fin());
+
+        stroke(e.fout());
+        randLenVectors(e.id, 5, e.finpow() * 5f, e.rotation, 20f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 1.5f);
+        });
+    }),
+
+    hitLotus = new Effect(14, e -> {
+        color(Color.white, Pal.surge, e.fin());
+
+        e.scaled(7f, s -> {
+            stroke(0.5f + s.fout());
+            Lines.circle(e.x, e.y, s.fin() * 5f);
+        });
+
+        stroke(0.5f + e.fout());
+
+        randLenVectors(e.id, 5, e.fin() * 15f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+        });
+
+        Drawf.light(e.x, e.y, 20f, Pal.surge, 0.6f * e.fout());
+    }),
+
     jupiterCharge = new Effect(300f, e -> {
         color(Pal.lancerLaser);
         Fill.circle(e.x, e.y, 7f * e.fin(Interp.pow2Out));

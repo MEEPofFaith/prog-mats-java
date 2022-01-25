@@ -255,24 +255,29 @@ public class PMModules implements ContentList{
                 final Effect waveEffect = Fx.none;
 
                 {
+                    reloadTime = 60f;
                     shots = 8;
                     burstSpacing = 2f;
                     minRange = 4f * 8f;
                     range = 28f * 8f;
+                    shootEffect = PMFx.lotusShoot;
+                    smokeEffect = PMFx.lotusShootSmoke;
                     powerUse = 12f;
 
-                    shootType = new MissileBulletType(){
+                    shootType = new BasicBulletType(5f, 36f, "prog-mats-lance"){
                         final float aimCone = 5f, aimRadius = 12f, aimHomingPower = 0.35f, launchedSpeed = 4.5f, launchedDrag = -0.005f;
 
                         {
                             frontColor = Color.white;
                             backColor = trailColor = Pal.surge;
+                            width = height = 8f;
+                            shrinkX = shrinkY = 0;
                             lifetime = 60f;
-                            damage = 36f;
-                            speed = 5f;
                             drag = 0.15f;
                             homingPower = 0.15f;
                             trailLength = 5;
+                            trailWidth = 1f;
+                            hitEffect = despawnEffect = PMFx.hitLotus;
                         }
 
                         @Override
