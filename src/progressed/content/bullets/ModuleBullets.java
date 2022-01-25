@@ -2,15 +2,12 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
 
@@ -78,7 +75,7 @@ public class ModuleBullets implements ContentList{
 
             critChance = 0.08f;
             critMultiplier = 2f;
-            critEffect = PMFx.miniCrit;
+            critEffect = OtherFx.miniCrit;
         }};
 
         shotgunDenseCrit = new CritBulletType(6.5f, 18){{
@@ -96,7 +93,7 @@ public class ModuleBullets implements ContentList{
 
             critChance = 0.03f;
             critMultiplier = 7f;
-            critEffect = PMFx.miniCrit;
+            critEffect = OtherFx.miniCrit;
         }};
 
         shotgunTitaniumCrit = new CritBulletType(6f, 16f){{
@@ -112,7 +109,7 @@ public class ModuleBullets implements ContentList{
 
             critChance = 0.06f;
             critMultiplier = 3f;
-            critEffect = PMFx.miniCrit;
+            critEffect = OtherFx.miniCrit;
         }};
 
         shotgunThoriumCrit = new CritBulletType(7f, 29){{
@@ -129,7 +126,7 @@ public class ModuleBullets implements ContentList{
 
             critChance = 0.05f;
             critMultiplier = 4f;
-            critEffect = PMFx.miniCrit;
+            critEffect = OtherFx.miniCrit;
         }};
 
         waterShotMini = new LiquidBulletType(Liquids.water){{
@@ -249,9 +246,9 @@ public class ModuleBullets implements ContentList{
                 displayAmmoMultiplier = false;
                 lightColor = Pal.lancerLaser;
                 shootEffect = smokeEffect = Fx.none;
-                hitEffect = PMFx.jupiterHit;
-                despawnEffect = PMFx.jupiterDespawn;
-                trailEffect = PMFx.jupiterTrail;
+                hitEffect = ModuleFx.jupiterHit;
+                despawnEffect = ModuleFx.jupiterDespawn;
+                trailEffect = ModuleFx.jupiterTrail;
                 trailInterval = 1f;
                 trailRotation = true;
             }

@@ -26,7 +26,8 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.audio.*;
 import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.EnergyFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -75,11 +76,11 @@ public class ApotheosisNexus extends ReloadTurret{
     public float pissChance = 0.01f;
 
     public Effect
-        chargeEffect = PMFx.apotheosisCharge,
+        chargeEffect = EnergyFx.apotheosisCharge,
         fireEffect = Fx.none,
-        touchdownEffect = PMFx.apotheosisTouchdown,
-        damageEffect = new MultiEffect(PMFx.apotheosisPuddle, PMFx.apotheosisDamage),
-        pulseEffect = PMFx.apotheosisPulse;
+        touchdownEffect = EnergyFx.apotheosisTouchdown,
+        damageEffect = new MultiEffect(EnergyFx.apotheosisPuddle, EnergyFx.apotheosisDamage),
+        pulseEffect = EnergyFx.apotheosisPulse;
     public float bigPulseScl = 2f;
     public Color[] flashStart = {PMPal.apotheosisLaser, PMPal.pissbeam}, flashEnd = {PMPal.apotheosisLaserDark, PMPal.pissbeamDark};
     public float flashSeconds = 1f;

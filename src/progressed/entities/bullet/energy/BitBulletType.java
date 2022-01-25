@@ -8,6 +8,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 
 public class BitBulletType extends BulletType{
@@ -18,9 +19,8 @@ public class BitBulletType extends BulletType{
 
         shootEffect = Fx.none;
         smokeEffect = Fx.none;
-        hitEffect = PMFx.bitBurst;
-        despawnEffect = PMFx.bitBurst;
-        trailEffect = PMFx.bitTrail;
+        hitEffect = despawnEffect = EnergyFx.bitBurst;
+        trailEffect = EnergyFx.bitTrail;
         absorbable = hittable = false;
         hitSound = PMSounds.pixelHit;
     }

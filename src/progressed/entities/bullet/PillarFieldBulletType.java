@@ -4,7 +4,6 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -13,8 +12,8 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.*;
@@ -29,15 +28,15 @@ public class PillarFieldBulletType extends BulletType{
     public float fadeTime = 8f;
     public float ringStroke = 2f;
     public Color ringColor = PMPal.darkBrown;
-    public Effect ringEffect = PMFx.earthquke;
+    public Effect ringEffect = OtherFx.earthquke;
     public float ringEffectInterval = 2f;
 
     public int crackEffects = 1;
     public float crackStroke = 1.5f;
     public Color crackColor = PMPal.darkBrown;
-    public Effect crackEffect = PMFx.groundCrack;
+    public Effect crackEffect = UtilFx.groundCrack;
 
-    public Effect placeEffect = PMFx.pillarPlace;
+    public Effect placeEffect = OtherFx.pillarPlace;
 
     public PillarFieldBulletType(){
         super();
@@ -91,7 +90,7 @@ public class PillarFieldBulletType extends BulletType{
             for(int i = 0; i < crackEffects; i++){
                 Tmp.v1.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random())).add(b);
                 Tmp.v2.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random())).add(b);
-                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(new Vec2(Tmp.v2), crackStroke));
+                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke));
             }
 
             if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime)){

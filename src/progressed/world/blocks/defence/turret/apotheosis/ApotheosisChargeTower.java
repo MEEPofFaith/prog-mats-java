@@ -14,7 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.apotheosis.ApotheosisNexus.*;
 
@@ -39,7 +39,7 @@ public class ApotheosisChargeTower extends Block{
     public float width = 1f, oscScl = 3f, oscMag = 0.2f, spaceMag = 35f;
     public float lightStroke = 6f;
     public float activeScl = 4f;
-    public Effect activateEffect = PMFx.apotheosisChargerBlast;
+    public Effect activateEffect = EnergyFx.apotheosisChargerBlast;
     public Sound shootSound = Sounds.laser;
 
     public TextureRegion baseRegion;

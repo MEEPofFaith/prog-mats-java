@@ -15,7 +15,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.consumers.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.explosive.ArcMissileBulletType.*;
 import progressed.util.*;
@@ -24,7 +24,7 @@ import static mindustry.Vars.*;
 
 public class ShieldProjector extends ForceProjector{
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
-    public Effect chargeEffect = PMFx.squareShieldRecharge;
+    public Effect chargeEffect = OtherFx.squareShieldRecharge;
     public Color lerpColor = Color.gray;
     public float lerpPercent = 0.75f;
 
@@ -97,7 +97,7 @@ public class ShieldProjector extends ForceProjector{
         @Override
         public void onRemoved(){
             float radius = realRadius();
-            if(!broken && radius > 1f) PMFx.squareForceShrink.at(x, y, radius, team.color);
+            if(!broken && radius > 1f) OtherFx.squareForceShrink.at(x, y, radius, team.color);
         }
 
         @Override
@@ -148,7 +148,7 @@ public class ShieldProjector extends ForceProjector{
             if(buildup >= shieldHealth + phaseShieldBoost * phaseHeat && !broken){
                 broken = true;
                 buildup = shieldHealth;
-                PMFx.squareShieldBreak.at(x, y, realRadius(), team.color);
+                OtherFx.squareShieldBreak.at(x, y, realRadius(), team.color);
             }
 
             if(hit > 0f){

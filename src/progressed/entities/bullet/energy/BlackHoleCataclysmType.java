@@ -12,8 +12,8 @@ import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.energy.BlackHoleBulletType.*;
 import progressed.graphics.*;
@@ -129,10 +129,10 @@ public class BlackHoleCataclysmType extends BulletType{
     }
 
     public void absorbBullet(Bullet other){
-        PMFx.blackHoleAbsorb.at(other.x, other.y);
+        EnergyFx.blackHoleAbsorb.at(other.x, other.y);
         if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
             if(other.trail instanceof PMTrail t){
-                PMFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+                UtilFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
             }else{
                 Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
             }

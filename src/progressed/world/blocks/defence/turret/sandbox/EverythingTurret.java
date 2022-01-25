@@ -16,7 +16,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -121,7 +121,7 @@ public class EverythingTurret extends PowerTurret{
 
             for(int i = 0; i < 1f + lerp * 100f; i++){
                 if(Mathf.chanceDelta(1f)){ //I'm just copying over code I have no idea what the hell I'm looking at.
-                    PMFx.everythingGunSwirl.at(x, y,
+                    EnergyFx.everythingGunSwirl.at(x, y,
                         Mathf.random(lerp * 45f, lerp * 720f), team.color,
                         new float[]{
                             (4f + (lerp * 16f)) + Mathf.sin((Time.time + Mathf.randomSeed(id)) / 30f) * (lerp * 6f),

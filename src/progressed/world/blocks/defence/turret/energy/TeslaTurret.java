@@ -17,8 +17,8 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -249,6 +249,12 @@ public class TeslaTurret extends Block{
         }
 
         @Override
+        public void drawLight(){
+            Drawf.light(x, y, range * 1.5f, lightningColor, curStroke * 0.8f);
+            super.drawLight();
+        }
+
+        @Override
         public void updateTile(){
             for(int i = 0; i < heats.length; i++){
                 heats[i] = Mathf.lerpDelta(heats[i], 0f, cooldown);
@@ -315,7 +321,7 @@ public class TeslaTurret extends Block{
                             shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
                             shootEffect.at(shootX, shootY, shootAngle, lightningColor);
                             hitEffect.at(other.x(), other.y(), lightningColor);
-                            PMFx.fakeLightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
+                            UtilFx.lightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
                         }
 
                         Effect.shake(shootShake, shootShake, this);

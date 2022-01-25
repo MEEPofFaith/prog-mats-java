@@ -6,7 +6,7 @@ import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.physical.*;
 import progressed.graphics.*;
 
@@ -75,7 +75,7 @@ public class SniperBullets implements ContentList{
             height = 14f;
             pierceCap = 12;
             critMultiplier = 3f;
-            critEffect = PMFx.miniCrit;
+            critEffect = OtherFx.miniCrit;
         }};
 
         sniperBoltValexitite = new CritBulletType(13f, 800f){

@@ -12,12 +12,12 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
+import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.modular.modules.turret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
@@ -240,7 +240,7 @@ public class PMModules implements ContentList{
                     width = 12f;
                     toColor = Pal.remove;
                     displayAmmoMultiplier = false;
-                    shootEffect = smokeEffect = PMFx.flameShoot;
+                    shootEffect = smokeEffect = ModuleFx.flameShoot;
                     makeFire = true;
                     status = StatusEffects.burning;
                 }};
@@ -260,8 +260,8 @@ public class PMModules implements ContentList{
                     burstSpacing = 2f;
                     minRange = 4f * 8f;
                     range = 28f * 8f;
-                    shootEffect = PMFx.lotusShoot;
-                    smokeEffect = PMFx.lotusShootSmoke;
+                    shootEffect = ModuleFx.lotusShoot;
+                    smokeEffect = ModuleFx.lotusShootSmoke;
                     powerUse = 12f;
 
                     shootType = new BasicBulletType(5f, 36f, "prog-mats-lance"){
@@ -277,7 +277,7 @@ public class PMModules implements ContentList{
                             homingPower = 0.15f;
                             trailLength = 5;
                             trailWidth = 1f;
-                            hitEffect = despawnEffect = PMFx.hitLotus;
+                            hitEffect = despawnEffect = ModuleFx.hitLotus;
                         }
 
                         @Override
@@ -468,8 +468,8 @@ public class PMModules implements ContentList{
                     range = 24f * 8f;
                     powerUse = 4f;
                     recoilAmount = shootLength = 0;
-                    chargeTime = PMFx.jupiterCharge.lifetime;
-                    chargeBeginEffect = PMFx.jupiterCharge;
+                    chargeTime = ModuleFx.jupiterCharge.lifetime;
+                    chargeBeginEffect = ModuleFx.jupiterCharge;
                     shootSound = Sounds.laser;
 
                     shootType = ModuleBullets.jupiterOrb;

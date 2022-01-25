@@ -15,7 +15,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -25,7 +25,7 @@ public class CoreLink extends Block{
     public float portalRad = -1f, innerRadScl = 0.75f;
     public int clouds;
     public float minCloudSize = 1f, maxCloudSize = 1f;
-    public Effect activationEffect = PMFx.linkActivation;
+    public Effect activationEffect = OtherFx.linkActivation;
 
     public CoreLink(String name){
         super(name);

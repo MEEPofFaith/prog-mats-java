@@ -21,7 +21,8 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.world.meta.*;
 
@@ -40,7 +41,7 @@ public class StaticNode extends Block{
     public boolean hitAir = true, hitGround = true;
     public StatusEffect status = StatusEffects.shocked;
     public float statusDuration = 10f * 60f;
-    public Effect shockEffect = PMFx.staticSpark;
+    public Effect shockEffect = OtherFx.staticSpark;
     public float minValue = 0.75f;
 
     public TextureRegion laser, laserEnd;
@@ -199,16 +200,18 @@ public class StaticNode extends Block{
 
         if(attack){
             Tmp.v3.trns(angle1 - 90f, space);
-            float dst = Mathf.dst(x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y, x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y);
+            float bx = x1 + Tmp.v1.x,
+                by = y1 + Tmp.v1.y;
+            float dst = Mathf.dst(bx + Tmp.v3.x, by + Tmp.v3.y, x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y);
 
             boolean hit = PMDamage.collideLine(damage, team, shockEffect, status, statusDuration,
-                x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y, angle1, dst,
+                bx + Tmp.v3.x, by + Tmp.v3.y, angle1, dst,
                 hitGround, hitAir
             );
             if(hit){
-                PMFx.fakeLightningFast.at(x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y,
+                UtilFx.lightningFast.at(bx + Tmp.v3.x, by + Tmp.v3.y,
                     angle1, team.color,
-                    new Object[]{dst, 2f, team}
+                    new LightningData(Tmp.v4.trns(angle1, dst).add(bx, by).cpy(), 2f)
                 );
             }
 

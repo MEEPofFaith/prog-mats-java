@@ -10,15 +10,15 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
     public Color color = Color.black;
-    public Effect absorbEffect = PMFx.blackHoleAbsorb, swirlEffect = PMFx.blackHoleSwirl;
+    public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float cataclysmRadius = 20f * 8f;
     public float cataclysmForceMul = 5f, cataclysmBulletForceMul = 5f, cataclysmForceRange = 40f * 8f;
     public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
@@ -32,7 +32,7 @@ public class BlackHoleBulletType extends BulletType{
         collides = collidesAir = collidesGround = collidesTiles = false;
         pierce = true;
         shootEffect = smokeEffect = Fx.none;
-        despawnEffect = PMFx.blackHoleDespawn;
+        despawnEffect = EnergyFx.blackHoleDespawn;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class BlackHoleBulletType extends BulletType{
         }
         if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
             if(other.trail instanceof PMTrail t){
-                PMFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+                UtilFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
             }else{
                 Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
             }
@@ -151,7 +151,7 @@ public class BlackHoleBulletType extends BulletType{
         if(cataclysm){
             if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
                 if(b.trail instanceof PMTrail t){
-                    PMFx.PMTrailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, t.copyPM());
+                    UtilFx.PMTrailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, t.copyPM());
                 }else{
                     Fx.trailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, b.trail.copy());
                 }

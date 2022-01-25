@@ -1,24 +1,19 @@
 package progressed.world.blocks.defence.turret.energy;
 
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.bullet.energy.*;
-import progressed.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;
@@ -103,7 +98,7 @@ public class EruptorTurret extends PowerTurret{
                 extendTo(Math.min(range + rangeExtention, dst(targetPos)));
                 if(timer(lightningTimer, lightningInterval)){
                     tr2.trns(rotation, shootLength - recoil);
-                    PMFx.fakeLightning.at(x + tr2.x, y + tr2.y, angleTo(bullet), lightningColor, new LightningData(bullet, lightningStroke));
+                    UtilFx.lightning.at(x + tr2.x, y + tr2.y, angleTo(bullet), lightningColor, new LightningData(bullet, lightningStroke));
                 }
                 if(bulletLife <= 0f){
                     bullet = null;

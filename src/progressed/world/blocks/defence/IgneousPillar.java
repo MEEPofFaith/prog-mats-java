@@ -14,7 +14,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 
 public class IgneousPillar extends Block{
     public float growTime = 10f, minDelay = 60f, maxDelay = 90f;
@@ -39,7 +39,7 @@ public class IgneousPillar extends Block{
         update = true;
         solid = true;
         destructible = breakable = alwaysReplace = rebuildable = targetable = false;
-        destroyEffect = PMFx.pillarBlast;
+        destroyEffect = OtherFx.pillarBlast;
     }
 
     @Override

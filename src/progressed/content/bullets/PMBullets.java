@@ -6,6 +6,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
@@ -214,7 +215,7 @@ public class PMBullets implements ContentList{
             makeFire = true;
             hittable = false;
             trailColor = hitColor = Pal.lancerLaser;
-            hitEffect = PMFx.sentinelBlast;
+            hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
         }};

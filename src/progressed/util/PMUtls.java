@@ -2,21 +2,20 @@ package progressed.util;
 
 import arc.math.Interp.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.gen.*;
 import mindustry.type.*;
 import progressed.entities.bullet.energy.*;
 
 import static mindustry.Vars.*;
 
 public class PMUtls{
+    public static final Rand rand = new Rand();
+
     public static PowIn customPowIn(int power){
         return new PowIn(power);
     }
@@ -131,17 +130,28 @@ public class PMUtls{
         return from;
     }
 
-    public static void godHood(UnitType target){
+    public static float multiLerp(float[] values, float progress){ //No idea how this works, just stole it from Color
+        int l = values.length;
+        float s = Mathf.clamp(progress);
+        float a = values[(int)(s * (l - 1))];
+        float b = values[Mathf.clamp((int)(s * (l - 1) + 1), 0, l - 1)];
+
+        float n = s * (l - 1) - (int)(s * (l - 1));
+        float i = 1f - n;
+        return a * i + b * n;
+    }
+
+    public static void godHood(UnitType ascending){
         try{
             content.units().each(u -> {
-                if(u != target){
+                if(u != ascending){
                     u.weapons.each(w -> {
                         if(!w.bullet.killShooter){
                             Weapon copy = w.copy();
-                            target.weapons.add(copy);
+                            ascending.weapons.add(copy);
                             if(w.otherSide != -1){
                                 int diff = u.weapons.get(w.otherSide).otherSide - w.otherSide;
-                                copy.otherSide = target.weapons.indexOf(copy) + diff;
+                                copy.otherSide = ascending.weapons.indexOf(copy) + diff;
                             }
 
                             copy.rotateSpeed = 360f;
@@ -154,22 +164,11 @@ public class PMUtls{
                     });
 
                     u.abilities.each(a -> {
-                        target.abilities.add(a);
+                        ascending.abilities.add(a);
                     });
                 }
             });
         }catch(Throwable ignored){}
-    }
-
-    public static float multiLerp(float[] values, float progress){ //No idea how this works, just stole it from Color
-        int l = values.length;
-        float s = Mathf.clamp(progress);
-        float a = values[(int)(s * (l - 1))];
-        float b = values[Mathf.clamp((int)(s * (l - 1) + 1), 0, l - 1)];
-
-        float n = s * (l - 1) - (int)(s * (l - 1));
-        float i = 1f - n;
-        return a * i + b * n;
     }
 
     public static void uhOhSpeghettiOh(String ohno){

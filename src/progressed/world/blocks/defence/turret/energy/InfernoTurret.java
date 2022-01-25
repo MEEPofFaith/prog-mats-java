@@ -16,12 +16,11 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.turret.energy.EruptorTurret.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -178,7 +177,7 @@ public class InfernoTurret extends PowerTurret{
                     if(lightning){
                         tr.trns(rotation + Mathf.random(3) * 90f, shootLength + recoil);
                         Vec2 tmp1 = Tmp.v1.set(x + tr.x, y + tr.y);
-                        PMFx.fakeLightning.at(tmp1.x, tmp1.y, tmp1.angleTo(b), lightningColor, new LightningData(b, lightningStroke));
+                        UtilFx.lightning.at(tmp1.x, tmp1.y, tmp1.angleTo(b), lightningColor, new LightningData(b, lightningStroke));
                     }
                     if(bulletLife <= 0f){
                         bullets.remove(b);

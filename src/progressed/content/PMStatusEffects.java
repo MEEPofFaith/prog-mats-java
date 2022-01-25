@@ -7,6 +7,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import progressed.content.effects.*;
 import progressed.type.statuseffects.*;
 
 import static mindustry.content.StatusEffects.*;
@@ -26,7 +27,7 @@ public class PMStatusEffects implements ContentList{
         incendiaryBurn = new PMStatusEffect("incend-burn"){{
             color = Pal.lightPyraFlame;
             damage = 3.6f;
-            effect = PMFx.incendBurning;
+            effect = MissileFx.incendBurning;
             transitionDamage = 14f;
 
             init(() -> {

@@ -14,7 +14,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.ShieldProjector.*;
@@ -25,7 +25,7 @@ import static mindustry.Vars.*;
 public class ArcMissileBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, snapRot, randRot;
-    public Effect rocketEffect = PMFx.rocketSmoke;
+    public Effect rocketEffect = MissileFx.missileSmoke;
     public float trailChance = 0.5f, smokeTrailChance = 0.75f;
     public float targetRadius = 1f;
     public float riseEngineTime, riseEngineSize = 8f, fallEngineTime = -1f, fallEngineSize = 6f;

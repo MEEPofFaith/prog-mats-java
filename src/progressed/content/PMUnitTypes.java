@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
@@ -144,8 +145,8 @@ public class PMUnitTypes implements ContentList{
 
                     targetColor = PMPal.missileBasic;
 
-                    despawnEffect = PMFx.smallBoom;
-                    blockEffect = PMFx.missileBlockedSmall;
+                    despawnEffect = MissileFx.smallBoom;
+                    blockEffect = MissileFx.missileBlockedSmall;
 
                     autoDropRadius = 12f;
                     stopRadius = 8f;

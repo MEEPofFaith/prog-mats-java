@@ -8,6 +8,7 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.units.*;
 import progressed.graphics.*;
 import progressed.world.blocks.distribution.drones.DronePad.*;
@@ -48,7 +49,7 @@ public class DroneUnitEntity extends PayloadUnit{
             }
 
             if(charge < 0f){
-                PMFx.dronePowerKill.at(this);
+                UtilFx.dronePowerKill.at(this);
                 kill();
             }
         }

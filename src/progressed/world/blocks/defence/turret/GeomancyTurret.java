@@ -13,8 +13,8 @@ import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
-import progressed.content.*;
-import progressed.content.PMFx.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.bullet.*;
 import progressed.graphics.*;
 
@@ -24,8 +24,8 @@ public class GeomancyTurret extends PowerTurret{
     public int crackEffects = 2;
     public float crackStroke = 1.5f;
     public Color crackColor = PMPal.darkBrown;
-    public Effect crackEffect = PMFx.groundCrack;
-    public Effect slamEffect = PMFx.concretionSlam;
+    public Effect crackEffect = UtilFx.groundCrack;
+    public Effect slamEffect = OtherFx.concretionSlam;
 
     public TextureRegion turretRegion;
     public TextureRegion[]

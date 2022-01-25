@@ -23,6 +23,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.units.*;
@@ -449,7 +450,7 @@ public class PMBlocks implements ContentList{
             targetAir = false;
             cooldown = 0.005f;
             shootType = PMBullets.pillarField;
-            chargeTime = PMFx.groundCrack.lifetime / 2f;
+            chargeTime = UtilFx.groundCrack.lifetime / 2f;
 
             armX = 15f / 4f;
             armY = -2f / 4f;
@@ -912,11 +913,11 @@ public class PMBlocks implements ContentList{
             coolantUsage *= mul;
             coolantMultiplier /= mul;
 
-            chargeTime = PMFx.aimChargeBegin.lifetime;
-            chargeBeginEffect = PMFx.aimChargeBegin;
-            chargeEffect = PMFx.aimCharge;
+            chargeTime = EnergyFx.aimChargeBegin.lifetime;
+            chargeBeginEffect = EnergyFx.aimChargeBegin;
+            chargeEffect = EnergyFx.aimCharge;
             chargeEffects = 30;
-            chargeMaxDelay = PMFx.aimChargeBegin.lifetime - PMFx.aimCharge.lifetime;
+            chargeMaxDelay = EnergyFx.aimChargeBegin.lifetime - EnergyFx.aimCharge.lifetime;
 
             heatColor = Pal.lancerLaser;
             chargeSound = Sounds.techloop;
@@ -956,11 +957,11 @@ public class PMBlocks implements ContentList{
             reloadTime = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
-            chargeBeginEffect = PMFx.kugelblitzChargeBegin;
-            chargeEffect = PMFx.kugelblitzCharge;
+            chargeBeginEffect = EnergyFx.kugelblitzChargeBegin;
+            chargeEffect = EnergyFx.kugelblitzCharge;
             chargeMaxDelay = 30f;
             chargeEffects = 16;
-            chargeTime = PMFx.kugelblitzChargeBegin.lifetime;
+            chargeTime = EnergyFx.kugelblitzChargeBegin.lifetime;
             rotateSpeed = 2f;
             recoilAmount = 2f;
             restitution = 0.015f;
@@ -1206,7 +1207,7 @@ public class PMBlocks implements ContentList{
 
             baseDst = new float[]{11f, 19f};
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
-            fireEffect = new MultiEffect(PMFx.apotheosisClouds, PMFx.apotheosisBlast);
+            fireEffect = new MultiEffect(EnergyFx.apotheosisClouds, EnergyFx.apotheosisBlast);
 
             float cooleantUse = 8f;
             coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
@@ -1348,7 +1349,7 @@ public class PMBlocks implements ContentList{
             }};
             onCraft = tile -> {
                 Tmp.v1.setToRandomDirection().setLength(28f / 4f);
-                PMFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
+                CrafterFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
             };
 
             consumes.power(6f);
@@ -1374,7 +1375,7 @@ public class PMBlocks implements ContentList{
             craftTime = 75f;
             hasPower = true;
             hasLiquids = false;
-            craftEffect = PMFx.superSmeltsmoke;
+            craftEffect = CrafterFx.superSmeltsmoke;
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 1f; //Big flame louder sound. LIKE REALLY LOUD.
 
@@ -1716,8 +1717,8 @@ public class PMBlocks implements ContentList{
                 cooldown = 0.0015f;
                 restitution = 0.008f;
                 reloadTime = 450f;
-                chargeTime = PMFx.harbingerCharge.lifetime;
-                chargeBeginEffect = PMFx.harbingerCharge;
+                chargeTime = EnergyFx.harbingerCharge.lifetime;
+                chargeBeginEffect = EnergyFx.harbingerCharge;
                 chargeSound = PMSounds.harbingerCharge;
                 shootSound = PMSounds.harbingerBlast;
                 shootType = PMBullets.harbingerLaser;

@@ -8,14 +8,14 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
 public class CritBulletType extends BasicBulletType{
     public float critChance = 0.15f, critMultiplier = 5f;
-    public Effect critEffect = PMFx.crit;
+    public Effect critEffect = OtherFx.crit;
     public boolean bouncing, despawnHitEffects = true;
 
     public CritBulletType(float speed, float damage, String sprite){
@@ -26,7 +26,7 @@ public class CritBulletType extends BasicBulletType{
         ammoMultiplier = 1;
         shootEffect = Fx.shootBig;
         smokeEffect = Fx.shootBigSmoke;
-        hitEffect = PMFx.critPierce;
+        hitEffect = OtherFx.critPierce;
         hitColor = Pal.lightOrange;
         trailLength = 10;
         trailWidth = -1f;
@@ -116,7 +116,7 @@ public class CritBulletType extends BasicBulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            PMFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
+            UtilFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
         }
     }
 

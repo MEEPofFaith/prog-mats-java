@@ -21,6 +21,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -59,7 +60,7 @@ public class SwordTurret extends BaseTurret{
     public Sound hitSound = PMSounds.swordStab;
     public float minVolume = 1f, maxVolume = 1f;
     public float minPitch = 0.9f, maxPitch = 1.1f;
-    public Effect hitEffect = PMFx.swordStab;
+    public Effect hitEffect = OtherFx.swordStab;
     public Color hitColor = Pal.surge;
     public float hitShake;
 
@@ -491,7 +492,7 @@ public class SwordTurret extends BaseTurret{
         public void onRemoved(){
             super.onRemoved();
             for(PMTrail trail : trails){
-                PMFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copyPM());
+                UtilFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copyPM());
             }
         }
 

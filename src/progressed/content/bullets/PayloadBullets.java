@@ -7,6 +7,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
+import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
@@ -38,9 +39,9 @@ public class PayloadBullets implements ContentList{
             trailParam = thrusterSize * 2f * 1.5f;
             trailOffset = thrusterOffset = 43f / 4f;
             rotOffset = 90f;
-            hitEffect = despawnEffect = PMFx.missileExplosion;
+            hitEffect = despawnEffect = MissileFx.missileExplosion;
             trailInterval = 1f;
-            trailEffect = PMFx.rocketTrail;
+            trailEffect = MissileFx.rocketTrail;
             trailLength = 6;
             drawSize = 60f * 80f;
             layer = Layer.turret + 0.015f;
@@ -66,9 +67,9 @@ public class PayloadBullets implements ContentList{
                 trailParam = thrusterSize * 2f * 1.5f;
                 trailOffset = thrusterOffset = 43f / 4f;
                 rotOffset = 90f;
-                hitEffect = despawnEffect = PMFx.missileExplosion;
+                hitEffect = despawnEffect = MissileFx.missileExplosion;
                 trailInterval = 1f;
-                trailEffect = PMFx.rocketTrail;
+                trailEffect = MissileFx.rocketTrail;
                 trailLength = 6;
                 drawSize = 60f * 80f;
                 layer = Layer.turret + 0.015f;
@@ -90,7 +91,7 @@ public class PayloadBullets implements ContentList{
 
             @Override
             public void hit(Bullet b, float x, float y){
-                if(!b.absorbed) PMFx.flameRing.at(x, y, b.rotation(), hitColor);
+                if(!b.absorbed) MissileFx.flameRing.at(x, y, b.rotation(), hitColor);
                 super.hit(b, x, y);
             }
         };
@@ -104,9 +105,9 @@ public class PayloadBullets implements ContentList{
                 trailParam = thrusterSize * 2f * 1.5f;
                 trailOffset = thrusterOffset = 43f / 4f;
                 rotOffset = 90f;
-                despawnEffect = PMFx.missileExplosion;
+                despawnEffect = MissileFx.missileExplosion;
                 trailInterval = 1f;
-                trailEffect = PMFx.rocketTrail;
+                trailEffect = MissileFx.rocketTrail;
                 trailLength = 6;
                 drawSize = 60f * 80f;
                 layer = Layer.turret + 0.015f;
@@ -170,8 +171,8 @@ public class PayloadBullets implements ContentList{
             hitSound = Sounds.bang;
             collidesAir = false;
             hitShake = 2f;
-            despawnEffect = PMFx.smallBoom;
-            blockEffect = PMFx.missileBlockedSmall;
+            despawnEffect = MissileFx.smallBoom;
+            blockEffect = MissileFx.missileBlockedSmall;
 
             targetColor = PMPal.missileBasic;
 
@@ -195,8 +196,8 @@ public class PayloadBullets implements ContentList{
             lifetime = 360f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
-            despawnEffect = PMFx.missileExplosion;
-            blockEffect = PMFx.missileBlocked;
+            despawnEffect = MissileFx.missileExplosion;
+            blockEffect = MissileFx.missileBlocked;
 
             targetColor = PMPal.missileBasic;
 
@@ -220,8 +221,8 @@ public class PayloadBullets implements ContentList{
             lifetime = 270f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
-            despawnEffect = PMFx.missileExplosion;
-            blockEffect = PMFx.missileBlocked;
+            despawnEffect = MissileFx.missileExplosion;
+            blockEffect = MissileFx.missileBlocked;
 
             targetColor = PMPal.missileFrag;
 
@@ -248,8 +249,8 @@ public class PayloadBullets implements ContentList{
                 lifetime = 135f;
                 hitSound = Sounds.explosionbig;
                 hitShake = 5f;
-                despawnEffect = PMFx.missileExplosion;
-                blockEffect = PMFx.missileBlocked;
+                despawnEffect = MissileFx.missileExplosion;
+                blockEffect = MissileFx.missileBlocked;
 
                 targetColor = PMPal.missileFrag;
 
@@ -277,8 +278,8 @@ public class PayloadBullets implements ContentList{
                     lifetime = 96f;
                     hitSound = Sounds.explosionbig;
                     hitShake = 5f;
-                    despawnEffect = PMFx.missileExplosion;
-                    blockEffect = PMFx.missileBlocked;
+                    despawnEffect = MissileFx.missileExplosion;
+                    blockEffect = MissileFx.missileBlocked;
 
                     targetColor = PMPal.missileFrag;
 
@@ -307,8 +308,8 @@ public class PayloadBullets implements ContentList{
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
             fartVolume = 200f;
-            despawnEffect = PMFx.nuclearExplosion;
-            blockEffect = PMFx.missileBlockedLarge;
+            despawnEffect = MissileFx.nuclearExplosion;
+            blockEffect = MissileFx.missileBlockedLarge;
 
             targetColor = PMPal.missileBasic;
 
@@ -342,8 +343,8 @@ public class PayloadBullets implements ContentList{
                 lifetime = 150f;
                 hitSound = Sounds.explosionbig;
                 hitShake = 5f;
-                despawnEffect = PMFx.missileExplosion;
-                blockEffect = PMFx.missileBlocked;
+                despawnEffect = MissileFx.missileExplosion;
+                blockEffect = MissileFx.missileBlocked;
 
                 targetColor = PMPal.missileFrag;
 
