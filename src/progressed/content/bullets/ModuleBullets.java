@@ -24,7 +24,9 @@ public class ModuleBullets implements ContentList{
 
     swarmIncendiary, swarmBlast,
 
-    tridentMissile,
+    reboundTitanium, reboundSurge,
+
+    trifectaMissile,
 
     jupiterOrb;
 
@@ -209,7 +211,32 @@ public class ModuleBullets implements ContentList{
             weaveMag = 2f;
         }};
 
-        tridentMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trifecta-missile"){{
+        reboundTitanium = new BoomerangBulletType(5f, 67f){{
+            lifetime = 98f;
+            width = height = 12f;
+            spin = -24;
+        }};
+
+        reboundSurge = new BoomerangBulletType(5f, 84f){
+            {
+                lifetime = 98f;
+                width = height = 12f;
+                spin = -24;
+                pierceCap = 14;
+                lightning = 1;
+                lightningLength = 7;
+                lightningDamage = 26f;
+            }
+
+            @Override
+            public void init(){
+                super.init();
+
+                despawnHit = false;
+            }
+        };
+
+        trifectaMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trifecta-missile"){{
             lifetime = 40f;
             acceleration = 0.05f;
             backSpeed = thrustDelay = 0f;

@@ -19,6 +19,7 @@ public class TurretMount extends BaseMount{
     public float reload;
     public float charge;
     public BulletType chargeShot;
+    public Bullet bullet;
     /** Weapon recoil */
     public float recoil;
     public int shotCounter;

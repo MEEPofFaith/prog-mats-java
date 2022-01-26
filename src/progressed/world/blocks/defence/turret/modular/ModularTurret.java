@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.actions.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -354,10 +355,10 @@ public class ModularTurret extends PayloadBlock{
 
             resetSelection();
 
-            table.table(this::rebuild).top().expandY();
+            table.table(t -> rebuild(t, false, false)).top().expandY();
         }
 
-        public void rebuild(Table table){
+        public void rebuild(Table table, boolean dropMenu, boolean slideDisplay){
             highlightModule();
             table.clearChildren();
             table.top();
@@ -365,9 +366,11 @@ public class ModularTurret extends PayloadBlock{
                 t.top();
                 for(ModuleSize mSize : ModuleSize.values()){
                     t.button(mSize.title(), Styles.clearTogglet, () -> {
-                        selSize = mSize;
-                        selNum = allMounts.indexOf(m -> m.checkSize(mSize));
-                        rebuild(table);
+                        if(selSize != mSize){
+                            selSize = mSize;
+                            selNum = allMounts.indexOf(m -> m.checkSize(mSize));
+                            rebuild(table, true, false);
+                        }
                     }).update(b -> {
                         b.setChecked(selSize == mSize);
                     }).size(80f, 40f);
@@ -378,13 +381,21 @@ public class ModularTurret extends PayloadBlock{
             }).top();
             table.row();
             table.table(Styles.black6, t -> {
-                t.left();
+                t.top().left();
+                if(dropMenu){
+                    //Doens't work properly, I'll comment it out for now.
+                    //t.setTransform(true);
+                    //t.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                }
                 t.table(m -> {
                     m.left().top();
                     allMounts.each(mount -> mount.checkSize(selSize), mount -> {
                         ImageButton button = m.button(Tex.whiteui, Styles.clearTogglei, 32f, () -> {
-                            selNum = allMounts.indexOf(mount);
-                            rebuild(table);
+                            int index = allMounts.indexOf(mount);
+                            if(selNum != index){
+                                selNum = index;
+                                rebuild(table, false, true);
+                            }
                         }).update(b -> {
                             b.setChecked(selNum == allMounts.indexOf(mount));
                         }).size(40f).get();
@@ -396,6 +407,10 @@ public class ModularTurret extends PayloadBlock{
                 if(selNum >= 0){
                     BaseMount mount = allMounts.get(selNum);
                     t.table(d -> {
+                        if(slideDisplay){
+                            d.setTransform(true);
+                            d.actions(Actions.scaleTo(0f, 1f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                        }
                         d.top().left();
                         mount.module.display(this, d, table, mount);
                     }).top().left().grow();

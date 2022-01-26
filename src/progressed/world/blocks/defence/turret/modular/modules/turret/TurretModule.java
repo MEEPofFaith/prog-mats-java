@@ -167,6 +167,8 @@ public class TurretModule extends BaseTurretModule{
 
         if(!validateTarget(parent, mount)) mount.target = null;
 
+        if(mount.bullet != null && !mount.bullet.isAdded()) mount.bullet = null;
+
         mount.wasShooting = false;
 
         mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
@@ -332,7 +334,7 @@ public class TurretModule extends BaseTurretModule{
         float x = mount.x, y = mount.y;
         float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, mount.targetPos.x, mount.targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
-        type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        mount.bullet = type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
     }
 
     protected void effects(TurretMount mount, BulletType type){

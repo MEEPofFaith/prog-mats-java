@@ -14,6 +14,8 @@ import mindustry.graphics.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.physical.*;
+import progressed.entities.bullet.physical.DelayBulletType.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
@@ -37,7 +39,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    trifecta, jupiter;
+    rebound, trifecta, jupiter;
 
     @Override
     public void load(){
@@ -264,64 +266,18 @@ public class PMModules implements ContentList{
                     smokeEffect = ModuleFx.lotusShootSmoke;
                     powerUse = 12f;
 
-                    shootType = new BasicBulletType(5f, 36f, "prog-mats-lance"){
-                        final float aimCone = 5f, aimRadius = 12f, aimHomingPower = 0.35f, launchedSpeed = 4.5f, launchedDrag = -0.005f;
-
-                        {
-                            frontColor = Color.white;
-                            backColor = trailColor = Pal.surge;
-                            width = height = 8f;
-                            shrinkX = shrinkY = 0;
-                            lifetime = 60f;
-                            drag = 0.15f;
-                            homingPower = 0.15f;
-                            trailLength = 5;
-                            trailWidth = 1f;
-                            hitEffect = despawnEffect = ModuleFx.hitLotus;
-                        }
-
-                        @Override
-                        public void update(Bullet b){
-                            updateTrail(b);
-
-                            IrisData data = (IrisData)b.data;
-
-                            if(!data.fired){
-                                data.fired = b.time >= data.delay;
-                                if(data.fired){
-                                    b.time = 0f;
-                                    b.vel.setLength(launchedSpeed);
-                                    b.drag = launchedDrag;
-                                }
-                            }
-
-                            if(data.fired){
-                                if(!data.aimed){
-                                    float targetAngle = b.angleTo(Tmp.v1.set(data.x, data.y));
-
-                                    b.vel.setAngle(Angles.moveToward(b.rotation(), targetAngle, aimHomingPower * Time.delta * 50f));
-
-                                    boolean nearby = b.within(data.x, data.y, aimRadius);
-                                    if(Angles.angleDist(b.rotation(), targetAngle) <= aimCone || nearby) data.aimed = true;
-                                }else{
-                                    Teamc target;
-                                    //home in on allies if possible
-                                    if(healPercent > 0){
-                                        target = Units.closestTarget(null, b.x, b.y, homingRange,
-                                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                                            t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
-                                        );
-                                    }else{
-                                        target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
-                                    }
-
-                                    if(target != null){
-                                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                                    }
-                                }
-                            }
-                        }
-                    };
+                    shootType = new DelayBulletType(5f, 36f, "prog-mats-lance"){{
+                        frontColor = Color.white;
+                        backColor = trailColor = Pal.surge;
+                        width = height = 8f;
+                        shrinkX = shrinkY = 0;
+                        lifetime = 60f;
+                        drag = 0.15f;
+                        homingPower = 0.15f;
+                        trailLength = 5;
+                        trailWidth = 1f;
+                        hitEffect = despawnEffect = ModuleFx.hitLotus;
+                    }};
                 }
 
                 @Override
@@ -378,7 +334,7 @@ public class PMModules implements ContentList{
                             }
 
                             tr.trns(rot, shootLength);
-                            type.create(parent, parent.team, x + tr.x, y + tr.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new IrisData(aimX, aimY, delay - ii * burstSpacing));
+                            type.create(parent, parent.team, x + tr.x, y + tr.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
 
                             Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
                             Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
@@ -421,13 +377,29 @@ public class PMModules implements ContentList{
         //endregion
 
         //Region Large
+        rebound = new ModulePayload("rebound"){{
+            size = 3;
+
+            module = new ItemTurretModule("rebound", ModuleSize.large){
+                {
+                    ammo(
+                        Items.titanium, ModuleBullets.reboundTitanium,
+                        Items.surgeAlloy, ModuleBullets.reboundSurge
+                    );
+
+                    range = 21f * tilesize;
+                    reloadTime = 75f;
+                }
+            };
+        }};
+
         trifecta = new ModulePayload("trifecta"){{
             size = 3;
 
             module = new ItemTurretModule("trifecta", ModuleSize.large){
                 {
                     ammo(
-                        Items.blastCompound, ModuleBullets.tridentMissile
+                        Items.blastCompound, ModuleBullets.trifectaMissile
                     );
 
                     range = 34f * tilesize;
@@ -571,16 +543,5 @@ public class PMModules implements ContentList{
             };
         }};
         //endregion
-    }
-
-    static class IrisData{
-        final float x, y, delay;
-        boolean fired, aimed;
-
-        public IrisData(float x, float y, float delay){
-            this.x = x;
-            this.y = y;
-            this.delay = delay;
-        }
     }
 }

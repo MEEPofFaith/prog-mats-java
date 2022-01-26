@@ -187,9 +187,10 @@ public class BaseModule implements Cloneable{
                     p.addPayload(module);
                     Fx.unitPickup.at(mount.x, mount.y);
                     Events.fire(new PickupEvent(player.unit(), module.build));
+                    boolean has = parent.allMounts.contains(m -> m.checkSize(mount.module.size));
                     parent.removeMount(mount);
                     parent.resetSelection();
-                    parent.rebuild(parentTable);
+                    parent.rebuild(parentTable, !has, has);
                 }else{
                     showPickupFail(mount);
                 }
