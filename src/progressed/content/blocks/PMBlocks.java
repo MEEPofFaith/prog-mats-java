@@ -1013,9 +1013,10 @@ public class PMBlocks implements ContentList{
         council = new ModularTurret("council"){{
             requirements(Category.turret, empty);
             size = 5;
+            hideDetails = false;
 
             moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.circle, 39f/ 4f, 49f/ 4f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 12f, 4f),
                 new ModuleGroup(ModuleSize.medium)
             };
         }};
@@ -1023,10 +1024,11 @@ public class PMBlocks implements ContentList{
         congress = new ModularTurret("congress"){{
             requirements(Category.turret, empty);
             size = 7;
+            hideDetails = false;
 
             moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 75f / 4f, 49f / 4f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 71f / 4f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
                 new ModuleGroup(ModuleSize.large)
             };
         }};
@@ -1034,13 +1036,14 @@ public class PMBlocks implements ContentList{
         pantheon = new ModularTurret("pantheon"){{
             requirements(Category.turret, empty);
             size = 9;
+            hideDetails = false;
 
             moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 30f, 89f / 4f),
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 30f, 55f / 4f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 18f, 71f / 4f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 23f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 15f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 19f, 19f),
                 new ModuleGroup(ModuleSize.medium, ModuleGroupType.single, 0f, 0f),
-                new ModuleGroup(ModuleSize.large, ModuleGroupType.quad, 0f, 71f / 4f)
+                new ModuleGroup(ModuleSize.large, ModuleGroupType.quad, 0f, 65f / 4f)
             };
         }};
 

@@ -27,7 +27,6 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.*;
-import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
@@ -42,7 +41,7 @@ public class ModularTurret extends PayloadBlock{
 
     public ModuleGroup[] moduleGroups;
     public Vec2[] smallMountPos, mediumMountPos, largeMountPos;
-    public Color mountColor1 = PMPal.darkGray, mountColor2 = Pal.accent;
+    public Color mountColor = Pal.accent;
 
     public TextureRegion[] mountBases = new TextureRegion[3];
 
@@ -253,7 +252,7 @@ public class ModularTurret extends PayloadBlock{
                 if(acceptModule(s)){
                     float mX = x + nextMountX(s),
                         mY = y + nextMountY(s);
-                    Draw.color(mountColor1, mountColor2, Mathf.absin(60f / Mathf.PI2, 1f));
+                    Draw.color(mountColor, Mathf.absin(60f / Mathf.PI2, 1f));
                     Draw.rect(mountBases[s.ordinal()], mX, mY);
                     Draw.color();
                 }
@@ -383,9 +382,11 @@ public class ModularTurret extends PayloadBlock{
             table.table(Styles.black6, t -> {
                 t.top().left();
                 if(dropMenu){
-                    //Doens't work properly, I'll comment it out for now.
-                    //t.setTransform(true);
-                    //t.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                    t.setTransform(true);
+                    t.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                    t.update(() -> {
+                        t.setOrigin(Align.top);
+                    });
                 }
                 t.table(m -> {
                     m.left().top();
