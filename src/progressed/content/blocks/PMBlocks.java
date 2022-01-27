@@ -1025,7 +1025,7 @@ public class PMBlocks implements ContentList{
             size = 7;
 
             moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 76f / 4f, 49f / 4f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 75f / 4f, 49f / 4f),
                 new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 71f / 4f),
                 new ModuleGroup(ModuleSize.large)
             };
@@ -1034,7 +1034,14 @@ public class PMBlocks implements ContentList{
         pantheon = new ModularTurret("pantheon"){{
             requirements(Category.turret, empty);
             size = 9;
-            //TODO
+
+            moduleGroups = new ModuleGroup[]{
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 30f, 89f / 4f),
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 30f, 55f / 4f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 18f, 71f / 4f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.single, 0f, 0f),
+                new ModuleGroup(ModuleSize.large, ModuleGroupType.quad, 0f, 71f / 4f)
+            };
         }};
 
         sergeant = new PayloadLaunchTurret("tinker"){{
