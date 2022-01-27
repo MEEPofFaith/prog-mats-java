@@ -212,14 +212,14 @@ public class ModuleBullets implements ContentList{
         }};
 
         reboundTitanium = new BoomerangBulletType(5f, 67f){{
-            lifetime = 98f;
+            lifetime = 120f;
             width = height = 12f;
             spin = -24;
         }};
 
         reboundSurge = new BoomerangBulletType(5f, 84f){
             {
-                lifetime = 98f;
+                lifetime = 134f;
                 width = height = 12f;
                 spin = -24;
                 pierceCap = 14;
@@ -232,7 +232,7 @@ public class ModuleBullets implements ContentList{
             public void init(){
                 super.init();
 
-                despawnHit = false;
+                despawnHit = false; //bruh
             }
         };
 

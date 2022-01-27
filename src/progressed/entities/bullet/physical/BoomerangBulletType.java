@@ -9,6 +9,8 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 
 public class BoomerangBulletType extends BasicBulletType{
+    public float decelStart = 0.375f, decelEnd = 0.875f;
+
     public BoomerangBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
         pierce = true;
@@ -39,11 +41,10 @@ public class BoomerangBulletType extends BasicBulletType{
         super.update(b);
 
         BoomerangBulletData data = (BoomerangBulletData)b.data;
-        float p = b.time / (lifetime / 2f);
-        boolean isReturn = p >= 1;
-        float lerp = isReturn ? 2 - p : p;
+        float lerp = Mathf.curve(b.fslope(), decelStart, decelEnd);
+        boolean isReturn = b.fin() >= 0.5f;
 
-        b.vel.trns(data.angle + (isReturn ? 180f : 0), Mathf.lerp(0f, data.speed, 1f - Interp.pow3In.apply(lerp)));
+        b.vel.trns(data.angle + (isReturn ? 180f : 0), Mathf.lerp(0f, data.speed, 1f - Mathf.sin(lerp * Mathf.PI / 2f)));
 
         if(isReturn && !data.returning){
             data.returning = true;
