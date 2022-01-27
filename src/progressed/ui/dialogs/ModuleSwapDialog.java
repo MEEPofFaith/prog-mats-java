@@ -20,7 +20,7 @@ public class ModuleSwapDialog extends BaseDialog{
         super("@pm-swap.title");
 
         buttons.defaults().size(210f, 64f);
-        buttons.button("@cancel", Icon.left, () -> {
+        buttons.button("@cancel", Icon.cancel, () -> {
             hide();
             base.resetSwap();
         });

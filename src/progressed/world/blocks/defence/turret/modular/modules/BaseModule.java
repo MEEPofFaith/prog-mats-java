@@ -73,7 +73,7 @@ public class BaseModule implements Cloneable{
 
     public void init(){
         //small = 1, medium = 2, large = 3
-        if(elevation < 0) elevation = size();
+        if(elevation < 0) elevation = size() / 2f;
         if(deployTime < 0) deployTime = size() * 2f * 60f;
 
         consumes.init();

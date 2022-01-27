@@ -1025,6 +1025,7 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, empty);
             size = 7;
             hideDetails = false;
+            payloadSpeed = 0.9f;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
@@ -1037,6 +1038,7 @@ public class PMBlocks implements ContentList{
             requirements(Category.turret, empty);
             size = 9;
             hideDetails = false;
+            payloadSpeed = 1.2f;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 23f),

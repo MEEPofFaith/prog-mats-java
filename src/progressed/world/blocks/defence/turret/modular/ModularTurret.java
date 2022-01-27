@@ -365,7 +365,7 @@ public class ModularTurret extends PayloadBlock{
                 t.top();
                 for(ModuleSize mSize : ModuleSize.values()){
                     t.button(mSize.title(), Styles.clearTogglet, () -> {
-                        if(selSize != mSize){
+                        if(selSize != mSize && allMounts.contains(mount -> mount.checkSize(mSize))){
                             selSize = mSize;
                             selNum = allMounts.indexOf(m -> m.checkSize(mSize));
                             rebuild(table, true, false);
