@@ -262,13 +262,10 @@ public class ModuleBullets implements ContentList{
             targetLayer = Layer.bullet - 1;
         }};
 
-        jupiterOrb = new BasicBulletType(1f, 750f, "circle-bullet"){
+        jupiterOrb = new BulletType(1f, 750f){
             {
                 lifetime = 5f * 60f;
-                width = height = hitSize = 7f;
-                shrinkX = shrinkY = 0f;
-                frontColor = Color.white;
-                backColor = Pal.lancerLaser;
+                hitSize = 7f;
                 pierce = pierceBuilding = true;
                 hittable = false;
                 homingPower = 0.05f;
@@ -281,6 +278,14 @@ public class ModuleBullets implements ContentList{
                 trailEffect = ModuleFx.jupiterTrail;
                 trailInterval = 1f;
                 trailRotation = true;
+            }
+
+            @Override
+            public void draw(Bullet b){
+                drawTrail(b);
+
+                Draw.color(Pal.lancerLaser);
+                Fill.circle(b.x, b.y, 7f);
             }
         };
     }

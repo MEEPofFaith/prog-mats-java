@@ -15,7 +15,6 @@ import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -23,11 +22,10 @@ import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
-public class TurretModule extends BaseTurretModule{
+public class TurretModule extends ReloadTurretModule{
     public boolean targetAir = true, targetGround = true, targetBlocks = true,
         targetEnemies = true, targetHealing;
     public boolean leadTargets = true, accurateDelay;
-    public float reloadTime = 30f;
     public boolean rotateShooting = true;
     public float rotateSpeed = 5f;
     public float shootCone = 8f;
@@ -43,13 +41,6 @@ public class TurretModule extends BaseTurretModule{
     public float burstSpacing = 0;
     public int barrels = 1;
     public float inaccuracy, velocityInaccuracy;
-
-    public boolean acceptCoolant = true;
-    public float coolantUsage = 0.2f;
-    /** How much reload is lowered by for each unit of liquid of heat capacity. */
-    public float coolantMultiplier = 5f;
-    /** Effect displayed when coolant is used. */
-    public Effect coolEffect = Fx.fuelburn;
 
     public Color heatColor = Pal.turretHeat;
     public Effect shootEffect = Fx.none;
@@ -114,10 +105,6 @@ public class TurretModule extends BaseTurretModule{
         stats.add(Stat.reload, 60f / (reloadTime) * shots, StatUnit.perSecond);
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
-
-        if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(reloadTime, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
-        }
     }
 
     public boolean canHeal(TurretMount mount){
@@ -224,21 +211,6 @@ public class TurretModule extends BaseTurretModule{
         }
     }
 
-    public void updateCooling(TurretMount mount){
-        if(mount.reload < reloadTime && mount.charge <= 0){
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = mount.liquids.current();
-
-            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
-            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
-            mount.liquids.remove(liquid, used);
-
-            if(Mathf.chance(0.06 * used)){
-                coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
-            }
-        }
-    }
-
     public void updateCharging(ModularTurretBuild parent, TurretMount mount){
         if(mount.charging){
             mount.charge += Time.delta;
@@ -250,10 +222,6 @@ public class TurretModule extends BaseTurretModule{
 
             mount.charge = 0;
         }
-    }
-
-    public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
-        return !mount.charging && !mount.isShooting;
     }
 
     public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
