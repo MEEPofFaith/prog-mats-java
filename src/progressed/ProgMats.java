@@ -2,14 +2,17 @@ package progressed;
 
 import arc.*;
 import arc.func.*;
+import arc.util.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
@@ -82,6 +85,16 @@ public class ProgMats extends Mod{
 
                     content.units().each(u -> {
                        u.deathSound = Sounds.wind3;
+                    });
+
+                    Events.run(Trigger.newGame, () -> {
+                        Time.run(coreLandDuration, () -> {
+                            CoreBuild core = player.bestCore();
+                            if(core != null){
+                                OtherFx.fard.at(core);
+                                PMSounds.gigaFard.at(core.x, core.y, 1f, 10f);
+                            }
+                        });
                     });
                 }
             });

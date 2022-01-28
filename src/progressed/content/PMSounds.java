@@ -12,20 +12,22 @@ import mindustry.*;
  */
 public class PMSounds{
     public static Sound
-        pixelShoot = new Sound(),
-        pixelHit = new Sound(),
-        rockExplode = new Sound(),
-        harbingerCharge = new Sound(),
-        harbingerBlast = new Sound(),
-        riftSplit = new Sound(),
-        popeshadowCharge = new Sound(),
-        swordStab = new Sound(),
-        rocketLaunch = new Sound(),
-        nuclearExplosion = new Sound(),
-        sentinelWarning = new Sound(),
-        pulseBeam = new Sound(),
-        moonPiss = new Sound(),
-        loudMoonPiss = new Sound();
+
+    pixelShoot = new Sound(),
+    pixelHit = new Sound(),
+    rockExplode = new Sound(),
+    harbingerCharge = new Sound(),
+    harbingerBlast = new Sound(),
+    riftSplit = new Sound(),
+    popeshadowCharge = new Sound(),
+    swordStab = new Sound(),
+    rocketLaunch = new Sound(),
+    nuclearExplosion = new Sound(),
+    sentinelWarning = new Sound(),
+    pulseBeam = new Sound(),
+    moonPiss = new Sound(),
+    loudMoonPiss = new Sound(),
+    gigaFard = new Sound();
 
     public static void load() {
         if(Vars.headless) return;
@@ -44,6 +46,7 @@ public class PMSounds{
         pulseBeam = loadSound("pulse-beam");
         moonPiss = loadSound("piss");
         loudMoonPiss = loadSound("piss-loud");
+        gigaFard = loadSound("giga-fard");
     }
 
     protected static Sound loadSound(String soundName){
