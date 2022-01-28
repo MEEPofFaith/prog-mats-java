@@ -370,8 +370,8 @@ public class PMModules implements ContentList{
                 radius = 5f;
                 laserWidth = 0.3f;
                 maxTargets = 6;
-                force = 8f;
-                scaledForce = 5f;
+                force = 30f;
+                scaledForce = 22f;
             }};
         }};
         //endregion
@@ -386,9 +386,45 @@ public class PMModules implements ContentList{
                         Items.titanium, ModuleBullets.reboundTitanium,
                         Items.surgeAlloy, ModuleBullets.reboundSurge
                     );
+                    mountType = SawTurretMount::new;
 
                     range = 21f * tilesize;
                     reloadTime = 75f;
+                    shootLength = 2f;
+                    topLayerOffset = 0.3f;
+                }
+
+                @Override
+                public void updateTurret(ModularTurretBuild parent, TurretMount mount){
+                    super.updateTurret(parent, mount);
+
+                    if(hasAmmo(mount)){
+                        ((SawTurretMount)mount).spin += ((BoomerangBulletType)peekAmmo(mount)).spin * Interp.pow3In.apply(mount.reload / reloadTime);
+                    }
+                }
+
+                @Override
+                public void drawTurret(ModularTurretBuild parent, TurretMount mount){
+                    super.drawTurret(parent, mount);
+
+                    if(hasAmmo(mount)){
+                        BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
+                        float spin = mount.rotation + ((SawTurretMount)mount).spin;
+                        tr.trns(mount.rotation, -mount.recoil + shootLength);
+                        Draw.z(b.layer);
+                        Draw.color(b.backColor);
+                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, spin);
+                        Draw.color(b.frontColor);
+                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, spin);
+                    }
+                }
+
+                class SawTurretMount extends TurretMount{
+                    float spin;
+
+                    public SawTurretMount(ModularTurretBuild parent, BaseModule module, int moduleNumber){
+                        super(parent, module, moduleNumber);
+                    }
                 }
             };
         }};

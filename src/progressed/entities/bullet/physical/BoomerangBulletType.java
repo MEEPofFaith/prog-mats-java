@@ -16,7 +16,6 @@ public class BoomerangBulletType extends BasicBulletType{
         pierce = true;
         pierceCap = 8;
         shrinkY = 0;
-        despawnEffect = Fx.none;
     }
 
     public BoomerangBulletType(float speed, float damage){

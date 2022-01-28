@@ -213,19 +213,22 @@ public class ModuleBullets implements ContentList{
 
         reboundTitanium = new BoomerangBulletType(5f, 67f){{
             lifetime = 120f;
-            width = height = 12f;
+            width = height = hitSize = 16f;
             spin = -24;
+            layer = Layer.turret + 0.015f;
         }};
 
         reboundSurge = new BoomerangBulletType(5f, 84f){
             {
                 lifetime = 134f;
-                width = height = 12f;
+                width = height = hitSize = 16f;
                 spin = -24;
+                backColor = Pal.surge;
                 pierceCap = 14;
                 lightning = 1;
                 lightningLength = 7;
                 lightningDamage = 26f;
+                layer = Layer.turret + 0.015f;
             }
 
             @Override
@@ -259,13 +262,13 @@ public class ModuleBullets implements ContentList{
             targetLayer = Layer.bullet - 1;
         }};
 
-        jupiterOrb = new BulletType(1f, 750f){
-            final float radius = 7f;
-            final Color color = Pal.lancerLaser;
-
+        jupiterOrb = new BasicBulletType(1f, 750f, "circle-bullet"){
             {
                 lifetime = 5f * 60f;
-                hitSize = 7f;
+                width = height = hitSize = 7f;
+                shrinkX = shrinkY = 0f;
+                frontColor = Color.white;
+                backColor = Pal.lancerLaser;
                 pierce = pierceBuilding = true;
                 hittable = false;
                 homingPower = 0.05f;
@@ -278,13 +281,6 @@ public class ModuleBullets implements ContentList{
                 trailEffect = ModuleFx.jupiterTrail;
                 trailInterval = 1f;
                 trailRotation = true;
-            }
-
-            @Override
-            public void draw(Bullet b){
-                drawTrail(b);
-                Draw.color(color);
-                Fill.circle(b.x, b.y, radius);
             }
         };
     }

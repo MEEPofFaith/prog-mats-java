@@ -80,6 +80,8 @@ public class ForceModule extends RangedModule{
     public void update(ModularTurretBuild parent, BaseMount mount){
         super.update(parent, mount);
 
+        if(isDeployed(mount) && !powerValid(parent)) return;
+
         ForceMount m = (ForceMount)mount;
 
         if(m.timer.get(5f)){
