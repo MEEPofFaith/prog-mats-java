@@ -1,6 +1,7 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
+import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -29,6 +30,8 @@ public class PMBullets implements ContentList{
     blackHole, cataclysm, absorbed,
     
     harbingerLaser, excaliburLaser, sentinelLaser,
+
+    harmanuke,
 
     burstDriverOrb;
 
@@ -218,6 +221,34 @@ public class PMBullets implements ContentList{
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
+        }};
+
+        harmanuke = new BasicBulletType(){{
+            sprite = "large-bomb";
+            width = height = 120/4f;
+
+            backColor = Color.red;
+            frontColor = Color.white;
+            mixColorTo = Color.white;
+
+            hitSound = Sounds.plasmaboom;
+
+            hitShake = 4f;
+
+            lifetime = 70f;
+
+            despawnEffect = EnergyFx.redBomb;
+            hitEffect = Fx.massiveExplosion;
+            keepVelocity = false;
+            spin = 2f;
+
+            shrinkX = shrinkY = 0.7f;
+
+            speed = 0f;
+            collides = false;
+
+            splashDamage = 1000f;
+            splashDamageRadius = 80f;
         }};
 
         burstDriverOrb = new BurstDriverOrb();

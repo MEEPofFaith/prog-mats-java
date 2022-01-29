@@ -171,7 +171,7 @@ public class PMBlocks implements ContentList{
     sandboxWall, sandboxWallLarge,
 
     //Unit
-    godFactory, capBlock,
+    godFactory, capBlock, harmacist,
 
     //Effect
     multiSource, multiVoid, multiSourceVoid;
@@ -1844,6 +1844,20 @@ public class PMBlocks implements ContentList{
         capBlock = new CapBlock("cap-block"){{
             health = 10000;
             unitCapModifier = 25;
+        }};
+
+        harmacist = new EffectZone("harmacist"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, empty);
+
+            size = 2;
+            range = 32f * tilesize;
+            height = 0.125f;
+            baseColor = Color.red;
+            reload = 5f;
+            affectOwnTeam = false;
+            affectEnemyTeam = true;
+
+            zoneEffect = tile -> all.each(u -> PMBullets.harmanuke.create(tile, u.x, u.y, 0f));
         }};
 
         /// Effect

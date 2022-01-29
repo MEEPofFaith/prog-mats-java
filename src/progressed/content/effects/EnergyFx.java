@@ -326,6 +326,25 @@ public class EnergyFx{
         Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * d.scl);
     }),
 
+    redBomb = new Effect(40f, 100f, e -> {
+        color(Color.red);
+        stroke(e.fout() * 2f);
+        float circleRad = 4f + e.finpow() * 65f;
+        Lines.circle(e.x, e.y, circleRad);
+
+        color(Color.red);
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x, e.y, 6f, 100f * e.fout(), i*90);
+        }
+
+        color();
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x, e.y, 3f, 35f * e.fout(), i*90);
+        }
+
+        Drawf.light(e.x, e.y, circleRad * 1.6f, Pal.heal, e.fout());
+    }),
+
     harbingerCharge = new Effect(150f, 1600f, e -> {
         Color[] colors = {Color.valueOf("D99F6B55"), Color.valueOf("E8D174aa"), Color.valueOf("F3E979"), Color.valueOf("ffffff")};
         float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
