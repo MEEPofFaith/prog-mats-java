@@ -57,6 +57,22 @@ public class ModuleFx{
         Drawf.light(e.x, e.y, 20f, Pal.surge, 0.6f * e.fout());
     }),
 
+    reboundLoad = new Effect(14f, e -> {
+        color(Color.white, e.color, e.fin());
+
+        e.scaled(7f, s -> {
+            stroke(0.5f + s.fout());
+            Lines.circle(e.x, e.y, s.fin() * e.rotation);
+        });
+
+        stroke(0.5f + e.fout());
+
+        randLenVectors(e.id, 5, e.fin() * e.rotation, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3f + 1f);
+        });
+    }).layer(Layer.turret + 0.16f),
+
     jupiterCharge = new Effect(300f, e -> {
         color(Pal.lancerLaser);
         Fill.circle(e.x, e.y, 7f * e.fin(Interp.pow2Out));

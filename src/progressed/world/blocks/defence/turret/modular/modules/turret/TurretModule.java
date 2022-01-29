@@ -21,6 +21,7 @@ import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
+import progressed.world.blocks.payloads.ModulePayload.*;
 
 public class TurretModule extends ReloadTurretModule{
     public boolean targetAir = true, targetGround = true, targetBlocks = true,
@@ -414,6 +415,15 @@ public class TurretModule extends ReloadTurretModule{
             Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
         }
         Draw.mixcol();
+    }
+
+    @Override
+    public void drawPayload(ModulePayloadBuild payload){
+        super.drawPayload(payload);
+
+        if(topRegion.found()){
+            Draw.rect(topRegion, payload.x + tr.x, payload.y + tr.y);
+        }
     }
 
     @Override

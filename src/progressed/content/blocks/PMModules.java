@@ -9,8 +9,11 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
@@ -386,7 +389,6 @@ public class PMModules implements ContentList{
                         Items.titanium, ModuleBullets.reboundTitanium,
                         Items.surgeAlloy, ModuleBullets.reboundSurge
                     );
-                    mountType = SawTurretMount::new;
 
                     range = 21f * tilesize;
                     reloadTime = 75f;
@@ -395,35 +397,73 @@ public class PMModules implements ContentList{
                 }
 
                 @Override
-                public void updateTurret(ModularTurretBuild parent, TurretMount mount){
-                    super.updateTurret(parent, mount);
-
-                    if(hasAmmo(mount)){
-                        ((SawTurretMount)mount).spin += ((BoomerangBulletType)peekAmmo(mount)).spin * Interp.pow3In.apply(mount.reload / reloadTime);
-                    }
-                }
-
-                @Override
                 public void drawTurret(ModularTurretBuild parent, TurretMount mount){
                     super.drawTurret(parent, mount);
 
                     if(hasAmmo(mount)){
                         BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
-                        float spin = mount.rotation + ((SawTurretMount)mount).spin;
+                        float spin = mount.rotation + Time.time * b.spin;
                         tr.trns(mount.rotation, -mount.recoil + shootLength);
                         Draw.z(b.layer);
                         Draw.color(b.backColor);
-                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, spin);
+                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, b.width, b.height, spin);
                         Draw.color(b.frontColor);
-                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, spin);
+                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, b.width, b.height, spin);
                     }
                 }
 
-                class SawTurretMount extends TurretMount{
-                    float spin;
+                @Override
+                public void handleItem(Item item, BaseMount mount){
+                    TurretMount m = (TurretMount)mount;
 
-                    public SawTurretMount(ModularTurretBuild parent, BaseModule module, int moduleNumber){
-                        super(parent, module, moduleNumber);
+                    if(item == Items.pyratite){
+                        Events.fire(Trigger.flameAmmo);
+                    }
+
+                    BulletType type = ammoTypes.get(item);
+                    if(type == null) return;
+                    boolean load = !hasAmmo(m) || type != peekAmmo(m);
+                    m.totalAmmo += type.ammoMultiplier;
+
+                    //find ammo entry by type
+                    for(int i = 0; i < m.ammo.size; i++){
+                        ModuleItemEntry entry = (ModuleItemEntry)m.ammo.get(i);
+
+                        //if found, put it to the right
+                        if(entry.item == item){
+                            entry.amount += type.ammoMultiplier;
+                            m.ammo.swap(i, m.ammo.size - 1);
+                            if(load) loadEffect(m);
+                            return;
+                        }
+                    }
+
+                    //must not be found
+                    m.ammo.add(new ModuleItemEntry(item, (int)type.ammoMultiplier));
+                    if(load) loadEffect(m);
+                }
+
+                @Override
+                public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
+                    if(parent.cheating()){
+                        loadEffect(mount);
+                        return peekAmmo(mount);
+                    }
+
+                    AmmoEntry entry = mount.ammo.peek();
+                    entry.amount -= 1;
+                    if(entry.amount <= 0) mount.ammo.pop();
+                    mount.totalAmmo = Math.max(mount.totalAmmo - 1, 0);
+                    ejectEffects(mount);
+                    loadEffect(mount);
+                    return entry.type();
+                }
+
+                void loadEffect(TurretMount mount){
+                    if(hasAmmo(mount)){
+                        tr.trns(mount.rotation, -mount.recoil + shootLength);
+                        BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
+                        ModuleFx.reboundLoad.at(mount.x + tr.x, mount.y + tr.y, b.width / 2f, b.backColor);
                     }
                 }
             };

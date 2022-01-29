@@ -16,6 +16,7 @@ public class BoomerangBulletType extends BasicBulletType{
         pierce = true;
         pierceCap = 8;
         shrinkY = 0;
+        spin = -16f;
     }
 
     public BoomerangBulletType(float speed, float damage){

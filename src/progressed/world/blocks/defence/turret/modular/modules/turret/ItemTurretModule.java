@@ -88,7 +88,7 @@ public class ItemTurretModule extends TurretModule{
 
     @Override
     public void handleItem(Item item, BaseMount mount){
-        if(!(mount instanceof TurretMount m)) return;
+        TurretMount m = (TurretMount)mount;
 
         if(item == Items.pyratite){
             Events.fire(Trigger.flameAmmo);
@@ -156,7 +156,7 @@ public class ItemTurretModule extends TurretModule{
     public class ModuleItemEntry extends AmmoEntry{
         public Item item;
 
-        ModuleItemEntry(Item item, int amount){
+        public ModuleItemEntry(Item item, int amount){
             this.item = item;
             this.amount = amount;
         }
