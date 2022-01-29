@@ -42,6 +42,12 @@ public class SentryUnitType extends UnitType{
     }
 
     @Override
+    public void init(){
+        super.init();
+        EntityMapping.nameMap.put(name, constructor);
+    }
+
+    @Override
     public void drawEngine(Unit unit){
         if(!unit.isFlying()) return;
 

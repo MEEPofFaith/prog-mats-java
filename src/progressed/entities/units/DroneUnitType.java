@@ -38,6 +38,12 @@ public class DroneUnitType extends UnitType{
     }
 
     @Override
+    public void init(){
+        super.init();
+        EntityMapping.nameMap.put(name, constructor);
+    }
+
+    @Override
     public void load(){
         super.load();
 

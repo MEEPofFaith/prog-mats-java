@@ -77,7 +77,7 @@ public class PMStatValues{
                                 bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                             }else{
                                 if(Float.isInfinite(type.damage)){
-                                    bt.add(new FLabel("{wave}{rainbow}" + bundle.format("bullet.damage", bundle.get("pm-infinity"))));
+                                    bt.add(PMElements.infinity());
                                 }else{
                                     bt.add(bundle.format("bullet.damage", type.damage));
                                 }

@@ -22,6 +22,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
+import progressed.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -87,7 +88,7 @@ public class SandboxWall extends Wall{
         super.setStats();
         stats.remove(Stat.health);
 
-        stats.add(Stat.health, t -> t.add(new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-infinity"))));
+        stats.add(Stat.health, t -> t.add(PMElements.infinity()));
     }
 
     @Override

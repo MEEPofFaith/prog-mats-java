@@ -52,6 +52,7 @@ public class FlareUnitType extends UnitType{
     @Override
     public void init(){
         super.init();
+        EntityMapping.nameMap.put(name, constructor);
 
         if(shadowSize < 0f) shadowSize = hitSize * 2f;
     }

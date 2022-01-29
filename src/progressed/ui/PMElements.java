@@ -1,5 +1,7 @@
 package progressed.ui;
 
+import arc.*;
+import arc.flabel.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
@@ -17,5 +19,13 @@ public class PMElements{
         stack.add(i);
 
         return stack;
+    }
+
+    public static FLabel infinity(){
+        return new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-infinity"));
+    }
+
+    public static FLabel everything(){
+        return new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-everything"));
     }
 }

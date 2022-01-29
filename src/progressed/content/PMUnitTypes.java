@@ -1,5 +1,7 @@
 package progressed.content;
 
+import arc.*;
+import arc.flabel.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
@@ -17,6 +19,7 @@ import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
 import progressed.graphics.*;
 import progressed.type.weapons.*;
+import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes implements ContentList{
@@ -91,7 +94,6 @@ public class PMUnitTypes implements ContentList{
         setupID();
 
         //Region Sentry Units
-        EntityMapping.nameMap.put("barrage", SentryUnitEntity::new);
         barrage = new SentryUnitType("barrage"){{
             health = 500f;
             duration = 39f * 60f;
@@ -119,7 +121,6 @@ public class PMUnitTypes implements ContentList{
             }});
         }};
 
-        EntityMapping.nameMap.put("downpour", SentryUnitEntity::new);
         downpour = new SentryUnitType("downpour"){{
             health = 300f;
             duration = 32f * 60f;
@@ -180,7 +181,6 @@ public class PMUnitTypes implements ContentList{
             }});
         }};
 
-        EntityMapping.nameMap.put("rapier", SentryUnitEntity::new);
         rapier = new SentryUnitType("rapier"){
             final float len = 56f, rangeMul = 16f;
             {
@@ -219,7 +219,6 @@ public class PMUnitTypes implements ContentList{
             }
         };
 
-        EntityMapping.nameMap.put("small-flare", FlareUnitEntity::new);
         flareSmall = new FlareUnitType("small-flare"){{
             health = 300f;
             hideDetails = false;
@@ -227,7 +226,6 @@ public class PMUnitTypes implements ContentList{
             flareY = 29f / 4f;
         }};
 
-        EntityMapping.nameMap.put("medium-flare", FlareUnitEntity::new);
         flareMedium = new FlareUnitType("medium-flare", 360f){{
             health = 900f;
             hideDetails = false;
@@ -236,7 +234,6 @@ public class PMUnitTypes implements ContentList{
             flareEffectSize = 1.5f;
         }};
 
-        EntityMapping.nameMap.put("large-flare", FlareUnitEntity::new);
         flareLarge = new FlareUnitType("large-flare", 420f){{
             health = 2700f;
             hideDetails = false;
@@ -245,7 +242,6 @@ public class PMUnitTypes implements ContentList{
             flareEffectSize = 2f;
         }};
 
-        EntityMapping.nameMap.put("drone", DroneUnitEntity::new);
         transportDrone = new DroneUnitType("drone"){{
             health = 475;
             hitSize = 17f;
@@ -286,8 +282,8 @@ public class PMUnitTypes implements ContentList{
 
                 stats.remove(Stat.abilities);
                 stats.remove(Stat.weapons);
-                stats.add(Stat.abilities, "Everything");
-                stats.add(Stat.weapons, "Everything");
+                stats.add(Stat.abilities, t -> t.add(PMElements.everything()));
+                stats.add(Stat.weapons, t -> t.add(PMElements.everything()));
             }
         };
     }
