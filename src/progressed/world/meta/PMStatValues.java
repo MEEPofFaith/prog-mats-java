@@ -50,6 +50,8 @@ public class PMStatValues{
                 boolean compact = t instanceof UnitType || indent > 0;
                 boolean payload = t instanceof Missile;
 
+                if(payload && !((Missile)t).displayCampaign && state.isCampaign()) continue;
+
                 BulletType type = map.get(t);
                 //no point in displaying unit icon twice
                 if(!compact && !(t instanceof PowerTurret || t instanceof ModulePayload)){

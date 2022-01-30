@@ -15,15 +15,21 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class PayloadBullets implements ContentList{
-    public static BulletType
+    public static SentryBulletType
 
-    barrageLaunch, downpourLaunch, rapierLaunch,
+    barrageLaunch, downpourLaunch, rapierLaunch;
 
-    arbalestBasic, arbalestIncend, arbalestBomber,
+    public static RocketBulletType
+
+    arbalestBasic, arbalestIncend, arbalestBomber;
+
+    public static ArcMissileBulletType
 
     firestormMissile, //not payload, but it fits with the other missiles so whatever
     strikedownBasic, strikedownRecursive,
-    trinityBasic, trinityCluster;
+    trinityBasic, trinityCluster,
+
+    sendHelp;
 
     @Override
     public void load(){
@@ -230,7 +236,6 @@ public class PayloadBullets implements ContentList{
             stopRadius = 10f;
             riseEngineSize = 16f;
             fallEngineSize = 8f;
-            elevation = 2f;
             shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 30f;
@@ -259,7 +264,6 @@ public class PayloadBullets implements ContentList{
                 stopDelay = 55f;
                 dropDelay = 35f;
                 fallEngineSize = 8f;
-                elevation = 2f;
                 shadowOffset = 260f;
                 riseTime = -1f;
                 fallTime = 30f;
@@ -288,7 +292,6 @@ public class PayloadBullets implements ContentList{
                     stopDelay = 35f;
                     dropDelay = 25f;
                     fallEngineSize = 8f;
-                    elevation = 2f;
                     shadowOffset = 230f;
                     riseTime = -1f;
                     fallTime = 30f;
@@ -374,5 +377,28 @@ public class PayloadBullets implements ContentList{
 
             unitSort = UnitSorts.strongest;
         }};
+
+        //aaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        sendHelp = (ArcMissileBulletType)trinityCluster.copy();
+        sendHelp.sprite = "prog-mats-send-help";
+
+        RocketBulletType stop = (RocketBulletType)arbalestIncend.copy();
+        stop.layer = Layer.bullet - 1;
+        stop.homingRange = -1f;
+        stop.fragBullets = 1;
+        stop.fragBullet = strikedownRecursive;
+        stop.fragVelocityMin = 1f;
+
+        ArcMissileBulletType pain = (ArcMissileBulletType)trinityBasic.copy();
+        pain.riseTime = -1f;
+        pain.speed = 2.5f;
+        pain.lifetime = 300f;
+        pain.homingRange = -1f;
+        pain.stopRadius = -1f;
+        pain.autoDropRadius = -1f;
+        pain.fragBullets = 10;
+        pain.fragBullet = stop;
+
+        sendHelp.splitBullet = pain;
     }
 }

@@ -24,6 +24,7 @@ public class Missile extends Block{
 
     public Block prev;
     public float powerUse, constructTime = -1;
+    public boolean displayCampaign = true;
     public boolean requiresUnlock = true;
 
     public float elevation = -1f;

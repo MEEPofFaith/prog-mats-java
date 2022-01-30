@@ -30,6 +30,8 @@ public class PMPayloads implements ContentList{
 
     basicNuke, clusterNuke, //TODO third nuke
 
+    sandboxNuke,
+
     //Region Sentries
 
     basicSentry, missileSentry, dashSentry;
@@ -84,7 +86,7 @@ public class PMPayloads implements ContentList{
             outlined = true;
 
             explosionArea = -1f;
-            explosion = ((RocketBulletType)(PayloadBullets.arbalestBomber)).bombBullet;
+            explosion = PayloadBullets.arbalestBomber.bombBullet;
             explosions = 50;
             maxDelay = 25f;
         }};
@@ -117,7 +119,7 @@ public class PMPayloads implements ContentList{
             constructTime = 60f * 8f;
 
             explosionArea = -1f;
-            explosion = ((ArcMissileBulletType)(((ArcMissileBulletType)(PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
+            explosion = ((ArcMissileBulletType)(((PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
             explosions = 13;
             maxDelay = 20f;
         }};
@@ -142,7 +144,13 @@ public class PMPayloads implements ContentList{
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
-            requirements = with(Items.titanium, 35, Items.plastanium, 25, PMItems.tenelium, 15, Items.silicon, 30, Items.blastCompound, 25);
+            requirements = with(
+                Items.titanium, 35,
+                Items.plastanium, 25,
+                PMItems.tenelium, 15,
+                Items.silicon, 30,
+                Items.blastCompound, 25
+            );
 
             prev = emptyNuke;
             size = 3;
@@ -150,10 +158,20 @@ public class PMPayloads implements ContentList{
             constructTime = 60f * 35f;
 
             explosionArea = -1f;
-            ArcMissileBulletType b = (ArcMissileBulletType)PayloadBullets.trinityCluster;
+            ArcMissileBulletType b = PayloadBullets.trinityCluster;
             explosion = b.splitBullet;
             explosions = b.splitBullets;
             maxDelay = 20f;
+        }};
+
+        sandboxNuke = new Missile("send-help"){{
+            requirements = empty;
+            displayCampaign = false;
+
+            size = 3;
+
+            explosionArea = -1f;
+            explosion = PayloadBullets.sendHelp;
         }};
 
         basicSentry = new Sentry("basic-sentry"){{

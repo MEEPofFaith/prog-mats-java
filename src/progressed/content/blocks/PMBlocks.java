@@ -1057,9 +1057,9 @@ public class PMBlocks implements ContentList{
                 Items.titanium, 50
             ));
             ammo(
-                PMPayloads.basicSentry, PayloadBullets.barrageLaunch,
-                PMPayloads.missileSentry, PayloadBullets.downpourLaunch,
-                PMPayloads.dashSentry, PayloadBullets.rapierLaunch
+                basicSentry, PayloadBullets.barrageLaunch,
+                missileSentry, PayloadBullets.downpourLaunch,
+                dashSentry, PayloadBullets.rapierLaunch
             );
 
             size = 3;
@@ -1088,9 +1088,9 @@ public class PMBlocks implements ContentList{
                 PMItems.tenelium, 160
             ));
             ammo(
-                PMPayloads.basicRocket, PayloadBullets.arbalestBasic,
-                PMPayloads.incendiaryRocket, PayloadBullets.arbalestIncend,
-                PMPayloads.bomberRocket, PayloadBullets.arbalestBomber
+                basicRocket, PayloadBullets.arbalestBasic,
+                incendiaryRocket, PayloadBullets.arbalestIncend,
+                bomberRocket, PayloadBullets.arbalestBomber
             );
             size = 5;
             hideDetails = false;
@@ -1153,8 +1153,8 @@ public class PMBlocks implements ContentList{
                 PMItems.tenelium, 120
             ));
             ammo(
-                PMPayloads.basicMissile, PayloadBullets.strikedownBasic,
-                PMPayloads.recursiveMissile, PayloadBullets.strikedownRecursive
+                basicMissile, PayloadBullets.strikedownBasic,
+                recursiveMissile, PayloadBullets.strikedownRecursive
             );
             size = 4;
             hideDetails = false;
@@ -1179,8 +1179,9 @@ public class PMBlocks implements ContentList{
                 PMItems.tenelium, 800
             ));
             ammo(
-                PMPayloads.basicNuke, PayloadBullets.trinityBasic,
-                PMPayloads.clusterNuke, PayloadBullets.trinityCluster
+                basicNuke, PayloadBullets.trinityBasic,
+                clusterNuke, PayloadBullets.trinityCluster,
+                sandboxNuke, PayloadBullets.sendHelp
             );
             size = 7;
             hideDetails = false;
