@@ -15,14 +15,6 @@ import static mindustry.Vars.*;
 
 public class PMUtls{
     public static final Rand rand = new Rand();
-
-    public static PowIn customPowIn(int power){
-        return new PowIn(power);
-    }
-
-    public static PowOut customPowOut(int power){
-        return new PowOut(power);
-    }
     
     public static float bulletDamage(BulletType b, float lifetime){
         float damage = b.damage + b.splashDamage; //Base Damage

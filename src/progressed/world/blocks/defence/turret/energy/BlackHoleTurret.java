@@ -17,7 +17,7 @@ import progressed.world.meta.*;
 public class BlackHoleTurret extends PowerTurret{
     public TextureRegion spaceRegion;
 
-    protected PowIn pow = PMUtls.customPowIn(6);
+    protected PowIn pow = Interp.pow5In;
     
     public BlackHoleTurret(String name){
         super(name);

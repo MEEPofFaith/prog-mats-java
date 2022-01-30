@@ -22,10 +22,12 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class EverythingTurret extends PowerTurret{
-    public float startingBias = 0.1f, maxBias = 6000f, growSpeed = 1.004f, shrinkSpeed = 0.05f;
+    public float growSpeed = 0.00055f, shrinkSpeed = 0.0025f, levelScl = 0.125f;
+    public int swirlEffects = 2;
+    public float swirlSizeBase = 1f, swirlSize = 5f, swirlSizeScl = 3f, swirlRad = 24f, swirlRadScl = 8f;
 
     protected Seq<BulletData> bullets = new Seq<>();
-    protected PowOut pow = PMUtls.customPowOut(20);
+    protected PowOut pow = Interp.pow3Out;
 
     public EverythingTurret(String name){
         super(name);
@@ -36,11 +38,11 @@ public class EverythingTurret extends PowerTurret{
         targetInterval = 1;
         minRange = 0f;
         shootType = Bullets.standardCopper;
-        powerUse = 246810f/60f;
+        powerUse = 69420f/60f;
     }
 
     @Override
-    public void init(){
+    public void init(){ //Quite resource intensive, especially with many mods on. Add option to not load in settings?
         super.init();
 
         content.units().each(u -> {
@@ -88,7 +90,7 @@ public class EverythingTurret extends PowerTurret{
             }
         });
 
-        bullets.sort(b -> PMUtls.bulletDamage(b.bullet, b.lifetime));
+        bullets.sort(b -> PMUtls.bulletDamage(b.bulletType, b.lifetime));
     }
 
     @Override
@@ -103,41 +105,47 @@ public class EverythingTurret extends PowerTurret{
     public void setBars(){
         super.setBars();
         bars.add("pm-everything-strength", (EverythingTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-everything-strength", PMUtls.stringsFixed(entity.bias / maxBias * 100f)),
+            () -> Core.bundle.format("bar.pm-everything-strength", PMUtls.stringsFixed(entity.levelf() * 100f)),
             () -> entity.team.color,
-            () -> entity.bias / maxBias
+            entity::levelf
         ));
     }
 
     public class EverythingTurretBuild extends PowerTurretBuild{
-        protected float bias = startingBias, drawRot = Mathf.random(360f);
-        protected int selectedBullet; //guaranteed desync since bullets are random - won't be fixed and probably isn't too important
+        public float level, drawRot = Mathf.random(360f);
+        public int selectedBullet; //guaranteed desync since bullets are random - won't be fixed and probably isn't too important
 
         @Override
         public void updateTile(){
             super.updateTile();
-            
-            float lerp = pow.apply(bias / maxBias);
 
-            for(int i = 0; i < 1f + lerp * 100f; i++){
-                if(Mathf.chanceDelta(1f)){ //I'm just copying over code I have no idea what the hell I'm looking at.
+            float levelf = levelf();
+
+            for(int i = 0; i < swirlEffects; i++){
+                if(Mathf.chanceDelta(1f)){
+                    float sin = Mathf.sin(Time.time + Mathf.randomSeed(id), 50f / Mathf.PI2);
+                    float l = levelf + 0.005f;
                     EnergyFx.everythingGunSwirl.at(x, y,
-                        Mathf.random(lerp * 45f, lerp * 720f), team.color,
+                        Mathf.random(l * 45f, l * 720f), team.color,
                         new float[]{
-                            (4f + (lerp * 16f)) + Mathf.sin((Time.time + Mathf.randomSeed(id)) / 30f) * (lerp * 6f),
-                            lerp * 420f + Mathf.sin((Time.time + Mathf.randomSeed(id + 1)) / 30f) * (lerp * 80f)
+                            swirlSizeBase + levelf * swirlSize + sin * levelf * swirlSizeScl,
+                            levelf * swirlRad + sin * levelf * swirlRadScl
                         }
                     );
                 }
             }
             
-            drawRot = Mathf.mod(drawRot - Time.delta * lerp * 110f, 360f);
+            drawRot = Mathf.mod(drawRot - Time.delta * levelf * rotateSpeed, 360f);
       
             if(isShooting() && consValid()){
-                bias = Mathf.clamp(bias * Mathf.pow(growSpeed, edelta()), 0f, maxBias);
+                level = Mathf.approachDelta(level, 1f, growSpeed);
             }else{
-                bias = Mathf.lerpDelta(bias, startingBias, shrinkSpeed);
+                level = Mathf.approachDelta(level, 0f, shrinkSpeed);
             }
+        }
+
+        public float levelf(){
+            return pow.apply(level);
         }
 
         @Override
@@ -151,7 +159,10 @@ public class EverythingTurret extends PowerTurret{
         @Override
         protected void updateShooting(){
             if(reload >= reloadTime && !charging){
-                selectedBullet = Mathf.clamp(Mathf.floor(1f / (((1f / Mathf.random()) - 1f) / bias + 1f) * bullets.size), 0, bullets.size - 1);
+                float total = bullets.size - 1f,
+                    min = Mathf.maxZero(levelf() - levelScl) * total,
+                    max = levelf() * total;
+                selectedBullet = (int)Mathf.random(min, max);
 
                 BulletType type = peekAmmo();
 
@@ -192,18 +203,18 @@ public class EverythingTurret extends PowerTurret{
 
         @Override
         public BulletType useAmmo(){
-            return bullets.get(selectedBullet).bullet;
+            return bullets.get(selectedBullet).bulletType;
         }
 
         @Override
         public BulletType peekAmmo(){
-            return bullets.get(selectedBullet).bullet;
+            return bullets.get(selectedBullet).bulletType;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.f(bias);
+            write.f(level);
         }
 
         @Override
@@ -211,30 +222,30 @@ public class EverythingTurret extends PowerTurret{
             super.read(read, revision);
 
             if(revision >= 1){
-                bias = read.f();
+                level = read.f();
             }
         }
     }
 
     public static class BulletData{
-        public BulletType bullet;
+        public BulletType bulletType;
         public Sound shootSound;
         public Effect shootEffect, smokeEffect;
         public float shake, lifetime;
         public boolean continuousBlock;
 
-        public BulletData(BulletType b, Sound s, Effect shE, Effect smE, float shake, float lifetime, boolean cont){
-            bullet = b;
-            shootSound = s;
-            shootEffect = shE;
-            smokeEffect = smE;
+        public BulletData(BulletType bulletType, Sound shootSound, Effect shakeEffect, Effect smokeEffect, float shake, float lifetime, boolean continuous){
+            this.bulletType = bulletType;
+            this.shootSound = shootSound;
+            this.shootEffect = shakeEffect;
+            this.smokeEffect = smokeEffect;
             this.shake = shake;
             this.lifetime = lifetime;
-            continuousBlock = cont;
+            this.continuousBlock = continuous;
         }
 
-        public BulletData(BulletType b, Sound s, Effect shE, Effect smE, float shake, float lifetime){
-            this(b, s, shE, smE, shake, lifetime, false);
+        public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
+            this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
         }
     }
 }

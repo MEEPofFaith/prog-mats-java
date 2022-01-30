@@ -17,7 +17,7 @@ import progressed.util.*;
 public class ChaosTurret extends PowerTurret{
     public float shootDuration;
 
-    protected PowIn pow = PMUtls.customPowIn(6);
+    protected PowIn pow = Interp.pow5In;
 
     public ChaosTurret(String name){
         super(name);

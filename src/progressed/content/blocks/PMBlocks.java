@@ -1761,6 +1761,7 @@ public class PMBlocks implements ContentList{
             {
                 size = 6;
                 health = 999999999;
+                rotateSpeed = 20f;
                 reloadTime = 1f;
                 range = 4400f;
                 shootCone = 360f;

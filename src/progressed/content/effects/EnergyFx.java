@@ -387,13 +387,12 @@ public class EnergyFx{
         }
     }),
 
+    //[circle radius, distance]
     everythingGunSwirl = new Effect(120f, 1600f, e -> {
         float[] data = (float[])e.data;
+        v1.trns(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin());
         color(e.color, Color.black, 0.25f + e.fin() * 0.75f);
-        Fill.circle(e.x + trnsx(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
-            e.y + trnsy(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin()),
-            data[0] * e.fout()
-        );
+        Fill.circle(e.x + v1.x, e.y + v1.y, data[0] * e.fout());
     }).layer(Layer.bullet - 0.00999f);
 
     public static class ApotheosisEffectData{
