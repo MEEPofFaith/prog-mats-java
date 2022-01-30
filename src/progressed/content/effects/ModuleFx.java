@@ -57,7 +57,7 @@ public class ModuleFx{
         Drawf.light(e.x, e.y, 20f, Pal.surge, 0.6f * e.fout());
     }),
 
-    reboundLoad = new Effect(14f, e -> {
+    reboundShoot = new Effect(14f, e -> {
         color(Color.white, e.color, e.fin());
 
         e.scaled(7f, s -> {

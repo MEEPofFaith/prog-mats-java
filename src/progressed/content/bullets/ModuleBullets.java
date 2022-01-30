@@ -213,24 +213,30 @@ public class ModuleBullets implements ContentList{
 
         reboundTitanium = new BoomerangBulletType(5f, 15f){{
             lifetime = 120f;
-            width = height = hitSize = 12f;
+            width = height = hitSize = 11f;
             backColor = Items.titanium.color;
+            riseStart = 3f;
+            riseEnd = 4f;
             layer = Layer.turret + 0.015f;
+            targetLayer = Layer.bullet - 1f;
             shootEffect = smokeEffect = Fx.none;
             reloadMultiplier = 4f;
             ammoMultiplier = 6;
-            pierceCap = 3;
+            pierceCap = 4;
         }};
 
         reboundSurge = new BoomerangBulletType(5f, 84f){
             {
                 lifetime = 134f;
-                width = height = hitSize = 14f;
+                width = height = hitSize = 12f;
                 backColor = Pal.surge;
+                riseStart = 3f;
+                riseEnd = 4f;
                 layer = Layer.turret + 0.015f;
+                targetLayer = Layer.bullet - 1f;
                 shootEffect = smokeEffect = Fx.none;
                 ammoMultiplier = 2;
-                pierceCap = 14;
+                pierceCap = 6;
                 lightning = 1;
                 lightningLength = 7;
                 lightningDamage = 26f;

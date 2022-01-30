@@ -9,11 +9,9 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
@@ -392,8 +390,38 @@ public class PMModules implements ContentList{
 
                     range = 21f * tilesize;
                     reloadTime = 75f;
-                    shootLength = 2f;
+                    shootLength = -5f / 4f;
+                    recoilAmount = 1;
                     topLayerOffset = 0.3f;
+                    buildTop = true;
+                    shootEffect = ModuleFx.reboundShoot;
+                }
+
+                @Override
+                public void handleItem(Item item, BaseMount mount){
+                    BulletType type = ammoTypes.get(item);
+                    if(type != null) ((TurretMount)mount).reload = 0f;
+
+                    super.handleItem(item, mount);
+                }
+
+                @Override
+                protected void effects(TurretMount mount, BulletType type){
+                    float x = mount.x, y = mount.y;
+                    BoomerangBulletType b = (BoomerangBulletType)type;
+
+                    Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
+                    Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
+
+                    fshootEffect.at(x + tr.x, y + tr.y, b.width / 2f, b.backColor);
+                    fsmokeEffect.at(x + tr.x, y + tr.y, b.width / 2f, b.backColor);
+                    shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+
+                    if(shootShake > 0){
+                        Effect.shake(shootShake, shootShake, x, y);
+                    }
+
+                    mount.recoil = recoilAmount;
                 }
 
                 @Override
@@ -402,68 +430,16 @@ public class PMModules implements ContentList{
 
                     if(hasAmmo(mount)){
                         BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
-                        float spin = mount.rotation + Time.time * b.spin;
+                        float r = mount.reload / reloadTime,
+                            width = b.width * r,
+                            height = b.height * r,
+                            spin = mount.rotation + Time.time * b.spin;
                         tr.trns(mount.rotation, -mount.recoil + shootLength);
                         Draw.z(b.layer);
                         Draw.color(b.backColor);
-                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, b.width, b.height, spin);
+                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, width, height, spin);
                         Draw.color(b.frontColor);
-                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, b.width, b.height, spin);
-                    }
-                }
-
-                @Override
-                public void handleItem(Item item, BaseMount mount){
-                    TurretMount m = (TurretMount)mount;
-
-                    if(item == Items.pyratite){
-                        Events.fire(Trigger.flameAmmo);
-                    }
-
-                    BulletType type = ammoTypes.get(item);
-                    if(type == null) return;
-                    boolean load = !hasAmmo(m) || type != peekAmmo(m);
-                    m.totalAmmo += type.ammoMultiplier;
-
-                    //find ammo entry by type
-                    for(int i = 0; i < m.ammo.size; i++){
-                        ModuleItemEntry entry = (ModuleItemEntry)m.ammo.get(i);
-
-                        //if found, put it to the right
-                        if(entry.item == item){
-                            entry.amount += type.ammoMultiplier;
-                            m.ammo.swap(i, m.ammo.size - 1);
-                            if(load) loadEffect(m);
-                            return;
-                        }
-                    }
-
-                    //must not be found
-                    m.ammo.add(new ModuleItemEntry(item, (int)type.ammoMultiplier));
-                    if(load) loadEffect(m);
-                }
-
-                @Override
-                public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
-                    if(parent.cheating()){
-                        loadEffect(mount);
-                        return peekAmmo(mount);
-                    }
-
-                    AmmoEntry entry = mount.ammo.peek();
-                    entry.amount -= 1;
-                    if(entry.amount <= 0) mount.ammo.pop();
-                    mount.totalAmmo = Math.max(mount.totalAmmo - 1, 0);
-                    ejectEffects(mount);
-                    loadEffect(mount);
-                    return entry.type();
-                }
-
-                void loadEffect(TurretMount mount){
-                    if(hasAmmo(mount)){
-                        tr.trns(mount.rotation, -mount.recoil + shootLength);
-                        BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
-                        ModuleFx.reboundLoad.at(mount.x + tr.x, mount.y + tr.y, b.width / 2f, b.backColor);
+                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, width, height, spin);
                     }
                 }
             };

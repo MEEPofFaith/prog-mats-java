@@ -10,13 +10,14 @@ import mindustry.gen.*;
 
 public class BoomerangBulletType extends BasicBulletType{
     public float decelStart = 0.375f, decelEnd = 0.875f;
+    public float riseStart, riseEnd, targetLayer = -1;
 
     public BoomerangBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
         pierce = true;
         pierceCap = 8;
         shrinkY = 0;
-        spin = -16f;
+        spin = -12f;
     }
 
     public BoomerangBulletType(float speed, float damage){
@@ -61,6 +62,7 @@ public class BoomerangBulletType extends BasicBulletType{
 
     @Override
     public void draw(Bullet b){
+        Draw.z(getLayer(b));
         drawTrail(b);
 
         float height = this.height * ((1f - shrinkY) + shrinkY * b.fout());
@@ -77,6 +79,11 @@ public class BoomerangBulletType extends BasicBulletType{
         Draw.rect(frontRegion, b.x, b.y, width, height, offset);
 
         Draw.reset();
+    }
+
+    public float getLayer(Bullet b){
+        float progress = Mathf.curve(b.time, riseStart, riseEnd);
+        return Mathf.lerp(layer, targetLayer, progress);
     }
 
     static class BoomerangBulletData{

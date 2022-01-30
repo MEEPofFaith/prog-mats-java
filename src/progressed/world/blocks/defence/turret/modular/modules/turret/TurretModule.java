@@ -50,6 +50,7 @@ public class TurretModule extends ReloadTurretModule{
     public Effect ammoUseEffect = Fx.none;
     public boolean alternate = false;
     public float ammoEjectX = 1f, ammoEjectY = -1f;
+    public boolean buildTop;
     public float topLayerOffset;
 
     public float chargeTime = -1f;
@@ -388,7 +389,10 @@ public class TurretModule extends ReloadTurretModule{
             rot = mount.rotation;
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, mount.rotation - 90, mount.progress / deployTime));
+            Draw.draw(Draw.z(), () -> {
+                PMDrawf.blockBuildCenter(x, y, region, mount.rotation - 90, mount.progress / deployTime);
+                if(buildTop) PMDrawf.blockBuildCenter(x, y, topRegion, mount.rotation - 90, mount.progress / deployTime);
+            });
             return;
         }
 
