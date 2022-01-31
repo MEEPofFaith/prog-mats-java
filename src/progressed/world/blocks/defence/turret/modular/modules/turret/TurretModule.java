@@ -50,6 +50,7 @@ public class TurretModule extends ReloadTurretModule{
     public Effect ammoUseEffect = Fx.none;
     public boolean alternate = false;
     public float ammoEjectX = 1f, ammoEjectY = -1f;
+    public boolean drawRotate = true;
     public boolean buildTop;
     public float topLayerOffset;
 
@@ -386,37 +387,37 @@ public class TurretModule extends ReloadTurretModule{
     public void drawTurret(ModularTurretBuild parent, TurretMount mount){
         float x = mount.x,
             y = mount.y,
-            rot = mount.rotation;
+            rot = drawRotate ? mount.rotation - 90f : 0;
 
         if(mount.progress < deployTime){
             Draw.draw(Draw.z(), () -> {
-                PMDrawf.blockBuildCenter(x, y, region, mount.rotation - 90, mount.progress / deployTime);
-                if(buildTop) PMDrawf.blockBuildCenter(x, y, topRegion, mount.rotation - 90, mount.progress / deployTime);
+                PMDrawf.blockBuildCenter(x, y, region, rot, mount.progress / deployTime);
+                if(buildTop) PMDrawf.blockBuildCenter(x, y, topRegion, rot, mount.progress / deployTime);
             });
             return;
         }
 
-        tr.trns(rot, -mount.recoil);
+        tr.trns(rot, drawRotate ? -mount.recoil : 0f);
 
-        Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot - 90);
+        Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
         applyColor(parent, mount);
-        Draw.rect(region, x + tr.x, y + tr.y, rot - 90);
+        Draw.rect(region, x + tr.x, y + tr.y, rot);
 
         if(heatRegion.found() && mount.heat > 0.001f){
             Draw.color(heatColor, mount.heat);
             Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, x + tr.x, y + tr.y, rot - 90);
+            Draw.rect(heatRegion, x + tr.x, y + tr.y, rot);
             Draw.blend();
             Draw.color();
         }
 
         if(liquidRegion.found()){
-            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot - 90);
+            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot);
         }
 
         if(topRegion.found()){
             Draw.z(Layer.turret + topLayerOffset);
-            Draw.rect(topRegion, x + tr.x, y + tr.y, rot - 90);
+            Draw.rect(topRegion, x + tr.x, y + tr.y, rot);
         }
         Draw.mixcol();
     }

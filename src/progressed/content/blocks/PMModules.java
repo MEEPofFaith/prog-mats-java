@@ -37,7 +37,7 @@ public class PMModules implements ContentList{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, iris, gravity,
+    blunderbuss, airburst, vulcan, lotus, gravity,
 
     //Region Large
 
@@ -228,7 +228,7 @@ public class PMModules implements ContentList{
             }};
         }};
 
-        iris = new ModulePayload("iris"){{
+        lotus = new ModulePayload("iris"){{
             size = 2;
 
             module = new PowerTurretModule("iris", ModuleSize.medium){
@@ -244,6 +244,7 @@ public class PMModules implements ContentList{
                     shootEffect = ModuleFx.lotusShoot;
                     smokeEffect = ModuleFx.lotusShootSmoke;
                     powerUse = 12f;
+                    drawRotate = false;
 
                     shootType = new DelayBulletType(5f, 36f, "prog-mats-lance"){{
                         frontColor = Color.white;
@@ -262,31 +263,6 @@ public class PMModules implements ContentList{
                 @Override
                 public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
                     mount.rotation = targetRot;
-                }
-
-                @Override
-                public void drawTurret(ModularTurretBuild parent, TurretMount mount){
-                    float x = mount.x,
-                        y = mount.y;
-
-                    if(mount.progress < deployTime){
-                        Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(x, y, region, 0, mount.progress / deployTime));
-                        return;
-                    }
-
-                    Drawf.shadow(region, x - elevation, y - elevation);
-                    applyColor(parent, mount);
-                    Draw.rect(region, x, y);
-
-                    if(heatRegion.found() && mount.heat > 0.001f){
-                        Draw.color(heatColor, mount.heat);
-                        Draw.blend(Blending.additive);
-                        Draw.rect(heatRegion, x, y);
-                        Draw.blend();
-                        Draw.color();
-                    }
-
-                    Draw.mixcol();
                 }
 
                 @Override
