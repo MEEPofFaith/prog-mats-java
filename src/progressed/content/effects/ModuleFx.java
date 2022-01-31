@@ -120,5 +120,10 @@ public class ModuleFx{
         });
 
         Drawf.light(e.x, e.y, 7f * 5f, Pal.lancerLaser, 0.6f * e.fout());
-    });
+    }),
+
+    diffusionDamage = new Effect(14f, e -> {
+        color(e.color);
+        Fill.circle(e.x, e.y, e.rotation * e.fout());
+    }).layer(Layer.shields - 0.99f);
 }

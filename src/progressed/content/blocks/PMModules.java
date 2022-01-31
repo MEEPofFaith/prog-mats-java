@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
@@ -40,7 +41,7 @@ public class PMModules implements ContentList{
 
     //Region Large
 
-    rebound, trifecta, jupiter;
+    rebound, trifecta, jupiter, diffusion;
 
     @Override
     public void load(){
@@ -119,22 +120,12 @@ public class PMModules implements ContentList{
 
                     activate = (p, m) -> {
                         if(p.damaged()){
-                            m.charge += Time.delta * m.heat;
-
-                            if(m.charge >= reload){
-                                m.charge = 0f;
-                                p.heal(p.maxHealth() * healPercent / 100f * efficiency(p));
-                                Fx.healBlockFull.at(p.x, p.y, p.block.size, PMPal.heal);
-                            }
+                            p.heal(p.maxHealth() * healPercent / 100f * efficiency(p));
+                            Fx.healBlockFull.at(p.x, p.y, p.block.size, PMPal.heal);
                         }
                     };
-                }
 
-                @Override
-                public void setStats(Stats stats){
-                    super.setStats(stats);
-
-                    stats.add(Stat.repairTime, (int)(100f / healPercent * reload / 60f), StatUnit.seconds);
+                    setStats = () -> stats.add(Stat.repairTime, (int)(100f / healPercent * reload / 60f), StatUnit.seconds);
                 }
 
                 @Override
@@ -150,27 +141,14 @@ public class PMModules implements ContentList{
 
                 {
                     powerUse = 0.75f;
+                    single = true;
 
                     activate = (p, m) -> {
-                        m.charge += Time.delta * m.heat;
-
-                        if(m.charge >= 60f){
-                            m.charge = 0f;
-                            p.applyBoost(speedBoost * p.efficiency(), 61f);
-                        }
+                        m.charge = 0f;
+                        p.applyBoost(speedBoost * p.efficiency(), 61f);
                     };
-                }
 
-                @Override
-                public void setStats(Stats stats){
-                    super.setStats(stats);
-
-                    stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
-                }
-
-                @Override
-                public boolean acceptModule(BaseModule module){
-                    return module != this;
+                    setStats = () -> stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
                 }
             };
         }};
@@ -364,7 +342,7 @@ public class PMModules implements ContentList{
         gravity = new ModulePayload("gravity"){{
             size = 2;
 
-            module = new ForceModule("gravity", ModuleSize.medium){{
+            module = new ImpulseModule("gravity", ModuleSize.medium){{
                 range = 180f;
                 damage = 0.2f;
                 powerUse = 2f;
@@ -590,6 +568,62 @@ public class PMModules implements ContentList{
                         Draw.rect(endRegion, x + tr.x, y + tr.y, rot);
                     }
                     Draw.mixcol();
+                }
+            };
+        }};
+
+        diffusion = new ModulePayload("diffusion"){{
+            size = 3;
+
+            module = new ChargeModule("diffusion", ModuleSize.large){
+                final float radius = 32f * tilesize;
+                final float damage = 0.25f, scaledDamage = 5.5f;
+
+                {
+                    reload = 1f;
+                    powerUse = 17f;
+
+                    activate = (p, m) -> {
+                        Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
+                            if(b.type.hittable && b.team != p.team && b.within(m, radius)){
+                                float scl = 1f - m.dst(b) / radius;
+                                float d = (damage + scaledDamage * scl) * efficiency(p);
+
+                                if(b.damage() > d){
+                                    b.damage(b.damage() - d);;
+                                }else{
+                                    b.remove();
+                                }
+
+                                ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), p.team.color);
+                            }
+                        });
+                    };
+                }
+
+                @Override
+                public void setStats(Stats stats){
+                    super.setStats(stats);
+
+                    stats.add(Stat.range, radius / Vars.tilesize, StatUnit.blocks);
+                }
+
+                @Override
+                public void draw(ModularTurretBuild parent, BaseMount mount){
+                    super.draw(parent, mount);
+
+                    ChargeMount m = (ChargeMount)mount;
+                    if(m.smoothEfficiency > 0.001f){
+                        Draw.z(Layer.shields - 0.99f);
+                        Draw.color(parent.team.color, 0.5f * m.smoothEfficiency);
+                        Lines.stroke(2f * m.smoothEfficiency);
+                        Lines.circle(mount.x, mount.y, radius - Lines.getStroke() / 2f);
+                    }
+                }
+
+                @Override
+                public void drawHighlight(ModularTurretBuild parent, BaseMount mount){
+                    Drawf.dashCircle(mount.x, mount.y, radius, parent.team.color);
                 }
             };
         }};

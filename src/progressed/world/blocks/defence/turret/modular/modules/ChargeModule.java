@@ -7,6 +7,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.graphics.*;
+import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
@@ -15,6 +16,7 @@ public class ChargeModule extends BaseModule{
     public float reload = 60f;
     public Color topColor = PMPal.overdrive;
     public Cons2<ModularTurretBuild, ChargeMount> activate = (p, m) -> {};
+    public Runnable setStats = () -> {};
 
     public TextureRegion topRegion;
 
@@ -34,12 +36,28 @@ public class ChargeModule extends BaseModule{
     }
 
     @Override
+    public void setStats(Stats stats){
+        super.setStats(stats);
+
+        setStats.run();
+    }
+
+    @Override
     public void update(ModularTurretBuild parent, BaseMount mount){
         super.update(parent, mount);
 
-        if(isDeployed(mount) && mount instanceof ChargeMount m){
+        ChargeMount m = (ChargeMount)mount;
+        m.smoothEfficiency = Mathf.lerpDelta(m.smoothEfficiency, efficiency(parent), 0.08f);
+
+        if(isActive(parent, mount)){
             m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
-            activate.get(parent, m);
+
+            m.charge += Time.delta * m.heat;
+
+            if(m.charge >= reload){
+                m.charge = 0f;
+                activate.get(parent, m);
+            }
         }
     }
 
@@ -54,17 +72,14 @@ public class ChargeModule extends BaseModule{
         applyColor(parent, mount);
         Draw.rect(region, mount.x, mount.y);
 
-        ChargeMount m = (ChargeMount)mount;
+        if(topRegion.found()){
+            ChargeMount m = (ChargeMount)mount;
 
-        Draw.color(topColor);
-        Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
-        Draw.rect(topRegion, m.x, m.y);
-        Draw.color();
-        Draw.mixcol();
-    }
-
-    @Override
-    public boolean isActive(ModularTurretBuild parent, BaseMount mount){
-        return super.isActive(parent, mount) && parent.consValid();
+            Draw.color(topColor);
+            Draw.alpha(m.heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+            Draw.rect(topRegion, m.x, m.y);
+            Draw.color();
+            Draw.mixcol();
+        }
     }
 }

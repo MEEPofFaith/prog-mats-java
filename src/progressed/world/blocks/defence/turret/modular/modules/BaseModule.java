@@ -46,6 +46,7 @@ public class BaseModule implements Cloneable{
     public float loopSoundVolume = 1f;
 
     public ModuleSize size;
+    public boolean single;
 
     public Func3<ModularTurretBuild, BaseModule, Integer, BaseMount> mountType = BaseMount::new;
 
@@ -121,7 +122,7 @@ public class BaseModule implements Cloneable{
     public void onProximityAdded(ModularTurretBuild parent, BaseMount mount){}
 
     public boolean isActive(ModularTurretBuild parent, BaseMount mount){
-        return isDeployed(mount) && parent.enabled;
+        return isDeployed(mount) && powerValid(parent) && parent.enabled;
     }
 
     public boolean usePower(ModularTurretBuild parent, BaseMount mount){
@@ -149,11 +150,11 @@ public class BaseModule implements Cloneable{
     }
 
     public float efficiency(ModularTurretBuild parent){
-        return parent.power.status;
+        return powerUse > 0 ? parent.power.status : 1f;
     }
 
     public boolean powerValid(ModularTurretBuild parent){
-        return efficiency(parent) > 0;
+        return powerUse == 0 || efficiency(parent) > 0;
     }
 
     public void draw(ModularTurretBuild parent, BaseMount mount){
@@ -245,7 +246,7 @@ public class BaseModule implements Cloneable{
     }
 
     public boolean acceptModule(BaseModule module){
-        return true;
+        return !single || module != this;
     }
 
     public int acceptStack(Item item, int amount, BaseMount mount){

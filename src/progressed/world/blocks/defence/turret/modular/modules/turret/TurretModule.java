@@ -426,7 +426,7 @@ public class TurretModule extends ReloadTurretModule{
         super.drawPayload(payload);
 
         if(topRegion.found()){
-            Draw.rect(topRegion, payload.x + tr.x, payload.y + tr.y);
+            Draw.rect(topRegion, payload.x, payload.y);
         }
     }
 
