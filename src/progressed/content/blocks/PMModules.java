@@ -390,10 +390,9 @@ public class PMModules implements ContentList{
 
                     range = 21f * tilesize;
                     reloadTime = 75f;
-                    shootLength = -5f / 4f;
+                    shootLength = 1f / 4f;
                     recoilAmount = 1;
                     topLayerOffset = 0.3f;
-                    buildTop = true;
                     shootEffect = ModuleFx.reboundShoot;
                 }
 

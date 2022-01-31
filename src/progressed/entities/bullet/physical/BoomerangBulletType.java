@@ -4,12 +4,11 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 
 public class BoomerangBulletType extends BasicBulletType{
-    public float decelStart = 0.375f, decelEnd = 0.875f;
+    public float decelOffset = 0.05f, decelStart = 0.375f, decelEnd = 0.875f;
     public float riseStart, riseEnd, targetLayer = -1;
 
     public BoomerangBulletType(float speed, float damage, String sprite){
@@ -42,10 +41,12 @@ public class BoomerangBulletType extends BasicBulletType{
         super.update(b);
 
         BoomerangBulletData data = (BoomerangBulletData)b.data;
-        float lerp = Mathf.curve(b.fslope(), decelStart, decelEnd);
-        boolean isReturn = b.fin() >= 0.5f;
+        float lerp = b.fin() * 2f - decelOffset;
+        boolean isReturn = lerp >= 1;
+        if(isReturn) lerp = 2 - lerp;
+        float scl = Mathf.curve(lerp, decelStart, decelEnd);
 
-        b.vel.trns(data.angle + (isReturn ? 180f : 0), Mathf.lerp(0f, data.speed, 1f - Mathf.sin(lerp * Mathf.PI / 2f)));
+        b.vel.trns(data.angle + (isReturn ? 180f : 0), Mathf.lerp(0f, data.speed, 1f - Mathf.sin(scl * Mathf.PI / 2f)));
 
         if(isReturn && !data.returning){
             data.returning = true;

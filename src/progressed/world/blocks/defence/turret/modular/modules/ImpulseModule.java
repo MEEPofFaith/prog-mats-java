@@ -17,7 +17,7 @@ import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
-public class ForceModule extends RangedModule{
+public class ImpulseModule extends RangedModule{
     public boolean targetGround, targetAir = true;
     public float radius = -1f;
     public float force = 5f;
@@ -32,13 +32,13 @@ public class ForceModule extends RangedModule{
 
     public TextureRegion laserEnd, laser;
 
-    public ForceModule(String name, ModuleSize size){
+    public ImpulseModule(String name, ModuleSize size){
         super(name, size);
         mountType = ForceMount::new;
         loopSound = Sounds.tractorbeam;
     }
 
-    public ForceModule(String name){
+    public ImpulseModule(String name){
         this(name, ModuleSize.small);
     }
 
