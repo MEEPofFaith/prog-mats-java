@@ -50,7 +50,7 @@ public class TurretModule extends ReloadTurretModule{
     public Effect ammoUseEffect = Fx.none;
     public boolean alternate = false;
     public float ammoEjectX = 1f, ammoEjectY = -1f;
-    public boolean drawRotate = true;
+    public boolean rotate = true;
     public boolean buildTop;
     public float topLayerOffset;
 
@@ -187,7 +187,7 @@ public class TurretModule extends ReloadTurretModule{
                     turnToTarget(parent, mount, targetRot);
                 }
 
-                if(!mount.isShooting && Angles.angleDist(mount.rotation, targetRot) < shootCone && canShoot){
+                if(!mount.isShooting && (!rotate || Angles.angleDist(mount.rotation, targetRot) < shootCone) && canShoot){
                     mount.wasShooting = true;
                     updateShooting(parent, mount);
                 }
@@ -360,7 +360,11 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
-        mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * speedScl(parent, mount));
+        if(rotate){
+            mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * speedScl(parent, mount));
+        }else{
+            mount.rotation = targetRot;
+        }
     }
 
     @Override
@@ -387,7 +391,7 @@ public class TurretModule extends ReloadTurretModule{
     public void drawTurret(ModularTurretBuild parent, TurretMount mount){
         float x = mount.x,
             y = mount.y,
-            rot = drawRotate ? mount.rotation - 90f : 0;
+            rot = rotate ? mount.rotation - 90f : 0;
 
         if(mount.progress < deployTime){
             Draw.draw(Draw.z(), () -> {
@@ -397,7 +401,7 @@ public class TurretModule extends ReloadTurretModule{
             return;
         }
 
-        tr.trns(rot, drawRotate ? -mount.recoil : 0f);
+        tr.trns(rot + 90f, rotate ? -mount.recoil : 0f);
 
         Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
         applyColor(parent, mount);

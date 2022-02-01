@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -245,7 +244,7 @@ public class PMModules{
                     shootEffect = ModuleFx.lotusShoot;
                     smokeEffect = ModuleFx.lotusShootSmoke;
                     powerUse = 12f;
-                    drawRotate = false;
+                    rotate = false;
 
                     shootType = new DelayBulletType(5f, 36f, "prog-mats-lance"){{
                         frontColor = Color.white;
@@ -259,11 +258,6 @@ public class PMModules{
                         trailWidth = 1f;
                         hitEffect = despawnEffect = ModuleFx.hitLotus;
                     }};
-                }
-
-                @Override
-                public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
-                    mount.rotation = targetRot;
                 }
 
                 @Override
@@ -446,6 +440,7 @@ public class PMModules{
                     range = 24f * 8f;
                     powerUse = 4f;
                     recoilAmount = shootLength = 0;
+                    rotate = false;
                     chargeTime = ModuleFx.jupiterCharge.lifetime;
                     chargeBeginEffect = ModuleFx.jupiterCharge;
                     shootSound = Sounds.laser;
@@ -476,11 +471,6 @@ public class PMModules{
                             chargeShot(parent, mount);
                         }
                     }
-                }
-
-                @Override
-                public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
-                    mount.rotation = targetRot;
                 }
 
                 @Override
@@ -568,7 +558,7 @@ public class PMModules{
                                 float d = (damage + scaledDamage * scl) * efficiency(p);
 
                                 if(b.damage() > d){
-                                    b.damage(b.damage() - d);;
+                                    b.damage(b.damage() - d);
                                 }else{
                                     b.remove();
                                 }

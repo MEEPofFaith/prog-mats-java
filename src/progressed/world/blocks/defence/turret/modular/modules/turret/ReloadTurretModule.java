@@ -54,6 +54,6 @@ public class ReloadTurretModule extends BaseTurretModule{
     }
 
     public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
-        return !mount.charging && !mount.isShooting;
+        return !mount.charging && !mount.isShooting && powerValid(parent);
     }
 }
