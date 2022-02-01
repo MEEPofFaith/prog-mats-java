@@ -14,7 +14,7 @@ import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
-public class PayloadBullets implements ContentList{
+public class PayloadBullets{
     public static SentryBulletType
 
     barrageLaunch, downpourLaunch, rapierLaunch;
@@ -31,8 +31,7 @@ public class PayloadBullets implements ContentList{
 
     sendHelp;
 
-    @Override
-    public void load(){
+    public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
         downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
         rapierLaunch = new SentryBulletType(PMUnitTypes.rapier);

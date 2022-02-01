@@ -19,6 +19,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.content.blocks.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
@@ -41,6 +42,7 @@ public class BaseModule implements Cloneable{
     public float liquidCapacity = 10f;
     public float layerOffset;
     public float elevation = -1f;
+    public float clipSize;
 
     public Sound loopSound = Sounds.none;
     public float loopSoundVolume = 1f;
@@ -76,10 +78,13 @@ public class BaseModule implements Cloneable{
         //small = 1, medium = 2, large = 3
         if(elevation < 0) elevation = size() / 2f;
         if(deployTime < 0) deployTime = size() * 2f * 60f;
+        clipSize = Math.max(clipSize, size() * tilesize);
 
         consumes.init();
 
         setBars();
+
+        PMModules.maxClip = Math.max(PMModules.maxClip, clipSize);
     }
 
     public void load(){

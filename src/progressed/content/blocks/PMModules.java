@@ -28,7 +28,9 @@ import progressed.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
 
-public class PMModules implements ContentList{
+public class PMModules{
+    public static float maxClip = 0;
+
     public static ModulePayload
 
     //Region Small
@@ -43,8 +45,7 @@ public class PMModules implements ContentList{
 
     rebound, trifecta, jupiter, diffusion;
 
-    @Override
-    public void load(){
+    public static void load(){
         //Region small
         shrapnel = new ModulePayload("shrapnel"){{
             module = new ItemTurretModule("shrapnel"){{
@@ -558,6 +559,7 @@ public class PMModules implements ContentList{
                 {
                     reload = 1f;
                     powerUse = 17f;
+                    clipSize = radius * 2f;
 
                     activate = (p, m) -> {
                         Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {

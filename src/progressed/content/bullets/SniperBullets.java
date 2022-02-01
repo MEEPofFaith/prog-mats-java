@@ -10,13 +10,12 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.physical.*;
 import progressed.graphics.*;
 
-public class SniperBullets implements ContentList{
+public class SniperBullets{
     public static BulletType
 
     sniperBoltSilicon, sniperBoltTitanium, sniperBoltThorium, sniperBoltSurge, sniperBoltValexititeFrag, sniperBoltValexitite;
 
-    @Override
-    public void load(){
+    public static void load(){
         sniperBoltSilicon = new CritBulletType(12f, 300f){{
             lifetime = 48f;
             knockback = 4f;

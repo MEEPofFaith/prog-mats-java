@@ -7,6 +7,7 @@ import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class RangedModule extends BaseModule{
+    public boolean clipRange;
     public float range = 80f;
 
     public RangedModule(String name, ModuleSize size){
@@ -15,6 +16,13 @@ public class RangedModule extends BaseModule{
 
     public RangedModule(String name){
         this(name, ModuleSize.small);
+    }
+
+    @Override
+    public void init(){
+        if(clipRange) clipSize = Math.max(clipSize, range * 2f);
+
+        super.init();
     }
 
     @Override

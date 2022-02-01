@@ -125,6 +125,27 @@ public class ModularTurret extends PayloadBlock{
         }
     }
 
+    public void setClip(float clip){
+        float dst = 0;
+        if(smallMountPos != null){
+            for(Vec2 pos: smallMountPos){
+                dst = Math.max(dst, Math.max(pos.x, pos.y));
+            }
+        }
+        if(mediumMountPos != null){
+            for(Vec2 pos: mediumMountPos){
+                dst = Math.max(dst, Math.max(pos.x, pos.y));
+            }
+        }
+        if(largeMountPos != null){
+            for(Vec2 pos : largeMountPos){
+                dst = Math.max(dst, Math.max(pos.x, pos.y));
+            }
+        }
+
+        clipSize = Math.max(clipSize, clip + dst * 2f);
+    }
+
     @Override
     protected TextureRegion[] icons(){
         return new TextureRegion[]{region, inRegion, topRegion};

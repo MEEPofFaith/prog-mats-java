@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
@@ -54,7 +53,7 @@ import static mindustry.type.ItemStack.*;
 import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
 
-public class PMBlocks implements ContentList{
+public class PMBlocks{
     public static Block
 
     // region Turrets
@@ -178,16 +177,9 @@ public class PMBlocks implements ContentList{
 
     // endregion
 
-    private final ContentList[] otherBlocks = {
-        new PMPayloads(),
-        new PMModules()
-    };
-
-    @Override
-    public void load(){
-        for(ContentList blockList : otherBlocks){
-            blockList.load();
-        }
+    public static void load(){
+        PMPayloads.load();
+        PMModules.load();
 
         // region Turrets
         minigun = new MinigunTurret("minigun"){{
@@ -561,7 +553,7 @@ public class PMBlocks implements ContentList{
                 ammo(
                     Items.copper, PMBullets.magnetCopper,
                     Items.titanium, PMBullets.magnetTitanium,
-                    PMItems.tenelium, PMBullets.magnetTechtanite
+                    PMItems.tenelium, PMBullets.magenetTenelium
                 );
                 size = 3;
                 health = 90 * size * size;

@@ -12,7 +12,7 @@ import progressed.type.statuseffects.*;
 
 import static mindustry.content.StatusEffects.*;
 
-public class PMStatusEffects implements ContentList{
+public class PMStatusEffects{
     public static StatusEffect
     incendiaryBurn,
 
@@ -22,8 +22,7 @@ public class PMStatusEffects implements ContentList{
     //Buff Zone effects
     speedBoost, strengthBoost;
 
-    @Override
-    public void load(){
+    public static void load(){
         incendiaryBurn = new PMStatusEffect("incend-burn"){{
             color = Pal.lightPyraFlame;
             damage = 3.6f;
@@ -88,7 +87,7 @@ public class PMStatusEffects implements ContentList{
         afterLoad();
     }
 
-    public void afterLoad(){
+    public static void afterLoad(){
         ((ExclusiveStatusEffect)vcFrenzy).exclusives = Seq.with(vcDisassembly, vcWeaken, vcCorvus);
         ((ExclusiveStatusEffect)vcDisassembly).exclusives = Seq.with(vcFrenzy, vcWeaken, vcCorvus);
         ((ExclusiveStatusEffect)vcWeaken).exclusives = Seq.with(vcFrenzy, vcDisassembly, vcCorvus);

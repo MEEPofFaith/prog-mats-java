@@ -9,7 +9,7 @@ import progressed.world.blocks.payloads.*;
 
 import static mindustry.type.ItemStack.*;
 
-public class PMPayloads implements ContentList{
+public class PMPayloads{
     public static Missile
 
     //Region Rockets
@@ -36,8 +36,7 @@ public class PMPayloads implements ContentList{
 
     basicSentry, missileSentry, dashSentry;
 
-    @Override
-    public void load(){
+    public static void load(){
         emptyRocket = new Missile("empty-rocket"){{
             requirements = with(Items.copper, 3, Items.lead, 3, Items.titanium, 4);
 

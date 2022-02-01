@@ -22,7 +22,7 @@ import progressed.type.weapons.*;
 import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
-public class PMUnitTypes implements ContentList{
+public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SentryUnitEntity.class, SentryUnitEntity::new),
@@ -89,8 +89,7 @@ public class PMUnitTypes implements ContentList{
     //sandy
     everythingUnit;
 
-    @Override
-    public void load(){
+    public static void load(){
         setupID();
 
         //Region Sentry Units

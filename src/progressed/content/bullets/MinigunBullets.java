@@ -6,13 +6,12 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 
-public class MinigunBullets implements ContentList{
+public class MinigunBullets{
     public static BulletType
 
     standardCopperMini, standardDenseMini, standardHomingMini, standardIncendiaryMini, standardThoriumMini;
 
-    @Override
-    public void load(){
+    public static void load(){
         standardCopperMini = new BasicBulletType(2.5f, 19f){{
             width = 5f;
             height = 7f;

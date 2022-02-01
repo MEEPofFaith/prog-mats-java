@@ -16,12 +16,12 @@ import static progressed.content.PMUnitTypes.*;
 import static progressed.content.blocks.PMBlocks.*;
 import static progressed.content.blocks.PMPayloads.*;
 
-public class PMTechTree implements ContentList{
+@SuppressWarnings("CodeBlock2Expr")
+public class PMTechTree{
     //Dont mind me I'ma just yoink some stuff from BetaMindy
     static TechTree.TechNode context = null;
 
-    @Override
-    public void load(){
+    public static void load(){
         vanillaNode(lancer, () -> {
             // Anime Sweep Laser
             node(incision, () -> {

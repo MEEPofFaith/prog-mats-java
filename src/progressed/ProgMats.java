@@ -8,6 +8,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
+import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
@@ -17,6 +18,7 @@ import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.util.*;
+import progressed.world.blocks.defence.turret.modular.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -24,17 +26,6 @@ import static mindustry.Vars.*;
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static PMSettings settings = new PMSettings();
-
-    private final ContentList[] pmContent = {
-        new PMStatusEffects(),
-        new PMLiquids(),
-        new PMUnitTypes(),
-        new PMItems(),
-        new PMBullets(),
-        new PMWeathers(),
-        new PMBlocks(),
-        new PMTechTree()
-    };
 
     public ProgMats(){
         super();
@@ -48,6 +39,15 @@ public class ProgMats extends Mod{
             PMShaders.load();
             PMSounds.load();
         }));
+
+        if(!headless){
+            Events.on(ContentInitEvent.class, e -> {
+                float clip = PMModules.maxClip;
+                ((ModularTurret)(PMBlocks.council)).setClip(clip);
+                ((ModularTurret)(PMBlocks.congress)).setClip(clip);
+                ((ModularTurret)(PMBlocks.pantheon)).setClip(clip);
+            });
+        }
     }
 
     @Override
@@ -105,8 +105,13 @@ public class ProgMats extends Mod{
 
     @Override
     public void loadContent(){
-        for(ContentList list : pmContent){
-            list.load();
-        }
+        PMStatusEffects.load();
+        PMLiquids.load();
+        PMUnitTypes.load();
+        PMItems.load();
+        PMBullets.load();
+        PMWeathers.load();
+        PMBlocks.load();
+        PMTechTree.load();
     }
 }

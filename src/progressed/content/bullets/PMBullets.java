@@ -1,8 +1,8 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
+import arc.util.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -13,11 +13,12 @@ import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.unit.*;
 
-public class PMBullets implements ContentList{
+public class PMBullets{
     public static BulletType
+
     flameMagma, blazeMagma, infernoMagma,
 
-    magnetCopper, magnetTitanium, magnetTechtanite,
+    magnetCopper, magnetTitanium, magenetTenelium,
 
     pixel,
 
@@ -35,15 +36,7 @@ public class PMBullets implements ContentList{
 
     burstDriverOrb;
 
-    private final ContentList[] bulletLists = {
-        new MinigunBullets(),
-        new ModuleBullets(),
-        new SniperBullets(),
-        new PayloadBullets()
-    };
-
-    @Override
-    public void load(){
+    public static void load(){
         flameMagma = new MagmaBulletType(50f, 18f){{
             shake = 1f;
         }};
@@ -72,7 +65,7 @@ public class PMBullets implements ContentList{
             backColor = Color.valueOf("7575C8");
         }};
 
-        magnetTechtanite = new MagnetBulletType(3.4f, 45f){{
+        magenetTenelium = new MagnetBulletType(3.4f, 45f){{
             lifetime = 500f;
             scaledForce = 1.7f;
             attractRange = 21f * 8f;
@@ -253,8 +246,9 @@ public class PMBullets implements ContentList{
 
         burstDriverOrb = new BurstDriverOrb();
 
-        for(ContentList bullets : bulletLists){
-            bullets.load();
-        }
+        MinigunBullets.load();
+        ModuleBullets.load();
+        SniperBullets.load();
+        PayloadBullets.load();
     }
 }

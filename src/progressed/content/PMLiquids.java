@@ -4,12 +4,11 @@ import arc.graphics.*;
 import mindustry.ctype.*;
 import mindustry.type.*;
 
-public class PMLiquids implements ContentList{
+public class PMLiquids{
     public static Liquid
     magma;
 
-    @Override
-    public void load() {
+    public static void load() {
         magma = new Liquid("magma"){
             {
                 flammability = temperature = 1000f;

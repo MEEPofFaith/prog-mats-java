@@ -8,13 +8,14 @@ import mindustry.type.*;
 import mindustry.type.weather.*;
 import mindustry.world.meta.*;
 
-//These are just experimental, and are not actually used anywhere.
-public class PMWeathers implements ContentList{
+/**
+ * These are just experimental, and are not actually used anywhere.
+ */
+public class PMWeathers{
     public static Weather
     overdrive;
 
-    @Override
-    public void load(){
+    public static void load(){
         overdrive = new ParticleWeather("overdrive"){
             {
                 color = noiseColor = Color.valueOf("feb380");

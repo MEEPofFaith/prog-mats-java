@@ -13,7 +13,7 @@ import progressed.entities.bullet.physical.*;
 
 import static mindustry.Vars.*;
 
-public class ModuleBullets implements ContentList{
+public class ModuleBullets{
     public static BulletType
 
     shotgunCopper, shotgunDense, shotgunTitanium, shotgunThorium,
@@ -30,8 +30,7 @@ public class ModuleBullets implements ContentList{
 
     jupiterOrb;
 
-    @Override
-    public void load(){
+    public static void load(){
         shotgunCopper = new BasicBulletType(5f, 9){{
             width = 7f;
             height = 9f;
