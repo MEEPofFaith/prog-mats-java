@@ -264,4 +264,41 @@ public class PMDrawf{
             );
         }
     }
+
+    public static void arcLine(float x, float y, float radius, float arcAngle, float angle){
+        float arc = arcAngle / 360f;
+        int sides = (int)(Lines.circleVertices(radius) * arc);
+        float space = arcAngle / sides;
+        float hstep = Lines.getStroke() / 2f / Mathf.cosDeg(space / 2f);
+        float r1 = radius - hstep, r2 = radius + hstep;
+
+        for(int i = 0; i < sides; i++){
+            float a = angle - arcAngle / 2f + space * i,
+                cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a),
+                cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+            Fill.quad(
+                x + r1*cos, y + r1*sin,
+                x + r1*cos2, y + r1*sin2,
+                x + r2*cos2, y + r2*sin2,
+                x + r2*cos, y + r2*sin
+            );
+        }
+    }
+
+    public static void arcFill(float x, float y, float radius, float arcAngle, float angle){
+        float arc = arcAngle / 360f;
+        int sides = (int)(Lines.circleVertices(radius) * arc);
+        float space = arcAngle / sides;
+
+        for(int i = 0; i < sides; i++){
+            float a = angle - arcAngle / 2f + space * i,
+                cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a),
+                cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+            Fill.tri(
+                x, y,
+                x + radius*cos, y + radius*sin,
+                x + radius*cos2, y + radius*sin2
+            );
+        }
+    }
 }

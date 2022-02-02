@@ -120,7 +120,7 @@ public class PMModules{
 
                     activate = (p, m) -> {
                         if(p.damaged()){
-                            p.heal(p.maxHealth() * healPercent / 100f * efficiency(p));
+                            p.heal(p.maxHealth() * healPercent / 100f * efficiency(p) * p.timeScale);
                             Fx.healBlockFull.at(p.x, p.y, p.block.size, PMPal.heal);
                         }
                     };
@@ -543,7 +543,7 @@ public class PMModules{
             size = 3;
 
             module = new ChargeModule("diffusion", ModuleSize.large){
-                final float radius = 32f * tilesize;
+                final float radius = 32f * tilesize, arc = 30f, rotateSpeed = 2f;
                 final float damage = 0.25f, scaledDamage = 5.5f;
 
                 {
@@ -552,10 +552,11 @@ public class PMModules{
                     clipSize = radius * 2f;
 
                     activate = (p, m) -> {
+                        m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unitc::hasWeapons);
                         Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
-                            if(b.type.hittable && b.team != p.team && b.within(m, radius)){
+                            if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
                                 float scl = 1f - m.dst(b) / radius;
-                                float d = (damage + scaledDamage * scl) * efficiency(p);
+                                float d = (damage + scaledDamage * scl) * efficiency(p) * p.timeScale;
 
                                 if(b.damage() > d){
                                     b.damage(b.damage() - d);
@@ -577,6 +578,17 @@ public class PMModules{
                 }
 
                 @Override
+                public void update(ModularTurretBuild parent, BaseMount mount){
+                    super.update(parent, mount);
+
+                    ChargeMount m = (ChargeMount)mount;
+
+                    if(m.target != null){
+                        m.rotation = Angles.moveToward(m.rotation, m.angleTo(m.target), rotateSpeed * efficiency(parent) * parent.delta());
+                    }
+                }
+
+                @Override
                 public void draw(ModularTurretBuild parent, BaseMount mount){
                     super.draw(parent, mount);
 
@@ -584,8 +596,16 @@ public class PMModules{
                     if(m.smoothEfficiency > 0.001f){
                         Draw.z(Layer.shields - 0.99f);
                         Draw.color(parent.team.color, 0.5f * m.smoothEfficiency);
+
+                        PMDrawf.arcFill(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc, m.rotation);
+
+                        Draw.alpha(m.smoothEfficiency);
                         Lines.stroke(2f * m.smoothEfficiency);
-                        Lines.circle(mount.x, mount.y, radius - Lines.getStroke() / 2f);
+                        PMDrawf.arcLine(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc, m.rotation);
+                        for(int sign : Mathf.signs){
+                            tr.trns(m.rotation + arc / 2f * sign, radius);
+                            Lines.line(mount.x, mount.y, mount.x + tr.x, mount.y + tr.y, false);
+                        }
                     }
                 }
 
