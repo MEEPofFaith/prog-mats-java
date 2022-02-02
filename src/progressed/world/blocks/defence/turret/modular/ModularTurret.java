@@ -290,7 +290,7 @@ public class ModularTurret extends PayloadBlock{
 
         public void highlightModule(){
             unHighlight();
-            allMounts.get(selNum).highlight = true;
+            if(allMounts.any()) allMounts.get(selNum).highlight = true;
         }
 
         public void updatePos(){
@@ -371,8 +371,6 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void buildConfiguration(Table table){
-            if(!allMounts.any()) return;
-
             resetSelection();
 
             table.table(t -> rebuild(t, false, false)).top().expandY();
@@ -386,7 +384,7 @@ public class ModularTurret extends PayloadBlock{
                 t.top();
                 for(ModuleSize mSize : ModuleSize.values()){
                     t.button(mSize.title(), Styles.clearTogglet, () -> {
-                        if(selSize != mSize && allMounts.contains(mount -> mount.checkSize(mSize))){
+                        if(selSize != mSize){
                             selSize = mSize;
                             selNum = allMounts.indexOf(m -> m.checkSize(mSize));
                             rebuild(table, true, false);
@@ -399,6 +397,7 @@ public class ModularTurret extends PayloadBlock{
                     ProgMats.swapDialog.show(this);
                 }).size(80f, 40f);
             }).top();
+            if(!allMounts.contains(m -> m.checkSize(selSize))) return;
             table.row();
             table.table(Styles.black6, t -> {
                 t.top().left();
@@ -449,7 +448,7 @@ public class ModularTurret extends PayloadBlock{
 
         public void resetSelection(){
             selNum = 0;
-            selSize = allMounts.first() != null ? allMounts.first().module.size : ModuleSize.small;
+            selSize = allMounts.any() ? allMounts.first().module.size : ModuleSize.small;
         }
 
         /** @return if a module can be added. */
