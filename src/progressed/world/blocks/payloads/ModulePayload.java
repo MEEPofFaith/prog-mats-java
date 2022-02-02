@@ -32,6 +32,8 @@ public class ModulePayload extends Block{
 
     @Override
     public void init(){
+        size = module.size();
+
         super.init();
         module.init();
         module.mountID = id;

@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
+import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -55,6 +56,12 @@ public class ModuleFx{
         });
 
         Drawf.light(e.x, e.y, 20f, Pal.surge, 0.6f * e.fout());
+    }),
+
+    healCross = new Effect(180f, e -> {
+        float up = e.fin() * 16f;
+        color(Pal.heal, Interp.smoother.apply(e.fslope()));
+        PMDrawf.plus(e.x, e.y + up, 3f, 0f);
     }),
 
     reboundShoot = new Effect(14f, e -> {

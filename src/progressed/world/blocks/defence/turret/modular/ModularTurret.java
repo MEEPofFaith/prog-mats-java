@@ -239,11 +239,11 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void retarget(float x, float y){
-            turretMounts.each(m -> m.targetPos.set(x, y));
+            turretMounts.each(m -> m.module.logicControl, m -> m.targetPos.set(x, y));
         }
 
         public void retarget(Posc p){
-            turretMounts.each(m -> m.module.targetPosition(m, p));
+            turretMounts.each(m -> m.module.logicControl, m -> m.module.targetPosition(m, p));
         }
 
         @Override

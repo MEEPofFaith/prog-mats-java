@@ -2,12 +2,14 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
 
@@ -23,6 +25,8 @@ public class ModuleBullets{
     waterShotMini, cryoShotMini, slagShotMini, oilShotMini,
 
     swarmIncendiary, swarmBlast,
+
+    ambrosiaPotion,
 
     reboundTitanium, reboundSurge,
 
@@ -208,6 +212,26 @@ public class ModuleBullets{
             hitEffect = Fx.blastExplosion;
             weaveScale = 8f;
             weaveMag = 2f;
+        }};
+
+        ambrosiaPotion = new BasicBulletType(2.5f, 0f, "large-bomb"){{
+            collides = collidesGround = collidesAir = false;
+            frontColor = Color.white;
+            backColor = trailColor = Pal.heal;
+            scaleVelocity = true;
+            width = height = 24f;
+            shrinkX = shrinkY = 0.5f;
+            spin = -2f;
+            trailLength = 12;
+            trailWidth = 2.5f;
+            trailInterp = a -> 1f - a / 2f;
+
+            fragBullets = 1;
+            fragBullet = new HealFieldBulletType(){{
+                lifetime = 8f * 60f;
+                areaEffect = ModuleFx.healCross;
+                lightColor = Pal.heal;
+            }};
         }};
 
         reboundTitanium = new BoomerangBulletType(5f, 15f){{

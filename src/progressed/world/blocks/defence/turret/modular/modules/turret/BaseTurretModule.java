@@ -8,6 +8,8 @@ import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class BaseTurretModule extends RangedModule{
+    public boolean logicControl = true, playerControl = true;
+
     public BaseTurretModule(String name, ModuleSize size){
         super(name, size);
         mountType = TurretMount::new;

@@ -19,8 +19,8 @@ import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.DelayBulletType.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
-import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.turret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
@@ -38,11 +38,11 @@ public class PMModules{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, lotus, gravity,
+    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia,
 
     //Region Large
 
-    rebound, trifecta, jupiter, diffusion;
+    rebound, trifecta, jupiter, dispel;
 
     public static void load(){
         //Region small
@@ -156,8 +156,6 @@ public class PMModules{
 
         //Region medium
         blunderbuss = new ModulePayload("blunderbuss"){{
-            size = 2;
-
             module = new ItemTurretModule("blunderbuss", ModuleSize.medium){{
                 ammo(
                     Items.copper, ModuleBullets.shotgunCopperCrit,
@@ -181,8 +179,6 @@ public class PMModules{
         }};
 
         airburst = new ModulePayload("airburst"){{
-            size = 2;
-
             module = new ItemTurretModule("airburst", ModuleSize.medium){{
                 ammo(
                     Items.pyratite, ModuleBullets.swarmIncendiary,
@@ -203,8 +199,6 @@ public class PMModules{
         }};
 
         vulcan = new ModulePayload("vulcan"){{
-            size = 2;
-
             module = new PowerTurretModule("vulcan", ModuleSize.medium){{
                 reloadTime = 43f;
                 powerUse = 10f;
@@ -229,8 +223,6 @@ public class PMModules{
         }};
 
         lotus = new ModulePayload("iris"){{
-            size = 2;
-
             module = new PowerTurretModule("iris", ModuleSize.medium){
                 final float delay = 30f;
                 final Effect waveEffect = Fx.none;
@@ -311,8 +303,6 @@ public class PMModules{
         }};
 
         gravity = new ModulePayload("gravity"){{
-            size = 2;
-
             module = new ImpulseModule("gravity", ModuleSize.medium){{
                 range = 180f;
                 damage = 0.2f;
@@ -324,12 +314,34 @@ public class PMModules{
                 scaledForce = 22f;
             }};
         }};
+
+        ambrosia = new ModulePayload("ambrosia"){{
+            module = new PowerTurretModule("ambrosia", ModuleSize.medium){
+                {
+                    reloadTime = 12f * 60f;
+                    range = 23f * tilesize;
+                    inaccuracy = 5f;
+                    velocityInaccuracy = 0.1f;
+
+                    shootType = ModuleBullets.ambrosiaPotion;
+                }
+
+                @Override
+                protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
+                    Unit u = (Unit)mount.target;
+                    return u != null && u.team == parent.team && u.damaged() && u.within(mount, range + u.hitSize / 2f);
+                }
+
+                @Override
+                public void findTarget(ModularTurretBuild parent, TurretMount mount){
+                    mount.target = Units.closest(parent.team, mount.x, mount.y, range, u -> u.damaged() && u.checkTarget(targetGround, targetAir));
+                }
+            };
+        }};
         //endregion
 
         //Region Large
         rebound = new ModulePayload("rebound"){{
-            size = 3;
-
             module = new ItemTurretModule("rebound", ModuleSize.large){
                 {
                     ammo(
@@ -394,8 +406,6 @@ public class PMModules{
         }};
 
         trifecta = new ModulePayload("trifecta"){{
-            size = 3;
-
             module = new ItemTurretModule("trifecta", ModuleSize.large){
                 {
                     ammo(
@@ -429,8 +439,6 @@ public class PMModules{
         }};
 
         jupiter = new ModulePayload("jupiter"){{
-            size = 3;
-
             module = new PowerTurretModule("jupiter", ModuleSize.large){
                 final float baseRad = 7.5f, jointRadMin = 9.5f, jointRadMax = 13f, endRadMin = 5f, endRadMax = 11.5f;
                 TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion, fullArm;
@@ -539,10 +547,8 @@ public class PMModules{
             };
         }};
 
-        diffusion = new ModulePayload("diffusion"){{
-            size = 3;
-
-            module = new ChargeModule("diffusion", ModuleSize.large){
+        dispel = new ModulePayload("dispel"){{
+            module = new ChargeModule("dispel", ModuleSize.large){
                 final float radius = 32f * tilesize, arc = 30f, rotateSpeed = 2f;
                 final float damage = 0.25f, scaledDamage = 5.5f;
 
@@ -568,13 +574,10 @@ public class PMModules{
                             }
                         });
                     };
-                }
 
-                @Override
-                public void setStats(Stats stats){
-                    super.setStats(stats);
-
-                    stats.add(Stat.range, radius / Vars.tilesize, StatUnit.blocks);
+                    setStats = () -> {
+                        stats.add(Stat.range, radius / Vars.tilesize, StatUnit.blocks);
+                    };
                 }
 
                 @Override

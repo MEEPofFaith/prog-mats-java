@@ -115,7 +115,7 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     protected boolean validateTarget(ModularTurretBuild parent, TurretMount mount){
-        return !Units.invalidateTarget(mount.target, canHeal(mount) ? Team.derelict : parent.team, mount.x, mount.y) || parent.isControlled() || parent.logicControlled();
+        return !Units.invalidateTarget(mount.target, canHeal(mount) ? Team.derelict : parent.team, mount.x, mount.y) || (playerControl && parent.isControlled()) || (logicControl && parent.logicControlled());
     }
 
     @Override
@@ -170,10 +170,10 @@ public class TurretModule extends ReloadTurretModule{
             if(validateTarget(parent, mount)){
                 boolean canShoot = true;
 
-                if(parent.isControlled()){ //player behavior
+                if(playerControl && parent.isControlled()){ //player behavior
                     mount.targetPos.set(parent.unit.aimX(), parent.unit.aimY());
                     canShoot = parent.unit.isShooting();
-                }else if(parent.logicControlled()){ //logic behavior
+                }else if(logicControl && parent.logicControlled()){ //logic behavior
                     canShoot = parent.logicShooting;
                 }else{ //default AI behavior
                     targetPosition(mount, mount.target);

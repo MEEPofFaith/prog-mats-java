@@ -47,17 +47,19 @@ public class ChargeModule extends BaseModule{
     public void update(ModularTurretBuild parent, BaseMount mount){
         super.update(parent, mount);
 
-        ChargeMount m = (ChargeMount)mount;
-        m.smoothEfficiency = Mathf.lerpDelta(m.smoothEfficiency, efficiency(parent), 0.08f);
+        if(isDeployed(mount)){
+            ChargeMount m = (ChargeMount)mount;
+            m.smoothEfficiency = Mathf.lerpDelta(m.smoothEfficiency, efficiency(parent), 0.08f);
 
-        if(isActive(parent, mount)){
-            m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
+            if(isActive(parent, mount)){
+                m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
 
-            m.charge += Time.delta * m.heat;
+                m.charge += Time.delta * m.heat;
 
-            if(m.charge >= reload){
-                m.charge = 0f;
-                activate.get(parent, m);
+                if(m.charge >= reload){
+                    m.charge = 0f;
+                    activate.get(parent, m);
+                }
             }
         }
     }
