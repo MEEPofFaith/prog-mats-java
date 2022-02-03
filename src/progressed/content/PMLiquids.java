@@ -12,7 +12,7 @@ public class PMLiquids{
         magma = new Liquid("magma"){
             {
                 flammability = temperature = 1000f;
-                viscosity = 0.8f;
+                viscosity = 0.3f;
                 color = lightColor = Color.valueOf("F58859");
                 hideDetails = false;
             }

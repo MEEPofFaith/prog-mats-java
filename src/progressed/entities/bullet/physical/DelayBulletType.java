@@ -7,17 +7,22 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 
 public class DelayBulletType extends BasicBulletType{
-    float aimCone = 5f, aimRadius = 12f, aimHomingPower = 0.35f;
-    float launchedSpeed = 4.5f, launchedDrag = -0.005f;
+    public float aimCone = 5f, aimRadius = 12f, aimHomingPower = 0.35f;
+    public float launchedSpeed = 4.5f, launchedDrag = -0.005f;
 
     public DelayBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
+    }
+
+    public DelayBulletType(float speed, float damage){
+        this(speed, damage, "bullet");
     }
 
     @Override
     public void update(Bullet b){
         updateTrail(b);
 
+        //Replace normal homing
         DelayBulletData data = (DelayBulletData)b.data;
 
         if(!data.fired){
@@ -52,6 +57,22 @@ public class DelayBulletType extends BasicBulletType{
                 if(target != null){
                     b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
                 }
+            }
+        }
+
+        if(weaveMag > 0){
+            b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
+        }
+
+        if(trailChance > 0){
+            if(Mathf.chanceDelta(trailChance)){
+                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
+            }
+        }
+
+        if(trailInterval > 0f){
+            if(b.timer(0, trailInterval)){
+                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
             }
         }
     }

@@ -361,7 +361,7 @@ public class TurretModule extends ReloadTurretModule{
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
         if(rotate){
-            mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * parent.delta() * speedScl(parent, mount));
+            mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * edelta(parent) * speedScl(parent, mount));
         }else{
             mount.rotation = targetRot;
         }

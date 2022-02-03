@@ -23,6 +23,13 @@ public class HealFieldBulletType extends BulletType{
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        lightRadius = Math.max(lightRadius, radius * 2.5f);
+    }
+
+    @Override
     public void update(Bullet b){
         super.update(b);
 
@@ -52,7 +59,7 @@ public class HealFieldBulletType extends BulletType{
 
     @Override
     public void drawLight(Bullet b){
-        float r = radius * Math.min(b.time / growTime, 1f) * 2f,
+        float r = lightRadius * Math.min(b.time / growTime, 1f),
             fade = 1f - Mathf.curve(b.time, b.lifetime - fadeTime, b.lifetime);
         if(lightOpacity <= 0f || r <= 0f) return;
         Drawf.light(b.team, b, r, lightColor, lightOpacity * fade);

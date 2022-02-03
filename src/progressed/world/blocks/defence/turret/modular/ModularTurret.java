@@ -451,6 +451,14 @@ public class ModularTurret extends PayloadBlock{
             selSize = allMounts.any() ? allMounts.first().module.size : ModuleSize.small;
         }
 
+        public void setSelection(ModuleSize size){
+            selSize = size;
+            selNum = allMounts.indexOf(m -> m.checkSize(size));
+            if(selNum == -1){
+                resetSelection();
+            }
+        }
+
         /** @return if a module can be added. */
         public boolean acceptModule(ModuleSize size){
             return switch(size){

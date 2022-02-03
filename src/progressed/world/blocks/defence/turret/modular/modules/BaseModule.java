@@ -158,6 +158,10 @@ public class BaseModule implements Cloneable{
         return powerUse > 0 ? parent.power.status : 1f;
     }
 
+    public float edelta(ModularTurretBuild parent){
+        return efficiency(parent) * parent.timeScale;
+    }
+
     public boolean powerValid(ModularTurretBuild parent){
         return powerUse == 0 || efficiency(parent) > 0;
     }
@@ -199,7 +203,7 @@ public class BaseModule implements Cloneable{
                     Events.fire(new PickupEvent(player.unit(), module.build));
                     boolean has = parent.allMounts.contains(m -> m.checkSize(mount.module.size));
                     parent.removeMount(mount);
-                    parent.resetSelection();
+                    parent.setSelection(mount.module.size);
                     parent.rebuild(parentTable, !has, has);
                 }else{
                     showPickupFail(mount);

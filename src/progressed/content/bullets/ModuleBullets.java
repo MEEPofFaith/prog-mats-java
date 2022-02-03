@@ -24,7 +24,11 @@ public class ModuleBullets{
 
     waterShotMini, cryoShotMini, slagShotMini, oilShotMini,
 
+    irisOrb,
+
     swarmIncendiary, swarmBlast,
+
+    lotusLance,
 
     ambrosiaPotion,
 
@@ -176,6 +180,38 @@ public class ModuleBullets{
             statusDuration = 60f;
         }};
 
+        irisOrb = new DelayBulletType(5f, 25f){
+            {
+                lifetime = 52f;
+                hitSize = 3f;
+                pierce = true;
+                pierceCap = 2;
+                hittable = false;
+                homingPower = 0.15f;
+                displayAmmoMultiplier = false;
+                lightOpacity = 0.6f;
+                lightColor = Pal.surge;
+                shootEffect = smokeEffect = Fx.none;
+                hitEffect = ModuleFx.irisHit;
+                despawnEffect = ModuleFx.irisDespawn;
+                trailEffect = ModuleFx.irisTrail;
+                trailInterval = 1f;
+                trailRotation = true;
+
+                drag = 0.15f;
+                launchedSpeed = 4f;
+                launchedDrag = 0f;
+            }
+
+            @Override
+            public void draw(Bullet b){
+                drawTrail(b);
+
+                Draw.color(Pal.surge);
+                Fill.circle(b.x, b.y, 3f);
+            }
+        };
+
         swarmIncendiary = new MissileBulletType(4.2f, 19){{
             frontColor = Pal.lightishOrange;
             backColor = trailColor = Pal.lightOrange;
@@ -214,6 +250,19 @@ public class ModuleBullets{
             weaveMag = 2f;
         }};
 
+        lotusLance = new DelayBulletType(5f, 36f, "prog-mats-lance"){{
+            frontColor = Color.white;
+            backColor = trailColor = Pal.surge;
+            width = height = 8f;
+            shrinkX = shrinkY = 0;
+            lifetime = 60f;
+            drag = 0.15f;
+            homingPower = 0.15f;
+            trailLength = 5;
+            trailWidth = 1f;
+            hitEffect = despawnEffect = ModuleFx.hitLotus;
+        }};
+
         ambrosiaPotion = new BasicBulletType(2.5f, 0f, "large-bomb"){{
             collides = collidesGround = collidesAir = false;
             frontColor = Color.white;
@@ -222,6 +271,7 @@ public class ModuleBullets{
             width = height = 24f;
             shrinkX = shrinkY = 0.5f;
             spin = -2f;
+            lightColor = Pal.heal;
             trailLength = 12;
             trailWidth = 2.5f;
             trailInterp = a -> 1f - a / 2f;
@@ -236,8 +286,8 @@ public class ModuleBullets{
 
         reboundTitanium = new BoomerangBulletType(5f, 15f){{
             lifetime = 120f;
-            width = height = hitSize = 11f;
-            backColor = Items.titanium.color;
+            width = height = 10.5f;
+            lightColor = backColor = Items.titanium.color;
             riseStart = 3f;
             riseEnd = 4f;
             layer = Layer.turret + 0.015f;
@@ -251,8 +301,8 @@ public class ModuleBullets{
         reboundSurge = new BoomerangBulletType(5f, 84f){
             {
                 lifetime = 134f;
-                width = height = hitSize = 12f;
-                backColor = Pal.surge;
+                width = height = 12f;
+                lightColor = backColor = Pal.surge;
                 riseStart = 3f;
                 riseEnd = 4f;
                 layer = Layer.turret + 0.015f;
@@ -305,6 +355,7 @@ public class ModuleBullets{
                 homingPower = 0.05f;
                 homingRange = 16f * 8f;
                 displayAmmoMultiplier = false;
+                lightOpacity = 0.6f;
                 lightColor = Pal.lancerLaser;
                 shootEffect = smokeEffect = Fx.none;
                 hitEffect = ModuleFx.jupiterHit;

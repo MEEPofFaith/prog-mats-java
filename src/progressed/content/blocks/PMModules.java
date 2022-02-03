@@ -35,7 +35,7 @@ public class PMModules{
 
     //Region Small
 
-    shrapnel, froth, bifurcation, bandage, overclocker,
+    shrapnel, froth, bifurcation, iris, bandage, overclocker,
 
     //Region Medium
 
@@ -110,6 +110,34 @@ public class PMModules{
             }};
         }};
 
+        iris = new ModulePayload("iris"){{
+            module = new PowerTurretModule("iris"){
+                {
+                    powerUse = 1f;
+                    reloadTime = 30f;
+                    minRange = 4f * 8f;
+                    range = 14f * 8f;
+                    shootLength = 0f;
+                    rotate = false;
+                    inaccuracy = 360f;
+                    shootSound = Sounds.lasershoot;
+
+                    shootType = ModuleBullets.irisOrb;
+                }
+
+                @Override
+                protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
+                    super.bullet(parent, mount, type, angle);
+
+                    tr2.set(mount.targetPos).sub(mount.x, mount.y);
+                    if(tr2.len() < minRange) tr2.setLength(minRange);
+                    tr2.add(mount.x, mount.y);
+
+                    mount.bullet.data = new DelayBulletData(tr2.x, tr2.y, 30f);
+                }
+            };
+        }};
+
         //amazing name lmao
         bandage = new ModulePayload("bandage"){{
             module = new ChargeModule("bandage"){
@@ -121,7 +149,7 @@ public class PMModules{
 
                     activate = (p, m) -> {
                         if(p.damaged()){
-                            p.heal(p.maxHealth() * healPercent / 100f * efficiency(p) * p.timeScale);
+                            p.heal(p.maxHealth() * healPercent / 100f * edelta(p));
                             Fx.healBlockFull.at(p.x, p.y, p.block.size, PMPal.heal);
                         }
                     };
@@ -223,8 +251,8 @@ public class PMModules{
             }};
         }};
 
-        lotus = new ModulePayload("iris"){{
-            module = new PowerTurretModule("iris", ModuleSize.medium){
+        lotus = new ModulePayload("lotus"){{
+            module = new PowerTurretModule("lotus", ModuleSize.medium){
                 final float delay = 30f;
                 final Effect waveEffect = Fx.none;
 
@@ -234,23 +262,13 @@ public class PMModules{
                     burstSpacing = 2f;
                     minRange = 4f * 8f;
                     range = 28f * 8f;
+                    shootSound = Sounds.flame2;
                     shootEffect = ModuleFx.lotusShoot;
                     smokeEffect = ModuleFx.lotusShootSmoke;
                     powerUse = 12f;
                     rotate = false;
 
-                    shootType = new DelayBulletType(5f, 36f, "prog-mats-lance"){{
-                        frontColor = Color.white;
-                        backColor = trailColor = Pal.surge;
-                        width = height = 8f;
-                        shrinkX = shrinkY = 0;
-                        lifetime = 60f;
-                        drag = 0.15f;
-                        homingPower = 0.15f;
-                        trailLength = 5;
-                        trailWidth = 1f;
-                        hitEffect = despawnEffect = ModuleFx.hitLotus;
-                    }};
+                    shootType = ModuleBullets.lotusLance;
                 }
 
                 @Override
@@ -323,6 +341,7 @@ public class PMModules{
                     range = 23f * tilesize;
                     inaccuracy = 5f;
                     velocityInaccuracy = 0.1f;
+                    powerUse = 4f;
 
                     shootType = ModuleBullets.ambrosiaPotion;
                 }
@@ -568,7 +587,7 @@ public class PMModules{
                         Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
                             if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
                                 float scl = 1f - m.dst(b) / radius;
-                                float d = (damage + scaledDamage * scl) * efficiency(p) * p.timeScale;
+                                float d = (damage + scaledDamage * scl) * edelta(p);
 
                                 if(b.damage() > d){
                                     b.damage(b.damage() - d);
