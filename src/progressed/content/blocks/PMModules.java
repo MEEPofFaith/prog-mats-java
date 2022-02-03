@@ -573,6 +573,8 @@ public class PMModules{
 
                 {
                     powerUse = 17f;
+                    teamColor = false;
+                    fieldColor = Pal.removeBack;
 
                     activate = (p, m) -> {
                         m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
@@ -592,7 +594,7 @@ public class PMModules{
                                     b.remove();
                                 }
 
-                                ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), p.team.color);
+                                ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.remove);
                             }
                         });
                     };
