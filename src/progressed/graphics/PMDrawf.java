@@ -284,20 +284,23 @@ public class PMDrawf{
         }
     }
 
-    public static void arcFill(float x, float y, float radius, float arcAngle, float angle){
-        float arc = arcAngle / 360f;
-        int sides = (int)(Lines.circleVertices(radius) * arc);
-        float space = arcAngle / sides;
+    public static void arcFill(float x, float y, float radius, float fraction, float rotation){
+        arcFill(x, y, radius, fraction, rotation, 50);
+    }
 
-        for(int i = 0; i < sides; i++){
-            float a = angle - arcAngle / 2f + space * i,
-                cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a),
-                cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
-            Fill.tri(
-                x, y,
-                x + radius*cos, y + radius*sin,
-                x + radius*cos2, y + radius*sin2
-            );
+    public static void arcFill(float x, float y, float radius, float fraction, float rotation, int sides){
+        int max = (int)(sides * fraction);
+        Fill.polyBegin();
+        Fill.polyPoint(x, y);
+
+        for(int i = 0; i <= max; i++){
+            float a = (float)i / max * fraction * 360f + rotation;
+            float x1 = Angles.trnsx(a, radius);
+            float y1 = Angles.trnsy(a, radius);
+
+            Fill.polyPoint(x1 + x, y1 + y);
         }
+
+        Fill.polyEnd();
     }
 }

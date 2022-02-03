@@ -606,11 +606,17 @@ public class PMModules{
                         Draw.z(Layer.shields - 0.99f);
                         Draw.color(parent.team.color, 0.5f * m.smoothEfficiency);
 
-                        PMDrawf.arcFill(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc, m.rotation);
+                        PMDrawf.arcFill(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
+                        /* Pending PR
+                        Fill.arc(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
+                         */
 
                         Draw.alpha(m.smoothEfficiency);
                         Lines.stroke(2f * m.smoothEfficiency);
                         PMDrawf.arcLine(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc, m.rotation);
+                        /* Does not exist in v135, but does in later versions
+                        Lines.arc(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
+                         */
                         for(int sign : Mathf.signs){
                             tr.trns(m.rotation + arc / 2f * sign, radius);
                             Lines.line(mount.x, mount.y, mount.x + tr.x, mount.y + tr.y, false);
