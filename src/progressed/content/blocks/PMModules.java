@@ -9,6 +9,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -558,7 +559,12 @@ public class PMModules{
                     clipSize = radius * 2f;
 
                     activate = (p, m) -> {
-                        m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unitc::hasWeapons);
+                        m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
+                            for(WeaponMount mount : u.mounts){ //Apparently mounts is an array, not a seq
+                                if(mount.weapon.bullet.hittable) return true;
+                            }
+                            return false;
+                        });
                         Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
                             if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
                                 float scl = 1f - m.dst(b) / radius;

@@ -1,5 +1,6 @@
 package progressed.ui.dialogs;
 
+import arc.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -56,8 +57,9 @@ public class ModuleSwapDialog extends BaseDialog{
 
         for(ModuleSize mSize : ModuleSize.values()){
             if(base.getMountPos(mSize) == null) continue;
-            cont.label(mSize::fullTitle).right();
+            cont.label(mSize::fullTitle).top().right();
             cont.table(b -> {
+                int c = 0;
                 for(int i = 0; i < base.getMaxMounts(mSize); i++){
                     int ii = i;
                     Cell<ImageButton> button = b.button(Tex.clear, PMStyles.squarei, 48f, () -> {
@@ -73,10 +75,19 @@ public class ModuleSwapDialog extends BaseDialog{
                     }).size(64f).left();
 
                     BaseMount mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
+                    String num = " (" + (i + 1) + ")";
 
                     if(mount != null){
                         button.get().getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
-                        button.tooltip(mount.module.localizedName + " (" + (mount.swapNumber + 1) + ")");
+                        button.tooltip(mount.module.localizedName + num);
+                    }else{
+                        button.get().clearChildren();
+                        button.get().label(() -> String.valueOf(ii + 1));
+                        button.tooltip(Core.bundle.get("empty") + num);
+                    }
+
+                    if(c++ % 4 == 3){
+                        b.row();
                     }
                 }
             }).left().padLeft(16f);
