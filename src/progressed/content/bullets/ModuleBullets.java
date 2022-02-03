@@ -182,7 +182,7 @@ public class ModuleBullets{
 
         irisOrb = new DelayBulletType(5f, 25f){
             {
-                lifetime = 52f;
+                lifetime = 72f;
                 hitSize = 3f;
                 pierce = true;
                 pierceCap = 2;
@@ -348,7 +348,7 @@ public class ModuleBullets{
 
         jupiterOrb = new BulletType(1f, 750f){
             {
-                lifetime = 5f * 60f;
+                lifetime = 6f * 60f;
                 hitSize = 7f;
                 pierce = pierceBuilding = true;
                 hittable = false;

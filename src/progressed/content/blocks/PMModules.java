@@ -116,7 +116,7 @@ public class PMModules{
                     powerUse = 1f;
                     reloadTime = 30f;
                     minRange = 4f * 8f;
-                    range = 14f * 8f;
+                    range = 26f * 8f;
                     shootLength = 0f;
                     rotate = false;
                     inaccuracy = 360f;
@@ -261,7 +261,7 @@ public class PMModules{
                     shots = 8;
                     burstSpacing = 2f;
                     minRange = 4f * 8f;
-                    range = 28f * 8f;
+                    range = 29f * 8f;
                     shootSound = Sounds.flame2;
                     shootEffect = ModuleFx.lotusShoot;
                     smokeEffect = ModuleFx.lotusShootSmoke;
@@ -465,7 +465,7 @@ public class PMModules{
 
                 {
                     reloadTime = 2.5f * 60f;
-                    range = 24f * 8f;
+                    range = 38f * 8f;
                     powerUse = 4f;
                     recoilAmount = shootLength = 0;
                     rotate = false;
@@ -568,14 +568,11 @@ public class PMModules{
         }};
 
         dispel = new ModulePayload("dispel"){{
-            module = new ChargeModule("dispel", ModuleSize.large){
-                final float radius = 32f * tilesize, arc = 30f, rotateSpeed = 2f;
+            module = new FieldModule("dispel", ModuleSize.large){
                 final float damage = 0.25f, scaledDamage = 5.5f;
 
                 {
-                    reload = 1f;
                     powerUse = 17f;
-                    clipSize = radius * 2f;
 
                     activate = (p, m) -> {
                         m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
@@ -599,53 +596,6 @@ public class PMModules{
                             }
                         });
                     };
-
-                    setStats = () -> {
-                        stats.add(Stat.range, radius / Vars.tilesize, StatUnit.blocks);
-                    };
-                }
-
-                @Override
-                public void update(ModularTurretBuild parent, BaseMount mount){
-                    super.update(parent, mount);
-
-                    ChargeMount m = (ChargeMount)mount;
-
-                    if(m.target != null){
-                        m.rotation = Angles.moveToward(m.rotation, m.angleTo(m.target), rotateSpeed * efficiency(parent) * parent.delta());
-                    }
-                }
-
-                @Override
-                public void draw(ModularTurretBuild parent, BaseMount mount){
-                    super.draw(parent, mount);
-
-                    ChargeMount m = (ChargeMount)mount;
-                    if(m.smoothEfficiency > 0.001f){
-                        Draw.z(Layer.shields - 0.99f);
-                        Draw.color(parent.team.color, 0.5f * m.smoothEfficiency);
-
-                        PMDrawf.arcFill(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
-                        /* Pending PR
-                        Fill.arc(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
-                         */
-
-                        Draw.alpha(m.smoothEfficiency);
-                        Lines.stroke(2f * m.smoothEfficiency);
-                        PMDrawf.arcLine(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc, m.rotation);
-                        /* Does not exist in v135, but does in later versions
-                        Lines.arc(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
-                         */
-                        for(int sign : Mathf.signs){
-                            tr.trns(m.rotation + arc / 2f * sign, radius);
-                            Lines.line(mount.x, mount.y, mount.x + tr.x, mount.y + tr.y, false);
-                        }
-                    }
-                }
-
-                @Override
-                public void drawHighlight(ModularTurretBuild parent, BaseMount mount){
-                    Drawf.dashCircle(mount.x, mount.y, radius, parent.team.color);
                 }
             };
         }};

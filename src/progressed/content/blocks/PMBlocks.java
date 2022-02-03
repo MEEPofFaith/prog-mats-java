@@ -1416,7 +1416,11 @@ public class PMBlocks{
                 new Recipe(shrapnel, 1f, 60f),
                 new Recipe(froth, 1f, 60f),
                 new Recipe(bifurcation, 1f, 60f),
-                new Recipe(overclocker, 1f, 60f)
+                new Recipe(iris, 1f, 60f),
+                new Recipe(overclocker, 1f, 60f),
+                new Recipe(bandage, 1f, 60f),
+                new Recipe(vulcan, 1f, 60f),
+                new Recipe(ambrosia, 1f, 60f)
             );
         }};
 
@@ -1427,9 +1431,10 @@ public class PMBlocks{
             recipes(
                 new Recipe(blunderbuss, shrapnel, 1f, 60f),
                 new Recipe(airburst, 1f, 60f),
-                new Recipe(vulcan, 1f, 60f),
+                new Recipe(iris, lotus, 1f, 60f),
                 new Recipe(trifecta, airburst, 1f, 60f),
-                new Recipe(jupiter, 1f, 60f)
+                new Recipe(iris, jupiter, 1f, 60f),
+                new Recipe(dispel, 1f, 60f)
             );
         }};
 
