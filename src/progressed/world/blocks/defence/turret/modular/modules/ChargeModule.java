@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
@@ -50,16 +51,12 @@ public class ChargeModule extends BaseModule{
         if(isDeployed(mount)){
             ChargeMount m = (ChargeMount)mount;
             m.smoothEfficiency = Mathf.lerpDelta(m.smoothEfficiency, efficiency(parent), 0.08f);
+            m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
+            m.charge += Time.delta * m.heat;
 
-            if(isActive(parent, mount)){
-                m.heat = Mathf.lerpDelta(m.heat, Mathf.num(isActive(parent, mount)), 0.08f);
-
-                m.charge += Time.delta * m.heat;
-
-                if(m.charge >= reload){
-                    m.charge = 0f;
-                    activate.get(parent, m);
-                }
+            if(m.charge >= reload){
+                m.charge = 0f;
+                activate.get(parent, m);
             }
         }
     }

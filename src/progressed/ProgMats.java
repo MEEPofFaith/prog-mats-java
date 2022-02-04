@@ -57,8 +57,8 @@ public class ProgMats extends Mod{
                 enableConsole = true;
                 experimental = true;
             }
-            renderer.minZoom = 0.667f; //Zoom out farther
-            renderer.maxZoom = 24f; //Get a closer look at yourself
+            renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
+            renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
 
             LoadedMod progM = mods.locateMod("prog-mats");
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);

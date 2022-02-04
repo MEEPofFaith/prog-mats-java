@@ -304,15 +304,19 @@ public class BaseModule implements Cloneable{
     public void write(Writes write, BaseMount mount){
         write.f(mount.progress);
         write.f(mount.rotation);
+        write.f(mount.heat);
     }
 
     public void read(Reads read, byte revision, BaseMount mount){
         mount.progress = read.f();
         mount.rotation = read.f();
+        if(revision >= 1){
+            mount.heat = read.f();
+        }
     }
 
     public byte version(){
-        return 0;
+        return 1;
     }
 
     public BaseModule copy(){
