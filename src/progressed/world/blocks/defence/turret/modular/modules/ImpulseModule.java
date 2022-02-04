@@ -80,7 +80,7 @@ public class ImpulseModule extends RangedModule{
     public void update(ModularTurretBuild parent, BaseMount mount){
         super.update(parent, mount);
 
-        if(isDeployed(mount) && !powerValid(parent)) return;
+        if(!isDeployed(mount) || !powerValid(parent)) return;
 
         ForceMount m = (ForceMount)mount;
 

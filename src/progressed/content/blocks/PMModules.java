@@ -39,7 +39,7 @@ public class PMModules{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia,
+    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia, dissonance,
 
     //Region Large
 
@@ -359,6 +359,30 @@ public class PMModules{
                 }
             };
         }};
+
+        dissonance = new ModulePayload("dissonance"){{
+            module = new FieldModule("dissonance", ModuleSize.medium){{
+                reload = 5f;
+                powerUse = 1.5f;
+                radius = 20f * tilesize;
+                arc = 24f;
+                teamColor = false;
+                fieldColor = Pal.removeBack;
+
+                float damage = 10, scaledDamage = 5;
+                activate = (p, m) -> {
+                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unit::isAdded);
+                    Groups.unit.intersect(m.x - radius, m.y - radius, radius * 2, radius * 2, u -> {
+                        if(u.team != p.team && u.within(m, radius) && Angles.within(m.rotation, m.angleTo(u), arc / 2f)){
+                            float scl = 1f - m.dst(u) / radius;
+                            float d = (damage + scaledDamage * scl) * edelta(p);
+                            u.damage(d);
+                            ModuleFx.dissonanceDamage.at(u.x, u.y, u.hitSize * (0.25f + scl * 1.25f), Pal.remove);
+                        }
+                    });
+                };
+            }};
+        }};
         //endregion
 
         //Region Large
@@ -569,38 +593,35 @@ public class PMModules{
         }};
 
         dispel = new ModulePayload("dispel"){{
-            module = new FieldModule("dispel", ModuleSize.large){
-                final float damage = 0.25f, scaledDamage = 5.5f;
+            module = new FieldModule("dispel", ModuleSize.large){{
+                powerUse = 17f;
+                teamColor = false;
+                fieldColor = Pal.accentBack;
 
-                {
-                    powerUse = 17f;
-                    teamColor = false;
-                    fieldColor = Pal.accentBack;
+                float damage = 0.25f, scaledDamage = 5.5f;
+                activate = (p, m) -> {
+                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
+                        for(WeaponMount mount : u.mounts){ //Apparently mounts is an array, not a seq
+                            if(mount.weapon.bullet.hittable) return true;
+                        }
+                        return false;
+                    });
+                    Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
+                        if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
+                            float scl = 1f - m.dst(b) / radius;
+                            float d = (damage + scaledDamage * scl) * edelta(p);
 
-                    activate = (p, m) -> {
-                        m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
-                            for(WeaponMount mount : u.mounts){ //Apparently mounts is an array, not a seq
-                                if(mount.weapon.bullet.hittable) return true;
+                            if(b.damage() > d){
+                                b.damage(b.damage() - d);
+                            }else{
+                                b.remove();
                             }
-                            return false;
-                        });
-                        Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
-                            if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
-                                float scl = 1f - m.dst(b) / radius;
-                                float d = (damage + scaledDamage * scl) * edelta(p);
 
-                                if(b.damage() > d){
-                                    b.damage(b.damage() - d);
-                                }else{
-                                    b.remove();
-                                }
-
-                                ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.accent);
-                            }
-                        });
-                    };
-                }
-            };
+                            ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.accent);
+                        }
+                    });
+                };
+            }};
         }};
         //endregion
     }

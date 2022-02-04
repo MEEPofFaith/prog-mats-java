@@ -110,6 +110,11 @@ public class ModuleFx{
         PMDrawf.plus(e.x, e.y + up, 3f, 0f);
     }),
 
+    dissonanceDamage = new Effect(30f, e -> {
+        color(e.color);
+        Fill.circle(e.x, e.y, e.rotation * e.fout());
+    }).layer(Layer.shields - 0.99f),
+
     reboundShoot = new Effect(14f, e -> {
         color(Color.white, e.color, e.fin());
 
