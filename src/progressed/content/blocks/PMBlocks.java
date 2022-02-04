@@ -596,7 +596,7 @@ public class PMBlocks{
                 Items.titanium, SniperBullets.sniperBoltTitanium,
                 Items.thorium, SniperBullets.sniperBoltThorium,
                 Items.silicon, SniperBullets.sniperBoltSilicon,
-                PMItems.tenelium, SniperBullets.sniperBoltValexitite,
+                PMItems.tenelium, SniperBullets.sniperBoltTenelium,
                 Items.surgeAlloy, SniperBullets.sniperBoltSurge
             );
             size = 3;

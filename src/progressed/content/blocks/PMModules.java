@@ -198,7 +198,7 @@ public class PMModules{
                 range = 200f;
                 maxAmmo = 10;
                 shots = 6;
-                inaccuracy = 20;
+                inaccuracy = 12;
                 velocityInaccuracy = 0.2f;
                 rotateSpeed = 9f;
                 shootSound = Sounds.shootBig;
@@ -342,6 +342,7 @@ public class PMModules{
                     inaccuracy = 5f;
                     velocityInaccuracy = 0.1f;
                     powerUse = 4f;
+                    playerControl = logicControl = false;
 
                     shootType = ModuleBullets.ambrosiaPotion;
                 }

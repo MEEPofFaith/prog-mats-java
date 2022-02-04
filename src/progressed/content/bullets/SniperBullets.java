@@ -2,7 +2,6 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.math.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -13,7 +12,7 @@ import progressed.graphics.*;
 public class SniperBullets{
     public static BulletType
 
-    sniperBoltSilicon, sniperBoltTitanium, sniperBoltThorium, sniperBoltSurge, sniperBoltValexititeFrag, sniperBoltValexitite;
+    sniperBoltSilicon, sniperBoltTitanium, sniperBoltThorium, sniperBoltSurge, sniperBoltTenliumFrag, sniperBoltTenelium;
 
     public static void load(){
         sniperBoltSilicon = new CritBulletType(12f, 300f){{
@@ -67,7 +66,7 @@ public class SniperBullets{
             critMultiplier = 5f;
         }};
 
-        sniperBoltValexititeFrag = new CritBulletType(13f, 160f){{
+        sniperBoltTenliumFrag = new CritBulletType(13f, 160f){{
             lifetime = 23f;
             knockback = 3f;
             width = 6f;
@@ -77,7 +76,7 @@ public class SniperBullets{
             critEffect = OtherFx.miniCrit;
         }};
 
-        sniperBoltValexitite = new CritBulletType(13f, 800f){
+        sniperBoltTenelium = new CritBulletType(13f, 800f){
             final float fragInacc = 5f;
 
             {
@@ -87,7 +86,7 @@ public class SniperBullets{
                 height = 16f;
                 pierceCap = 13;
                 fragBullets = 5;
-                fragBullet = sniperBoltValexititeFrag;
+                fragBullet = sniperBoltTenliumFrag;
                 fragVelocityMin = 0.8f;
                 fragVelocityMax = 1.2f;
                 fragCone = 30f;
@@ -98,6 +97,8 @@ public class SniperBullets{
 
             @Override
             public void hit(Bullet b, float x, float y){
+                //Don't frag on hit
+
                 b.hit = true;
                 if(!((CritBulletData)b.data).despawned){
                     hitEffect.at(x, y, b.rotation(), hitColor);
@@ -108,7 +109,7 @@ public class SniperBullets{
             }
 
             @Override
-            public void despawned(Bullet b){ //Only frag on despawn
+            public void removed(Bullet b){
                 CritBulletData data = (CritBulletData)b.data;
                 for(int i = 0; i < fragBullets; i++){
                     float a = b.rotation() + ((fragCone / fragBullets) * (i - (fragBullets - 1f) / 2f)) + Mathf.range(fragInacc);
@@ -119,13 +120,6 @@ public class SniperBullets{
                     }
                 }
                 Sounds.missile.at(b, Mathf.random(0.9f, 1.1f));
-
-                super.despawned(b);
-            }
-
-            @Override
-            public void removed(Bullet b){
-                //Don't fade the trail
             }
         };
     }

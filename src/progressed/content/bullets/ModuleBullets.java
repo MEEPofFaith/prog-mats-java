@@ -182,7 +182,7 @@ public class ModuleBullets{
 
         irisOrb = new DelayBulletType(5f, 25f){
             {
-                lifetime = 72f;
+                lifetime = 78f;
                 hitSize = 3f;
                 pierce = true;
                 pierceCap = 2;
@@ -199,7 +199,7 @@ public class ModuleBullets{
                 trailRotation = true;
 
                 drag = 0.15f;
-                launchedSpeed = 4f;
+                launchedSpeed = 3f;
                 launchedDrag = 0f;
             }
 
