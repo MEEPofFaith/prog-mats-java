@@ -91,29 +91,30 @@ public class SniperTurret extends ItemTurret{
 
             Draw.z(Layer.turret);
 
+            float scl = split * Interp.pow2Out.apply(charge);
             tr2.trns(rotation, -recoil);
 
             for(int i = 0; i < partCount; i++){
-                float tx = Angles.trnsx(rotation, split * charge * i);
-                float ty = Angles.trnsy(rotation, split * charge * i);
+                float tx = Angles.trnsx(rotation, scl * i);
+                float ty = Angles.trnsy(rotation, scl * i);
                 Drawf.shadow(outlines[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
             }
 
             for(int i = 0; i < partCount - 1; i++){
-                float tx = Angles.trnsx(rotation, split * charge * (i + 0.5f));
-                float ty = Angles.trnsy(rotation, split * charge * (i + 0.5f));
+                float tx = Angles.trnsx(rotation, scl * (i + 0.5f));
+                float ty = Angles.trnsy(rotation, scl * (i + 0.5f));
                 Drawf.shadow(connectors[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
             }
 
             for(int i = 0; i < partCount; i++){
-                float tx = Angles.trnsx(rotation, split * charge * i);
-                float ty = Angles.trnsy(rotation, split * charge * i);
+                float tx = Angles.trnsx(rotation, scl * i);
+                float ty = Angles.trnsy(rotation, scl * i);
                 Draw.rect(outlines[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
             }
 
             for(int i = 0; i < partCount - 1; i++){
-                float tx = Angles.trnsx(rotation, split * charge * (i + 0.5f));
-                float ty = Angles.trnsy(rotation, split * charge * (i + 0.5f));
+                float tx = Angles.trnsx(rotation, scl * (i + 0.5f));
+                float ty = Angles.trnsy(rotation, scl * (i + 0.5f));
                 Draw.rect(connectors[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
                 if(heat > 0.001f){
                     if(Core.atlas.isFound(cHeats[i])){
@@ -127,8 +128,8 @@ public class SniperTurret extends ItemTurret{
             }
 
             for(int i = 0; i < partCount; i++){
-                float tx = Angles.trnsx(rotation, split * charge * i);
-                float ty = Angles.trnsy(rotation, split * charge * i);
+                float tx = Angles.trnsx(rotation, scl * i);
+                float ty = Angles.trnsy(rotation, scl * i);
                 Draw.rect(parts[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
             }
 
@@ -136,9 +137,9 @@ public class SniperTurret extends ItemTurret{
                 Draw.color(heatColor, heat);
                 Draw.blend(Blending.additive);
                 for(int i = 0; i < partCount; i++){
-                    if(Core.atlas.isFound(heats[i])){
-                        float tx = Angles.trnsx(rotation, split * charge * i);
-                        float ty = Angles.trnsy(rotation, split * charge * i);
+                    if(heats[i].found()){
+                        float tx = Angles.trnsx(rotation, scl * i);
+                        float ty = Angles.trnsy(rotation, scl * i);
                         Draw.rect(heats[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
                     }
                 }

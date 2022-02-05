@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -39,11 +38,11 @@ public class PMModules{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia, dissonance,
+    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia, dispel,
 
     //Region Large
 
-    rebound, trifecta, jupiter, dispel;
+    rebound, trifecta, jupiter, dissonance;
 
     public static void load(){
         //Region small
@@ -360,24 +359,34 @@ public class PMModules{
             };
         }};
 
-        dissonance = new ModulePayload("dissonance"){{
-            module = new FieldModule("dissonance", ModuleSize.medium){{
-                reload = 5f;
-                powerUse = 1.5f;
+        dispel = new ModulePayload("dispel"){{
+            module = new FieldModule("dispel", ModuleSize.medium){{
+                powerUse = 17f;
+                teamColor = false;
                 radius = 20f * tilesize;
                 arc = 24f;
-                teamColor = false;
-                fieldColor = Pal.removeBack;
+                fieldColor = Pal.accentBack;
 
-                float damage = 10, scaledDamage = 5;
+                float damage = 0.25f, scaledDamage = 5.5f;
                 activate = (p, m) -> {
-                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unit::isAdded);
-                    Groups.unit.intersect(m.x - radius, m.y - radius, radius * 2, radius * 2, u -> {
-                        if(u.team != p.team && u.within(m, radius) && Angles.within(m.rotation, m.angleTo(u), arc / 2f)){
-                            float scl = 1f - m.dst(u) / radius;
+                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
+                        for(WeaponMount mount : u.mounts){ //Apparently mounts is an array, not a seq
+                            if(mount.weapon.bullet.hittable) return true;
+                        }
+                        return false;
+                    });
+                    Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
+                        if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
+                            float scl = 1f - m.dst(b) / radius;
                             float d = (damage + scaledDamage * scl) * edelta(p);
-                            u.damage(d);
-                            ModuleFx.dissonanceDamage.at(u.x, u.y, u.hitSize * (0.25f + scl * 1.25f), Pal.remove);
+
+                            if(b.damage() > d){
+                                b.damage(b.damage() - d);
+                            }else{
+                                b.remove();
+                            }
+
+                            ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.accent);
                         }
                     });
                 };
@@ -592,32 +601,22 @@ public class PMModules{
             };
         }};
 
-        dispel = new ModulePayload("dispel"){{
-            module = new FieldModule("dispel", ModuleSize.large){{
-                powerUse = 17f;
+        dissonance = new ModulePayload("dissonance"){{
+            module = new FieldModule("dissonance", ModuleSize.large){{
+                reload = 5f;
+                powerUse = 23f;
                 teamColor = false;
-                fieldColor = Pal.accentBack;
+                fieldColor = Pal.removeBack;
 
-                float damage = 0.25f, scaledDamage = 5.5f;
+                float damage = 10, scaledDamage = 5;
                 activate = (p, m) -> {
-                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, u -> {
-                        for(WeaponMount mount : u.mounts){ //Apparently mounts is an array, not a seq
-                            if(mount.weapon.bullet.hittable) return true;
-                        }
-                        return false;
-                    });
-                    Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
-                        if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
-                            float scl = 1f - m.dst(b) / radius;
+                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unit::isAdded);
+                    Groups.unit.intersect(m.x - radius, m.y - radius, radius * 2, radius * 2, u -> {
+                        if(u.team != p.team && u.within(m, radius) && Angles.within(m.rotation, m.angleTo(u), arc / 2f)){
+                            float scl = 1f - m.dst(u) / radius;
                             float d = (damage + scaledDamage * scl) * edelta(p);
-
-                            if(b.damage() > d){
-                                b.damage(b.damage() - d);
-                            }else{
-                                b.remove();
-                            }
-
-                            ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.accent);
+                            u.damage(d);
+                            ModuleFx.dissonanceDamage.at(u.x, u.y, u.hitSize * (0.25f + scl * 1.25f), Pal.remove);
                         }
                     });
                 };
