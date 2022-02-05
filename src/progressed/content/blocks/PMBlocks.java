@@ -41,6 +41,7 @@ import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.distribution.drones.*;
 import progressed.world.blocks.distribution.drones.stations.*;
+import progressed.world.blocks.liquid.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
 import progressed.world.blocks.sandbox.*;
@@ -122,6 +123,11 @@ public class PMBlocks{
 
     //Misc
     burstDriver,
+
+    // endregion
+    // region liquid
+
+    forceConduit,
 
     // endregion
     // region Crafting
@@ -1317,6 +1323,17 @@ public class PMBlocks{
         // endregion
 
         // region Liquids
+        forceConduit = new ForceConduit("force-conduit"){{
+            requirements(Category.liquid, with(
+                PMItems.tenelium, 2,
+                Items.metaglass, 2,
+                Items.plastanium, 1
+            ));
+
+            liquidCapacity = 20f;
+            health = 115;
+        }};
+
         liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
             requirements(Category.liquid, with(
                 Items.titanium, 250,
