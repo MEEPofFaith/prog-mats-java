@@ -2,7 +2,6 @@ package progressed.content;
 
 import arc.graphics.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.type.weather.*;

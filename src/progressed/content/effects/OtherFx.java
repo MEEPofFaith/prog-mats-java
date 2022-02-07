@@ -16,7 +16,7 @@ import static arc.util.Tmp.*;
 import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
 import static progressed.graphics.PMDrawf.*;
-import static progressed.util.PMUtls.rand;
+import static progressed.util.PMUtls.*;
 
 public class OtherFx{
     public static final Effect

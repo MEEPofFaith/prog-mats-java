@@ -1,7 +1,6 @@
 package progressed.content.blocks;
 
 import mindustry.content.*;
-import mindustry.ctype.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.entities.bullet.explosive.*;

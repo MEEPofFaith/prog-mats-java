@@ -1,7 +1,6 @@
 package progressed.content;
 
 import arc.graphics.*;
-import mindustry.ctype.*;
 import mindustry.type.*;
 
 public class PMLiquids{

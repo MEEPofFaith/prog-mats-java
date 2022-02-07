@@ -1,7 +1,6 @@
 package progressed.content.bullets;
 
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;

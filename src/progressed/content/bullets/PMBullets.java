@@ -1,7 +1,6 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
-import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;

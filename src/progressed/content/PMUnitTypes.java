@@ -1,13 +1,10 @@
 package progressed.content;
 
-import arc.*;
-import arc.flabel.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;

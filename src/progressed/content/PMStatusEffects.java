@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.effects.*;
