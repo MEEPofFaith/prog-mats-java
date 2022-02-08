@@ -105,26 +105,25 @@ public class MissileFx{
                 randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
                     float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
                     float rad = fout * ((2f + intensity) * 2.35f);
-
                     Fill.circle(s.x + x, s.y + y, rad);
                 });
             });
         }
 
         e.scaled(baseLifetime, s -> {
-            Draw.color();
-            s.scaled(2 + intensity * 2f, i -> {
+            color(Color.gray);
+            s.scaled(3 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
                 Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
-                light(s.x, s.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * s.fout());
+                light(s.x, s.y, i.fin() * 28f * 2f * intensity, Color.white, 0.9f * i.fout());
             });
 
-            color(Pal.lighterOrange, Pal.redSpark, s.fin());
+            color(Pal.lighterOrange, Pal.lightOrange, Pal.redSpark, s.fin());
             stroke((2f * s.fout()));
 
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngleCenter(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
             });
         });
@@ -145,26 +144,25 @@ public class MissileFx{
                 randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
                     float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
                     float rad = fout * ((2f + intensity) * 2.35f);
-
                     Fill.circle(s.x + x, s.y + y, rad);
                 });
             });
         }
 
         e.scaled(baseLifetime, s -> {
-            Draw.color();
-            s.scaled(2 + intensity * 2f, i -> {
+            color(Color.gray);
+            s.scaled(5 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
                 Lines.circle(s.x, s.y, (3f + i.fin() * 14f) * intensity);
-                light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * s.fout());
+                light(s.x, s.y, i.fin() * 28f * 2f * intensity, getColor(), 0.9f * i.fout());
             });
 
-            color(Pal.lighterOrange, Pal.redSpark, s.fin());
+            color(Pal.lighterOrange, Pal.lightOrange, Pal.redSpark, s.fin());
             stroke((2f * s.fout()));
 
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngleCenter(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
