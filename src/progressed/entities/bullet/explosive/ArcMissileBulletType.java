@@ -272,7 +272,7 @@ public class ArcMissileBulletType extends BasicBulletType{
             if(fadeOut > 0 && fadeIn == 0){
                 float rX = x + Draw3D.cameraXOffset(x, rise * elevation);
                 float rY = y + Draw3D.cameraYOffset(y, rise * elevation);
-                float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
+                float rRocket = Mathf.clamp(1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime)));
                 Draw.scl(rRocket);
                 //Engine stolen from launchpad
                 if(riseEngineSize > 0f){
@@ -289,7 +289,7 @@ public class ArcMissileBulletType extends BasicBulletType{
                 float fX = b.x + Draw3D.cameraXOffset(b.x, fall * elevation);
                 float fY = b.y + Draw3D.cameraYOffset(b.y, fall * elevation);
                 float rot2 = rot + 180f + Mathf.randomSeed(b.id + 3, 360f);
-                float fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime - fallTime + fallEngineTime));
+                float fRocket = Mathf.clamp(Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime - fallTime + fallEngineTime)));
                 Draw.scl(fRocket);
                 //Missile itself
                 Draw.z(Layer.weather - 2f);
@@ -312,7 +312,7 @@ public class ArcMissileBulletType extends BasicBulletType{
         Draw.color();
         Draw.alpha(a);
         Draw.rect(region, x, y, rot);
-        Drawf.light(team, x, y, lightRadius, lightColor, lightOpacity);
+        Drawf.light(team, x, y, lightRadius * Draw.xscl, lightColor, lightOpacity * Draw.xscl);
     }
 
     public void drawEngine(Team team, float x, float y, float size, float lightRadius, float scl, long seed){

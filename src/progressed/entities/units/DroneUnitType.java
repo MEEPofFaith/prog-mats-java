@@ -32,7 +32,7 @@ public class DroneUnitType extends UnitType{
         constructor = DroneUnitEntity::new;
         defaultController = DroneAI::new;
 
-        flying = lowAltitude = true;
+        flying = true;
         isCounted = false;  
         speed = 3f;
     }

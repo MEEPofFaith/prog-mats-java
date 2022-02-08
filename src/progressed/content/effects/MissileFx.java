@@ -107,7 +107,6 @@ public class MissileFx{
                     float rad = fout * ((2f + intensity) * 2.35f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    light(s.x + x, s.y + y, rad * 2.6f, Pal.gray, 0.7f);
                 });
             });
         }
@@ -148,7 +147,6 @@ public class MissileFx{
                     float rad = fout * ((2f + intensity) * 2.35f);
 
                     Fill.circle(s.x + x, s.y + y, rad);
-                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
                 });
             });
         }
