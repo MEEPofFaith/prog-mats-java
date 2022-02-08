@@ -42,7 +42,7 @@ public class PMModules{
 
     //Region Large
 
-    rebound, trifecta, jupiter, dissonance;
+    rebound, trifecta, ares, jupiter, dissonance;
 
     public static void load(){
         //Region small
@@ -490,6 +490,19 @@ public class PMModules{
                     super.createIcons(packer);
                 }
             };
+        }};
+
+        ares = new ModulePayload("ares"){{
+            module = new PowerTurretModule("ares", ModuleSize.large){{
+                powerUse = 12f;
+                range = 38f * tilesize;
+                reloadTime = 75f;
+                shootShake = 3f;
+                rotateSpeed = 3.5f;
+                shootSound = Sounds.laser;
+
+                shootType = ModuleBullets.aresOrb;
+            }};
         }};
 
         jupiter = new ModulePayload("jupiter"){{

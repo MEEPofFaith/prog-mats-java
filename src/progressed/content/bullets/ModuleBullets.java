@@ -2,10 +2,13 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
@@ -33,6 +36,8 @@ public class ModuleBullets{
     reboundTitanium, reboundSurge,
 
     trifectaMissile,
+
+    aresOrb,
 
     jupiterOrb;
 
@@ -343,6 +348,96 @@ public class ModuleBullets{
             riseEnd = thrusterGrowth + 10f;
             targetLayer = Layer.bullet - 1;
         }};
+
+        aresOrb = new BasicBulletType(5f, 28f, "circle-bullet"){
+            {
+                scaleVelocity = true;
+                lightOpacity = 0.7f;
+                lightRadius = 70f;
+                drawSize = 250f;
+                shootEffect = ModuleFx.aresShoot;
+                smokeEffect = Fx.shootBigSmoke2;
+                lifetime = 60f;
+                splashDamage = 174f;
+                splashDamageRadius = 5f * 8f;
+                makeFire = true;
+                width = height = 12f;
+                frontColor = Color.white;
+                backColor = trailColor = hitColor = lightColor = Pal.remove;
+                trailLength = 20;
+                trailWidth = 6f;
+                trailInterval = 3f;
+                trailRotation = true;
+                trailEffect = ModuleFx.aresTrail;
+                hitShake = 4f;
+                hitSound = Sounds.plasmaboom;
+                hitEffect = ModuleFx.aresHit;
+                status = StatusEffects.melting;
+
+                fragBullets = 6;
+                fragBullet = new ShrapnelBulletType(){{
+                    damage = 53f;
+                    length = 132f;
+                    width = 12f;
+                    toColor = Pal.remove;
+                    displayAmmoMultiplier = false;
+                    shootEffect = smokeEffect = ModuleFx.flameShoot;
+                    makeFire = true;
+                    status = StatusEffects.burning;
+                }};
+            }
+
+            @Override
+            public void hit(Bullet b, float x, float y){
+                hitEffect.at(x, y, b.rotation(), hitColor);
+                hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+
+                Effect.shake(hitShake, hitShake, b);
+
+                if(fragBullet != null){
+                    //You know, it is quite annoying to copy over the entirety of hit just to change one small thing.
+                    float ra = Mathf.random(360f);
+                    for(int i = 0; i < fragBullets; i++){
+                        float a = ra + i * 360f / fragBullets;
+                        fragBullet.create(b, x, y, a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
+                    }
+                }
+
+                if(puddleLiquid != null && puddles > 0){
+                    for(int i = 0; i < puddles; i++){
+                        Tile tile = world.tileWorld(x + Mathf.range(puddleRange), y + Mathf.range(puddleRange));
+                        Puddles.deposit(tile, puddleLiquid, puddleAmount);
+                    }
+                }
+
+                if(incendChance > 0 && Mathf.chance(incendChance)){
+                    Damage.createIncend(x, y, incendSpread, incendAmount);
+                }
+
+                if(splashDamageRadius > 0 && !b.absorbed){
+                    Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+
+                    if(status != StatusEffects.none){
+                        Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+                    }
+
+                    if(healPercent > 0f){
+                        indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
+                            Fx.healBlockFull.at(other.x, other.y, other.block.size, Pal.heal);
+                            other.heal(healPercent / 100f * other.maxHealth());
+                        });
+                    }
+
+                    if(makeFire){
+                        indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
+                    }
+                }
+
+                for(int i = 0; i < lightning; i++){
+                    Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+                }
+            }
+        };
 
         jupiterOrb = new BulletType(1f, 750f){
             {

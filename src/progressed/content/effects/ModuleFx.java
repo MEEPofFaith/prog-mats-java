@@ -131,6 +131,50 @@ public class ModuleFx{
         });
     }).layer(Layer.turret + 0.16f),
 
+    aresShoot = new Effect(40, e -> {
+        color(Pal.remove);
+        stroke(e.fout() * 1.6f);
+
+        randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+        });
+    }),
+
+    aresTrail = new Effect(16f, e -> {
+        color(Pal.remove);
+        for(int s : Mathf.signs){
+            Drawf.tri(e.x, e.y, 4f, 30f * e.fslope(), e.rotation + 90f*s);
+        }
+    }),
+
+    aresHit = new Effect(50f, 100f, e -> {
+        float rad = 5f * 8f;
+
+        e.scaled(7f, b -> {
+            color(Pal.remove, b.fout());
+            Fill.circle(e.x, e.y, rad);
+        });
+
+        color(Pal.remove);
+        stroke(e.fout() * 3f);
+        Lines.circle(e.x, e.y, rad);
+
+        int points = 6;
+        float offset = Mathf.randomSeed(e.id, 360f);
+        for(int i = 0; i < points; i++){
+            float angle = i* 360f / points + offset;
+            //for(int s : Mathf.zeroOne){
+            Drawf.tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, 50f * e.fout(), angle/* + s*180f*/);
+            //}
+        }
+
+        Fill.circle(e.x, e.y, 12f * e.fout());
+        color();
+        Fill.circle(e.x, e.y, 6f * e.fout());
+        Drawf.light(e.x, e.y, rad * 1.6f, Pal.heal, e.fout());
+    }),
+
     jupiterCharge = new Effect(300f, e -> {
         color(Pal.lancerLaser);
         Fill.circle(e.x, e.y, e.fin(Interp.pow2Out) * 7f);
