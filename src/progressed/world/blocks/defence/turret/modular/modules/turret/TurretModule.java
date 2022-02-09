@@ -199,7 +199,7 @@ public class TurretModule extends ReloadTurretModule{
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
         if(!shouldReload(parent, mount)) return;
-        mount.reload += parent.delta() * peekAmmo(mount).reloadMultiplier * speedScl(parent, mount);
+        mount.reload += peekAmmo(mount).reloadMultiplier * delta(parent);
 
         if(mount.reload >= reloadTime){
             BulletType type = peekAmmo(mount);
@@ -210,7 +210,7 @@ public class TurretModule extends ReloadTurretModule{
         }
 
         if(acceptCoolant){
-            updateCooling(mount);
+            updateCooling(parent, mount);
         }
     }
 
@@ -361,7 +361,7 @@ public class TurretModule extends ReloadTurretModule{
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
         if(rotate){
-            mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * edelta(parent) * speedScl(parent, mount));
+            mount.rotation = Angles.moveToward(mount.rotation, targetRot, rotateSpeed * edelta(parent));
         }else{
             mount.rotation = targetRot;
         }

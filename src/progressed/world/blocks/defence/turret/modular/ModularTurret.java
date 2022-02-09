@@ -290,7 +290,7 @@ public class ModularTurret extends PayloadBlock{
 
         public void highlightModule(){
             unHighlight();
-            if(allMounts.any()) allMounts.get(selNum).highlight = true;
+            if(allMounts.any() && selNum >= 0) allMounts.get(selNum).highlight = true;
         }
 
         public void updatePos(){

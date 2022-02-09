@@ -38,12 +38,12 @@ public class ReloadTurretModule extends BaseTurretModule{
         }
     }
 
-    public void updateCooling(TurretMount mount){
+    public void updateCooling(ModularTurretBuild parent, TurretMount mount){
         if(mount.reload < reloadTime && mount.charge <= 0){
             float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
             Liquid liquid = mount.liquids.current();
 
-            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta);
+            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta) * efficiency(parent);
             mount.reload += used * liquid.heatCapacity * coolantMultiplier;
             mount.liquids.remove(liquid, used);
 

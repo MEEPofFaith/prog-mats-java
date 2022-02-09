@@ -81,7 +81,7 @@ public class FieldModule extends ChargeModule{
             Draw.color(teamColor ? parent.team.color : fieldColor, 0.5f * m.smoothEfficiency);
 
             PMDrawf.arcFill(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, rot - arc / 2f);
-            /* Pending PR
+            /* Later version of arc
             Fill.arc(mount.x, mount.y, radius - Lines.getStroke() / 2f, arc / 360f, m.rotation - arc / 2f);
              */
 

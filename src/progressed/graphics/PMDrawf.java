@@ -285,7 +285,7 @@ public class PMDrawf{
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation){
-        arcFill(x, y, radius, fraction, rotation, 50);
+        arcFill(x, y, radius, fraction, rotation, circleVertices(radius));
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation, int sides){
@@ -298,7 +298,7 @@ public class PMDrawf{
             float x1 = Angles.trnsx(a, radius);
             float y1 = Angles.trnsy(a, radius);
 
-            Fill.polyPoint(x1 + x, y1 + y);
+            Fill.polyPoint(x + x1, y + y1);
         }
 
         Fill.polyEnd();

@@ -9,6 +9,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
@@ -37,6 +38,7 @@ public class BaseModule implements Cloneable{
     public short mountID;
 
     public float deployTime = -1f;
+    public boolean canOverdrive = true;
     public boolean hasLiquids;
     public float powerUse;
     public float liquidCapacity = 10f;
@@ -150,8 +152,8 @@ public class BaseModule implements Cloneable{
         return mount.progress >= deployTime;
     }
 
-    public float speedScl(ModularTurretBuild parent, BaseMount mount){
-        return 1f;
+    public float delta(ModularTurretBuild parent){
+        return Time.delta * (canOverdrive ? parent.timeScale : 1f);
     }
 
     public float efficiency(ModularTurretBuild parent){
@@ -159,7 +161,7 @@ public class BaseModule implements Cloneable{
     }
 
     public float edelta(ModularTurretBuild parent){
-        return efficiency(parent) * parent.timeScale;
+        return efficiency(parent) * delta(parent);
     }
 
     public boolean powerValid(ModularTurretBuild parent){

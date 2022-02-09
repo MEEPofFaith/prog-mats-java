@@ -42,9 +42,4 @@ public class PowerTurretModule extends TurretModule{
     public BulletType peekAmmo(TurretMount mount){
         return shootType;
     }
-
-    @Override
-    public float speedScl(ModularTurretBuild parent, BaseMount mount){
-        return efficiency(parent);
-    }
 }
