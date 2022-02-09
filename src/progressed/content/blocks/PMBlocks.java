@@ -20,6 +20,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
@@ -1845,7 +1846,7 @@ public class PMBlocks{
 
         /// Unit
         godFactory = new UnitFactory("god-factory"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             alwaysUnlocked = true;
 
             size = 3;
