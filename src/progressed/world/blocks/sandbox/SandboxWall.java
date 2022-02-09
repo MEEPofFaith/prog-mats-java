@@ -10,8 +10,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
-import arc.util.pooling.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
@@ -22,6 +20,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -32,9 +31,6 @@ public class SandboxWall extends Wall{
     protected String[] buttonLabels = {"Sparking", "Reflecting", "Insulation", "DPS Testing"};
     public TextureRegion colorRegion;
     public TextureRegion[] colorVariantRegions, icons = new TextureRegion[4];
-
-    private final Font font = Fonts.outline;
-    private final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
     public SandboxWall(String name){
         super(name);
@@ -179,27 +175,9 @@ public class SandboxWall extends Wall{
             }
 
             if(modes.dpsTesting && time > 0){
-                Draw.z(Layer.max);
-                Color color = team.color;
+                Draw.z(Layer.overlayUI);
                 String text = Strings.autoFixed((total / time) * 60f, 2) + " DPS";
-                boolean ints = font.usesIntegerPositions();
-                font.setUseIntegerPositions(false);
-                font.getData().setScale(1f / 4f / Scl.scl(1f));
-                layout.setText(font, text);
-
-                font.setColor(color);
-                float dy = size * Vars.tilesize / 2f + 3f;
-                font.draw(text, x, y + dy + layout.height + 1, Align.center);
-                Lines.stroke(2f, Color.darkGray);
-                Lines.line(x - layout.width / 2f - 2f, y + dy, x + layout.width / 2f + 1.5f, y + dy);
-                Lines.stroke(1f, color);
-                Lines.line(x - layout.width / 2f - 2f, y + dy, x + layout.width / 2f + 1.5f, y + dy);
-
-                font.setUseIntegerPositions(ints);
-                font.setColor(Color.white);
-                font.getData().setScale(1f);
-                Draw.reset();
-                Pools.free(layout);
+                PMDrawf.text(x, y + size * tilesize / 2f + 3f, team.color, text);
             }
         }
 

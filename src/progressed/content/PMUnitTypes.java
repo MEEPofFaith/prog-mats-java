@@ -1,7 +1,9 @@
 package progressed.content;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import mindustry.content.*;
@@ -11,6 +13,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
@@ -287,6 +290,21 @@ public class PMUnitTypes implements ContentList{
                 stats.remove(Stat.weapons);
                 stats.add(Stat.abilities, "Everything");
                 stats.add(Stat.weapons, "Everything");
+            }
+
+            @Override
+            public void draw(Unit unit){
+                super.draw(unit);
+
+                if(!ProgMats.everything()){
+                    Draw.z(Layer.overlayUI);
+                    PMDrawf.text(unit.x, unit.y, false, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
+                }
+            }
+
+            @Override
+            public boolean isHidden(){
+                return !ProgMats.everything();
             }
         };
     }

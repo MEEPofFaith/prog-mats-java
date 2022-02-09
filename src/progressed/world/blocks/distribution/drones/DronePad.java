@@ -11,7 +11,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import arc.util.pooling.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -22,6 +21,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
+import progressed.graphics.*;
 import progressed.world.blocks.distribution.drones.stations.DroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.ItemDroneStation.*;
 import progressed.world.blocks.distribution.drones.stations.LiquidDroneStation.*;
@@ -325,22 +325,8 @@ public class DronePad extends Block{
             }
             Draw.reset();
 
-            Font font = Fonts.outline;
-            GlyphLayout l = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
-            boolean ints = font.usesIntegerPositions();
-            font.getData().setScale(sh / 10f);
-            font.setUseIntegerPositions(false);
-
             CharSequence text = String.valueOf(route);
-            l.setText(font, text);
-
-            font.setColor(color);
-            font.draw(text, x - l.width/2f, y + l.height/2f - sh * s, Align.left);
-
-            font.setUseIntegerPositions(ints);
-            font.setColor(Color.white);
-            font.getData().setScale(1f);
-            Pools.free(l);
+            PMDrawf.text(x, y - sh * s, false, color, text);
         }
 
         public void drawConnections(){

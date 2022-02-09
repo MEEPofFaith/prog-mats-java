@@ -14,6 +14,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.production.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -35,33 +36,7 @@ public class SmartDrill extends Drill{
         if(renderer.pixelator.enabled()) return 0;
 
         Color color = valid ? Pal.accent : Pal.remove;
-        Font font = Fonts.outline;
-        GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
-        boolean ints = font.usesIntegerPositions();
-        font.setUseIntegerPositions(false);
-        font.getData().setScale(1f / 4f / Scl.scl(1f));
-        layout.setText(font, text);
-
-        float width = layout.width;
-
-        font.setColor(color);
-        float dy = y + size * tilesize / 2f + 3;
-        font.draw(text, x, dy + layout.height + 1, Align.center);
-        dy -= 1f;
-        if(underline){
-            Lines.stroke(2f, Color.darkGray);
-            Lines.line(x - layout.width / 2f - 2f, dy, x + layout.width / 2f + 1.5f, dy);
-            Lines.stroke(1f, color);
-            Lines.line(x - layout.width / 2f - 2f, dy, x + layout.width / 2f + 1.5f, dy);
-        }
-
-        font.setUseIntegerPositions(ints);
-        font.setColor(Color.white);
-        font.getData().setScale(1f);
-        Draw.reset();
-        Pools.free(layout);
-
-        return width;
+        return PMDrawf.text(x, y + size * tilesize / 2f + 3, color, text);
     }
 
     @Override

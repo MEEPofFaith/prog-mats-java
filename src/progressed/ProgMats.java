@@ -68,7 +68,7 @@ public class ProgMats extends Mod{
             progM.meta.author = contributors.toString();
 
             Events.on(ClientLoadEvent.class, e -> {
-                PMUtls.godHood(PMUnitTypes.everythingUnit);
+                if(everything()) PMUtls.godHood(PMUnitTypes.everythingUnit);
 
                 if(Core.settings.getBool("pm-farting")){
                     content.blocks().each(b -> {
@@ -81,6 +81,10 @@ public class ProgMats extends Mod{
                 }
             });
         }
+    }
+
+    public static boolean everything(){
+        return Core.settings.getBool("pm-sandbox-everything", false);
     }
 
     @Override

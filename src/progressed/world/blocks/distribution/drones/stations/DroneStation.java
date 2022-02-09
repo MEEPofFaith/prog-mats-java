@@ -16,6 +16,7 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import progressed.entities.units.entity.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -188,28 +189,8 @@ public class DroneStation extends Block{
         public void drawSelect(){
             if(renderer.pixelator.enabled()) return;
 
-            Font font = Fonts.outline;
-            GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
             CharSequence text = stationName == null || stationName.length() == 0 ? "[lightgray]" + Core.bundle.get("empty") : stationName;
-            boolean ints = font.usesIntegerPositions();
-            font.setUseIntegerPositions(false);
-            font.getData().setScale(1f / 3f);
-            layout.setText(font, text);
-
-            font.setColor(selectColor);
-            float dx = x + offset, dy = y + offset + size * tilesize / 2f + 3;
-            font.draw(text, dx, dy + layout.height + 1, Align.center);
-            dy -= 1f;
-            Lines.stroke(2f, Color.darkGray);
-            Lines.line(dx - layout.width / 2f - 2f, dy, dx + layout.width / 2f + 1.5f, dy);
-            Lines.stroke(1f, selectColor);
-            Lines.line(dx - layout.width / 2f - 2f, dy, dx + layout.width / 2f + 1.5f, dy);
-
-            font.setUseIntegerPositions(ints);
-            font.setColor(Color.white);
-            font.getData().setScale(1f);
-            Draw.reset();
-            Pools.free(layout);
+            PMDrawf.text(x + offset, y + offset + size * tilesize / 2f + 3, selectColor, text);
         }
 
         @Override

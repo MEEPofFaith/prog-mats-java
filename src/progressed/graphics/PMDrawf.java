@@ -9,9 +9,11 @@ import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -21,6 +23,8 @@ import static mindustry.Vars.*;
 
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
+    private static final Font font = Fonts.outline;
+    private static final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
     public static void plus(float x, float y, float diameter, float angle, Color color, float alpha){
         color(color, alpha);
@@ -225,5 +229,34 @@ public class PMDrawf{
                 vec3.x, vec3.y
             );
         }
+    }
+
+    public static float text(float x, float y, Color color, CharSequence text){
+        return text(x, y, true, color, text);
+    }
+
+    public static float text(float x, float y, boolean underline, Color color, CharSequence text){
+        boolean ints = font.usesIntegerPositions();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(1f / 3f);
+        layout.setText(font, text);
+
+        font.setColor(color);
+        font.draw(text, x, y + (underline ? layout.height + 1 : layout.height / 2f), Align.center);
+        if(underline){
+            y -= 1f;
+            Lines.stroke(2f, Color.darkGray);
+            Lines.line(x - layout.width / 2f - 2f, y, x + layout.width / 2f + 1.5f, y);
+            Lines.stroke(1f, color);
+            Lines.line(x - layout.width / 2f - 2f, y, x + layout.width / 2f + 1.5f, y);
+        }
+
+        font.setUseIntegerPositions(ints);
+        font.setColor(Color.white);
+        font.getData().setScale(1f);
+        Draw.reset();
+        Pools.free(layout);
+
+        return layout.width;
     }
 }

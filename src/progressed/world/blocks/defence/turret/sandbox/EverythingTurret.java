@@ -16,7 +16,9 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.content.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -29,7 +31,11 @@ public class EverythingTurret extends PowerTurret{
 
     public EverythingTurret(String name){
         super(name);
-        requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
+        requirements(
+            Category.turret,
+            ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden,
+            ItemStack.empty
+        );
         alwaysUnlocked = true;
 
         shootLength = 0f;
@@ -42,6 +48,8 @@ public class EverythingTurret extends PowerTurret{
     @Override
     public void init(){
         super.init();
+
+        if(!ProgMats.everything()) return;
 
         content.units().each(u -> {
             u.weapons.each(w -> {
@@ -115,6 +123,8 @@ public class EverythingTurret extends PowerTurret{
 
         @Override
         public void updateTile(){
+            if(!ProgMats.everything()) return;
+
             super.updateTile();
             
             float lerp = pow.apply(bias / maxBias);
@@ -146,6 +156,11 @@ public class EverythingTurret extends PowerTurret{
             Draw.z(Layer.turret);
             Drawf.shadow(region, x - elevation, y - elevation, drawRot);
             Drawf.spinSprite(region, x, y, drawRot);
+
+            if(!ProgMats.everything()){
+                Draw.z(Layer.overlayUI);
+                PMDrawf.text(x, y + size * tilesize / 2f + 3, team.color, Core.bundle.get("pm-sandbox-disabled"));
+            }
         }
 
         @Override
