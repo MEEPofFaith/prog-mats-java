@@ -9,6 +9,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
@@ -22,6 +23,8 @@ public class ModuleBullets{
     shotgunCopper, shotgunDense, shotgunTitanium, shotgunThorium,
 
     shotgunCopperCrit, shotgunDenseCrit, shotgunTitaniumCrit, shotgunThoriumCrit,
+
+    pinpointPin,
 
     waterShotMini, cryoShotMini, slagShotMini, oilShotMini,
 
@@ -139,6 +142,12 @@ public class ModuleBullets{
             critChance = 0.05f;
             critMultiplier = 4f;
             critEffect = OtherFx.miniCrit;
+        }};
+
+        pinpointPin = new TargetBulletType(5.5f, 2f, 13f){{
+            lifetime = 90f;
+            tStatus = PMStatusEffects.pinpointTarget;
+            tStatusDuration = 4f * 60f;
         }};
 
         waterShotMini = new LiquidBulletType(Liquids.water){{

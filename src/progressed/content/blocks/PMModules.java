@@ -13,6 +13,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.physical.*;
@@ -34,7 +35,7 @@ public class PMModules{
 
     //Region Small
 
-    shrapnel, froth, bifurcation, iris, bandage, overclocker,
+    shrapnel, pinpoint, froth, bifurcation, iris, bandage, overclocker,
 
     //Region Medium
 
@@ -66,6 +67,30 @@ public class PMModules{
 
                 limitRange(6f);
             }};
+        }};
+
+        pinpoint = new ModulePayload("pinpoint"){{
+            module = new ItemTurretModule("pinpoint"){
+                {
+                    ammo(
+                        Items.surgeAlloy, ModuleBullets.pinpointPin
+                    );
+
+                    range = 19 * tilesize;
+                    targetBlocks = canOverdrive = false;
+                    logicControl = playerControl = false;
+                    reloadTime = 5.5f * 60f;
+
+                    unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
+                }
+
+                @Override
+                protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
+                    super.bullet(parent, mount, type, angle);
+
+                    mount.bullet.data = mount.target;
+                }
+            };
         }};
 
         froth = new ModulePayload("froth"){{

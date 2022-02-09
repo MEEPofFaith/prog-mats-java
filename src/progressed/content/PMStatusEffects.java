@@ -1,9 +1,12 @@
 package progressed.content;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.effects.*;
@@ -13,7 +16,8 @@ import static mindustry.content.StatusEffects.*;
 
 public class PMStatusEffects{
     public static StatusEffect
-    incendiaryBurn,
+    //Misc
+    incendiaryBurn, pinpointTarget,
 
     //Anti-vaxxers are quivering in fear
     vcFrenzy, vcDisassembly, vcWeaken, vcCorvus,
@@ -37,6 +41,29 @@ public class PMStatusEffects{
                 });
             });
         }};
+
+        pinpointTarget = new PMStatusEffect("pinpoint-target"){
+            {
+                color = Pal.remove;
+                healthMultiplier = 0.5f;
+            }
+
+            @Override
+            public void draw(Unit u){
+                float r = u.hitSize * 0.5f;
+
+                Draw.z(Layer.effect);
+                Lines.stroke(1.5f, color);
+                Lines.circle(u.x, u.y, r);
+
+                int points = 4;
+                float offset = Mathf.randomSeed(u.id, 360f) - Time.time;
+                for(int i = 0; i < points; i++){
+                    float a = i * 360f / points + offset;
+                    Lines.lineAngleCenter(u.x + Angles.trnsx(a, r), u.y + Angles.trnsy(a, r), a, 4f);
+                }
+            }
+        };
 
         //Anti-vaxxers are quivering in fear
         vcFrenzy = new ExclusiveStatusEffect("frenzy"){{
