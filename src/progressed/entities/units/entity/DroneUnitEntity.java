@@ -109,15 +109,21 @@ public class DroneUnitEntity extends PayloadUnit{
     }
 
     public void nextRoute(){
-        curRoute++;
-        if(curRoute >= getPad().maxRoutes()){
-            curRoute = 0;
+        DronePadBuild p = getPad();
+        if(p != null){
+            curRoute++;
+            if(curRoute >= getPad().maxRoutes()){
+                curRoute = 0;
+            }
         }
     }
 
     public boolean hasRoutes(){
-        for(int i = 0; i < getPad().maxRoutes(); i++){
-            if(checkCompleteRoute(i)) return true;
+        DronePadBuild p = getPad();
+        if(p != null){
+            for(int i = 0; i < getPad().maxRoutes(); i++){
+                if(checkCompleteRoute(i)) return true;
+            }
         }
         return false;
     }

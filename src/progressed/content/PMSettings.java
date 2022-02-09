@@ -26,6 +26,7 @@ public class PMSettings{
         progm.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
         progm.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
         progm.checkPref("pm-tesla-range", true);
+        progm.checkPref("pm-sandbox-everything", false);
         progm.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
 
         dialog.cont.center().add(progm);

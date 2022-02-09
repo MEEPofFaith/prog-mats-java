@@ -74,7 +74,7 @@ public class ProgMats extends Mod{
             progM.meta.author = contributors.toString();
 
             Events.on(ClientLoadEvent.class, e -> {
-                PMUtls.godHood(PMUnitTypes.everythingUnit);
+                if(everything()) PMUtls.godHood(PMUnitTypes.everythingUnit);
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
 
@@ -99,6 +99,10 @@ public class ProgMats extends Mod{
                 }
             });
         }
+    }
+
+    public static boolean everything(){
+        return Core.settings.getBool("pm-sandbox-everything", false);
     }
 
     @Override

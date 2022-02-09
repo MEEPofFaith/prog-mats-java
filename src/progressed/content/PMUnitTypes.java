@@ -1,7 +1,9 @@
 package progressed.content;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import mindustry.content.*;
@@ -10,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
@@ -280,6 +283,21 @@ public class PMUnitTypes{
                 stats.remove(Stat.weapons);
                 stats.add(Stat.abilities, t -> t.add(PMElements.everything()));
                 stats.add(Stat.weapons, t -> t.add(PMElements.everything()));
+            }
+
+            @Override
+            public void draw(Unit unit){
+                super.draw(unit);
+
+                if(!ProgMats.everything()){
+                    Draw.z(Layer.overlayUI);
+                    PMDrawf.text(unit.x, unit.y, false, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
+                }
+            }
+
+            @Override
+            public boolean isHidden(){
+                return !ProgMats.everything();
             }
         };
     }
