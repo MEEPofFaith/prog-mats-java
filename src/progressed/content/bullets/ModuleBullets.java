@@ -146,6 +146,7 @@ public class ModuleBullets{
 
         pinpointPin = new TargetBulletType(5.5f, 2f, 13f){{
             lifetime = 90f;
+            hittable = absorbable = false;
             tStatus = PMStatusEffects.pinpointTarget;
             tStatusDuration = 4f * 60f;
         }};

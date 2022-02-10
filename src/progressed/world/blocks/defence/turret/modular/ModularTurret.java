@@ -31,6 +31,7 @@ import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.meta.*;
 
 public class ModularTurret extends PayloadBlock{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
@@ -155,6 +156,9 @@ public class ModularTurret extends PayloadBlock{
     public void setStats(){
         super.setStats();
         stats.remove(Stat.powerUse);
+        stats.remove(Stat.liquidCapacity);
+
+        stats.add(Stat.itemCapacity, PMStatValues.moduleCounts(moduleGroups));
     }
 
     @Override

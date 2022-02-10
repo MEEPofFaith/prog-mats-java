@@ -50,7 +50,8 @@ public class PMStatusEffects{
 
             @Override
             public void draw(Unit u){
-                float r = u.hitSize * 0.5f;
+                float r = u.hitSize / 2f;
+                float l = u.hitSize / 3f;
 
                 Draw.z(Layer.effect);
                 Lines.stroke(1.5f, color);
@@ -58,9 +59,10 @@ public class PMStatusEffects{
 
                 int points = 4;
                 float offset = Mathf.randomSeed(u.id, 360f) - Time.time;
+                r += Mathf.sin(30f / Mathf.PI2, l / 4f);
                 for(int i = 0; i < points; i++){
                     float a = i * 360f / points + offset;
-                    Lines.lineAngleCenter(u.x + Angles.trnsx(a, r), u.y + Angles.trnsy(a, r), a, 4f);
+                    Lines.lineAngleCenter(u.x + Angles.trnsx(a, r), u.y + Angles.trnsy(a, r), a, l);
                 }
             }
         };

@@ -289,7 +289,7 @@ public class PMDrawf{
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation){
-        arcFill(x, y, radius, fraction, rotation, circleVertices(radius));
+        arcFill(x, y, radius, fraction, rotation, 50);
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation, int sides){
@@ -298,12 +298,13 @@ public class PMDrawf{
         Fill.polyPoint(x, y);
 
         for(int i = 0; i <= max; i++){
-            float a = (float)i / max * fraction * 360f + rotation;
+            float a = fraction * 360f * ((float)i / max) + rotation;
             float x1 = Angles.trnsx(a, radius);
             float y1 = Angles.trnsy(a, radius);
 
             Fill.polyPoint(x + x1, y + y1);
         }
+        Fill.polyPoint(x, y);
 
         Fill.polyEnd();
     }

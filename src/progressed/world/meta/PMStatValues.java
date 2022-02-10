@@ -28,6 +28,8 @@ import progressed.entities.units.*;
 import progressed.ui.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
+import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.payloads.*;
 
 import static arc.Core.*;
@@ -469,6 +471,25 @@ public class PMStatValues{
                 t.add(u.localizedName).padLeft(8);
                 infoButton(t, u, 5 * 8).padLeft(6);
             });
+        };
+    }
+
+    public static StatValue moduleCounts(ModuleGroup[] groups){
+        return table -> {
+            int[] mounts = {0, 0, 0};
+            for(ModuleGroup group : groups){
+                mounts[group.size.ordinal()] += group.amount();
+            }
+
+            table.row();
+            table.table(t -> {
+                for(int i = 0; i < 3; i++){
+                    if(mounts[i] > 0){
+                        t.add(ModuleSize.values()[i].amount(mounts[i])).left();
+                        t.row();
+                    }
+                }
+            }).padLeft(24f);
         };
     }
 

@@ -86,7 +86,7 @@ public class BaseModule implements Cloneable{
 
         setBars();
 
-        PMModules.maxClip = Math.max(PMModules.maxClip, clipSize);
+        PMModules.setClip(clipSize);
     }
 
     public void load(){
@@ -95,6 +95,7 @@ public class BaseModule implements Cloneable{
 
     public void setStats(Stats stats){
         if(powerUse > 0) stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
+        if(hasLiquids) stats.add(Stat.liquidCapacity, liquidCapacity, StatUnit.liquidUnits);
 
         consumes.display(stats);
     }
@@ -339,6 +340,10 @@ public class BaseModule implements Cloneable{
 
         public String fullTitle(){
             return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT) + ".full");
+        }
+
+        public String amount(int amount){
+            return Core.bundle.format("pm-size." + name().toLowerCase(Locale.ROOT) + ".amount", amount);
         }
     }
 }

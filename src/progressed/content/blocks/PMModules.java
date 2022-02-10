@@ -79,6 +79,7 @@ public class PMModules{
                     range = 19 * tilesize;
                     targetBlocks = canOverdrive = false;
                     logicControl = playerControl = false;
+                    single = true;
                     reloadTime = 5.5f * 60f;
 
                     unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
@@ -661,5 +662,9 @@ public class PMModules{
             }};
         }};
         //endregion
+    }
+
+    public static void setClip(float newClip){
+        maxClip = Math.max(maxClip, newClip);
     }
 }
