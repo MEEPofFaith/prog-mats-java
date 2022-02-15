@@ -3,6 +3,7 @@ package progressed.entities.bullet.physical;
 import arc.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -14,6 +15,7 @@ import static mindustry.Vars.*;
 public class TargetBulletType extends BasicBulletType{
     public float tDamage;
     public StatusEffect tStatus = StatusEffects.none;
+    public Effect tHitEffect = Fx.none;
     public float tStatusDuration = 10f * 60f;
 
     public TargetBulletType(float speed, float damage, float tDamage, String bulletSprite){
@@ -62,6 +64,7 @@ public class TargetBulletType extends BasicBulletType{
         }
 
         if(tHit){
+            tHitEffect.at(b.x, b.y);
             b.hit = true;
             b.remove();
         }

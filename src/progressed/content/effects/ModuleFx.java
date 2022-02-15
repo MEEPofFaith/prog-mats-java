@@ -15,6 +15,11 @@ import static arc.util.Tmp.*;
 public class ModuleFx{
     public static Effect
 
+    pinpointHit = new Effect(20f, e -> {
+        color(Pal.lancerLaser);
+        Lines.circle(e.x, e.y, e.fout() * 4f);
+    }),
+
     irisTrail = new Effect(30f, e -> {
         color(Pal.surge, Color.white, e.fin());
         v1.trns(e.rotation + 90f, Mathf.randomSeed(e.id, -1f, 1f));

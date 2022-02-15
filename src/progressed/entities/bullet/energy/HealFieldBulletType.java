@@ -9,6 +9,7 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.util.*;
 
 public class HealFieldBulletType extends BulletType{
     public float radius = 5f * Vars.tilesize, healing = 0.6f;
@@ -36,7 +37,7 @@ public class HealFieldBulletType extends BulletType{
         float r = radius * Math.min(b.time / growTime, 1f);
 
         if(b.time <= b.lifetime - areaEffect.lifetime && Mathf.chanceDelta(areaEffectChance)){
-            Tmp.v1.setToRandomDirection().setLength(r * Mathf.sqrt(Mathf.random())).add(b);
+            PMMathf.randomCirclePoint(Tmp.v1, r).add(b);
             areaEffect.at(Tmp.v1);
         }
 

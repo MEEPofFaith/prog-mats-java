@@ -76,13 +76,15 @@ public class PMModules{
                         Items.surgeAlloy, ModuleBullets.pinpointPin
                     );
 
-                    range = 19 * tilesize;
+                    range = 34.5f * tilesize;
                     targetBlocks = canOverdrive = false;
                     logicControl = playerControl = false;
                     single = true;
                     reloadTime = 5.5f * 60f;
 
                     unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
+
+                    limitRange(3f);
                 }
 
                 @Override

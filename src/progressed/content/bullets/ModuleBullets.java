@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -14,6 +15,9 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
+import progressed.util.*;
+
+import javax.sound.sampled.*;
 
 import static mindustry.Vars.*;
 
@@ -144,12 +148,33 @@ public class ModuleBullets{
             critEffect = OtherFx.miniCrit;
         }};
 
-        pinpointPin = new TargetBulletType(5.5f, 2f, 13f){{
-            lifetime = 90f;
-            hittable = absorbable = false;
-            tStatus = PMStatusEffects.pinpointTarget;
-            tStatusDuration = 4f * 60f;
-        }};
+        pinpointPin = new TargetBulletType(2.8f, 2f, 13f){
+            final int streaks = 2, streakLen = 4;
+            final float radius = 4f;
+
+            {
+                lifetime = 240f;
+                hittable = absorbable = false;
+                tStatus = PMStatusEffects.pinpointTarget;
+                tStatusDuration = 4f * 60f;
+                tHitEffect = despawnEffect = ModuleFx.pinpointHit;
+                hitEffect = Fx.none;
+            }
+
+            @Override
+            public void draw(Bullet b){
+                Lines.stroke(0.5f, Pal.lancerLaser);
+                Fill.circle(b.x, b.y, radius / 2.5f);
+                for(int i = 0; i < streaks; i++){
+                    Lines.beginLine();
+                    for(int j = 0; j < streakLen; j++){
+                        PMMathf.randomCirclePoint(Tmp.v1, radius).add(b);
+                        Lines.linePoint(Tmp.v1.x, Tmp.v1.y);
+                    }
+                    Lines.endLine();
+                }
+            }
+        };
 
         waterShotMini = new LiquidBulletType(Liquids.water){{
             lifetime = 40f;
@@ -372,6 +397,7 @@ public class ModuleBullets{
                 splashDamageRadius = 5f * 8f;
                 makeFire = true;
                 width = height = 12f;
+                shrinkY = 0f;
                 frontColor = Color.white;
                 backColor = trailColor = hitColor = lightColor = Pal.remove;
                 trailLength = 20;

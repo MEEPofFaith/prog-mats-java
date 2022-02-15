@@ -1848,6 +1848,7 @@ public class PMBlocks{
         godFactory = new UnitFactory("god-factory"){{
             requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             alwaysUnlocked = true;
+            hasItems = false;
 
             size = 3;
             health = 999999999;
