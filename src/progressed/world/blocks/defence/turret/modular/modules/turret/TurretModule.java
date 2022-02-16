@@ -267,13 +267,13 @@ public class TurretModule extends ReloadTurretModule{
                         if(ii == shots - 1) mount.isShooting = false;
                     });
                 }else{
-                    if(parent.dead) return;
                     basicShoot(parent, mount, type, i);
+                    if(barrels > 1 && !countAfter) effects(mount, peekAmmo(mount));
                 }
             }
 
             if(burstSpacing <= 0.0001f){
-                effects(mount, type);
+                if(barrels == 1 || countAfter) effects(mount, type);
                 useAmmo(parent, mount);
             }
             if(countAfter) mount.shotCounter++;

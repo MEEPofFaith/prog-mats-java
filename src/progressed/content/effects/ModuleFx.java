@@ -16,7 +16,7 @@ public class ModuleFx{
     public static Effect
 
     pinpointHit = new Effect(20f, e -> {
-        color(Pal.lancerLaser);
+        color(Pal.surge);
         Lines.circle(e.x, e.y, e.fout() * 4f);
     }),
 

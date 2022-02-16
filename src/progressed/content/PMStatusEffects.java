@@ -44,7 +44,7 @@ public class PMStatusEffects{
 
         pinpointTarget = new PMStatusEffect("pinpoint-target"){
             {
-                color = Pal.lancerLaser;
+                color = Pal.surge;
                 healthMultiplier = 0.5f;
                 speedMultiplier = 0.9f;
             }

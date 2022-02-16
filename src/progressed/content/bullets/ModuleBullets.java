@@ -163,7 +163,7 @@ public class ModuleBullets{
 
             @Override
             public void draw(Bullet b){
-                Lines.stroke(0.5f, Pal.lancerLaser);
+                Lines.stroke(0.5f, Pal.surge);
                 Fill.circle(b.x, b.y, radius / 2.5f);
                 for(int i = 0; i < streaks; i++){
                     Lines.beginLine();

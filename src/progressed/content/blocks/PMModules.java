@@ -81,6 +81,7 @@ public class PMModules{
                     logicControl = playerControl = false;
                     single = true;
                     reloadTime = 5.5f * 60f;
+                    heatColor = Color.red;
 
                     unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
 
@@ -131,6 +132,7 @@ public class PMModules{
                 range = 100f;
                 barrels = shots = 2;
                 barrelSpacing = 3;
+                countAfter = false;
                 shootEffect = Fx.lightningShoot;
                 heatColor = Color.red;
                 shootSound = Sounds.spark;
