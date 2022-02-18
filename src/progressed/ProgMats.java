@@ -1,12 +1,19 @@
 package progressed;
 
 import arc.*;
+import arc.audio.*;
 import arc.func.*;
+import arc.struct.*;
 import arc.util.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
+import mindustry.type.*;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
@@ -24,6 +31,7 @@ import static mindustry.Vars.*;
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static PMSettings settings = new PMSettings();
+    public static Seq<BulletData> allBullets = new Seq<>();
 
     public ProgMats(){
         super();
@@ -74,7 +82,10 @@ public class ProgMats extends Mod{
             progM.meta.author = contributors.toString();
 
             Events.on(ClientLoadEvent.class, e -> {
-                if(everything()) PMUtls.godHood(PMUnitTypes.everythingUnit);
+                if(everything()){
+                    godHood(PMUnitTypes.everythingUnit);
+                    setupEveryBullets((Turret)PMBlocks.everythingGun);
+                }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
 
@@ -101,10 +112,6 @@ public class ProgMats extends Mod{
         }
     }
 
-    public static boolean everything(){
-        return Core.settings.getBool("pm-sandbox-everything", false);
-    }
-
     @Override
     public void loadContent(){
         PMStatusEffects.load();
@@ -115,5 +122,113 @@ public class ProgMats extends Mod{
         PMWeathers.load();
         PMBlocks.load();
         PMTechTree.load();
+    }
+
+    public static boolean everything(){
+        return Core.settings.getBool("pm-sandbox-everything", false);
+    }
+
+    public static void godHood(UnitType ascending){
+        try{
+            ascending.hitSize = 0;
+            content.units().each(u -> {
+                if(u != ascending){
+                    u.weapons.each(w -> {
+                        if(!w.bullet.killShooter){
+                            Weapon copy = w.copy();
+                            ascending.weapons.add(copy);
+                            if(w.otherSide != -1){
+                                int diff = u.weapons.get(w.otherSide).otherSide - w.otherSide;
+                                copy.otherSide = ascending.weapons.indexOf(copy) + diff;
+                            }
+
+                            copy.rotateSpeed = 360f;
+                            copy.shootCone = 360f;
+
+                            if(copy.shootStatus == StatusEffects.unmoving || copy.shootStatus == StatusEffects.slow){
+                                copy.shootStatus = StatusEffects.none;
+                            }
+                        }
+                    });
+
+                    u.abilities.each(a -> {
+                        ascending.abilities.add(a);
+                    });
+
+                    ascending.hitSize = Math.max(ascending.hitSize, u.hitSize * 2f / 3f);
+                }
+            });
+        }catch(Throwable ignored){}
+    }
+
+    public static void setupEveryBullets(Turret base){
+        content.units().each(u -> {
+            u.weapons.each(w -> {
+                if(w.bullet != null && !w.bullet.killShooter){
+                    BulletType bul = w.bullet;
+                    BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
+                    if(!allBullets.contains(data)){
+                        allBullets.add(data);
+                    }
+                }
+            });
+        });
+        content.blocks().each(b -> {
+            if(b != base && b instanceof Turret){
+                if(b instanceof LaserTurret block && block.shootType != null){
+                    BulletType bul = block.shootType;
+                    Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : block.shootEffect;
+                    Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : block.smokeEffect;
+                    BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shootShake, bul.lifetime + block.shootDuration, true);
+                    if(!allBullets.contains(data)){
+                        allBullets.add(data);
+                    }
+                }else if(b instanceof PowerTurret block && block.shootType != null){
+                    BulletType bul = block.shootType;
+                    Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : base.shootEffect;
+                    Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : base.smokeEffect;
+                    BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shootShake, bul.lifetime);
+                    if(!allBullets.contains(data)){
+                        allBullets.add(data);
+                    }
+                }else if(b instanceof ItemTurret block){
+                    content.items().each(i -> {
+                        if(block.ammoTypes.get(i) != null){
+                            BulletType bul = block.ammoTypes.get(i);
+                            Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : base.shootEffect;
+                            Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : base.smokeEffect;
+                            BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shootShake, bul.lifetime);
+                            if(!allBullets.contains(data)){
+                                allBullets.add(data);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        allBullets.sort(b -> PMUtls.bulletDamage(b.bulletType, b.lifetime));
+    }
+
+    public static class BulletData{
+        public BulletType bulletType;
+        public Sound shootSound;
+        public Effect shootEffect, smokeEffect;
+        public float shake, lifetime;
+        public boolean continuousBlock;
+
+        public BulletData(BulletType bulletType, Sound shootSound, Effect shakeEffect, Effect smokeEffect, float shake, float lifetime, boolean continuous){
+            this.bulletType = bulletType;
+            this.shootSound = shootSound;
+            this.shootEffect = shakeEffect;
+            this.smokeEffect = smokeEffect;
+            this.shake = shake;
+            this.lifetime = lifetime;
+            this.continuousBlock = continuous;
+        }
+
+        public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
+            this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
+        }
     }
 }

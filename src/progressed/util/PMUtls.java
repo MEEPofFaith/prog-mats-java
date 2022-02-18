@@ -4,13 +4,10 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import progressed.entities.bullet.energy.*;
-
-import static mindustry.Vars.*;
 
 public class PMUtls{
     public static final Rand rand = new Rand();
@@ -130,36 +127,6 @@ public class PMUtls{
         float n = s * (l - 1) - (int)(s * (l - 1));
         float i = 1f - n;
         return a * i + b * n;
-    }
-
-    public static void godHood(UnitType ascending){
-        try{
-            content.units().each(u -> {
-                if(u != ascending){
-                    u.weapons.each(w -> {
-                        if(!w.bullet.killShooter){
-                            Weapon copy = w.copy();
-                            ascending.weapons.add(copy);
-                            if(w.otherSide != -1){
-                                int diff = u.weapons.get(w.otherSide).otherSide - w.otherSide;
-                                copy.otherSide = ascending.weapons.indexOf(copy) + diff;
-                            }
-
-                            copy.rotateSpeed = 360f;
-                            copy.shootCone = 360f;
-
-                            if(copy.shootStatus == StatusEffects.unmoving || copy.shootStatus == StatusEffects.slow){
-                                copy.shootStatus = StatusEffects.none;
-                            }
-                        }
-                    });
-
-                    u.abilities.each(a -> {
-                        ascending.abilities.add(a);
-                    });
-                }
-            });
-        }catch(Throwable ignored){}
     }
 
     public static void uhOhSpeghettiOh(String ohno){

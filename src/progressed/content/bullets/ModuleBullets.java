@@ -17,8 +17,6 @@ import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
 import progressed.util.*;
 
-import javax.sound.sampled.*;
-
 import static mindustry.Vars.*;
 
 public class ModuleBullets{
