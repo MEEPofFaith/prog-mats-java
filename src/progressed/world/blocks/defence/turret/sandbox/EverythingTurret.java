@@ -24,7 +24,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class EverythingTurret extends PowerTurret{
-    public float growSpeed = 0.00055f, shrinkSpeed = 0.0025f, levelScl = 0.25f, levelSclMax = 0.125f;
+    public float growSpeed = 0.00055f, shrinkSpeed = 0.0025f, levelScl = 0.375f, levelSclMax = 0.125f;
     public int swirlEffects = 2;
     public float swirlSizeBase = 1f, swirlSize = 5f, swirlSizeScl = 3f, swirlRad = 24f, swirlRadScl = 8f;
 
@@ -119,11 +119,10 @@ public class EverythingTurret extends PowerTurret{
         @Override
         protected void updateShooting(){
             if(reload >= reloadTime && !charging){
-                float total = ProgMats.allBullets.size - 1f,
-                    levelf = levelf() * (1 + levelSclMax),
-                    min = Mathf.clamp(levelf - levelScl) * total,
-                    max = Mathf.clamp(levelf) * total;
-                selectedBullet = (int)Mathf.random(min, max);
+                float levelf = levelf() * (1 + levelSclMax),
+                    min = Mathf.clamp(levelf - levelScl) * ProgMats.allBullets.size,
+                    max = Mathf.clamp(levelf) * ProgMats.allBullets.size;
+                selectedBullet = Mathf.clamp(Mathf.floor(Mathf.random(min, max)), 0, ProgMats.allBullets.size - 1);
 
                 BulletType type = peekAmmo();
 
