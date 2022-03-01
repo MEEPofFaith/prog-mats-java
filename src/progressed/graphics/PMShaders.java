@@ -10,7 +10,7 @@ import static mindustry.Vars.*;
 public class PMShaders{
     public static VerticalBuildShader vertBuild;
 
-    public static void load(){
+    public static void init(){
         vertBuild = new VerticalBuildShader();
     }
 
