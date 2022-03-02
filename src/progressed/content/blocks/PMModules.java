@@ -530,6 +530,7 @@ public class PMModules{
                 shootShake = 3f;
                 rotateSpeed = 3.5f;
                 shootSound = Sounds.laser;
+                heatColor = Color.red;
 
                 shootType = ModuleBullets.aresOrb;
             }};
