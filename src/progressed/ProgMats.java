@@ -30,6 +30,7 @@ import static mindustry.Vars.*;
 
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
+    public static ModuleInfoDialog moduleInfoDialog;
     public static PMSettings settings = new PMSettings();
     public static Seq<BulletData> allBullets = new Seq<>();
 
@@ -88,6 +89,7 @@ public class ProgMats extends Mod{
                 }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
+                moduleInfoDialog = new ModuleInfoDialog();
 
                 if(Core.settings.getBool("pm-farting")){
                     content.blocks().each(b -> {

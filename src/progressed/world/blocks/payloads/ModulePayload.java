@@ -1,5 +1,6 @@
 package progressed.world.blocks.payloads;
 
+import arc.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -44,6 +45,12 @@ public class ModulePayload extends Block{
         super.setStats();
 
         module.setStats(stats);
+        module.setModuleStats(stats);
+    }
+
+    @Override
+    public String displayDescription(){
+        return description + "\n" + Core.bundle.get("pm-module-desc") + "\n" + Core.bundle.format("mod.display", minfo.mod.meta.displayName());
     }
 
     @Override

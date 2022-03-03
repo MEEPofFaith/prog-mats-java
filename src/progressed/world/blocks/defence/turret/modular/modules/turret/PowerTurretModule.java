@@ -1,7 +1,6 @@
 package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import arc.struct.*;
-import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
@@ -23,7 +22,7 @@ public class PowerTurretModule extends TurretModule{
     public void setStats(Stats stats){
         super.setStats(stats);
 
-        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(Vars.content.block(mountID), shootType)));
+        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(getPayload(), shootType)));
     }
 
     @Override

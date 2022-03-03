@@ -19,6 +19,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
@@ -29,6 +30,7 @@ import progressed.ui.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.payloads.*;
 
@@ -496,6 +498,12 @@ public class PMStatValues{
     public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
         return table.button("?", Styles.clearPartialt, () -> {
             ui.content.show(content);
+        }).size(size).left().name("contentinfo");
+    }
+
+    public static Cell<TextButton> moduleInfoButton(Table table, BaseModule content, float size){
+        return table.button("?", Styles.clearPartialt, () -> {
+            ProgMats.moduleInfoDialog.show(content);
         }).size(size).left().name("contentinfo");
     }
 

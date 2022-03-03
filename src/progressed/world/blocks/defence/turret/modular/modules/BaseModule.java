@@ -51,6 +51,7 @@ public class BaseModule implements Cloneable{
 
     public ModuleSize size;
     public boolean single;
+    public ModuleStats mStats;
 
     public Func3<ModularTurretBuild, BaseModule, Integer, BaseMount> mountType = BaseMount::new;
 
@@ -93,11 +94,20 @@ public class BaseModule implements Cloneable{
         region = Core.atlas.find(name);
     }
 
+    /** Set stats for both the module payload and the module. */
     public void setStats(Stats stats){
         if(powerUse > 0) stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
         if(hasLiquids) stats.add(Stat.liquidCapacity, liquidCapacity, StatUnit.liquidUnits);
 
         consumes.display(stats);
+    }
+
+    /** Set stats for just the module. */
+    public void setModuleStats(Stats stats){
+        mStats = new ModuleStats(stats);
+        mStats.remove(Stat.health);
+        mStats.remove(Stat.size);
+        mStats.add(Stat.size, size.fullTitle());
     }
 
     public void setBars(){
@@ -117,6 +127,11 @@ public class BaseModule implements Cloneable{
                 () -> entity.power.status
             ));
         }
+    }
+
+    public String displayDescription(){
+        ModulePayload payload = getPayload();
+        return payload.description + "\n" + Core.bundle.format("mod.display", payload.minfo.mod.meta.displayName());
     }
 
     public void createIcons(MultiPacker packer){
@@ -196,11 +211,11 @@ public class BaseModule implements Cloneable{
             t.left();
             t.add(new Image(region)).size(8 * 4);
             t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").left().fillX().padLeft(5);
-            PMStatValues.infoButton(t, content.block(mountID), 4f * 8f).left().padLeft(5f);
+            PMStatValues.moduleInfoButton(t, this, 4f * 8f).left().padLeft(5f);
             t.button("^", Styles.clearPartialt, () -> {
                 if(canPickUp(mount)){ //jeez this is a mess
                     Payloadc p = (Payloadc)player.unit();
-                    BuildPayload module = new BuildPayload(content.block(mountID), parent.team);
+                    BuildPayload module = new BuildPayload(getPayload(), parent.team);
                     p.addPayload(module);
                     Fx.unitPickup.at(mount.x, mount.y);
                     Events.fire(new PickupEvent(player.unit(), module.build));
@@ -227,7 +242,7 @@ public class BaseModule implements Cloneable{
         Unit u = player.unit();
         if(!(u instanceof Payloadc p)) return false;
 
-        ModulePayload mPay = (ModulePayload)content.block(mountID);
+        ModulePayload mPay = getPayload();
         return p.payloadUsed() + mPay.size * mPay.size * tilePayload <= u.type.payloadCapacity + 0.01f
             && u.within(mount.x, mount.y, tilesize * mPay.size * 1.2f);
     }
@@ -237,7 +252,7 @@ public class BaseModule implements Cloneable{
         if(!(u instanceof Payloadc p)){
             ui.showInfoToast("@pm-pickup.invalid", 2f);
         }else{
-            ModulePayload mPay = (ModulePayload)content.block(mountID);
+            ModulePayload mPay = getPayload();
             if(!player.unit().within(mount.x, mount.y, mPay.size * tilesize * 1.2f)){
                 ui.showInfoToast("@pm-pickup.toofar", 2f);
             }else if(p.payloadUsed() + mPay.size * mPay.size * tilePayload > u.type.payloadCapacity + 0.01f){
@@ -288,6 +303,10 @@ public class BaseModule implements Cloneable{
 
     public boolean shouldLoopSound(ModularTurretBuild parent, BaseMount mount){
         return false;
+    }
+
+    public ModulePayload getPayload(){
+        return (ModulePayload)content.block(mountID);
     }
 
     public void writeAll(Writes write, BaseMount mount){
