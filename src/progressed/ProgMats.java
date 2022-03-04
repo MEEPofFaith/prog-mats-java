@@ -43,7 +43,7 @@ public class ProgMats extends Mod{
 
         // Load all assets once they're added into Vars.tree
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
-            PMShaders.load();
+            if(!headless) PMShaders.init();
             PMSounds.load();
         }));
 

@@ -11,7 +11,7 @@ public class PMShaders{
     public static VerticalBuildShader vertBuild;
     public static BlockBuildCenteShader blockBuildCenter;
 
-    public static void load(){
+    public static void init(){
         vertBuild = new VerticalBuildShader();
         blockBuildCenter = new BlockBuildCenteShader();
     }

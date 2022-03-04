@@ -73,11 +73,11 @@ public class PayloadCrafter extends PayloadBlock{
             hasPower = true;
         }
         if(recipes.contains(r -> r.buildCost != null)){
-            consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.recipe() != null && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
+            consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
             hasItems = true;
         }
         if(recipes.contains(r -> r.liquidCost != null)){
-            consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.recipe() != null ? e.recipe().liquidCost : null));
+            consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidCost : null));
             hasLiquids = true;
         }
         if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
@@ -118,7 +118,7 @@ public class PayloadCrafter extends PayloadBlock{
         if(hasLiquids){
             bars.remove("liquid");
             bars.add("liquid", (PayloadCrafterBuild entity) -> {
-                Liquid l = entity.recipe() != null ? entity.recipe().getLiquidInput() : null;
+                Liquid l = entity.hasRecipe() ? entity.recipe().getLiquidInput() : null;
                 return new Bar(
                     () -> l != null ? l.localizedName : Core.bundle.get("bar.liquid"),
                     () -> l != null ? l.barColor() : Color.white,
@@ -158,6 +158,10 @@ public class PayloadCrafter extends PayloadBlock{
 
         public @Nullable Recipe recipe(){
             return recipes.find(r -> r.outputBlock == recipe);
+        }
+
+        public boolean hasRecipe(){
+            return recipe() != null;
         }
 
         @Override
@@ -208,7 +212,7 @@ public class PayloadCrafter extends PayloadBlock{
         }
 
         public float powerUse(){
-            return recipe() != null ? recipe().powerUse : 0f;
+            return hasRecipe() ? recipe().powerUse : 0f;
         }
 
         @Override
@@ -258,7 +262,7 @@ public class PayloadCrafter extends PayloadBlock{
         }
 
         public boolean curInput(){
-            return recipe() != null && recipe().inputBlock != null;
+            return hasRecipe() && recipe().inputBlock != null;
         }
 
         @Override
@@ -277,7 +281,7 @@ public class PayloadCrafter extends PayloadBlock{
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return liquids != null && recipe() != null && recipe().hasLiquidInput(liquid);
+            return liquids != null && hasRecipe() && recipe().hasLiquidInput(liquid);
         }
 
         @Override
@@ -344,6 +348,24 @@ public class PayloadCrafter extends PayloadBlock{
         public void display(Table table){
             super.display(table);
 
+            Image prev = new Image();
+            TextureRegionDrawable prevReg = new TextureRegionDrawable();
+
+            table.row();
+            table.table(p -> {
+                p.update(() -> {
+                    p.clear();
+                    if(hasRecipe() && recipe().hasInputBlock()){
+                        p.label(() -> Core.bundle.get("pm-requires")).color(Color.lightGray).padRight(2f);
+                        prev.setDrawable(prevReg.set(recipe().inputBlock.uiIcon));
+                        ReqImage r = new ReqImage(prev, () -> payload != null && hasArrived() && payload.block() == recipe().inputBlock);
+                        r.setSize(32);
+                        p.add(r).size(32).padBottom(-4).padRight(2);
+                        p.label(() -> recipe().inputBlock.localizedName).color(Color.lightGray);
+                    }
+                });
+            }).left();
+
             TextureRegionDrawable reg = new TextureRegionDrawable();
 
             table.row();
@@ -354,7 +376,7 @@ public class PayloadCrafter extends PayloadBlock{
                     i.setScaling(Scaling.fit);
                     i.setColor(recipe == null ? Color.lightGray : Color.white);
                 }).size(32).padBottom(-4).padRight(2);
-            }).left().get().label(() -> recipe == null ? "@none" : recipe.localizedName).wrap().width(230f).color(Color.lightGray);
+            }).left().get().label(() -> recipe == null ? "@none" : recipe.localizedName).color(Color.lightGray);
         }
 
         @Override
