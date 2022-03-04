@@ -65,6 +65,7 @@ public class ImpulseModule extends RangedModule{
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
         stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
+        stats.add(Stat.shots, maxTargets);
     }
 
     @Override

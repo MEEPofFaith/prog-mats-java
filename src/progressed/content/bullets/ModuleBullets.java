@@ -417,7 +417,7 @@ public class ModuleBullets{
                     displayAmmoMultiplier = false;
                     shootEffect = smokeEffect = ModuleFx.flameShoot;
                     makeFire = true;
-                    status = StatusEffects.burning;
+                    status = StatusEffects.melting;
                 }};
             }
 

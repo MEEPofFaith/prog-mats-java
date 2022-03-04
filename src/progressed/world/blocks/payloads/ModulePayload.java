@@ -50,7 +50,10 @@ public class ModulePayload extends Block{
 
     @Override
     public String displayDescription(){
-        return description + "\n" + Core.bundle.get("pm-module-desc") + "\n" + Core.bundle.format("mod.display", minfo.mod.meta.displayName());
+        return description +
+            "\n" + Core.bundle.get("pm-module-desc") +
+            (module.single ? "\n" + Core.bundle.get("pm-module-single") : "") +
+            "\n" + Core.bundle.format("mod.display", minfo.mod.meta.displayName());
     }
 
     @Override
