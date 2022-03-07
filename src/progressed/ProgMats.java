@@ -91,7 +91,7 @@ public class ProgMats extends Mod{
                 swapDialog = new ModuleSwapDialog();
                 moduleInfoDialog = new ModuleInfoDialog();
 
-                if(Core.settings.getBool("pm-farting")){
+                if(farting()){
                     content.blocks().each(b -> {
                         b.destroySound = Sounds.wind3;
                     });
@@ -121,9 +121,14 @@ public class ProgMats extends Mod{
         PMUnitTypes.load();
         PMItems.load();
         PMBullets.load();
+        PMPlanets.load();
         PMWeathers.load();
         PMBlocks.load();
         PMTechTree.load();
+    }
+
+    public static boolean farting(){
+        return Core.settings.getBool("pm-farting", false);
     }
 
     public static boolean everything(){

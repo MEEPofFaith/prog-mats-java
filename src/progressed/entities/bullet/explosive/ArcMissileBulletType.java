@@ -14,6 +14,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import progressed.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
@@ -65,7 +66,7 @@ public class ArcMissileBulletType extends BasicBulletType{
         if(blockEffect == Fx.none) blockEffect = despawnEffect;
         if(fallEngineTime < 0) fallEngineTime = fallTime;
 
-        if(Core.settings.getBool("pm-farting") && hitSound != Sounds.none){
+        if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }

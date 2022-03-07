@@ -12,6 +12,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.*;
 import progressed.content.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
@@ -31,7 +32,7 @@ public class PayloadRocketTurret extends PayloadTurret{
         super(name);
 
         outlinedIcon = 3;
-        shootSound = Core.settings.getBool("pm-farting") ? PMSounds.gigaFard : PMSounds.rocketLaunch;
+        shootSound = ProgMats.farting() ? PMSounds.gigaFard : PMSounds.rocketLaunch;
     }
 
     @Override

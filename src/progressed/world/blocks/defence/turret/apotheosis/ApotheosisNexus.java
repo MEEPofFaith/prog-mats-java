@@ -24,6 +24,7 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.audio.*;
 import progressed.content.*;
 import progressed.content.effects.*;
@@ -535,7 +536,7 @@ public class ApotheosisNexus extends ReloadTurret{
                         arcing = true;
                         fireSound.at(x, y, fireSoundPitch, fireSoundVolume);
                         if(isPiss()){
-                            (Core.settings.getBool("pm-farting") && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
+                            (ProgMats.farting() && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
                             Sounds.wind3.at(x, y, 1f, 5f);
                         }
                         fireEffect.at(x, y);
@@ -603,7 +604,7 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         public boolean isPiss(){
-            return Core.settings.getBool("pm-farting") || piss;
+            return ProgMats.farting() || piss;
         }
 
         public float chargef(){
