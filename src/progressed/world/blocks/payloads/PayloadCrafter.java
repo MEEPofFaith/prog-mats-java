@@ -300,12 +300,13 @@ public class PayloadCrafter extends PayloadBlock{
                     Recipe r = recipes.find(rec -> rec.outputBlock == b);
                     button.update(() -> button.setChecked(recipe == b));
 
+                    TextureRegionDrawable reg = new TextureRegionDrawable();
                     if(r.requiresUnlock && !r.outputBlock.unlockedNow()){
-                        button.getStyle().imageUp = new TextureRegionDrawable(Core.atlas.find("clear"));
+                        button.getStyle().imageUp = reg.set(Core.atlas.find("clear"));
                         button.replaceImage(PMElements.imageStack(b.uiIcon, Icon.tree.getRegion(), Color.red));
                         cell.tooltip("@pm-missing-research");
                     }else{
-                        button.getStyle().imageUp = new TextureRegionDrawable(b.uiIcon);
+                        button.getStyle().imageUp = reg.set(b.uiIcon);
                         cell.tooltip(b.localizedName);
                     }
                     button.changed(() -> configure(button.isChecked() ? b : null));

@@ -351,9 +351,21 @@ public class PMStatValues{
                                 it.add("[lightgray]" + Stat.input.localized() + ": []");
                                 if(r.buildCost != null)
                                     for(ItemStack stack: r.buildCost){
-                                        it.add(new ItemImage(stack.item.uiIcon, stack.amount));
+                                        it.add(new ItemDisplay(stack.item, stack.amount, r.craftTime, false));
                                     }
-                                if(r.liquidCost != null) it.add(new ItemImage(r.liquidCost.liquid.uiIcon, (int)r.liquidCost.amount));
+                                if(r.liquidCost != null){
+                                    //Copy over from ItemDisplay and LiquidDisplay
+                                    it.add(new Stack(){{
+                                        add(new Image(r.liquidCost.liquid.uiIcon));
+
+                                        if(r.liquidCost.amount != 0){
+                                            Table t = new Table().left().bottom();
+                                            t.add(Strings.autoFixed(r.liquidCost.amount, 2)).style(Styles.outlineLabel);
+                                            add(t);
+                                        }
+                                    }}).size(iconMed).padRight(3  + (r.liquidCost.amount != 0 && Strings.autoFixed(r.liquidCost.amount, 2).length() > 2 ? 8 : 0));
+                                    it.add(Strings.autoFixed(r.liquidCost.amount / (r.craftTime / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+                                }
                             });
                         }
 
