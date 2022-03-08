@@ -12,6 +12,7 @@ public class PMPlanets{
 
     public static void load(){
         if(ProgMats.farting()){
+            // *wipes tear* It's beautiful.
             theGrandPoo = new Planet("the-grand-poo", Planets.serpulo, 0.25f){{
                 bloom = true;
                 accessible = false;

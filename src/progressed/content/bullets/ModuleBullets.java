@@ -12,6 +12,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import progressed.content.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
