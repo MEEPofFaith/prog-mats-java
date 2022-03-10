@@ -1,6 +1,7 @@
 package progressed.world.blocks.defence.turret.modular.mounts;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import mindustry.audio.*;
 import mindustry.gen.*;
@@ -27,6 +28,7 @@ public class BaseMount implements Position{
     /** Current heat, 0 to 1*/
     public float heat;
     public boolean highlight;
+    public float highlightAlpha;
     public SoundLoop sound;
 
     public BaseMount(ModularTurretBuild parent, BaseModule module, int mountNumber){
@@ -43,6 +45,7 @@ public class BaseMount implements Position{
     }
 
     public void update(ModularTurretBuild parent){
+        highlightAlpha = Mathf.approachDelta(highlightAlpha, Mathf.num(highlight), 0.02f);
         module.update(parent, this);
     }
 
@@ -60,7 +63,7 @@ public class BaseMount implements Position{
     public void draw(ModularTurretBuild parent){
         Draw.z(Layer.turret + module.layerOffset);
         module.draw(parent, this);
-        if(highlight){
+        if(highlightAlpha > 0.001f){
             Draw.z(Layer.overlayUI);
             module.drawHighlight(parent, this);
         }

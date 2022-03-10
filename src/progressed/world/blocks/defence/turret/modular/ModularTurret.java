@@ -240,6 +240,8 @@ public class ModularTurret extends PayloadBlock{
             }
 
             allMounts.each(m -> m.update(this));
+
+            if(Vars.control.input.frag.config.getSelectedTile() != this) unHighlight();
         }
 
         public void retarget(float x, float y){
@@ -441,13 +443,6 @@ public class ModularTurret extends PayloadBlock{
                     }).top().left().grow();
                 }
             }).top().fillX().expandY();
-        }
-
-        @Override
-        public boolean onConfigureTileTapped(Building other){
-            boolean close = super.onConfigureTileTapped(other);
-            if(close) unHighlight();
-            return close;
         }
 
         public void resetSelection(){

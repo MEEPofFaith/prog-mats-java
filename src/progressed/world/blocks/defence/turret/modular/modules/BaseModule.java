@@ -203,7 +203,7 @@ public class BaseModule implements Cloneable{
     }
 
     public void applyColor(ModularTurretBuild parent, BaseMount mount){
-        if(mount.highlight) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f));
+        if(mount.highlightAlpha > 0.001f) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f) * mount.highlightAlpha);
     }
 
     public void display(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){
