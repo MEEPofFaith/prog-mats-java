@@ -98,6 +98,8 @@ public class BaseModule implements Cloneable{
     public void setStats(Stats stats){
         if(powerUse > 0) stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
         if(hasLiquids) stats.add(Stat.liquidCapacity, liquidCapacity, StatUnit.liquidUnits);
+        stats.add(Stat.size, " | ");
+        stats.add(Stat.size, size.fullTitle());
 
         consumes.display(stats);
     }
@@ -105,6 +107,7 @@ public class BaseModule implements Cloneable{
     /** Set stats for just the module. */
     public void setModuleStats(Stats stats){
         mStats = new ModuleStats(stats);
+        mStats.useCategories = true;
         mStats.remove(Stat.health);
         mStats.remove(Stat.size);
         mStats.add(Stat.size, size.fullTitle());

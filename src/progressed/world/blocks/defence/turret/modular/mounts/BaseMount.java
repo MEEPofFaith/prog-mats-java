@@ -63,7 +63,7 @@ public class BaseMount implements Position{
     public void draw(ModularTurretBuild parent){
         Draw.z(Layer.turret + module.layerOffset);
         module.draw(parent, this);
-        if(highlightAlpha > 0.001f){
+        if(highlight){
             Draw.z(Layer.overlayUI);
             module.drawHighlight(parent, this);
         }
