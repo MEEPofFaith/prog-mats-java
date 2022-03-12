@@ -20,5 +20,5 @@ jobs:
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
-        name: ProgMats (zipped)
+        name: ProgMin (zipped)
         path: build/libs/${{ github.event.repository.name }}.jar

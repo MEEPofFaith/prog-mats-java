@@ -1,7 +1,7 @@
 name: prog-mats
-displayName: Progressed Materials (Java)
-author: MEEP of Faith (And a bunch of contributors. Load the game with Progressed Materials enabled to view them.)
-description: "Progressed Materials, but in Java. My main mod, which mostly just adds turrets. I'm just experimenting to see what I can do with the power I hold.\n\nThe name definitely isn't made of the synonyms of \"Advance\" and \"Content\"."
+displayName: Progression Ministry
+author: MEEP of Faith (And a bunch of contributors. Load the game with PM enabled to view them.)
+description: "This mod is mostly just turrets. It's just me having fun with what I can create with the power of Java."
 version: 23.6
 minGameVersion: 135
 repo: MEEPofFaith/prog-mats-java

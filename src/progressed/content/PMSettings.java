@@ -18,7 +18,7 @@ public class PMSettings{
     public SettingsTable progm;
 
     public void init(){
-        BaseDialog dialog = new BaseDialog("Progressed Materials");
+        BaseDialog dialog = new BaseDialog("@setting.pm-title");
         dialog.addCloseButton();
 
         progm = new SettingsTable();
