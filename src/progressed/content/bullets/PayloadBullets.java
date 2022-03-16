@@ -28,7 +28,7 @@ public class PayloadBullets{
     strikedownBasic, strikedownRecursive,
     trinityBasic, trinityCluster,
 
-    sendHelp;
+    sendHelp; //Maniacal laughter
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);

@@ -169,7 +169,10 @@ public class PMPayloads{
             size = 3;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.sendHelp;
+            ArcMissileBulletType b = PayloadBullets.sendHelp;
+            explosion = b.splitBullet;
+            explosions = b.splitBullets;
+            maxDelay = 20f;
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
