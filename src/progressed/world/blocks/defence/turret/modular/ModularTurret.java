@@ -37,8 +37,8 @@ public class ModularTurret extends PayloadBlock{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
 
-    public final int timerTarget = timers++;
-    public int targetInterval = 20;
+    public final int timerTargetFast = timers++, timerTarget = timers++;
+    public int targetIntervalFast = 5, targetInterval = 20;
 
     public ModuleGroup[] moduleGroups;
     public Vec2[] smallMountPos, mediumMountPos, largeMountPos;
@@ -170,7 +170,7 @@ public class ModularTurret extends PayloadBlock{
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
         public Seq<BaseMount> allMounts = new Seq<>();
-        public Seq<TurretMount> turretMounts = new Seq<>();
+        public Seq<BaseTurretMount> turretMounts = new Seq<>();
         public float logicControlTime;
         public boolean logicShooting = false;
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
@@ -235,8 +235,12 @@ public class ModularTurret extends PayloadBlock{
                 logicControlTime -= Time.delta;
             }
 
+            if(timer(timerTargetFast, targetIntervalFast)){
+                turretMounts.each(m -> m.module.fastRetarget, m -> m.findTarget(this));
+            }
+
             if(timer(timerTarget, targetInterval)){
-                turretMounts.each(m -> m.findTarget(this));
+                turretMounts.each(m -> !m.module.fastRetarget, m -> m.findTarget(this));
             }
 
             allMounts.each(m -> m.update(this));
@@ -319,7 +323,7 @@ public class ModularTurret extends PayloadBlock{
                 module,
                 pos
             );
-            if(mount instanceof TurretMount t) turretMounts.add(t);
+            if(mount instanceof BaseTurretMount t) turretMounts.add(t);
             allMounts.add(mount);
             mount.updatePos(this);
             sort();
@@ -330,7 +334,7 @@ public class ModularTurret extends PayloadBlock{
         public void removeMount(BaseMount mount){
             mount.module.remove(this, mount);
             allMounts.remove(mount);
-            if(mount instanceof TurretMount t) turretMounts.remove(t);
+            if(mount instanceof BaseTurretMount t) turretMounts.remove(t);
         }
 
         public short nextMount(ModuleSize size){
@@ -439,7 +443,7 @@ public class ModularTurret extends PayloadBlock{
                             d.actions(Actions.scaleTo(0f, 1f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
                         }
                         d.top().left();
-                        mount.module.display(this, d, table, mount);
+                        mount.module.displayAll(this, d, table, mount);
                     }).top().left().grow();
                 }
             }).top().fillX().expandY();

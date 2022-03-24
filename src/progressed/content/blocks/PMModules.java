@@ -383,38 +383,19 @@ public class PMModules{
                 }
 
                 @Override
-                public void findTarget(ModularTurretBuild parent, TurretMount mount){
+                public void findTarget(ModularTurretBuild parent, BaseTurretMount mount){
                     mount.target = Units.closest(parent.team, mount.x, mount.y, range, u -> u.damaged() && u.checkTarget(targetGround, targetAir));
                 }
             };
         }};
 
         dispel = new ModulePayload("dispel"){{
-            module = new FieldModule("dispel", ModuleSize.medium){{
-                powerUse = 17f;
-                teamColor = false;
-                radius = 20f * tilesize;
-                arc = 24f;
-                fieldColor = Pal.accentBack;
-
-                float damage = 0.25f, scaledDamage = 5.5f;
-                activate = (p, m) -> {
-                    m.target = Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2, radius * 2).min(b -> b.team != p.team && b.type().hittable, b -> b.dst2(m));
-                    Groups.bullet.intersect(m.x - radius, m.y - radius, radius * 2f, radius * 2f, b -> {
-                        if(b.type.hittable && b.team != p.team && b.within(m, radius) && Angles.within(m.rotation, m.angleTo(b), arc / 2f)){
-                            float scl = 1f - m.dst(b) / radius;
-                            float d = (damage + scaledDamage * scl) * edelta(p);
-
-                            if(b.damage() > d){
-                                b.damage(b.damage() - d);
-                            }else{
-                                b.remove();
-                            }
-
-                            ModuleFx.diffusionDamage.at(b.x, b.y, b.hitSize * 3f * (0.1f + scl * 0.9f), Pal.accent);
-                        }
-                    });
-                };
+            module = new PointDefenceModule("dispel", ModuleSize.medium){{
+                powerUse = 5f;
+                range = 200f;
+                reloadTime = 10f;
+                bulletDamage = 40f;
+                pierceCap = 6;
             }};
         }};
         //endregion
@@ -464,8 +445,9 @@ public class PMModules{
                 }
 
                 @Override
-                public void drawTurret(ModularTurretBuild parent, TurretMount mount){
-                    super.drawTurret(parent, mount);
+                public void draw(ModularTurretBuild parent, BaseMount m){
+                    TurretMount mount = (TurretMount)m;
+                    super.draw(parent, mount);
 
                     if(hasAmmo(mount)){
                         BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
@@ -597,7 +579,8 @@ public class PMModules{
                 }
 
                 @Override
-                public void drawTurret(ModularTurretBuild parent, TurretMount mount){
+                public void draw(ModularTurretBuild parent, BaseMount m){
+                    TurretMount mount = (TurretMount)m;
                     float x = mount.x,
                         y = mount.y;
 

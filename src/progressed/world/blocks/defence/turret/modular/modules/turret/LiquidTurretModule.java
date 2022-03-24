@@ -55,7 +55,7 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    public void findTarget(ModularTurretBuild parent, TurretMount mount){
+    public void findTarget(ModularTurretBuild parent, BaseTurretMount mount){
         if(extinguish && mount.liquids.current().canExtinguish()){
             int tx = World.toTile(mount.x), ty = World.toTile(mount.y);
             Fire result = null;

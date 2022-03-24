@@ -514,7 +514,7 @@ public class PMStatValues{
     }
 
     public static Cell<TextButton> moduleInfoButton(Table table, BaseModule content, float size){
-        return table.button("?", Styles.clearPartialt, () -> {
+        return table.button("?", () -> {
             ProgMats.moduleInfoDialog.show(content);
         }).size(size).left().name("contentinfo");
     }

@@ -1,6 +1,5 @@
 package progressed.world.blocks.defence.turret.modular.modules.turret;
 
-import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -16,7 +15,6 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
@@ -28,8 +26,6 @@ public class TurretModule extends ReloadTurretModule{
         targetEnemies = true, targetHealing;
     public boolean leadTargets = true, accurateDelay;
     public boolean rotateShooting = true;
-    public float rotateSpeed = 5f;
-    public float shootCone = 8f;
 
     public float shootLength;
     public int shots = 1;
@@ -43,7 +39,6 @@ public class TurretModule extends ReloadTurretModule{
     public int barrels = 1;
     public float inaccuracy, velocityInaccuracy;
 
-    public Color heatColor = Pal.turretHeat;
     public Effect shootEffect = Fx.none;
     public Effect smokeEffect = Fx.none;
     public Sound shootSound = Sounds.shoot;
@@ -51,8 +46,6 @@ public class TurretModule extends ReloadTurretModule{
     public boolean alternate = false;
     public float ammoEjectX = 1f, ammoEjectY = -1f;
     public boolean rotate = true;
-    public boolean buildTop;
-    public float topLayerOffset;
 
     public float chargeTime = -1f;
     public int chargeEffects = 5;
@@ -61,16 +54,11 @@ public class TurretModule extends ReloadTurretModule{
     public Effect chargeBeginEffect = Fx.none;
     public Sound chargeSound = Sounds.none;
 
-    public float recoilAmount;
-    public float restitution = 0.02f;
-    public float cooldown = 0.02f;
-
-    public TextureRegion heatRegion, liquidRegion, topRegion;
-
     public Sortf unitSort = UnitSorts.closest;
 
     public TurretModule(String name, ModuleSize size){
         super(name, size);
+        mountType = TurretMount::new;
         recoilAmount = size();
         shootLength = size() * Vars.tilesize / 2f;
     }
@@ -82,22 +70,9 @@ public class TurretModule extends ReloadTurretModule{
     @Override
     public void init(){
         if(barrels < 1) barrels = 1; //Do not
-        if(!targetEnemies) targetHealing = true;
-
-        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
-            hasLiquids = true;
-            consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
-        }
+        if(!targetEnemies) targetHealing = true; //At least shoot at *something*
 
         super.init();
-    }
-
-    @Override
-    public void load(){
-        super.load();
-        heatRegion = Core.atlas.find(name + "-heat");
-        liquidRegion = Core.atlas.find(name + "-liquid");
-        topRegion = Core.atlas.find(name + "-top");
     }
 
     @Override
@@ -130,7 +105,8 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     @Override
-    public void targetPosition(TurretMount mount, Posc pos){
+    public void targetPosition(BaseTurretMount m, Posc pos){
+        TurretMount mount = (TurretMount)m;
         if(!hasAmmo(mount) || pos == null) return;
         BulletType bullet = peekAmmo(mount);
 
@@ -152,8 +128,11 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     @Override
-    public void updateTurret(ModularTurretBuild parent, TurretMount mount){
-        if(!isDeployed(mount)) return;
+    public void update(ModularTurretBuild parent, BaseMount m){
+        super.update(parent, m);
+        if(!isDeployed(m)) return;
+
+        TurretMount mount = (TurretMount)m;
 
         if(!validateTarget(parent, mount)) mount.target = null;
 
@@ -195,6 +174,11 @@ public class TurretModule extends ReloadTurretModule{
         }
 
         updateCharging(parent, mount);
+    }
+
+    @Override
+    public void updateCooling(ModularTurretBuild parent, BaseTurretMount mount){
+        if(((TurretMount)mount).charge <= 0f) super.updateCooling(parent, mount);
     }
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
@@ -368,7 +352,8 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     @Override
-    public void findTarget(ModularTurretBuild parent, TurretMount mount){
+    public void findTarget(ModularTurretBuild parent, BaseTurretMount m){
+        TurretMount mount = (TurretMount)m;
         if(!hasAmmo(mount)) return;
         float x = mount.x,
             y = mount.y;
@@ -388,7 +373,8 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     @Override
-    public void drawTurret(ModularTurretBuild parent, TurretMount mount){
+    public void draw(ModularTurretBuild parent, BaseMount m){
+        BaseTurretMount mount = (BaseTurretMount)m;
         float x = mount.x,
             y = mount.y,
             rot = rotate ? mount.rotation - 90f : 0;
@@ -440,7 +426,6 @@ public class TurretModule extends ReloadTurretModule{
         super.write(write, mount);
 
         if(mount instanceof TurretMount m){
-            write.f(m.reload);
             write.f(m.charge);
         }
     }
@@ -450,7 +435,6 @@ public class TurretModule extends ReloadTurretModule{
         super.read(read, revision, mount);
 
         if(mount instanceof TurretMount m){
-            m.reload = read.f();
             m.charge = read.f();
         }
     }

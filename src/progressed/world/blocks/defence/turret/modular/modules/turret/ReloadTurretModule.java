@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import arc.math.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -30,6 +31,16 @@ public class ReloadTurretModule extends BaseTurretModule{
     }
 
     @Override
+    public void init(){
+        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
+            hasLiquids = true;
+            consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
+        }
+
+        super.init();
+    }
+
+    @Override
     public void setStats(Stats stats){
         super.setStats(stats);
 
@@ -38,8 +49,8 @@ public class ReloadTurretModule extends BaseTurretModule{
         }
     }
 
-    public void updateCooling(ModularTurretBuild parent, TurretMount mount){
-        if(mount.reload < reloadTime && mount.charge <= 0){
+    public void updateCooling(ModularTurretBuild parent, BaseTurretMount mount){
+        if(mount.reload < reloadTime){
             float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
             Liquid liquid = mount.liquids.current();
 
@@ -55,5 +66,23 @@ public class ReloadTurretModule extends BaseTurretModule{
 
     public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
         return !mount.charging && !mount.isShooting && powerValid(parent);
+    }
+
+    @Override
+    public void write(Writes write, BaseMount mount){
+        super.write(write, mount);
+
+        if(mount instanceof BaseTurretMount m){
+            write.f(m.reload);
+        }
+    }
+
+    @Override
+    public void read(Reads read, byte revision, BaseMount mount){
+        super.read(read, revision, mount);
+
+        if(mount instanceof BaseTurretMount m){
+            m.reload = read.f();
+        }
     }
 }

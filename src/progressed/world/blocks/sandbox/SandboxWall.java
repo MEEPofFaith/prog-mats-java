@@ -268,9 +268,8 @@ public class SandboxWall extends Wall{
             ImageButton button = t.button(
                 new TextureRegionDrawable(icon),
                 Styles.clearToggleTransi,
-                40, () -> {}
+                32f, () -> {}
             ).group(group).tooltip(buttonLabels[index]).get();
-            button.getImageCell().size(32f);
             button.changed(() -> configure(index));
             button.update(() -> button.setChecked(modes.active(index)));
         }

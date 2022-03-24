@@ -20,11 +20,13 @@ public class PMDamage{
     private static final Rect hitrect = new Rect();
     private static final Vec2 tr = new Vec2(), seg1 = new Vec2(), seg2 = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
+    private static final Seq<Bullet> bullets = new Seq<>();
     private static final IntSet collidedBlocks = new IntSet();
     private static Tile furthest;
     private static Building tmpBuilding;
     private static Unit tmpUnit;
     private static float tmpFloat;
+    private static int tmpInt;
     private static boolean check;
 
     public static void trueEachBlock(float wx, float wy, float range, Cons<Building> cons){
@@ -159,7 +161,7 @@ public class PMDamage{
         tr.trnsExact(angle, length);
 
         rect.setPosition(x, y).setSize(tr.x, tr.y);
-        float x2 = tr.x + x, y2 = tr.y + y;
+        float x2 = x + tr.x, y2 = y + tr.y;
 
         if(rect.width < 0){
             rect.x += rect.width;
@@ -234,6 +236,70 @@ public class PMDamage{
         }
 
         return check;
+    }
+
+    public static float bulletCollideLine(float x, float y, float angle, float length, Team team, float damage, int max, Effect effect){
+        tr.trnsExact(angle, length);
+
+        rect.setPosition(x, y).setSize(tr.x, tr.y);
+        float x2 = x + tr.x, y2 = y + tr.y;
+
+        if(rect.width < 0){
+            rect.x += rect.width;
+            rect.width *= -1;
+        }
+
+        if(rect.height < 0){
+            rect.y += rect.height;
+            rect.height *= -1;
+        }
+
+        float expand = 3f;
+
+        rect.y -= expand;
+        rect.x -= expand;
+        rect.width += expand * 2;
+        rect.height += expand * 2;
+
+        Cons<Bullet> cons = b -> {
+            b.hitbox(hitrect);
+
+            Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
+
+            if(vec != null && damage > 0){
+                effect.at(vec.x, vec.y, angle, team.color);
+                if(b.damage() > damage){
+                    b.damage(b.damage() - damage);
+                }else{
+                    b.remove();
+                }
+                tmpInt++;
+                tmpFloat = b.dst(x, y);
+            }
+        };
+
+        bullets.clear();
+        tmpFloat = 0;
+        tmpInt = 0;
+
+        Groups.bullet.intersect(rect.x, rect.y, rect.width, rect.height, b -> {
+            if(b.type().hittable && b.team != team){
+                bullets.add(b);
+            }
+        });
+
+        bullets.sort(b -> b.dst2(x, y));
+        bullets.each(b -> {
+            if(tmpInt < max || max <= 0){
+                cons.get(b);
+            }
+        });
+
+        if(tmpInt < max){
+            tmpFloat = length;
+        }
+
+        return tmpFloat;
     }
 
     /** Like Damage.findLaserLength, but uses an (x, y) coord instead of bullet position */

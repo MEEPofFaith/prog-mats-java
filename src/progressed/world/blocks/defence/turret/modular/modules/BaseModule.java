@@ -7,6 +7,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
@@ -209,13 +210,13 @@ public class BaseModule implements Cloneable{
         if(mount.highlightAlpha > 0.001f) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f) * mount.highlightAlpha);
     }
 
-    public void display(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){
+    public void displayAll(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){
         table.table(t -> {
             t.left();
-            t.add(new Image(region)).size(8 * 4);
-            t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").left().fillX().padLeft(5);
-            PMStatValues.moduleInfoButton(t, this, 4f * 8f).left().padLeft(5f);
-            t.button("^", Styles.clearPartialt, () -> {
+            t.add(new Image(region));
+            t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").size(5f * 8f).left().growX().padLeft(5);
+            PMStatValues.moduleInfoButton(t, this, 5f * 8f).left().padLeft(5f);
+            t.button(new TextureRegionDrawable(Icon.upload),2.5f * 8f, () -> {
                 if(canPickUp(mount)){ //jeez this is a mess
                     Payloadc p = (Payloadc)player.unit();
                     BuildPayload module = new BuildPayload(getPayload(), parent.team);
@@ -229,11 +230,15 @@ public class BaseModule implements Cloneable{
                 }else{
                     showPickupFail(mount);
                 }
-            }).size(4f * 8f).left().padLeft(5f).tooltip("@pm-pickup.label");
+            }).size(5f * 8f).left().padLeft(5f).tooltip("@pm-pickup.label");
         }).growX().top().left();
 
         table.row();
 
+        display(parent, table, mount);
+    }
+
+    public void display(ModularTurretBuild parent, Table table, BaseMount mount){
         table.table(bars -> {
             bars.defaults().growX().height(18f).pad(4f);
 

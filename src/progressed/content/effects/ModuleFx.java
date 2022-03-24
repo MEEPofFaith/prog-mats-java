@@ -3,6 +3,8 @@ package progressed.content.effects;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
@@ -115,10 +117,14 @@ public class ModuleFx{
         PMDrawf.plus(e.x, e.y + up, 3f, 0f);
     }),
 
-    dissonanceDamage = new Effect(30f, e -> {
-        color(e.color);
-        Fill.circle(e.x, e.y, e.rotation * e.fout());
-    }).layer(Layer.shields - 0.99f),
+    piercePointBeam = new Effect(25f, 300f, e -> {
+        v1.trns(e.rotation, (float)e.data).add(e.x, e.y);
+
+        Draw.color(e.color, e.fout());
+        Lines.stroke(1.5f);
+        Lines.line(e.x, e.y, v1.x, v1.y);
+        Drawf.light(null, e.x, e.y, v1.x, v1.y, 20f, e.color, 0.6f * e.fout());
+    }),
 
     reboundShoot = new Effect(14f, e -> {
         color(Color.white, e.color, e.fin());
@@ -233,7 +239,7 @@ public class ModuleFx{
         Drawf.light(e.x, e.y, e.fout() * 7f * 5f, Pal.lancerLaser, 0.6f * e.fout());
     }),
 
-    diffusionDamage = new Effect(14f, e -> {
+    dissonanceDamage = new Effect(30f, e -> {
         color(e.color);
         Fill.circle(e.x, e.y, e.rotation * e.fout());
     }).layer(Layer.shields - 0.99f);
