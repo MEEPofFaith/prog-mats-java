@@ -24,7 +24,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.consumers.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
@@ -72,7 +72,7 @@ public class ModularTurret extends PayloadBlock{
 
     @Override
     public void init(){
-        consumes.add(new ModularTurretConsumePower());
+        consumes.add(new DynamicConsumePower(b -> ((ModularTurretBuild)b).mountPower()));
 
         super.init();
 
@@ -578,14 +578,6 @@ public class ModularTurret extends PayloadBlock{
             }
 
             allMounts.each(m -> m.updatePos(this));
-        }
-    }
-
-    public class ModularTurretConsumePower extends ConsumePower{
-        @Override
-        public float requestedPower(Building entity){
-            if(entity instanceof ModularTurretBuild m) return m.mountPower();
-            return 0f;
         }
     }
 

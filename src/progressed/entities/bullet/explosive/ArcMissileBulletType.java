@@ -1,6 +1,5 @@
 package progressed.entities.bullet.explosive;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;

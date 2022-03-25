@@ -1,8 +1,6 @@
 package progressed.world.blocks.defence.turret.modular.mounts;
 
-import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;

@@ -19,6 +19,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
@@ -69,7 +70,7 @@ public class PayloadCrafter extends PayloadBlock{
     @Override
     public void init(){
         if(recipes.contains(r -> r.powerUse > 0)){
-            consumes.add(new PayloadCrafterConsumePower());
+            consumes.add(new DynamicConsumePower(b -> ((PayloadCrafterBuild)b).powerUse()));
             hasPower = true;
         }
         if(recipes.contains(r -> r.buildCost != null)){
@@ -403,13 +404,6 @@ public class PayloadCrafter extends PayloadBlock{
         @Override
         public byte version(){
             return 1;
-        }
-    }
-
-    protected class PayloadCrafterConsumePower extends ConsumePower{
-        @Override
-        public float requestedPower(Building entity){
-            return ((PayloadCrafterBuild)entity).powerUse();
         }
     }
 }

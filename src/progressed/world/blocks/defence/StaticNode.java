@@ -19,7 +19,7 @@ import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.consumers.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
@@ -121,7 +121,7 @@ public class StaticNode extends Block{
 
     @Override
     public void init(){
-        consumes.add(new StaticNodeConsumePower());
+        consumes.add(new DynamicConsumePower(b -> ((StaticNodeBuild)b).powerUse()));
         clipSize = Math.max(clipSize, (laserRange + 1f) * tilesize * 2f);
 
         super.init();
@@ -485,13 +485,6 @@ public class StaticNode extends Block{
         @Override
         public byte version(){
             return 1;
-        }
-    }
-
-    class StaticNodeConsumePower extends ConsumePower{
-        @Override
-        public float requestedPower(Building entity){
-            return ((StaticNodeBuild)entity).powerUse();
         }
     }
 }

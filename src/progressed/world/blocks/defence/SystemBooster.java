@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
@@ -45,7 +46,7 @@ public class SystemBooster extends Block{
 
     @Override
     public void init(){
-        consumes.add(new BoosterConsumePower());
+        consumes.add(new DynamicConsumePower(b -> ((SystemBoosterBuild)b).totalPowerUse));
 
         super.init();
 
@@ -62,6 +63,14 @@ public class SystemBooster extends Block{
         super.setStats();
 
         stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
+        stats.remove(Stat.powerUse);
+        stats.add(Stat.powerUse, s -> {
+            if(basePowerUse != 0){
+                StatValues.number(basePowerUse * 60f, StatUnit.powerSecond).display(s);
+                s.add(" + ");
+            }
+            s.add(Core.bundle.format("stat.pm-powersecondblock", powerPerBlock * 100f));
+        });
     }
 
     @Override
@@ -183,24 +192,6 @@ public class SystemBooster extends Block{
             super.read(read, revision);
 
             heat = read.f();
-        }
-    }
-
-    protected class BoosterConsumePower extends ConsumePower{
-        @Override
-        public float requestedPower(Building entity){
-            return ((SystemBoosterBuild)entity).totalPowerUse;
-        }
-
-        @Override
-        public void display(Stats stats){
-            stats.add(Stat.powerUse, s -> {
-                if(basePowerUse != 0){
-                    StatValues.number(basePowerUse * 60f, StatUnit.powerSecond).display(s);
-                    s.add(" + ");
-                }
-                s.add(Core.bundle.format("stat.pm-powersecondblock", powerPerBlock * 100f));
-            });
         }
     }
 }

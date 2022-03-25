@@ -17,7 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.consumers.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import progressed.entities.units.*;
 import progressed.entities.units.entity.*;
@@ -78,7 +78,7 @@ public class DronePad extends Block{
 
     @Override
     public void init(){
-        consumes.add(new DronePadConsumePower());
+        consumes.add(new DynamicConsumePower(b -> ((DronePadBuild)b).powerUse()));
         super.init();
 
         if(glowRadius < 0) glowRadius = size * tilesize / 4f;
@@ -593,13 +593,6 @@ public class DronePad extends Block{
             for(int i = 0; i < len; i++){
                 routes.set(i, read.i());
             }
-        }
-    }
-
-    protected class DronePadConsumePower extends ConsumePower{
-        @Override
-        public float requestedPower(Building entity){
-            return ((DronePadBuild)entity).powerUse();
         }
     }
 }
