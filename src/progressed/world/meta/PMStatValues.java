@@ -82,7 +82,7 @@ public class PMStatValues{
                                 bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                             }else{
                                 if(Float.isInfinite(type.damage)){
-                                    bt.add(PMElements.infinity());
+                                    bt.add(PMElements.infiniteDamage());
                                 }else{
                                     bt.add(bundle.format("bullet.damage", type.damage));
                                 }

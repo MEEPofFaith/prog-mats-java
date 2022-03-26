@@ -25,6 +25,10 @@ public class PMElements{
         return new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-infinity"));
     }
 
+    public static FLabel infiniteDamage(){
+        return new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-infinite-damage"));
+    }
+
     public static FLabel everything(){
         return new FLabel("{wave}{rainbow}" + Core.bundle.get("pm-everything"));
     }
