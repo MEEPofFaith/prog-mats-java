@@ -1271,7 +1271,7 @@ public class PMBlocks{
         // endregion
 
         // region Distribution
-        floatingConveyor = new FloatingConveyor("floating-conveyor"){{
+        floatingConveyor = new CoveredConveyor("floating-conveyor"){{
             requirements(Category.distribution, with(
                 Items.lead, 3,
                 Items.metaglass, 3,
