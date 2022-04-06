@@ -156,7 +156,7 @@ public class PMBlocks{
     // region Sandbox
 
     //Turret
-    harbinger, everythingGun, omegaCharger,
+    harbinger, everythingGun, omegaCharger, testTurret,
 
     //Distribution
     everythingItemSource, sandDriver,
@@ -1793,6 +1793,22 @@ public class PMBlocks{
             startLength = -6f / 4f;
             endLength = 4f;
             effectLength = endLength - 1f;
+        }};
+
+        testTurret = new FreeTurret("test-turret"){{
+            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
+            size = 2;
+            health = 69420;
+            range = 69 * tilesize;
+            reloadTime = 60f;
+
+            shootType = new SnakeBulletType(3f, 50f, "aflare"){{
+                length = 5;
+                lifetime = 300f;
+                weaveScale = 8f;
+                weaveMag = 2f;
+                homingPower = 0.3f;
+            }};
         }};
 
         /// Distribution

@@ -269,8 +269,7 @@ public class PMUnitTypes{
                 accel = 0.11f;
                 itemCapacity = 20000;
                 health = 200000f;
-                engineOffset = 4f;
-                engineSize = 1f;
+                engineOffset = 5.5f;
                 hitSize = 11f;
                 commandLimit = 100;
             }

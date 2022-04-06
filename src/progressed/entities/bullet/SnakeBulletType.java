@@ -9,8 +9,10 @@ import mindustry.gen.*;
 import progressed.entities.bullet.SnakeBulletType.SnakeBulletData.*;
 
 public class SnakeBulletType extends BasicBulletType{
-    public float spawnDelay;
     public int length = 3;
+    public float spawnDelay= 5f;
+    public float followPower = 0.85f;
+    public boolean setSegments = true;
 
     public SnakeBulletType head;
     public SnakeBulletType body;
@@ -18,27 +20,30 @@ public class SnakeBulletType extends BasicBulletType{
 
     public SnakeBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage, bulletSprite);
+        backMove = false;
     }
 
     @Override
     public void init(){
         super.init();
 
-        if(body == null) body = this;
-        if(head == null){
-            try{
-                head = (SnakeBulletType)body.clone();
-                head.sprite += "-head";
-            }catch(CloneNotSupportedException suck){
-                throw new RuntimeException("very good language design", suck);
+        if(setSegments){
+            if(body == null){
+                body = (SnakeBulletType)copy();
+                body.setSegments = false;
+                body.backMove = true;
             }
-        }
-        if(tail == null){
-            try{
-                tail = (SnakeBulletType)body.clone();
+            if(head == null){
+                head = (SnakeBulletType)body.copy();
+                head.sprite += "-head";
+                head.setSegments = false;
+                head.backMove = true;
+            }
+            if(tail == null){
+                tail = (SnakeBulletType)body.copy();
                 tail.sprite += "-tail";
-            }catch(CloneNotSupportedException suck){
-                throw new RuntimeException("very good language design", suck);
+                head.setSegments = false;
+                head.backMove = true;
             }
         }
 
@@ -51,23 +56,28 @@ public class SnakeBulletType extends BasicBulletType{
 
         if(b.data == null){
             Bullet[] next = {null};
+            float x = b.x;
+            float y = b.y;
             for(int i = 0; i < length; i++){
-                SnakeBulletType sType;
-                SegmentType type;
-                if(i == 0){
-                    sType = head;
-                    type = SegmentType.head;
-                }else if(i == length - 1){
-                    sType = tail;
-                    type = SegmentType.tail;
-                }else{
-                    sType = body;
-                    type = SegmentType.body;
-                }
+                int ii = i;
 
                 Time.run(i * spawnDelay, () -> {
-                    Bullet seg = sType.create(b, b.x, b.y, next[0] != null ? b.angleTo(next[0]) : b.rotation());
-                    seg.data = new SnakeBulletData(type, next[0]);
+                    SnakeBulletType bType = body;
+                    SegmentType sType = SegmentType.body;
+                    if(ii == 0){
+                        bType = head;
+                        sType = SegmentType.head;
+                    }else if(ii == length - 1){
+                        bType = tail;
+                        sType = SegmentType.tail;
+                    }
+
+                    Bullet seg = bType.create(
+                        b.owner, b.team,
+                        x, y, next[0] != null ? next[0].angleTo(x, y) + 180f : b.rotation(),
+                        -1f, 1f, 1f,
+                        new SnakeBulletData(sType, next[0])
+                    );
                     next[0] = seg;
                 });
             }
@@ -106,8 +116,12 @@ public class SnakeBulletType extends BasicBulletType{
             if(weaveMag > 0){
                 b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale / 2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
             }
-        }else if(data.followBullet != null && data.followBullet.isAdded()){
-            b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(data.followBullet), homingPower * Time.delta * 50f));
+        }else if(data.followBullet != null){
+            if(data.followBullet.isAdded()){
+                b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(data.followBullet), followPower * Time.delta * 50f));
+            }else{
+                data.followBullet = null;
+            }
         }
 
         if(trailChance > 0){
@@ -121,33 +135,6 @@ public class SnakeBulletType extends BasicBulletType{
                 trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
             }
         }
-    }
-
-    public Bullet create(@Nullable Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data){
-        Bullet bullet = Bullet.create();
-        bullet.type = this;
-        bullet.owner = owner;
-        bullet.team = team;
-        bullet.time = 0f;
-        bullet.initVel(angle, speed * velocityScl);
-        if(backMove && data != null){
-            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-        }else{
-            bullet.set(x, y);
-        }
-        bullet.lifetime = lifetime * lifetimeScl;
-        bullet.data = data;
-        bullet.drag = drag;
-        bullet.hitSize = hitSize;
-        bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
-        //reset trail
-        if(bullet.trail != null){
-            bullet.trail.clear();
-        }
-        bullet.add();
-
-        if(keepVelocity && owner instanceof Velc v) bullet.vel.add(v.vel());
-        return bullet;
     }
 
     public static class SnakeBulletData{
