@@ -6,7 +6,9 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.world.*;
 import progressed.entities.bullet.energy.*;
 
 public class PMUtls{
@@ -127,6 +129,19 @@ public class PMUtls{
         float n = s * (l - 1) - (int)(s * (l - 1));
         float i = 1f - n;
         return a * i + b * n;
+    }
+
+    /**
+     * {@link Tile#relativeTo(int, int)} does not account for building rotation.
+     * Taken from Goobrr/esoterum.
+     * */
+    public static int relativeDirection(Building from, Building to){
+        if(from == null || to == null) return -1;
+        if(from.x == to.x && from.y > to.y) return (7 - from.rotation) % 4;
+        if(from.x == to.x && from.y < to.y) return (5 - from.rotation) % 4;
+        if(from.x > to.x && from.y == to.y) return (6 - from.rotation) % 4;
+        if(from.x < to.x && from.y == to.y) return (4 - from.rotation) % 4;
+        return -1;
     }
 
     public static void uhOhSpeghettiOh(String ohno){
