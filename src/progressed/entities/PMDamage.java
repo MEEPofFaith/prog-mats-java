@@ -1,6 +1,7 @@
 package progressed.entities;
 
 import arc.func.*;
+import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -238,7 +239,7 @@ public class PMDamage{
         return check;
     }
 
-    public static float bulletCollideLine(float x, float y, float angle, float length, Team team, float damage, int max, Effect effect){
+    public static float bulletCollideLine(float x, float y, float angle, float length, Team team, float damage, int max, Effect effect, Color color){
         tr.trnsExact(angle, length);
 
         rect.setPosition(x, y).setSize(tr.x, tr.y);
@@ -267,7 +268,7 @@ public class PMDamage{
             Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
 
             if(vec != null && damage > 0){
-                effect.at(vec.x, vec.y, angle, team.color);
+                effect.at(vec.x, vec.y, angle, color);
                 if(b.damage() > damage){
                     b.damage(b.damage() - damage);
                 }else{
