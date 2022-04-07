@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.modular.modules.turret;
 
+import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -9,6 +10,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.graphics.*;
@@ -38,6 +40,14 @@ public class PointDefenceModule extends ReloadTurretModule{
     }
 
     @Override
+    public void setStats(Stats stats){
+        super.setStats(stats);
+
+        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
+        if(pierceCap > 0) stats.add(Stat.damage, Core.bundle.format("stat.pm-point-defence-pierce", pierceCap));
+    }
+
+    @Override
     public void update(ModularTurretBuild parent, BaseMount mount){
         super.update(parent, mount);
         if(!isDeployed(mount)) return;
@@ -64,8 +74,8 @@ public class PointDefenceModule extends ReloadTurretModule{
                     Tmp.v1.trns(m.rotation, shootLength);
                     float len = PMDamage.bulletCollideLine(
                         m.x + Tmp.v1.x, m.y + Tmp.v1.y,
-                        m.rotation, range, parent.team,
-                        bulletDamage, pierceCap, hitEffect);
+                        m.rotation, range - shootLength, parent.team,
+                        bulletDamage, pierceCap, hitEffect, color);
 
                     beamEffect.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, m.rotation, color, len);
                     shootEffect.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, m.rotation, color);
@@ -120,7 +130,7 @@ public class PointDefenceModule extends ReloadTurretModule{
     @Override
     public void findTarget(ModularTurretBuild parent, BaseTurretMount m){
         m.target = Groups.bullet.intersect(m.x - range, m.y - range, range * 2, range * 2)
-            .min(b -> b.team != parent.team && b.type().hittable, b -> b.dst2(m));
+            .min(b -> b.team != parent.team && b.type().hittable && !b.within(m, Mathf.maxZero(shootLength - 3f)), b -> b.dst2(m));
     }
 
     @Override

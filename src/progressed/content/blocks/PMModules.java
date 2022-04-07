@@ -392,7 +392,8 @@ public class PMModules{
             module = new PointDefenceModule("dispel", ModuleSize.medium){{
                 powerUse = 5f;
                 range = 200f;
-                reloadTime = 10f;
+                shootLength = 0;
+                reloadTime = 8f;
                 bulletDamage = 40f;
                 pierceCap = 6;
             }};
