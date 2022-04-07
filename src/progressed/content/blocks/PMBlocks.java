@@ -199,7 +199,6 @@ public class PMBlocks{
             );
             size = 4;
             range = 255f;
-            maxSpeed = 0.75f;
             health = 140 * size * size;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
@@ -217,9 +216,6 @@ public class PMBlocks{
             barLength = 9f;
 
             shootLocs = new float[]{0f};
-            windupSpeed = 0.0001875f;
-            windDownSpeed = 0.003125f;
-            minFiringSpeed = 1f/12f;
         }};
 
         miinigun = new MinigunTurret("miinigun"){{
@@ -240,7 +236,7 @@ public class PMBlocks{
             );
             size = 4;
             range = 255f;
-            maxSpeed = 0.73f;
+            maxSpeed = 27f;
             health = 150 * size * size;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
@@ -258,9 +254,6 @@ public class PMBlocks{
             barLength = 9f;
 
             shootLocs = new float[]{-4f, 4f};
-            windupSpeed = 0.0001875f;
-            windDownSpeed = 0.003125f;
-            minFiringSpeed = 1f/12f;
         }};
 
         mivnigun = new MinigunTurret("mivnigun"){{
@@ -283,7 +276,7 @@ public class PMBlocks{
             size = 4;
             hideDetails = false;
             range = 255f;
-            maxSpeed = 0.71f;
+            maxSpeed = 24f;
             health = 160 * size * size;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
@@ -301,9 +294,6 @@ public class PMBlocks{
             barLength = 9f;
 
             shootLocs = new float[]{-9f, -3f, 3f, 9f};
-            windupSpeed = 0.0001875f;
-            windDownSpeed = 0.003125f;
-            minFiringSpeed = 1f/12f;
         }};
 
         shock = new TeslaTurret("shock"){{
