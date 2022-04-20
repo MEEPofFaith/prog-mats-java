@@ -1,7 +1,5 @@
 package progressed.world.blocks.payloads;
 
-import arc.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.*;
@@ -53,94 +51,49 @@ public class Sentry extends Missile{
     }
 
     public class SentryBuild extends MissileBuild{
+        public Unit unitDrawer;
         public boolean activated;
+
+        @Override
+        public void created(){
+            super.created();
+
+            unitDrawer = unit.create(team);
+            unitDrawer.elevation = 0;
+            unitDrawer.set(x, y);
+            unitDrawer.rotation(drawRot() + 90f);
+        }
+
+        @Override
+        public void onProximityUpdate(){
+            super.onProximityUpdate();
+            unitDrawer.rotation(drawRot() + 90f);
+        }
+
+        @Override
+        public void remove(){
+            super.remove();
+            if(activated) return;
+            unitDrawer.remove();
+        }
+
+        @Override
+        public void updateTile(){
+            super.updateTile();
+            unitDrawer.health(health);
+        }
 
         @Override
         public void draw(){
             Draw.z(Layer.blockUnder - 1f);
             Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, drawRot());
             Draw.z(Layer.block);
-            drawUnderWeapons();
-            if(unit.drawBody && Core.atlas.isFound(unit.outlineRegion)) Draw.rect(unit.outlineRegion, x, y, drawRot());
-            drawWeaponOutlines();
-            if(unit.drawBody) Draw.rect(unit.region, x, y, drawRot());
-            if(unit.drawCell) drawCell();
-            drawTopWeapons();
-        }
-
-        public void drawCell(){
-            float f = Mathf.clamp(healthf());
-            Tmp.c1.set(Color.black).lerp(team.color, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
-            Draw.color(Tmp.c1);
-            Draw.rect(unit.cellRegion, x, y, drawRot());
-            Draw.color();
-        }
-
-        public void drawWeaponOutlines(){
-            for(Weapon w : unit.weapons){
-                if(!w.top){
-                    float
-                        wx = x + Angles.trnsx(drawRot(), w.x * Draw.xscl, w.y * Draw.yscl),
-                        wy = y + Angles.trnsy(drawRot(), w.x * Draw.xscl, w.y * Draw.yscl);
-                    Draw.rect(
-                        w.outlineRegion,
-                        wx, wy,
-                        w.outlineRegion.width * xscl() * -Mathf.sign(w.flipSprite),
-                        w.outlineRegion.height * yscl(),
-                        drawRot()
-                    );
-                }
-            }
-        }
-
-        public void drawUnderWeapons(){
-            for(Weapon weapon : unit.weapons){
-                if(weapon.layerOffset >= 0) continue;
-                drawWeapon(weapon);
-            }
-        }
-
-        public void drawTopWeapons(){
-            for(Weapon weapon : unit.weapons){
-                if(weapon.layerOffset < 0) continue;
-                drawWeapon(weapon);
-            }
-        }
-
-        public void drawWeapon(Weapon w){
-            float z = Draw.z();
-            Draw.z(z + w.layerOffset);
-            float
-                wx = x + Angles.trnsx(drawRot(), w.x * Draw.xscl, w.y * Draw.yscl),
-                wy = y + Angles.trnsy(drawRot(), w.x * Draw.xscl, w.y * Draw.yscl);
-
-            if(w.shadow > 0) Drawf.shadow(wx, wy, w.shadow);
-            if(w.top) Draw.rect(w.outlineRegion, wx, wy,
-                w.outlineRegion.width * xscl() * -Mathf.sign(w.flipSprite),
-                w.outlineRegion.height * yscl(),
-                drawRot()
-            );
-            Draw.rect(
-                w.region, wx, wy,
-                w.region.width * xscl() * -Mathf.sign(w.flipSprite),
-                w.region.height * yscl(),
-                drawRot()
-            );
-
-            Draw.z(z);
+            unitDrawer.draw();
         }
 
         public float drawRot(){
             if(isPayload()) return 0f;
             return rotdeg() - 90f;
-        }
-
-        public float xscl(){
-            return Draw.scl * Draw.xscl;
-        }
-
-        public float yscl(){
-            return Draw.scl * Draw.yscl;
         }
 
         @Override
@@ -169,9 +122,7 @@ public class Sentry extends Missile{
 
         public void spawn(){
             if(!activated){
-                Unit spawned = unit.spawn(team, self());
-                spawned.rotation(rotdeg());
-                spawned.health = unit.health * (health / block.health);
+                unitDrawer.add();
                 activated = true;
                 kill();
             }
