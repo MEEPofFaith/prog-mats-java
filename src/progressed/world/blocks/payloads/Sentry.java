@@ -7,6 +7,7 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -55,13 +56,15 @@ public class Sentry extends Missile{
         public boolean activated;
 
         @Override
-        public void created(){
-            super.created();
+        public Building create(Block block, Team team){
+            Building b = super.create(block, team);
 
             unitDrawer = unit.create(team);
             unitDrawer.elevation = 0;
             unitDrawer.set(x, y);
             unitDrawer.rotation(drawRot() + 90f);
+
+            return b;
         }
 
         @Override
@@ -80,6 +83,9 @@ public class Sentry extends Missile{
         @Override
         public void updateTile(){
             super.updateTile();
+            if(activated) return;
+            unitDrawer.set(x, y);
+            unitDrawer.rotation(drawRot() + 90f);
             unitDrawer.health(health);
         }
 
