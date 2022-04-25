@@ -1,9 +1,25 @@
-name: prog-mats
-displayName: Progression Ministry
-author: MEEP of Faith (And a bunch of contributors. Load the game with PM enabled to view them.)
-description: "This mod is mostly just turrets. It's just me having fun with what I can create with the power of Java."
+#the mod name as displayed in-game
+displayName: "Progression Ministry"
+
+#the internal name of your mod
+name: "prog-mats"
+
+#your name
+author: "MEEP of Faith (And a bunch of contributors. Load the game with Progressed Materials enabled to view them.)"
+
+#the fully qualified main class of the mod
+main: "progressed.ProgMats"
+
+#the mod description as seen in the mod dialog
+description: "This mod is mostly just turrets. It's just me creating random ideas that pop into my head."
+
+#the mod version
 version: 23.6
+
+#the minimum game build required to run this mod
 minGameVersion: 135
-repo: MEEPofFaith/prog-mats-java
-main: progressed.ProgMats
+
+#this is a java mod
 java: true
+
+repo: MEEPofFaith/prog-mats-java
