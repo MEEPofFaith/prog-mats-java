@@ -1,4 +1,4 @@
-name: Commit Test
+name: Commit Testing
 
 on: [push]
 
@@ -11,10 +11,10 @@ jobs:
     - name: Set up PATH
       run: |
         echo "${ANDROID_HOME}/build-tools/30.0.1" >> $GITHUB_PATH
-    - name: Set up JDK 16
+    - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
-        java-version: 16
+        java-version: 17
     - name: Build mod jar
       run: ./gradlew deploy
     - name: Upload built jar file
@@ -22,3 +22,14 @@ jobs:
       with:
         name: ProgMin (zipped)
         path: build/libs/${{ github.event.repository.name }}.jar
+  buildWindows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Build mod jar
+        run: ./gradlew jar
