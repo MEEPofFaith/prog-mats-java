@@ -36,16 +36,14 @@ public class PMBullets{
     burstDriverOrb;
 
     public static void load(){
-        flameMagma = new MagmaBulletType(50f, 18f){{
+        flameMagma = new MagmaBulletType(50f, 14f){{
             shake = 1f;
+            crackEffects = 4;
         }};
 
-        blazeMagma = new MagmaBulletType(75f, 36f){{
+        blazeMagma = new MagmaBulletType(75f, 24f){{
             shake = 2f;
-        }};
-
-        infernoMagma = new MagmaBulletType(62.5f, 13f){{
-            shake = 0.1f;
+            crackEffects = 6;
         }};
 
         magnetCopper = new MagnetBulletType(2.5f, 12f){{

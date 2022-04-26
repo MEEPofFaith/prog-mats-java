@@ -35,13 +35,7 @@ public class PMTechTree{
                     new SectorComplete(SectorPresets.impact0078),
                     new Research(meltdown)
                 ), () -> {
-                    node(blaze, Seq.with(
-                        new SectorComplete(SectorPresets.overgrowth)
-                    ), () -> {
-                        node(inferno, Seq.with(
-                            new SectorComplete(SectorPresets.nuclearComplex)
-                        ));
-                    });
+                    node(blaze, Seq.with(new SectorComplete(SectorPresets.overgrowth)));
                 });
             });
         });

@@ -47,7 +47,8 @@ public class PMUtls{
         stacks.shuffle();
         return stacks.toArray(ItemStack.class);
     }
-    
+
+    //Is this really necessary?
     public static String stringsFixed(float value){
         return Strings.autoFixed(value, 2);
     }

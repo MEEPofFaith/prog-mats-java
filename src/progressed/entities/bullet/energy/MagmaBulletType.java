@@ -9,12 +9,19 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.content.*;
+import progressed.content.effects.*;
+import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
+import progressed.graphics.*;
+import progressed.util.*;
 
 public class MagmaBulletType extends BulletType{
-    public float radius, minScl = 0.2f, maxScl = 0.5f;
-    public float shake, poolSpeed = 0.25f;
-    public Color[] colors = {Color.valueOf("ec745855"), Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
+    public float radius, shake;
+
+    public int crackEffects = 1;
+    public float crackStroke = 1.5f, crackRadius = -1;
+    public Color crackColor = PMPal.darkBrown;
+    public Effect crackEffect = UtilFx.groundCrack;
     
     public MagmaBulletType(float damage, float radius){
         super(0.001f, damage);
@@ -22,17 +29,14 @@ public class MagmaBulletType extends BulletType{
 
         hitEffect = Fx.fireballsmoke;
         despawnEffect = shootEffect = smokeEffect = Fx.none;
-        hitSize = 4;
         lifetime = 16f;
-        lightOpacity = 0.7f;
-        hitColor = lightColor = colors[2];
-        lightRadius = -1f;
+        hitColor = Color.valueOf("ff9c5a");
         makeFire = true;
         keepVelocity = backMove = false;
-        collides = pierce = true;
         hittable = absorbable = false;
-        collidesTiles = false;
-        collidesAir = collidesGround = true;
+        collides = collidesTiles = false;
+        collidesGround = true;
+        collidesAir = false;
         puddleLiquid = PMLiquids.magma;
         puddleAmount = 250f;
     }
@@ -53,20 +57,36 @@ public class MagmaBulletType extends BulletType{
     public void init(){
         super.init();
 
-        drawSize = radius * 2f;
-        if(lightRadius < 0f) lightRadius = radius * 1.25f;
+        if(crackRadius < 0) crackRadius = radius * 2f;
     }
 
     @Override
     public void update(Bullet b){
         //damage every 5 ticks
         if(b.timer(1, 5f)){
-            Damage.damage(b.team, b.x, b.y, radius * b.fout(), damage, true, collidesAir, collidesGround);
+            Damage.damage(b.team, b.x, b.y, radius * b.fout(), damage * b.damageMultiplier(), true, collidesAir, collidesGround);
             if(status != StatusEffects.none) Damage.status(b.team, b.x, b.y, radius * b.fout(), status, statusDuration, collidesAir, collidesGround);
-            PMDamage.trueEachTile(b.x, b.y, radius * b.fout(), tile -> {
-                if(puddleLiquid != null) Puddles.deposit(tile, puddleLiquid, puddleAmount);
-                if(makeFire) Fires.create(tile);
+
+            Tmp.r1.setSize(radius * 2f * b.fout()).setCenter(b.x, b.y);
+            Units.nearbyEnemies(b.team, Tmp.r1, u -> {
+                if(u.within(b, radius * b.fout())){
+                    if(puddleLiquid != null) Puddles.deposit(u.tileOn(), puddleLiquid, puddleAmount);
+                    if(makeFire) Fires.create(u.tileOn());
+                }
             });
+
+            PMDamage.trueEachBlock(b.x, b.y, radius * b.fout(), build -> {
+                if(build.team == b.team) return;
+                if(puddleLiquid != null) Puddles.deposit(build.tileOn(), puddleLiquid, puddleAmount);
+                if(makeFire) Fires.create(build.tileOn());
+            });
+
+            if(b.fout() == 1){
+                for(int i = 0; i < crackEffects; i++){
+                    PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
+                    crackEffect.at(b.x, b.y, Tmp.v1.angle(), crackColor, new LightningData(Tmp.v1.cpy(), crackStroke));
+                }
+            }
         }
 
         if(shake > 0){
@@ -76,14 +96,6 @@ public class MagmaBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        for(int i = 0; i < colors.length; i++){
-            Draw.color(Tmp.c1.set(colors[i]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
-            float scl = Mathf.absin((Time.time + Mathf.randomSeed(b.id)) * poolSpeed, 1f, 1f);
-            float frac = i / (colors.length - 1f);
-            float sub = minScl + (maxScl - minScl) * scl;
-            float shrink = (1f - sub) * frac * radius;
-            Fill.circle(b.x, b.y, (radius - shrink) * b.fout());
-        }
-        Draw.reset();
+        //Nothing to draw
     }
 }

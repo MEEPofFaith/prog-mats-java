@@ -69,7 +69,7 @@ public class PMBlocks{
     concretion,
 
     //Eruptors
-    flame, blaze, inferno,
+    flame, blaze,
 
     //Pixel Turrets
     bit,
@@ -451,16 +451,12 @@ public class PMBlocks{
             size = 3;
             health = 210 * size * size;
             powerUse = 14f;
-            shootCone = 10f;
+            shootDuration = 90f;
             range = 240f;
-            rangeExtention = 40f;
             reloadTime = 90f;
             shootLength = 5f / 4f;
             recoilAmount = 3f;
-            shootDuration = 180f;
             shootType = PMBullets.flameMagma;
-
-            consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f/3f)).update(false);
         }};
 
         blaze = new EruptorTurret("blaze"){{
@@ -476,43 +472,14 @@ public class PMBlocks{
             size = 4;
             health = 190 * size * size;
             powerUse = 17f;
-            shootDuration = 240f;
+            shootDuration = 120f;
             range = 280f;
-            rangeExtention = 60f;
             reloadTime = 150f;
             shootLength = 11f / 4f;
             rotateSpeed = 3.5f;
             recoilAmount = 4f;
             lightningStroke = 6f;
             shootType = PMBullets.blazeMagma;
-
-            consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 0.75f)).update(false);
-        }};
-
-        inferno = new InfernoTurret("inferno"){{
-            requirements(Category.turret, with(
-                Items.copper, 700,
-                Items.lead, 950,
-                Items.graphite, 750,
-                Items.silicon, 800,
-                Items.titanium, 600,
-                Items.thorium, 800,
-                Items.surgeAlloy, 650,
-                PMItems.tenelium, 600
-            ));
-            size = 4;
-            health = 200 * size * size;
-            powerUse = 23f;
-            recoilAmount = 8f;
-            range = 200f;
-            rangeExtention = 60f;
-            reloadTime = 240f;
-            shootLength = 42f / 4f;
-            shootDuration = 60f;
-            rotateSpeed = 8f;
-            shootType = PMBullets.infernoMagma;
-
-            consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 1f)).update(false);
         }};
 
         bit = new BitTurret("bit"){{
@@ -1269,6 +1236,8 @@ public class PMBlocks{
                 PMItems.tenelium, 3
             ));
             health = 15;
+            floating = true;
+            placeableLiquid = true;
             speed = 0.06f;
             displayedSpeed = 8.4f;
             buildCostMultiplier = 0.25f;

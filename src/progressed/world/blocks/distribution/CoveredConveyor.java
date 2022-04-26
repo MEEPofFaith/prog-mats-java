@@ -16,8 +16,6 @@ public class CoveredConveyor extends Conveyor{
 
     public CoveredConveyor(String name){
         super(name);
-        floating = true;
-        placeableLiquid = true;
     }
 
     @Override
