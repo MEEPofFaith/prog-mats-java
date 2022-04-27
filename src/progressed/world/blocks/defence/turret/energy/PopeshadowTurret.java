@@ -20,6 +20,7 @@ public class PopeshadowTurret extends PowerTurret{
     public Color lightColor = Pal.surge;
     public float lightOpactiy = 0.7f;
     //this is a mess
+    //TODO replace with turret parts with v7 Comes out
     public float[][] lightCoordsSet1 = {
         {21f / 4f, -65f / 4f, 26f / 4f, -60f / 4f, 3f},
         {33f / 4f, -40f / 4f, 38f / 4f, -35f / 4f, 3f},

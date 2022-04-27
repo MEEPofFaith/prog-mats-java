@@ -20,8 +20,7 @@ public class MinigunTurret extends ItemTurret{
     public float windupSpeed = 0.0001875f, windDownSpeed = 0.003125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
     public float barX, barY, barStroke, barLength;
     public float width = 1.5f, height = 0.75f;
-    public float[] shootLocs; //This can be replaced with shot patterns when v7 gets merged
-    public Color c1 = Color.darkGray;
+    public float[] shootLocs; //TODO This can be replaced with shot patterns when v7 gets merged
 
     public TextureRegion barrelRegion, barrelOutline, bodyRegion, bodyOutline;
 
@@ -61,7 +60,7 @@ public class MinigunTurret extends ItemTurret{
         super.setBars();
         bars.add("pm-minigun-speed", (MinigunTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-minigun-speed", PMUtls.stringsFixed(entity.speedf() * 100f + entity.speedf() * 0.01f)),
-            () -> entity.spinSpeed > minFiringSpeed ? entity.team.color : Tmp.c1.set(c1).lerp(entity.team.color, Mathf.curve(entity.spinSpeed, 0f, minFiringSpeed) / 2f),
+            entity::barColor,
             entity::speedf
         ));
     }
@@ -105,13 +104,17 @@ public class MinigunTurret extends ItemTurret{
             Draw.rect(bodyRegion, x + tr2.x, y + tr2.y, rotation - 90f);
 
             if(speedf() > 0.0001f){
-                Draw.color(spinSpeed > minFiringSpeed ? team.color : Tmp.c1.set(c1).lerp(team.color, Mathf.curve(speedf(), 0f, minFiringSpeed) / 2f));
+                Draw.color(barColor());
                 Lines.stroke(barStroke);
                 for(int i = 0; i < 2; i++){
                     tr2.trns(rotation - 90f, barX * Mathf.signs[i], barY - recoil);
                     Lines.lineAngle(x + tr2.x, y + tr2.y, rotation, barLength * Mathf.clamp(speedf()), false);
                 }
             }
+        }
+
+        public Color barColor(){
+            return spinSpeed > minFiringSpeed ? team.color : team.palette[2];
         }
 
         @Override
