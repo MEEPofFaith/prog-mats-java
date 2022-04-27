@@ -77,6 +77,7 @@ public class CoreLink extends Block{
             super.created();
 
             linkedCore = team.core();
+            items = linkedCore.items;
         }
 
         @Override
@@ -168,7 +169,7 @@ public class CoreLink extends Block{
 
         @Override
         public boolean canUnload(){
-            return super.canUnload() && consValid() && isActive();
+            return super.canUnload() && linkedCore != null && consValid() && isActive();
         }
 
         @Override
@@ -180,9 +181,13 @@ public class CoreLink extends Block{
 
         @Override
         public int removeStack(Item item, int amount){
-            if(linkedCore != null && team == state.rules.defaultTeam && state.isCampaign()){
+            if(linkedCore != null){
                 int result = super.removeStack(item, amount);
-                state.rules.sector.info.handleCoreItem(item, -result);
+
+                if(team == state.rules.defaultTeam && state.isCampaign()){
+                    state.rules.sector.info.handleCoreItem(item, -result);
+                }
+
                 return result;
             }
 
