@@ -14,7 +14,7 @@ main: "progressed.ProgMats"
 description: "Progressed Materials, but in Java. My main mod, which mostly just adds turrets. I'm just experimenting to see what I can do with the power I hold.\n\nThe name definitely isn't made of the synonyms of \"Advance\" and \"Content\"."
 
 #the mod version
-version: 23.6
+version: 23.7
 
 #the minimum game build required to run this mod
 minGameVersion: 135
