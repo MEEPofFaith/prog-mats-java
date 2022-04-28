@@ -33,7 +33,7 @@ public class PillarFieldBulletType extends BulletType{
     public float ringEffectInterval = 2f;
 
     public int crackEffects = 1;
-    public float crackStroke = 1.5f;
+    public float crackStroke = 1.5f, crackWidth = 10f;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
 
@@ -91,7 +91,7 @@ public class PillarFieldBulletType extends BulletType{
             for(int i = 0; i < crackEffects; i++){
                 PMMathf.randomCirclePoint(Tmp.v1, radius).add(b);
                 PMMathf.randomCirclePoint(Tmp.v2, radius).add(b);
-                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke));
+                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, false, crackWidth));
             }
 
             if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime)){

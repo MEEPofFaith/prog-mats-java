@@ -10,6 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
+import progressed.util.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
@@ -23,6 +24,13 @@ import static progressed.util.PMUtls.*;
 
 public class EnergyFx{
     public static Effect
+
+    eruptorBurn = new Effect(30f, e -> {
+        color(PMPal.magma);
+        randLenVectors(e.id, 6, 64 * e.fin(), e.rotation, 20f, (x, y) -> {
+            Lines.lineAngle(e.x + x, e.y + y, angle(x, y), 8f * e.fout());
+        });
+    }),
 
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
@@ -64,7 +72,7 @@ public class EnergyFx{
     kugelblitzCharge = new Effect(38f, e -> {
         color(Tmp.c1.set(e.color).lerp(Color.black, 0.5f), Color.black, e.fin());
         randLenVectors(e.id, 2, 45f * e.fout(), e.rotation, 180f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
     }),
@@ -108,13 +116,13 @@ public class EnergyFx{
 
         stroke(2f * e.fout());
         randLenVectors(e.id, 4, e.fin() * 15f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
 
         color(e.color);
         randLenVectors(e.id * 2, 4, e.fin() * 15f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
     }).layer(Layer.max - 0.03f),
@@ -167,7 +175,7 @@ public class EnergyFx{
         stroke(e.fout());
 
         randLenVectors(e.id + 1, 11, 2f + 73f * e.finpow(), (x, y) -> {
-            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + e.fout() * 5f);
+            lineAngle(e.x + x, e.y + y, angle(x, y), 2f + e.fout() * 5f);
         });
     }),
 
@@ -281,7 +289,7 @@ public class EnergyFx{
 
             z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngle(s.x + x, s.y + y, angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });

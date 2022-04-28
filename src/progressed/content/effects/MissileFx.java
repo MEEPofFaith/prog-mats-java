@@ -86,7 +86,7 @@ public class MissileFx{
         stroke(e.fout() * 0.5f);
 
         randLenVectors(e.id + 1, 6, 0.5f + 14.5f * e.finpow(), (x, y) -> {
-            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 0.5f + e.fout() * 2f);
+            lineAngle(e.x + x, e.y + y, angle(x, y), 0.5f + e.fout() * 2f);
         });
     }),
 
@@ -123,7 +123,7 @@ public class MissileFx{
 
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngleCenter(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngleCenter(s.x + x, s.y + y, angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
             });
         });
@@ -162,7 +162,7 @@ public class MissileFx{
 
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngleCenter(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngleCenter(s.x + x, s.y + y, angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
@@ -175,7 +175,7 @@ public class MissileFx{
             stroke(2f * s.fout());
 
             randLenVectors(e.id, 8, 2f + 34f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + s.fout() * 8f);
+                lineAngle(e.x + x, e.y + y, angle(x, y), 2f + s.fout() * 8f);
             });
         });
 
@@ -194,7 +194,7 @@ public class MissileFx{
             stroke(3f * s.fout());
 
             randLenVectors(e.id, 14, 2f + 53f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + s.fout() * 13f);
+                lineAngle(e.x + x, e.y + y, angle(x, y), 2f + s.fout() * 13f);
             });
         });
 
@@ -213,7 +213,7 @@ public class MissileFx{
             stroke(5f * s.fout());
 
             randLenVectors(e.id, 20, 4f + 114f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 3f + s.fout() * 18f);
+                lineAngle(e.x + x, e.y + y, angle(x, y), 3f + s.fout() * 18f);
             });
         });
 

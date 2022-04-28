@@ -19,7 +19,7 @@ public class MagmaBulletType extends BulletType{
     public float radius, shake;
 
     public int crackEffects = 1;
-    public float crackStroke = 1.5f, crackRadius = -1;
+    public float crackStroke = 1.5f, crackWidth = 10f, crackRadius = -1;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
     
@@ -30,7 +30,7 @@ public class MagmaBulletType extends BulletType{
         hitEffect = Fx.fireballsmoke;
         despawnEffect = shootEffect = smokeEffect = Fx.none;
         lifetime = 16f;
-        hitColor = Color.valueOf("ff9c5a");
+        hitColor = PMPal.magma;
         makeFire = true;
         keepVelocity = backMove = false;
         hittable = absorbable = false;
@@ -84,7 +84,7 @@ public class MagmaBulletType extends BulletType{
             if(b.fout() == 1){
                 for(int i = 0; i < crackEffects; i++){
                     PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
-                    crackEffect.at(b.x, b.y, Tmp.v1.angle(), crackColor, new LightningData(Tmp.v1.cpy(), crackStroke));
+                    crackEffect.at(b.x, b.y, Tmp.v1.angle(), crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
                 }
             }
         }

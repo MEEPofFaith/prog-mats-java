@@ -209,9 +209,9 @@ public class StaticNode extends Block{
                 hitGround, hitAir
             );
             if(hit){
-                UtilFx.lightningFast.at(bx + Tmp.v3.x, by + Tmp.v3.y,
+                UtilFx.lightning.at(bx + Tmp.v3.x, by + Tmp.v3.y,
                     angle1, team.color,
-                    new LightningData(Tmp.v4.trns(angle1, dst).add(bx, by).cpy(), 2f)
+                    new LightningData(Tmp.v4.trns(angle1, dst).add(bx, by).cpy(), 2f, 5f)
                 );
             }
 

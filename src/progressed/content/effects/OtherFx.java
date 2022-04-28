@@ -70,7 +70,7 @@ public class OtherFx{
         color(Pal.lightPyraFlame);
         stroke(e.fout());
         randLenVectors(e.id + 2, 4, 1f + 16f * e.finpow(), (x, y) -> {
-            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+            lineAngle(e.x + x, e.y + y, angle(x, y), 1f + e.fout() * 3f);
         });
 
         light(e.x, e.y, 50f, Pal.lightPyraFlame, 0.8f * e.fout());
@@ -160,7 +160,7 @@ public class OtherFx{
         stroke(e.fout() * 1.5f);
 
         randLenVectors(e.id, 7, e.finpow() * 27f, e.rotation, 45f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 4f + 1f);
         });
     }),
@@ -224,7 +224,7 @@ public class OtherFx{
 
             Draw.z(Layer.effect + 0.001f);
             randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(s.x + x, s.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                lineAngle(s.x + x, s.y + y, angle(x, y), 1f + out * 4 * (4f + intensity));
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });

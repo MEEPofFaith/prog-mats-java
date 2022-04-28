@@ -19,6 +19,8 @@ public class PMPal{
 
     darkOutline = Color.valueOf("2e3142"),
 
+    magma = valueOf("ff9c5a"),
+
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
 

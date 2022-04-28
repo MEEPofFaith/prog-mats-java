@@ -15,8 +15,6 @@ import progressed.entities.bullet.unit.*;
 public class PMBullets{
     public static BulletType
 
-    flameMagma, blazeMagma, infernoMagma,
-
     magnetCopper, magnetTitanium, magenetTenelium,
 
     pixel,
@@ -36,16 +34,6 @@ public class PMBullets{
     burstDriverOrb;
 
     public static void load(){
-        flameMagma = new MagmaBulletType(50f, 14f){{
-            shake = 1f;
-            crackEffects = 4;
-        }};
-
-        blazeMagma = new MagmaBulletType(75f, 24f){{
-            shake = 2f;
-            crackEffects = 6;
-        }};
-
         magnetCopper = new MagnetBulletType(2.5f, 12f){{
             lifetime = 300f;
             scaledForce = 0.3f;

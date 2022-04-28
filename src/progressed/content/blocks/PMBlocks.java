@@ -433,7 +433,7 @@ public class PMBlocks{
             targetAir = false;
             cooldown = 0.005f;
             shootType = PMBullets.pillarField;
-            chargeTime = UtilFx.groundCrack.lifetime / 2f;
+            chargeTime = 10f;
 
             armX = 15f / 4f;
             armY = -2f / 4f;
@@ -456,7 +456,10 @@ public class PMBlocks{
             reloadTime = 90f;
             shootLength = 5f / 4f;
             recoilAmount = 3f;
-            shootType = PMBullets.flameMagma;
+            shootType = new MagmaBulletType(50f, 14f){{
+                shake = 1f;
+                crackEffects = 4;
+            }};
         }};
 
         blaze = new EruptorTurret("blaze"){{
@@ -478,8 +481,12 @@ public class PMBlocks{
             shootLength = 11f / 4f;
             rotateSpeed = 3.5f;
             recoilAmount = 4f;
-            lightningStroke = 6f;
-            shootType = PMBullets.blazeMagma;
+            beamStroke = 4f;
+            beamWidth = 20f;
+            shootType = new MagmaBulletType(75f, 24f){{
+                shake = 2f;
+                crackEffects = 6;
+            }};
         }};
 
         bit = new BitTurret("bit"){{

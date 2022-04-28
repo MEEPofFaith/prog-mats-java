@@ -22,7 +22,7 @@ public class CrafterFx{
         stroke(1f);
 
         randLenVectors(e.id, 16, 5f * e.fout(), e.rotation, 180f, (x, y) -> {
-            float ang = angle(x, y, 0f, 0f);
+            float ang = angle(x, y) - 180f;
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
     }).layer(Layer.block + 0.5f),

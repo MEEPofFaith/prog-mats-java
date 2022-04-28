@@ -3,7 +3,6 @@ package progressed.world.blocks.defence.turret.energy;
 import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -11,19 +10,19 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
-import progressed.entities.bullet.energy.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class EruptorTurret extends PowerTurret{
-    public final int lightningTimer = timers++;
-    public float lightningInterval = 2f, lightningStroke = 4f;
-    public Color lightningColor = Color.valueOf("ff9c5a");
+    public final int beamTimer = timers++;
+    public float beamInterval = 2f, beamStroke = 3f, beamWidth = 16f;
+    public Color beamColor = PMPal.magma;
+    public Effect beamEffect = EnergyFx.eruptorBurn;
 
     public float shootDuration = 60f;
 
@@ -54,8 +53,6 @@ public class EruptorTurret extends PowerTurret{
         @Override
         public void targetPosition(Posc pos){
             if(!hasAmmo() || pos == null) return;
-            BulletType bullet = peekAmmo();
-
             var offset = Tmp.v1.setZero();
 
             //when delay is accurate, assume unit has moved by chargeTime already
@@ -83,9 +80,10 @@ public class EruptorTurret extends PowerTurret{
                 heat = 1f;
                 bulletLife -= Time.delta / Math.max(efficiency(), 0.00001f);
                 lengthScl += Time.delta / shootDuration;
-                if(timer(lightningTimer, lightningInterval)){
+                if(timer(beamTimer, beamInterval)){
                     tr2.trns(rotation, shootLength - recoil);
-                    UtilFx.lightning.at(x + tr2.x, y + tr2.y, angleTo(bullet), lightningColor, new LightningData(bullet, lightningStroke));
+                    UtilFx.lightning.at(x + tr2.x, y + tr2.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
+                    beamEffect.at(bullet, rotation);
                 }
                 if(bulletLife <= 0f){
                     bullet = null;

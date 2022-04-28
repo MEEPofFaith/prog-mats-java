@@ -40,7 +40,7 @@ public class ModuleFx{
         stroke(0.5f + e.fout());
 
         randLenVectors(e.id, 4, e.fin() * 8f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() + 1f);
         });
 
@@ -58,7 +58,7 @@ public class ModuleFx{
             stroke(s.fout() * 2f);
 
             randLenVectors(e.id, 6, s.fin() * 7f, (x, y) -> {
-                float ang = Mathf.angle(x, y);
+                float ang = angle(x, y);
                 lineAngle(e.x + x, e.y + y, ang, s.fout() * 2f + 1f);
             });
         });
@@ -71,7 +71,7 @@ public class ModuleFx{
         stroke(e.fout() * 0.7f + 0.3f);
 
         randLenVectors(e.id, 7, 25f * e.finpow(), e.rotation, 50f, (x, y) -> {
-            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 3f + 1f);
+            lineAngle(e.x + x, e.y + y, angle(x, y), e.fin() * 3f + 1f);
         });
     }),
 
@@ -87,7 +87,7 @@ public class ModuleFx{
 
         stroke(e.fout());
         randLenVectors(e.id, 5, e.finpow() * 5f, e.rotation, 20f, (x, y) -> {
-            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 1.5f);
+            lineAngle(e.x + x, e.y + y, angle(x, y), e.fout() * 1.5f);
         });
     }),
 
@@ -102,7 +102,7 @@ public class ModuleFx{
         stroke(0.5f + e.fout());
 
         randLenVectors(e.id, 5, e.fin() * 15f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
 
@@ -135,7 +135,7 @@ public class ModuleFx{
         stroke(0.5f + e.fout());
 
         randLenVectors(e.id, 5, e.fin() * e.rotation, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3f + 1f);
         });
     }).layer(Layer.turret + 0.16f),
@@ -145,7 +145,7 @@ public class ModuleFx{
         stroke(e.fout() * 1.6f);
 
         randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
         });
     }),
@@ -211,7 +211,7 @@ public class ModuleFx{
         stroke(0.5f + e.fout());
 
         randLenVectors(e.id, 7, e.fin() * 20f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
+            float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
 
@@ -229,7 +229,7 @@ public class ModuleFx{
             stroke(s.fout() * 2f);
 
             randLenVectors(e.id, 12, s.fin() * 14f, (x, y) -> {
-                float ang = Mathf.angle(x, y);
+                float ang = angle(x, y);
                 lineAngle(e.x + x, e.y + y, ang, s.fout() * 4 + 1f);
             });
         });

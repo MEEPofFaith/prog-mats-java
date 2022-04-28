@@ -22,7 +22,7 @@ public class GeomancyTurret extends PowerTurret{
     public float armX = 4f, armY;
 
     public int crackEffects = 2;
-    public float crackStroke = 1.5f;
+    public float crackStroke = 1.5f, crackWidth = 16f;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
     public Effect slamEffect = OtherFx.concretionSlam;
@@ -161,7 +161,7 @@ public class GeomancyTurret extends PowerTurret{
             if(mdst > 0){
                 tr.set(tr2).lerp(strikePos, mdst / dst);
                 for(int i = 0; i < crackEffects; i++){
-                    crackEffect.at(tr2.x, tr2.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(tr), crackStroke));
+                    crackEffect.at(tr2.x, tr2.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(tr), crackStroke, chargeTime / 2f, true, crackWidth));
                 }
             }
 
