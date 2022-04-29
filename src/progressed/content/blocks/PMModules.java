@@ -42,7 +42,7 @@ public class PMModules{
 
     //Region Large
 
-    rebound, trifecta, ares, jupiter, dissonance;
+    rebound, trifecta, ares, jupiter;
 
     public static void load(){
         //Region small
@@ -621,28 +621,6 @@ public class PMModules{
                     Draw.mixcol();
                 }
             };
-        }};
-
-        dissonance = new ModulePayload("dissonance"){{
-            module = new FieldModule("dissonance", ModuleSize.large){{
-                reload = 5f;
-                powerUse = 23f;
-                teamColor = false;
-                fieldColor = Pal.removeBack;
-
-                float damage = 10, scaledDamage = 5;
-                activate = (p, m) -> {
-                    m.target = Units.closestEnemy(p.team, m.x, m.y, radius, Unit::isAdded);
-                    Groups.unit.intersect(m.x - radius, m.y - radius, radius * 2, radius * 2, u -> {
-                        if(u.team != p.team && u.within(m, radius) && Angles.within(m.rotation, m.angleTo(u), arc / 2f)){
-                            float scl = 1f - m.dst(u) / radius;
-                            float d = (damage + scaledDamage * scl) * edelta(p);
-                            u.damage(d);
-                            ModuleFx.dissonanceDamage.at(u.x, u.y, u.hitSize * (0.25f + scl * 1.25f), Pal.remove);
-                        }
-                    });
-                };
-            }};
         }};
         //endregion
     }

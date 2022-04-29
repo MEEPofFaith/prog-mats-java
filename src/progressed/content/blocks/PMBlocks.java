@@ -1404,8 +1404,7 @@ public class PMBlocks{
                 new Recipe(dispel, 1f, 60f),
                 new Recipe(trifecta, airburst, 1f, 60f),
                 new Recipe(jupiter, iris, 1f, 60f),
-                new Recipe(ares, vulcan, 1f, 60f),
-                new Recipe(dissonance, dispel, 1f, 60f)
+                new Recipe(ares, vulcan, 1f, 60f)
             );
         }};
 
