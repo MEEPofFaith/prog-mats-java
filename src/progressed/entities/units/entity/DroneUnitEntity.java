@@ -75,8 +75,6 @@ public class DroneUnitEntity extends PayloadUnit{
     public void spontaniumCombustum(){
         Call.unitDespawn(this);
         Fx.unitCapKill.at(this);
-        //elevation = 0;
-        //kill();
     }
 
     public float chargef(){
@@ -307,7 +305,7 @@ public class DroneUnitEntity extends PayloadUnit{
         }
     }
 
-    public static enum DroneState{
+    public enum DroneState{
         /** 0 - Heading to drone pad to charge */
         charging,
         /** 1 - Heading to order origin station */

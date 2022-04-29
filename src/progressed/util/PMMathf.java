@@ -1,6 +1,5 @@
 package progressed.util;
 
-import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
 

@@ -31,13 +31,13 @@ import static mindustry.Vars.*;
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static ModuleInfoDialog moduleInfoDialog;
-    public static PMSettings settings = new PMSettings();
+    public static PMSettings PMSettings = new PMSettings();
     public static Seq<BulletData> allBullets = new Seq<>();
 
     public ProgMats(){
         super();
         Events.on(ClientLoadEvent.class, e -> {
-            settings.init();
+            PMSettings.init();
             PMPal.init();
         });
 
@@ -92,15 +92,12 @@ public class ProgMats extends Mod{
                 moduleInfoDialog = new ModuleInfoDialog();
 
                 if(farting()){
-                    content.blocks().each(b -> {
-                        b.destroySound = Sounds.wind3;
-                    });
+                    content.blocks().each(b -> b.destroySound = Sounds.wind3);
 
-                    content.units().each(u -> {
-                       u.deathSound = Sounds.wind3;
-                    });
+                    content.units().each(u -> u.deathSound = Sounds.wind3);
 
                     Events.run(Trigger.newGame, () -> {
+                        if(settings.getBool("skipcoreanimation")) return;
                         Time.run(coreLandDuration, () -> {
                             CoreBuild core = player.bestCore();
                             if(core != null){
@@ -128,11 +125,11 @@ public class ProgMats extends Mod{
     }
 
     public static boolean farting(){
-        return Core.settings.getBool("pm-farting", false);
+        return settings.getBool("pm-farting", false);
     }
 
     public static boolean everything(){
-        return Core.settings.getBool("pm-sandbox-everything", false);
+        return settings.getBool("pm-sandbox-everything", false);
     }
 
     public static void godHood(UnitType ascending){
@@ -158,9 +155,7 @@ public class ProgMats extends Mod{
                         }
                     });
 
-                    u.abilities.each(a -> {
-                        ascending.abilities.add(a);
-                    });
+                    u.abilities.each(a -> ascending.abilities.add(a));
 
                     ascending.hitSize = Math.max(ascending.hitSize, u.hitSize * 2f / 3f);
                 }

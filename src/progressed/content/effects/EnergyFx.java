@@ -10,7 +10,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
-import progressed.util.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
