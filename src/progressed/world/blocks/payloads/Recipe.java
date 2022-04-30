@@ -5,7 +5,7 @@ import mindustry.world.*;
 
 public class Recipe{
     public float craftTime;
-    public boolean requiresUnlock;
+    public boolean requiresUnlock = true;
     public boolean blockBuild = true, centerBuild;
 
     public ItemStack[] buildCost;
@@ -21,7 +21,6 @@ public class Recipe{
 
         if(block instanceof Missile m){
             craftTime = m.constructTime;
-            requiresUnlock = m.requiresUnlock;
             powerUse = m.powerUse;
             inputBlock = m.prev;
         }

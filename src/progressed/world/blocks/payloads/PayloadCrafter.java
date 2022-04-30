@@ -147,7 +147,7 @@ public class PayloadCrafter extends PayloadBlock{
         boolean hasRecipe = recipes.contains(r -> r.outputBlock == b);
         if(hasRecipe){
             Recipe recipe = recipes.find(r -> r.outputBlock == b);
-            return recipe.requiresUnlock && recipe.outputBlock.unlockedNow();
+            return !recipe.requiresUnlock || recipe.outputBlock.unlockedNow();
         }
         return false;
     }
