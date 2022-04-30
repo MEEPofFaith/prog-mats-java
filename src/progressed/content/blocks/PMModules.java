@@ -26,6 +26,7 @@ import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
+import static mindustry.type.ItemStack.*;
 
 public class PMModules{
     public static float maxClip = 0;
@@ -47,6 +48,9 @@ public class PMModules{
     public static void load(){
         //Region small
         shrapnel = new ModulePayload("shrapnel"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 40
+            ));
             module = new ItemTurretModule("shrapnel"){{
                 ammo(
                     Items.copper, ModuleBullets.shotgunCopper,
@@ -69,6 +73,11 @@ public class PMModules{
         }};
 
         pinpoint = new ModulePayload("pinpoint"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 80,
+                Items.silicon, 40,
+                PMItems.tenelium, 30
+            ));
             module = new ItemTurretModule("pinpoint"){
                 {
                     ammo(
@@ -97,6 +106,10 @@ public class PMModules{
         }};
 
         froth = new ModulePayload("froth"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.metaglass, 35f,
+                Items.lead, 60f
+            ));
             module = new LiquidTurretModule("froth"){{
                 ammo(
                     Liquids.water, ModuleBullets.waterShotMini,
@@ -116,6 +129,10 @@ public class PMModules{
         }};
 
         bifurcation = new ModulePayload("bifurcation"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 70,
+                Items.lead, 60
+            ));
             module = new PowerTurretModule("bifurcation"){{
                 shootType = new LightningBulletType(){{
                     damage = 12;
@@ -139,6 +156,11 @@ public class PMModules{
         }};
 
         iris = new ModulePayload("iris"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 60,
+                Items.lead, 30,
+                Items.silicon, 40
+            ));
             module = new PowerTurretModule("iris"){
                 {
                     powerUse = 1f;
@@ -168,6 +190,10 @@ public class PMModules{
 
         //amazing name lmao
         bandage = new ModulePayload("bandage"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.lead, 20,
+                Items.copper, 15
+            ));
             module = new ChargeModule("bandage"){
                 final float healPercent = 5f;
 
@@ -193,6 +219,11 @@ public class PMModules{
         }};
 
         overclocker = new ModulePayload("mini-overdrive"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.lead, 40,
+                Items.titanium, 20,
+                Items.silicon, 20
+            ));
             module = new ChargeModule("mini-overdrive"){
                 final float speedBoost = 1.25f;
 
@@ -213,6 +244,11 @@ public class PMModules{
 
         //Region medium
         blunderbuss = new ModulePayload("blunderbuss"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 130,
+                Items.graphite, 70,
+                Items.titanium, 80
+            ));
             module = new ItemTurretModule("blunderbuss", ModuleSize.medium){{
                 ammo(
                     Items.copper, ModuleBullets.shotgunCopperCrit,
@@ -236,6 +272,11 @@ public class PMModules{
         }};
 
         airburst = new ModulePayload("airburst"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 130,
+                Items.titanium, 80,
+                Items.graphite, 90
+            ));
             module = new ItemTurretModule("airburst", ModuleSize.medium){{
                 ammo(
                     Items.pyratite, ModuleBullets.swarmIncendiary,
@@ -256,6 +297,11 @@ public class PMModules{
         }};
 
         vulcan = new ModulePayload("vulcan"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 100,
+                Items.lead, 130,
+                Items.silicon, 60
+            ));
             module = new PowerTurretModule("vulcan", ModuleSize.medium){{
                 reloadTime = 43f;
                 powerUse = 10f;
@@ -280,6 +326,11 @@ public class PMModules{
         }};
 
         lotus = new ModulePayload("lotus"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.titanium, 80,
+                Items.lead, 90,
+                Items.silicon, 70
+            ));
             module = new PowerTurretModule("lotus", ModuleSize.medium){
                 final float delay = 30f;
                 final Effect waveEffect = Fx.none;
@@ -350,6 +401,11 @@ public class PMModules{
         }};
 
         gravity = new ModulePayload("gravity"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.silicon, 140,
+                PMItems.tenelium, 110,
+                Items.graphite, 40
+            ));
             module = new ImpulseModule("gravity", ModuleSize.medium){{
                 range = 180f;
                 damage = 0.2f;
@@ -363,6 +419,11 @@ public class PMModules{
         }};
 
         ambrosia = new ModulePayload("ambrosia"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.silicon, 80,
+                Items.thorium, 60,
+                Items.plastanium, 60
+            ));
             module = new PowerTurretModule("ambrosia", ModuleSize.medium){
                 {
                     reloadTime = 12f * 60f;
@@ -389,6 +450,11 @@ public class PMModules{
         }};
 
         vigilance = new ModulePayload("dispel"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.silicon, 140,
+                PMItems.tenelium, 120,
+                Items.phaseFabric, 50
+            ));
             module = new PointDefenceModule("dispel", ModuleSize.medium){{
                 powerUse = 5f;
                 range = 200f;
@@ -402,6 +468,12 @@ public class PMModules{
 
         //Region Large
         rebound = new ModulePayload("rebound"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 320,
+                Items.graphite, 200,
+                Items.plastanium, 200,
+                Items.thorium, 170
+            ));
             module = new ItemTurretModule("rebound", ModuleSize.large){
                 {
                     ammo(
@@ -467,6 +539,12 @@ public class PMModules{
         }};
 
         trifecta = new ModulePayload("trifecta"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 280,
+                Items.graphite, 270,
+                Items.plastanium, 180,
+                PMItems.tenelium, 50
+            ));
             module = new ItemTurretModule("trifecta", ModuleSize.large){
                 {
                     ammo(
@@ -500,6 +578,13 @@ public class PMModules{
         }};
 
         ares = new ModulePayload("ares"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 360,
+                Items.lead, 320,
+                PMItems.tenelium, 200,
+                Items.surgeAlloy, 120,
+                Items.silicon, 270
+            ));
             module = new PowerTurretModule("ares", ModuleSize.large){{
                 powerUse = 12f;
                 range = 38f * tilesize;
@@ -514,6 +599,13 @@ public class PMModules{
         }};
 
         jupiter = new ModulePayload("jupiter"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+                Items.copper, 290,
+                Items.lead, 230,
+                PMItems.tenelium, 180,
+                Items.surgeAlloy, 80,
+                Items.silicon, 230
+            ));
             module = new PowerTurretModule("jupiter", ModuleSize.large){
                 final float baseRad = 7.5f, jointRadMin = 9.5f, jointRadMax = 13f, endRadMin = 5f, endRadMax = 11.5f;
                 TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion, fullArm;

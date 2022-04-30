@@ -969,7 +969,12 @@ public class PMBlocks{
         };
 
         council = new ModularTurret("council"){{
-            requirements(Category.turret, empty);
+            requirements(Category.turret, with(
+                Items.copper, 200,
+                Items.lead, 170,
+                Items.graphite, 150,
+                Items.titanium, 120
+            ));
             size = 5;
             hideDetails = false;
 
@@ -980,7 +985,12 @@ public class PMBlocks{
         }};
 
         congress = new ModularTurret("congress"){{
-            requirements(Category.turret, empty);
+            requirements(Category.turret, with(
+                Items.copper, 630,
+                Items.lead, 540,
+                Items.plastanium, 360,
+                PMItems.tenelium, 210
+            ));
             size = 7;
             hideDetails = false;
             payloadSpeed = 0.9f;
@@ -993,7 +1003,12 @@ public class PMBlocks{
         }};
 
         pantheon = new ModularTurret("pantheon"){{
-            requirements(Category.turret, empty);
+            requirements(Category.turret, with(
+                Items.copper, 1340,
+                Items.lead, 1270,
+                PMItems.tenelium, 980,
+                Items.surgeAlloy, 630
+            ));
             size = 9;
             hideDetails = false;
             payloadSpeed = 1.2f;
@@ -1377,36 +1392,45 @@ public class PMBlocks{
         }};
 
         moduleAssembler = new PayloadCrafter("module-assembler"){{
-            requirements(Category.crafting, empty);
+            requirements(Category.crafting, with(
+                Items.copper, 220,
+                Items.lead, 250,
+                Items.silicon, 100
+            ));
             size = 3;
 
             recipes(
-                new Recipe(shrapnel, 1f, 60f),
-                new Recipe(froth, 1f, 60f),
-                new Recipe(bifurcation, 1f, 60f),
-                new Recipe(iris, 1f, 60f),
-                new Recipe(lotus, iris, 1f, 60f),
-                new Recipe(bandage, 1f, 60f),
-                new Recipe(overclocker, 1f, 60f),
-                new Recipe(blunderbuss, shrapnel, 1f, 60f),
-                new Recipe(vulcan, 1f, 60f),
-                new Recipe(ambrosia, 1f, 60f)
+                new Recipe(shrapnel, 3f, 3f * 60f),
+                new Recipe(froth, 2.5f, 3f * 60f),
+                new Recipe(bifurcation, 3f, 3f * 60f),
+                new Recipe(iris, 4f, 5f * 60f),
+                new Recipe(bandage, 2f, 2f * 60f),
+                new Recipe(overclocker, 3.5f, 4f * 60f),
+                new Recipe(blunderbuss, shrapnel, 7f, 14f * 60f),
+                new Recipe(vulcan, 7.5f, 23f * 60f),
+                new Recipe(lotus, iris, 8f, 18f * 60f),
+                new Recipe(ambrosia, 6f, 16f * 60f)
             );
         }};
 
         moduleFoundry = new PayloadCrafter("module-foundry"){{
-            requirements(Category.crafting, empty);
+            requirements(Category.crafting, with(
+                Items.lead, 540,
+                Items.silicon, 430,
+                PMItems.tenelium, 300,
+                Items.plastanium, 240
+            ));
             size = 5;
 
             recipes(
-                new Recipe(pinpoint, 1f, 60f),
-                new Recipe(airburst, 1f, 60f),
-                new Recipe(vigilance, 1f, 60f),
-                new Recipe(gravity, 1f, 60f),
-                new Recipe(rebound, 1f, 60f),
-                new Recipe(trifecta, airburst, 1f, 60f),
-                new Recipe(jupiter, iris, 1f, 60f),
-                new Recipe(ares, vulcan, 1f, 60f)
+                new Recipe(pinpoint, 4f, 10f * 60f),
+                new Recipe(airburst, 7.5f, 25f * 60f),
+                new Recipe(vigilance, 6.5f, 18f * 60f),
+                new Recipe(gravity, 6.5f, 17f * 60f),
+                new Recipe(rebound, 10f, 34f * 60f),
+                new Recipe(trifecta, airburst, 12f, 38f * 60f),
+                new Recipe(jupiter, iris, 14f, 43f * 60f),
+                new Recipe(ares, vulcan, 14.5f, 49f * 60f)
             );
         }};
 

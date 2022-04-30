@@ -13,7 +13,6 @@ public class ModulePayload extends Block{
 
     public ModulePayload(String name){
         super(name);
-        requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
 
         outlineIcon = true;
         health = 200;
@@ -23,6 +22,7 @@ public class ModulePayload extends Block{
         rebuildable = false;
         drawDisabled = false;
         squareSprite = false;
+        researchCostMultiplier = 3f;
     }
 
     @Override
