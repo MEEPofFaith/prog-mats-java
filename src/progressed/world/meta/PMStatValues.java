@@ -20,6 +20,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import progressed.*;
+import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
@@ -77,8 +78,12 @@ public class PMStatValues{
 
                         if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                             if(type instanceof BlackHoleBulletType stype){
-                                bt.add(bundle.format("bullet.pm-blackhole-damage", stype.continuousDamage(), Strings.fixed(stype.damageRadius / tilesize, 1)));
+                                bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.damageRadius / tilesize));
                                 sep(bt, bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
+                            }else if(type instanceof PillarFieldBulletType stype){
+                                bt.add(bundle.format("bullet.pm-multi-splash", stype.amount, stype.pillar.damage, stype.pillar.radius / tilesize));
+                            }else if(type instanceof MagmaBulletType stype){
+                                bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.radius / tilesize));
                             }else if(type.continuousDamage() > 0){
                                 bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                             }else{
@@ -138,6 +143,10 @@ public class PMStatValues{
 
                         if(type.status != StatusEffects.none){
                             sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+                        }
+
+                        if(type instanceof PillarFieldBulletType stype && stype.pillar.status != StatusEffects.none){
+                            sep(bt, (stype.pillar.status.minfo.mod == null ? stype.pillar.status.emoji() : "") + "[stat]" + stype.pillar.status.localizedName);
                         }
 
                         if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but stat display is only run once so whatever
@@ -204,6 +213,16 @@ public class PMStatValues{
 
                         if(type.lightning > 0){
                             sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+                        }
+
+                        if(type instanceof TargetBulletType stype){
+                            sep(bt, "@bullet.pm-target");
+                            if(stype.tDamage > 0){
+                                sep(bt, bundle.format("bullet.damage", stype.tDamage)).padLeft(8f);
+                            }
+                            if(stype.tStatus != StatusEffects.none){
+                                sep(bt, (stype.tStatus.minfo.mod == null ? stype.tStatus.emoji() : "") + "[stat]" + stype.tStatus.localizedName).padLeft(8f);
+                            }
                         }
 
                         if(type instanceof ArcMissileBulletType stype && stype.splitBullet != null){
@@ -520,9 +539,9 @@ public class PMStatValues{
         }).size(size).left().name("contentinfo");
     }
 
-    private static void sep(Table table, String text){
+    private static Cell<Label> sep(Table table, String text){
         table.row();
-        table.add(text);
+        return table.add(text);
     }
 
     private static TextureRegion icon(UnlockableContent t){

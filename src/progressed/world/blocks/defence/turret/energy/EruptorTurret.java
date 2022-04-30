@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.energy;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -10,10 +11,12 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
 import progressed.graphics.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -34,6 +37,14 @@ public class EruptorTurret extends PowerTurret{
         loopSound = Sounds.beam;
         loopSoundVolume = 2f;
         heatColor = Color.valueOf("f08913");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.ammo);
+        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
     @Override

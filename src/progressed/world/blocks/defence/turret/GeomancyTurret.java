@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -13,10 +14,12 @@ import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
 import progressed.entities.bullet.*;
 import progressed.graphics.*;
+import progressed.world.meta.*;
 
 public class GeomancyTurret extends PowerTurret{
     public float armX = 4f, armY;
@@ -49,6 +52,14 @@ public class GeomancyTurret extends PowerTurret{
             armOutlines[arm] = Core.atlas.find(name + "-arm-outline-" + arm);
             armHeatRegions[arm] = Core.atlas.find(name + "-arm-heat-" + arm);
         }
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.ammo);
+        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
     @Override

@@ -106,7 +106,7 @@ public class ApotheosisChargeTower extends Block{
             s.row();
             s.table(st -> {
                 st.left().defaults().padRight(3).left();
-                st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", "+" + damageBoost * 12, "+" + Strings.fixed(radiusBoost / tilesize, 1)));
+                st.add(Core.bundle.format("bullet.pm-continuous-splash-damage", "+" + damageBoost * 12, "+" + Strings.fixed(radiusBoost / tilesize, 1)));
                 st.row();
                 st.add(Core.bundle.format("bullet.pm-flare-lifetime", "+" + Strings.fixed(durationBoost / 60f, 2)));
                 if(boostFalloff < 1){

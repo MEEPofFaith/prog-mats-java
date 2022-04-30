@@ -66,10 +66,7 @@ public class PMBlocks{
     shock, spark, storm,
 
     //Geomancy
-    concretion,
-
-    //Eruptors
-    flame, blaze,
+    concretion, flame, blaze,
 
     //Pixel Turrets
     bit,

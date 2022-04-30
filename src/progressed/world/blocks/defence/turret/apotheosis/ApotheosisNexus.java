@@ -159,7 +159,7 @@ public class ApotheosisNexus extends ReloadTurret{
             s.row();
             s.table(st -> {
                 st.left().defaults().padRight(3).left();
-                st.add(Core.bundle.format("bullet.pm-continuoussplashdamage", damage * 12, Strings.fixed(damageRadius / tilesize, 1)));
+                st.add(Core.bundle.format("bullet.pm-continuous-splash-damage", damage * 12, Strings.fixed(damageRadius / tilesize, 1)));
                 if(buildingDamageMultiplier != 1){
                     st.row();
                     st.add(Core.bundle.format("bullet.buildingdamage", (int)(buildingDamageMultiplier * 100)));
