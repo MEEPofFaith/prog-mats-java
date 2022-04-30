@@ -475,12 +475,11 @@ public class ModuleBullets{
             }
         };
 
-        jupiterOrb = new BulletType(1f, 750f){
-            final float driftTrailWidth = 4f, driftTrailVelocity = 2f, driftTrailArc = 60f;
+        jupiterOrb = new OrbBulletType(1f, 750f){
 
             {
                 lifetime = 6f * 60f;
-                hitSize = 7f;
+                radius = hitSize = 7f;
                 pierce = pierceBuilding = true;
                 hittable = false;
                 homingPower = 0.05f;
@@ -494,49 +493,7 @@ public class ModuleBullets{
                 trailEffect = ModuleFx.jupiterTrail;
                 trailInterval = 1f;
                 trailRotation = true;
-            }
-
-            @Override
-            public void init(Bullet b){
-                super.init(b);
-
-                b.data = new DriftTrail[]{
-                    new DriftTrail(10, b),
-                    new DriftTrail(10, b),
-                    new DriftTrail(10, b)
-                };
-            }
-
-            @Override
-            public void update(Bullet b){
-                super.update(b);
-
-                DriftTrail[] data = (DriftTrail[])b.data;
-                for(int i = 0; i < 3; i++){
-                    float rot = b.rotation() - 180f + Mathf.sinDeg(Time.time + i * 120f + Mathf.randomSeed(b.id, 360f)) * driftTrailArc;
-                    data[i].update(b.x, b.y, Tmp.v1.trns(rot, driftTrailVelocity));
-                }
-            }
-
-            @Override
-            public void draw(Bullet b){
-                drawTrail(b);
-
-                for(DriftTrail t : (DriftTrail[])b.data){
-                    t.draw(Pal.lancerLaser, driftTrailWidth);
-                }
-
-                Draw.color(Pal.lancerLaser);
-                Fill.circle(b.x, b.y, 7f);
-            }
-
-            @Override
-            public void removed(Bullet b){
-                super.removed(b);
-
-                for(DriftTrail t : (DriftTrail[])b.data){
-                    UtilFx.driftTrailFade.at(b.x, b.y, driftTrailWidth, t);
-                }
+                driftTrailWidth = 4f;
             }
         };
     }
