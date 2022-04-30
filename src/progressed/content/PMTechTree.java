@@ -58,7 +58,10 @@ public class PMTechTree{
             });
 
             //Module Turret
-            node(council, combineCosts(council, moduleAssembler, shrapnel, froth, bifurcation), () -> {
+            node(council, combineCosts(council, moduleAssembler, shrapnel, froth, bifurcation), Seq.with(
+                new Research(wave),
+                new Research(arc)
+            ), () -> {
                 node(congress, () -> {
                     node(pantheon);
                 });
@@ -69,7 +72,10 @@ public class PMTechTree{
 
                 nodeFree(shrapnel, council, () -> {
                     node(blunderbuss, () -> {
-                        node(airburst, Seq.with(new Research(moduleFoundry)), () -> {
+                        node(airburst, Seq.with(
+                            new Research(moduleFoundry),
+                            new Research(swarmer)
+                        ), () -> {
                             node(trifecta, Seq.with(new Research(congress)));
                         });
                         node(rebound, Seq.with(
@@ -80,18 +86,18 @@ public class PMTechTree{
                 });
                 nodeFree(froth, council);
                 nodeFree(bifurcation, council, () -> {
-                    node(vulcan, () -> {
+                    node(vulcan, Seq.with(new Research(lancer)), () -> {
                         node(ares, Seq.with(
                             new Research(moduleFoundry),
                             new Research(congress)
                         ));
                     });
-                    node(bandage, () -> {
-                        node(ambrosia, () -> {
+                    node(bandage, Seq.with(new Research(mender)), () -> {
+                        node(ambrosia, Seq.with(new Research(repairTurret)), () -> {
                             node(vigilance, Seq.with(new Research(moduleFoundry)));
                             node(gravity, Seq.with(new Research(moduleFoundry)));
                         });
-                        node(overclocker);
+                        node(overclocker, Seq.with(new Research(overdriveProjector)));
                         node(pinpoint, Seq.with(new Research(moduleFoundry)));
                     });
                 });
@@ -372,11 +378,6 @@ public class PMTechTree{
 
     private static void node(UnlockableContent block){
         node(block, () -> {});
-    }
-
-    private static void nodeFree(UnlockableContent content, UnlockableContent source, Seq<Objective> objectives, Runnable children){
-        objectives.add(new Research(source));
-        node(content, ItemStack.empty, objectives, children);
     }
 
     private static void nodeFree(UnlockableContent content, UnlockableContent source, Runnable children){
