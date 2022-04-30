@@ -13,10 +13,20 @@ import mindustry.graphics.*;
 public class DriftTrail{
     public int length;
     public Unit unit;
+    public Bullet bullet;
     public float offset;
 
     private final Seq<DriftTrailData> points;
     private float lastX = -1, lastY = -1, lastAngle = -1, counter = 0f;
+
+    public DriftTrail(int length, Entityc parent){
+        this(length);
+        if(parent instanceof Unit u){
+            unit = u;
+        }else if(parent instanceof Bullet b){
+            bullet = b;
+        }
+    }
 
     public DriftTrail(int length){
         this.length = length;
@@ -59,9 +69,14 @@ public class DriftTrail{
             DriftTrailData d1 = points.get(i), d2 = points.get(i + 1);
             float x1 = d1.x, y1 = d1.y, w1 = d1.w,
                 x2 = d2.x, y2 = d2.y, w2 = d2.w;
-            if(unit != null && i == points.size - 2){
-                x2 = unit.x + Angles.trnsx(unit.rotation, offset);
-                y2 = unit.y + Angles.trnsy(unit.rotation, offset);
+            if(i == points.size - 2){
+                if(unit != null && unit.isAdded()){
+                    x2 = unit.x + Angles.trnsx(unit.rotation, offset);
+                    y2 = unit.y + Angles.trnsy(unit.rotation, offset);
+                }else if(bullet != null && bullet.isAdded()){
+                    x2 = bullet.x + Angles.trnsx(bullet.rotation(), offset);
+                    y2 = bullet.y + Angles.trnsy(bullet.rotation(), offset);
+                }
             }
             float size = width / points.size;
             float z1 = lastAngle;
