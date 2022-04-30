@@ -13,6 +13,9 @@ import progressed.entities.bullet.energy.*;
 
 public class PMUtls{
     public static final Rand rand = new Rand();
+    static final Seq<ItemStack> rawStacks = new Seq<>();
+    static final Seq<Item> items = new Seq<>();
+    static final IntSeq amounts = new IntSeq();
     
     public static float bulletDamage(BulletType b, float lifetime){
         float damage = b.damage + b.splashDamage; //Base Damage
@@ -69,30 +72,29 @@ public class PMUtls{
         return researchRequirements(requirements, 1f);
     }
 
-    /** Adds ItemStack arrayws together. Combines duplicate items into one stack. */
-    public static ItemStack[] addItemStacks(ItemStack[][] stacks){
-        Seq<ItemStack> rawStacks = new Seq<>();
-        for(ItemStack[] arr : stacks){
-            for(ItemStack stack : arr){
+    /** Adds ItemStack arrays together. Combines duplicate items into one stack. */
+    public static ItemStack[] addItemStacks(Seq<ItemStack[]> stacks){
+        rawStacks.clear();
+        items.clear();
+        amounts.clear();
+        stacks.each(s -> {
+            for(ItemStack stack : s){
                 rawStacks.add(stack);
             }
-        }
-        Seq<Item> items = new Seq<>();
-        IntSeq amounts = new IntSeq();
+        });
+        rawStacks.sort(s -> s.item.id);
         rawStacks.each(s -> {
             if(!items.contains(s.item)){
                 items.add(s.item);
                 amounts.add(s.amount);
             }else{
-                int index = items.indexOf(s.item);
-                amounts.incr(index, s.amount);
+                amounts.incr(items.indexOf(s.item), s.amount);
             }
         });
         ItemStack[] result = new ItemStack[items.size];
-        items.each(i -> {
-            int index = items.indexOf(i);
-            result[index] = new ItemStack(i, amounts.get(index));
-        });
+        for(int i = 0; i < items.size; i++){
+            result[i] = new ItemStack(items.get(i), amounts.get(i));
+        }
         return result;
     }
 

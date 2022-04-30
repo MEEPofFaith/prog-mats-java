@@ -1,11 +1,13 @@
 package progressed.content;
 
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import progressed.util.*;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
@@ -14,12 +16,15 @@ import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
 import static progressed.content.PMUnitTypes.*;
 import static progressed.content.blocks.PMBlocks.*;
+import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class PMTechTree{
     //Dont mind me I'ma just yoink some stuff from BetaMindy
     static TechTree.TechNode context = null;
+
+    static Seq<ItemStack[]> priceAddition = new Seq<>();
 
     public static void load(){
         vanillaNode(lancer, () -> {
@@ -51,6 +56,54 @@ public class PMTechTree{
                     node(mivnigun);
                 });
             });
+
+            //Module Turret
+            node(council, combineCosts(council, moduleAssembler, shrapnel, froth, bifurcation), () -> {
+                node(congress, () -> {
+                    node(pantheon);
+                });
+
+                nodeFree(moduleAssembler, council, () -> {
+                    node(moduleFoundry);
+                });
+
+                nodeFree(shrapnel, council, () -> {
+                    node(blunderbuss, () -> {
+                        node(airburst, Seq.with(new Research(moduleFoundry)), () -> {
+                            node(trifecta, Seq.with(new Research(congress)));
+                        });
+                        node(rebound, Seq.with(
+                            new Research(moduleFoundry),
+                            new Research(congress)
+                        ));
+                    });
+                });
+                nodeFree(froth, council);
+                nodeFree(bifurcation, council, () -> {
+                    node(vulcan, () -> {
+                        node(ares, Seq.with(
+                            new Research(moduleFoundry),
+                            new Research(congress)
+                        ));
+                    });
+                    node(bandage, () -> {
+                        node(ambrosia, () -> {
+                            node(vigilance, Seq.with(new Research(moduleFoundry)));
+                            node(gravity, Seq.with(new Research(moduleFoundry)));
+                        });
+                        node(overclocker);
+                        node(pinpoint, Seq.with(new Research(moduleFoundry)));
+                    });
+                });
+                node(iris, () -> {
+                    node(lotus, () -> {
+                        node(jupiter, Seq.with(
+                            new Research(moduleFoundry),
+                            new Research(congress)
+                        ));
+                    });
+                });
+            });
         });
 
         vanillaNode(fuse, () -> {
@@ -63,21 +116,21 @@ public class PMTechTree{
         });
 
         vanillaNode(ripple, () -> {
-            //Missile Launchers (also painful to look at)
+            //Missile Launchers
             node(firestorm, Seq.with(
                 new SectorComplete(SectorPresets.impact0078),
                 new Research(launchPad)
             ), () -> {
-                node(strikedown, Seq.with(
+                node(strikedown, combineCosts(strikedown, emptyMissile, basicMissile), Seq.with(
                     new SectorComplete(SectorPresets.nuclearComplex),
                     new Research(arbalest)
                 ), () -> {
-                    node(trinity, Seq.with(
+                    node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
                         new Research(interplanetaryAccelerator)
                     ), () -> {
                         //Apotheosis
                         node(apotheosisNexus, Seq.with(
-                            new Research(impactReactor) //I should probably think of power generation block ideas for PM
+                            new Research(impactReactor) //I should probably think of power generation ideas for PM
                         ), () -> {
                             node(apotheosisCharger);
                         });
@@ -86,58 +139,46 @@ public class PMTechTree{
             });
 
             //Tinker
-            node(sergeant, Seq.with(
+            node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
                 new SectorComplete(SectorPresets.windsweptIslands)
             ), () -> {
-                node(arbalest, Seq.with(
+                node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
                     new SectorComplete(SectorPresets.nuclearComplex)
                 ), () -> {
-                    node(shellPress, () -> {
-                        node(emptyRocket);
-                        node(emptyMissile, Seq.with(
-                            new Research(strikedown)
-                        ));
-                        node(emptyNuke, Seq.with(
-                            new Research(trinity)
-                        ));
-                        node(missileFactory, () -> {
+                    nodeFree(shellPress, arbalest, () -> {
+                        nodeFree(emptyRocket, arbalest);
+                        nodeFree(emptyMissile, strikedown);
+                        nodeFree(emptyNuke, trinity);
+                        nodeFree(missileFactory, arbalest, () -> {
                             //Rockets
-                            node(basicRocket, () -> {
+                            nodeFree(basicRocket, arbalest, () -> {
                                 node(incendiaryRocket);
                                 node(bomberRocket);
                             });
                             //Missiles
-                            node(basicMissile, Seq.with(
-                                new Research(strikedown)
-                            ), () -> {
+                            nodeFree(basicMissile, strikedown, () -> {
                                 node(recursiveMissile);
                             });
                             //Nukes
-                            node(basicNuke, Seq.with(
-                                new Research(trinity)
-                            ), () -> {
+                            nodeFree(basicNuke, trinity, () -> {
                                 node(clusterNuke);
                             });
                         });
                     });
                 });
 
-                node(sentryBuilder, () -> {
-                    node(basicSentry, () -> {
-                        node(barrage, ItemStack.empty, Seq.with(
-                            new Research(basicSentry)
-                        ));
+                nodeFree(sentryBuilder, sergeant, () -> {
+                    nodeFree(basicSentry, sergeant, () -> {
+                        nodeFree(barrage, basicSentry);
                     });
                     node(missileSentry, Seq.with(new Research(firestorm)), () -> {
-                        node(downpour, ItemStack.empty, Seq.with(
-                            new Research(missileSentry)
-                        ));
+                        nodeFree(downpour, missileSentry);
                     });
                     node(dashSentry, Seq.with(
                         new Research(lancer),
                         new Research(quasar)
                     ), () -> {
-                        node(rapier, ItemStack.empty, Seq.with(new Research(dashSentry)));
+                        nodeFree(rapier, dashSentry);
                     });
                 });
             });
@@ -333,6 +374,19 @@ public class PMTechTree{
         node(block, () -> {});
     }
 
+    private static void nodeFree(UnlockableContent content, UnlockableContent source, Seq<Objective> objectives, Runnable children){
+        objectives.add(new Research(source));
+        node(content, ItemStack.empty, objectives, children);
+    }
+
+    private static void nodeFree(UnlockableContent content, UnlockableContent source, Runnable children){
+        node(content, ItemStack.empty, Seq.with(new Research(source)), children);
+    }
+
+    private static void nodeFree(UnlockableContent content, UnlockableContent source){
+        node(content, ItemStack.empty, Seq.with(new Research(source)));
+    }
+
     private static void nodeProduce(UnlockableContent content, Seq<Objective> objectives, Runnable children){
         node(content, content.researchRequirements(), objectives.and(new Produce(content)), children);
     }
@@ -347,5 +401,13 @@ public class PMTechTree{
 
     private static void nodeProduce(UnlockableContent content){
         nodeProduce(content, Seq.with(), () -> {});
+    }
+
+    private static ItemStack[] combineCosts(UnlockableContent... content){
+        priceAddition.clear();
+        for(UnlockableContent c : content){
+            priceAddition.add(c.researchRequirements());
+        }
+        return PMUtls.addItemStacks(priceAddition);
     }
 }

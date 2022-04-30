@@ -76,6 +76,9 @@ public class PMUnitTypes{
     }
 
     public static UnitType
+
+    //A chain of air units with DriftTrail shenanigans.
+    echo, presence, ghoul, phantom, apparition,
     
     //sentry
     barrage, downpour, rapier,

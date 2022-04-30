@@ -38,7 +38,7 @@ public class PMModules{
 
     //Region Medium
 
-    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia, dispel,
+    blunderbuss, airburst, vulcan, lotus, gravity, ambrosia, vigilance,
 
     //Region Large
 
@@ -388,7 +388,7 @@ public class PMModules{
             };
         }};
 
-        dispel = new ModulePayload("dispel"){{
+        vigilance = new ModulePayload("dispel"){{
             module = new PointDefenceModule("dispel", ModuleSize.medium){{
                 powerUse = 5f;
                 range = 200f;
