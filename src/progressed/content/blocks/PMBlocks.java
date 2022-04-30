@@ -456,7 +456,7 @@ public class PMBlocks{
             reloadTime = 90f;
             shootLength = 5f / 4f;
             recoilAmount = 3f;
-            shootType = new MagmaBulletType(50f, 14f){{
+            shootType = new MagmaBulletType(62f, 14f){{
                 shake = 1f;
                 crackEffects = 4;
             }};
@@ -483,7 +483,7 @@ public class PMBlocks{
             recoilAmount = 4f;
             beamStroke = 4f;
             beamWidth = 20f;
-            shootType = new MagmaBulletType(75f, 24f){{
+            shootType = new MagmaBulletType(76f, 24f){{
                 shake = 2f;
                 crackEffects = 6;
             }};

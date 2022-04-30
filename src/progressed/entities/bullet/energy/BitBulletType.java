@@ -23,6 +23,7 @@ public class BitBulletType extends BulletType{
         trailEffect = EnergyFx.bitTrail;
         absorbable = hittable = false;
         hitSound = PMSounds.pixelHit;
+        displayAmmoMultiplier = false;
     }
 
     public BitBulletType(){

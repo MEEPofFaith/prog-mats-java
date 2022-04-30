@@ -37,6 +37,7 @@ public class MagmaBulletType extends BulletType{
         collidesAir = false;
         puddleLiquid = PMLiquids.magma;
         puddleAmount = 250f;
+        displayAmmoMultiplier = false;
     }
 
     @Override

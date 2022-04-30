@@ -32,6 +32,7 @@ import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.payloads.*;
 
 import static arc.Core.*;
@@ -111,7 +112,7 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
-                        if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
+                        if(type.displayAmmoMultiplier && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret) && !(t instanceof PayloadMissileTurret)){
                             sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 

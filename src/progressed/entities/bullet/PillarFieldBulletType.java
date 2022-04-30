@@ -47,6 +47,7 @@ public class PillarFieldBulletType extends BulletType{
         collides = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
         layer = Layer.debris;
+        displayAmmoMultiplier = false;
     }
 
     @Override

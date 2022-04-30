@@ -20,6 +20,7 @@ public class CrossLaserBulletType extends LaserBulletType{
         laserEffect = Fx.none;
         collidesGround = collidesAir = true;
         largeHit = true;
+        displayAmmoMultiplier = false;
     }
 
     @Override

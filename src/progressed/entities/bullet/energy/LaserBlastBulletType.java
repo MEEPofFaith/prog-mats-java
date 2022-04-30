@@ -20,6 +20,7 @@ public class LaserBlastBulletType extends BulletType{
         super(damage, speed);
         trailWidth = -1f;
         shootEffect = smokeEffect = Fx.none;
+        displayAmmoMultiplier = false;
     }
 
     @Override
