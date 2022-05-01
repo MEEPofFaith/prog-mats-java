@@ -118,9 +118,9 @@ public class DriftTrail{
 
     /** Adds a new point to the trail at intervals. */
     public void update(float x, float y, float width, Vec2 v){
-        drift();
-        
         if((counter += Time.delta) >= 0.99f){
+            drift();
+
             if(points.size > length){
                 points.remove(0);
             }
@@ -149,8 +149,8 @@ public class DriftTrail{
         }
 
         public void drift(){
-            x += Time.delta * dx;
-            y += Time.delta * dy;
+            x += dx;
+            y += dy;
         }
     }
 }
