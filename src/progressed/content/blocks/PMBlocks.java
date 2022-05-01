@@ -1397,16 +1397,16 @@ public class PMBlocks{
             size = 3;
 
             recipes(
-                new Recipe(shrapnel, 3f, 3f * 60f),
-                new Recipe(froth, 2.5f, 3f * 60f),
-                new Recipe(bifurcation, 3f, 3f * 60f),
-                new Recipe(iris, 4f, 5f * 60f),
-                new Recipe(bandage, 2f, 2f * 60f),
-                new Recipe(overclocker, 3.5f, 4f * 60f),
-                new Recipe(blunderbuss, shrapnel, 7f, 14f * 60f),
-                new Recipe(vulcan, 7.5f, 23f * 60f),
-                new Recipe(lotus, iris, 8f, 18f * 60f),
-                new Recipe(ambrosia, 6f, 16f * 60f)
+                new Recipe(shrapnel, 3f, 1.5f * 60f),
+                new Recipe(froth, 2.5f, 1.5f * 60f),
+                new Recipe(bifurcation, 3f, 1.5f * 60f),
+                new Recipe(iris, 4f, 2.5f * 60f),
+                new Recipe(bandage, 2f, 60f),
+                new Recipe(overclocker, 3.5f, 2f * 60f),
+                new Recipe(blunderbuss, shrapnel, 7f, 7f * 60f),
+                new Recipe(vulcan, 7.5f, 11.5f * 60f),
+                new Recipe(lotus, iris, 8f, 9f * 60f),
+                new Recipe(ambrosia, 6f, 8f * 60f)
             );
         }};
 
@@ -1420,14 +1420,14 @@ public class PMBlocks{
             size = 5;
 
             recipes(
-                new Recipe(pinpoint, 4f, 10f * 60f),
-                new Recipe(airburst, 7.5f, 25f * 60f),
-                new Recipe(vigilance, 6.5f, 18f * 60f),
-                new Recipe(gravity, 6.5f, 17f * 60f),
-                new Recipe(rebound, 10f, 34f * 60f),
-                new Recipe(trifecta, airburst, 12f, 38f * 60f),
-                new Recipe(jupiter, iris, 14f, 43f * 60f),
-                new Recipe(ares, vulcan, 14.5f, 49f * 60f)
+                new Recipe(pinpoint, 4f, 5f * 60f),
+                new Recipe(airburst, 7.5f, 12.5f * 60f),
+                new Recipe(vigilance, 6.5f, 9f * 60f),
+                new Recipe(gravity, 6.5f, 8.5f * 60f),
+                new Recipe(rebound, 10f, 17f * 60f),
+                new Recipe(trifecta, airburst, 12f, 16f * 60f),
+                new Recipe(jupiter, iris, 14f, 21.5f * 60f),
+                new Recipe(ares, vulcan, 14.5f, 24.5f * 60f)
             );
         }};
 
