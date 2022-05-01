@@ -127,7 +127,7 @@ public class PMUnitTypes{
             health = 300f;
             duration = 32f * 60f;
 
-            weapons.add(new Weapon(name + "-hole"){{
+            weapons.add(new Weapon(){{
                 rotate = mirror = alternate = top = false;
                 x = y = recoil = shootY = 0f;
                 reload = 40f;

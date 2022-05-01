@@ -14,6 +14,8 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.meta.*;
+import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -35,8 +37,23 @@ public class Sentry extends Missile{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.output, s -> {
+            PMStatValues.infoButton(s, unit, 4f * 8f);
+        });
+    }
+
+    @Override
     protected TextureRegion[] icons(){
         return new TextureRegion[]{unit.fullIcon};
+    }
+
+    @Override
+    public void onUnlock(){
+        super.onUnlock();
+        unit.unlock();
     }
 
     @Override

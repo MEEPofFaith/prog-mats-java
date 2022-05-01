@@ -69,7 +69,13 @@ public class PMStatValues{
                     }else{
                         table.image(icon(t)).size(3 * 8).padRight(4).right().top();
                     }
-                    table.add(payload && !t.unlockedNow() ? "@pm-missing-research" : t.localizedName).padRight(10).left().top();
+                    table.table(n -> {
+                        n.add(payload && !t.unlockedNow() ? "@pm-missing-research" : t.localizedName);
+                        if(payload && t.unlockedNow()){
+                            n.row();
+                            infoButton(n, t, 4f * 8f);
+                        }
+                    }).padRight(10).left().top();
                 }
 
                 if(!payload || t.unlockedNow()){
@@ -360,7 +366,13 @@ public class PMStatValues{
                 }else{
                     table.add(PMElements.imageStack(icon(b), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
                 }
-                table.add(unlocked ? b.localizedName : "@pm-missing-research").padRight(10).left().top();
+                table.table(n -> {
+                    n.add(unlocked ? b.localizedName : "@pm-missing-research");
+                    if(unlocked){
+                        n.row();
+                        infoButton(n, b, 4f * 8f);
+                    }
+                }).padRight(10).left().top();
 
                 if(unlocked){
                     table.table(ct -> {
@@ -397,7 +409,13 @@ public class PMStatValues{
                                 }else{
                                     pt.add(PMElements.imageStack(icon(r.inputBlock), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
                                 }
-                                pt.add(r.inputBlock.unlockedNow() ? r.inputBlock.localizedName : "@pm-missing-research").padRight(10).left().top();
+                                pt.table(n -> {
+                                    n.add(r.inputBlock.unlockedNow() ? r.inputBlock.localizedName : "@pm-missing-research");
+                                    if(r.inputBlock.unlockedNow()){
+                                        n.row();
+                                        infoButton(n, r.inputBlock, 4f * 8f);
+                                    }
+                                }).padRight(10).left().top();
                             });
                         }
                         if(r.craftTime > 0){

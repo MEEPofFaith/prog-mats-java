@@ -146,6 +146,7 @@ public class PMTechTree{
 
             //Tinker
             node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
+                new Research(payloadPropulsionTower),
                 new SectorComplete(SectorPresets.windsweptIslands)
             ), () -> {
                 node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
@@ -174,18 +175,12 @@ public class PMTechTree{
                 });
 
                 nodeFree(sentryBuilder, sergeant, () -> {
-                    nodeFree(basicSentry, sergeant, () -> {
-                        nodeFree(barrage, basicSentry);
-                    });
-                    node(missileSentry, Seq.with(new Research(firestorm)), () -> {
-                        nodeFree(downpour, missileSentry);
-                    });
+                    nodeFree(basicSentry, sergeant);
+                    node(missileSentry, Seq.with(new Research(firestorm)));
                     node(dashSentry, Seq.with(
                         new Research(lancer),
                         new Research(quasar)
-                    ), () -> {
-                        nodeFree(rapier, dashSentry);
-                    });
+                    ));
                 });
             });
         });
