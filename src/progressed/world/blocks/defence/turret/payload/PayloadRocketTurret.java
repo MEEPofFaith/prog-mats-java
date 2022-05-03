@@ -97,9 +97,9 @@ public class PayloadRocketTurret extends PayloadTurret{
             Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
             Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
             for(int num : Mathf.zeroOne){
-                float scl = Mathf.curve(risef(), 0f, 0.375f) - Mathf.curve(risef(), 0.625f, 1f);
-                Draw.color(doorColors[num], doorColors[2], Interp.pow2Out.apply(scl));
-                float progress = Interp.pow3In.apply(scl);
+                float scl = Mathf.curve(risef(), 0f, 0.375f) - Mathf.curve(risef(), 0.625f, 1f),
+                    progress = Interp.sineIn.apply(scl);
+                Draw.color(doorColors[2], doorColors[num], progress);
                 tr.trns(rotation - 90f, (doorWidth / 4f + doorWidth / 4f * progress) * Mathf.signs[num], doorOffset);
                 Fill.rect(
                     x + tr2.x + tr.x, y + tr2.y + tr.y,
