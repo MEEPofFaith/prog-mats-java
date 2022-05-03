@@ -6,8 +6,10 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import progressed.ui.*;
+import progressed.world.blocks.defence.turret.modular.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
@@ -38,7 +40,7 @@ public class ModuleSwapDialog extends BaseDialog{
             base.resetSwap();
         });
 
-        shown(this::setUp);
+        shown(this::rebuild);
     }
 
     public Dialog show(ModularTurretBuild base){
@@ -46,7 +48,7 @@ public class ModuleSwapDialog extends BaseDialog{
         return show();
     }
 
-    private void setUp(){
+    private void rebuild(){
         cont.clear();
         selSize = ModuleSize.small;
         deselect();
@@ -70,16 +72,37 @@ public class ModuleSwapDialog extends BaseDialog{
                         ib.setChecked(selSize == mSize && selFirst == ii);
                     }).size(64f).left();
 
+                    ShiftedStack pos = new ShiftedStack();
+                    Vec2 p = base.getMountPos(mSize)[i];
+                    pos.setStackPos(p.x * 4f, p.y * 4f);
+                    pos.add(new Image(base.block.fullIcon));
+
                     BaseMount mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
                     String num = " (" + (i + 1) + ")";
 
                     if(mount != null){
+                        pos.add(new Image(mount.module.getPayload().fullIcon));
+
                         button.get().getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
-                        button.tooltip(mount.module.localizedName + num);
+                        button.tooltip(t -> {
+                            t.background(Styles.black6).margin(4f);
+                            t.label(() -> mount.module.localizedName + num);
+                            t.row();
+                            t.add(pos);
+                        });
                     }else{
+                        Image m = new Image(((ModularTurret)(base.block)).mountBases[mSize.ordinal()]);
+                        m.setColor(((ModularTurret)(base.block)).mountColor);
+                        pos.add(m);
+
                         button.get().clearChildren();
                         button.get().label(() -> String.valueOf(ii + 1));
-                        button.tooltip(Core.bundle.get("empty") + num);
+                        button.tooltip(t -> {
+                            t.background(Styles.black6).margin(4f);
+                            t.label(() -> Core.bundle.get("empty") + num);
+                            t.row();
+                            t.add(pos);
+                        });
                     }
 
                     if(c++ % 4 == 3){
@@ -101,7 +124,7 @@ public class ModuleSwapDialog extends BaseDialog{
             if(m1 != null) m1.swap(sel);
             if(m2 != null) m2.swap(selFirst);
 
-            setUp();
+            rebuild();
         }
     }
 
