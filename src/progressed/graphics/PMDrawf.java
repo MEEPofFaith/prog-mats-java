@@ -26,6 +26,21 @@ public class PMDrawf{
     private static final Font font = Fonts.outline;
     private static final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
+    public static void light(Team team, float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
+        if(allowLight(team)){
+            float res = color.toFloatBits();
+            renderer.lights.add(() -> {
+                Draw.color(res);
+                Draw.alpha(opacity);
+                Draw.rect(region, x, y, region.width / 4f * Mathf.sign(flip), region.height / 4f, rotation);
+            });
+        }
+    }
+
+    public static boolean allowLight(Team team){
+        return renderer != null && (team == Team.derelict || team == Vars.player.team() || state.rules.enemyLights);
+    }
+
     public static void plus(float x, float y, float diameter, float angle){
         plus(x, y, diameter / 3f, diameter, angle);
     }

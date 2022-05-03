@@ -19,21 +19,6 @@ public class PopeshadowTurret extends PowerTurret{
     public float xOpen = 2f, yOpen = -3f;
     public Color lightColor = Pal.surge;
     public float lightOpactiy = 0.7f;
-    //this is a mess
-    //TODO replace with turret parts with v7 Comes out
-    public float[][] lightCoordsSet1 = {
-        {21f / 4f, -65f / 4f, 26f / 4f, -60f / 4f, 3f},
-        {33f / 4f, -40f / 4f, 38f / 4f, -35f / 4f, 3f},
-        {63f / 4f, -55f / 4f, 63f / 4f, -46f / 4f, 3f},
-        {71f / 4f, -47f / 4f, 71f / 4f, -38f / 4f, 3f},
-        {61f / 4f, -6f / 4f, 61f / 4f, 2f / 4f, 4f}
-    };
-    public float[][] lightCoordsSet2 = {
-        {21f / 4f, 39f / 4f, 21f / 4f, 47f / 4f, 3f},
-        {21f / 4f, 52f / 4f, 21f / 4f, 60f / 4f, 3f},
-        {21f / 4f, 65f / 4f, 21f / 4f, 73f / 4f, 3f}
-    };
-
     public TextureRegion turretRegion, turretOutline, topRegion;
     public TextureRegion[] sideRegions = new TextureRegion[2], outlineRegions = new TextureRegion[2], cellRegions = new TextureRegion[8];
 
@@ -139,13 +124,7 @@ public class PopeshadowTurret extends PowerTurret{
                     if(cellLights[i] > 0.001f){
                         Draw.alpha(cellLights[i]);
                         Draw.rect(cellRegions[i], tx, ty, rotation - 90f);
-                        for(int j = 0; j < 2; j++){
-                            Tmp.v1.trns(rotation - 90f, lightCoordsSet1[i][0] * Mathf.signs[j], lightCoordsSet1[i][1]);
-                            Tmp.v1.add(tx, ty);
-                            Tmp.v2.trns(rotation - 90f, lightCoordsSet1[i][2] * Mathf.signs[j], lightCoordsSet1[i][3]);
-                            Tmp.v2.add(tx, ty);
-                            Drawf.light(team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, lightCoordsSet1[i][4], heatColor, cellLights[i] * lightOpactiy);
-                        }
+                        PMDrawf.light(team, tx, ty, cellRegions[i], rotation - 90f, heatColor, cellLights[i] * lightOpactiy, false);
                     }
                 }
                 //Ending Lights
@@ -154,11 +133,7 @@ public class PopeshadowTurret extends PowerTurret{
                         Draw.alpha(cellLights[i - 3]);
                         for(int j = 0; j < 2; j++){
                             Draw.rect(cellRegions[i], sX[j], sY[j], cellRegions[i].width / 4f * Mathf.signs[j], cellRegions[i].height / 4f, rotation - 90f);
-                            Tmp.v5.trns(rotation - 90f, lightCoordsSet2[i - 5][0] * Mathf.signs[j], lightCoordsSet2[i - 5][1]);
-                            Tmp.v5.add(sX[j], sY[j]);
-                            Tmp.v6.trns(rotation - 90f, lightCoordsSet2[i - 5][2] * Mathf.signs[j], lightCoordsSet2[i - 5][3]);
-                            Tmp.v6.add(sX[j], sY[j]);
-                            Drawf.light(team, Tmp.v5.x, Tmp.v5.y, Tmp.v6.x, Tmp.v6.y, lightCoordsSet2[i - 5][4], heatColor, cellLights[i - 3] * lightOpactiy);
+                            PMDrawf.light(team, sX[j], sY[j], cellRegions[i], rotation - 90f, heatColor, cellLights[i - 3] * lightOpactiy, !Mathf.booleans[j]);
                         }
                     }
                 }
