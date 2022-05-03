@@ -12,7 +12,7 @@ import mindustry.graphics.*;
 import progressed.util.*;
 
 public class HealFieldBulletType extends BulletType{
-    public float radius = 5f * Vars.tilesize, healing = 0.6f;
+    public float radius = 5f * Vars.tilesize, healing = 0.8f;
     public float growTime = 20f, fadeTime = 60f;
     public float areaEffectChance = 0.25f;
     public Effect areaEffect = Fx.none;

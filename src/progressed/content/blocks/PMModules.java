@@ -15,6 +15,7 @@ import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.DelayBulletType.*;
 import progressed.graphics.*;
@@ -434,6 +435,14 @@ public class PMModules{
                     playerControl = logicControl = false;
 
                     shootType = ModuleBullets.ambrosiaPotion;
+                }
+
+                @Override
+                public void setStats(Stats stats){
+                    super.setStats(stats);
+
+                    stats.remove(Stat.ammo);
+                    stats.add(Stat.repairSpeed, ((HealFieldBulletType)(shootType.fragBullet)).healing * 60f, StatUnit.perSecond);
                 }
 
                 @Override
