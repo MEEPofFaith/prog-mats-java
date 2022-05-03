@@ -123,8 +123,10 @@ public class DroneUnitType extends UnitType{
 
             table.table(bars -> {
                 bars.defaults().growX().height(20f).pad(4);
+
                 bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
                 bars.row();
+
                 bars.add(new Bar("pm-drone-charge", Pal.powerBar, d::chargef));
             }).growX();
 

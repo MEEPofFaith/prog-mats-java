@@ -213,25 +213,13 @@ public class BaseModule implements Cloneable{
     public void displayAll(ModularTurretBuild parent, Table table, Table parentTable, BaseMount mount){
         table.table(t -> {
             t.left();
-            t.add(new Image(region));
-            t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").size(5f * 8f).left().growX().padLeft(5);
+            t.image(region).scaling(Scaling.fit).size(5f * 8f);
+            t.label(() -> localizedName + " (" + (mount.mountNumber + 1) + ")").left().growX().padLeft(5);
             PMStatValues.moduleInfoButton(t, this, 5f * 8f).left().padLeft(5f);
             t.button(new TextureRegionDrawable(Icon.upload),2.5f * 8f, () -> {
-                if(canPickUp(mount)){ //jeez this is a mess
-                    Payloadc p = (Payloadc)player.unit();
-                    BuildPayload module = new BuildPayload(getPayload(), parent.team);
-                    p.addPayload(module);
-                    Fx.unitPickup.at(mount.x, mount.y);
-                    Events.fire(new PickupEvent(player.unit(), module.build));
-                    boolean has = parent.allMounts.contains(m -> m.checkSize(mount.module.size));
-                    parent.removeMount(mount);
-                    parent.setSelection(mount.module.size);
-                    parent.rebuild(parentTable, !has, has);
-                }else{
-                    showPickupFail(mount);
-                }
+                tryPickUp(parent, parentTable, mount);
             }).size(5f * 8f).left().padLeft(5f).tooltip("@pm-pickup.label");
-        }).growX().top().left();
+        }).grow().top().left();
 
         table.row();
 
@@ -243,7 +231,23 @@ public class BaseModule implements Cloneable{
             bars.defaults().growX().height(18f).pad(4f);
 
             displayBars(parent, bars, mount);
-        }).growX().top().left();
+        }).grow().top().left();
+    }
+
+    public void tryPickUp(ModularTurretBuild parent, Table parentTable, BaseMount mount){
+        if(canPickUp(mount)){ //jeez this is a mess
+            Payloadc p = (Payloadc)player.unit();
+            BuildPayload module = new BuildPayload(getPayload(), parent.team);
+            p.addPayload(module);
+            Fx.unitPickup.at(mount.x, mount.y);
+            Events.fire(new PickupEvent(player.unit(), module.build));
+            boolean has = parent.allMounts.contains(m -> m.checkSize(mount.module.size));
+            parent.removeMount(mount);
+            parent.setSelection(mount.module.size);
+            parent.rebuild(parentTable, !has, has);
+        }else{
+            showPickupFail(mount);
+        }
     }
 
     public boolean canPickUp(BaseMount mount){

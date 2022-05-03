@@ -47,7 +47,7 @@ public class ModularTurret extends PayloadBlock{
     public TextureRegion[] mountBases = new TextureRegion[3];
 
     private static ModuleSize selSize;
-    private static int selNum;
+    private static int selNum, rowCount;
 
     public ModularTurret(String name){
         super(name);
@@ -423,6 +423,7 @@ public class ModularTurret extends PayloadBlock{
                 }
                 t.table(m -> {
                     m.left().top();
+                    rowCount = 0;
                     allMounts.each(mount -> mount.checkSize(selSize), mount -> {
                         ImageButton button = m.button(Tex.whiteui, Styles.clearTogglei, 32f, () -> {
                             int index = allMounts.indexOf(mount);
@@ -434,22 +435,35 @@ public class ModularTurret extends PayloadBlock{
                             b.setChecked(selNum == allMounts.indexOf(mount));
                         }).size(40f).get();
                         button.getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
-                        m.row();
+                        if(rowCount++ % 8 == 7){
+                            m.row();
+                        }
                     });
+                    if(rowCount % 8 != 0){
+                        int remaining = 8 - (rowCount % 8);
+                        for(int j = 0; j < remaining; j++){
+                            m.image(Styles.none);
+                        }
+                    }
                 }).left().top().growY();
+
+                t.row();
 
                 if(selNum >= 0){
                     BaseMount mount = allMounts.get(selNum);
                     t.table(d -> {
                         if(slideDisplay){
                             d.setTransform(true);
-                            d.actions(Actions.scaleTo(0f, 1f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                            d.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
+                            d.update(() -> {
+                                d.setOrigin(Align.top);
+                            });
                         }
                         d.top().left();
                         mount.module.displayAll(this, d, table, mount);
                     }).top().left().grow();
                 }
-            }).top().fillX().expandY();
+            }).top().grow();
         }
 
         public void resetSelection(){
