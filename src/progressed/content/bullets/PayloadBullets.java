@@ -28,7 +28,7 @@ public class PayloadBullets{
     strikedownBasic, strikedownRecursive,
     trinityBasic, trinityCluster,
 
-    sendHelp; //Maniacal laughter
+    ohno; //Maniacal laughter
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
@@ -187,7 +187,7 @@ public class PayloadBullets{
             autoDropRadius = 0f;
             stopRadius = 8f;
             resumeSeek = false;
-            riseEngineSize = fallEngineSize = 5f;
+            thrusterRadius = 5f;
             trailSize = firestormSize;
             targetRadius = 0.5f;
         }};
@@ -207,8 +207,7 @@ public class PayloadBullets{
 
             autoDropRadius = 15f;
             stopRadius = 10f;
-            riseEngineSize = 16f;
-            fallEngineSize = 8f;
+            thrusterRadius = 16f;
             shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 30f;
@@ -232,8 +231,7 @@ public class PayloadBullets{
 
             autoDropRadius = 15f;
             stopRadius = 10f;
-            riseEngineSize = 16f;
-            fallEngineSize = 8f;
+            thrusterRadius = 16f;
             shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 30f;
@@ -261,7 +259,7 @@ public class PayloadBullets{
                 stopRadius = 10f;
                 stopDelay = 55f;
                 dropDelay = 35f;
-                fallEngineSize = 8f;
+                thrusterRadius = 8f;
                 shadowOffset = 260f;
                 riseTime = -1f;
                 fallTime = 30f;
@@ -289,7 +287,7 @@ public class PayloadBullets{
                     stopRadius = 10f;
                     stopDelay = 35f;
                     dropDelay = 25f;
-                    fallEngineSize = 8f;
+                    thrusterRadius = 8f;
                     shadowOffset = 230f;
                     riseTime = -1f;
                     fallTime = 30f;
@@ -316,8 +314,7 @@ public class PayloadBullets{
 
             autoDropRadius = 30f;
             stopRadius = 20f;
-            riseEngineSize = 24f;
-            fallEngineSize = 14f;
+            thrusterRadius = 24f;
             elevation = 3f;
             shadowOffset = 900f;
             riseTime = 90f;
@@ -350,7 +347,7 @@ public class PayloadBullets{
                 targetColor = PMPal.missileFrag;
 
                 autoDropRadius = stopRadius = -1f;
-                fallEngineSize = 8f;
+                thrusterRadius = 8f;
                 elevation = 3f;
                 shadowOffset = 900f;
                 riseTime = -1f;
@@ -364,7 +361,7 @@ public class PayloadBullets{
 
             autoDropRadius = 30f;
             stopRadius = 20f;
-            riseEngineSize = 24f;
+            thrusterRadius = 24f;
             elevation = 3f;
             shadowOffset = 900f;
             riseTime = 90f;
@@ -377,26 +374,26 @@ public class PayloadBullets{
         }};
 
         //aaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        sendHelp = (ArcMissileBulletType)trinityCluster.copy();
-        sendHelp.sprite = "prog-mats-send-help";
+        ohno = (ArcMissileBulletType)trinityCluster.copy();
+        ohno.sprite = "prog-mats-send-help";
 
-        RocketBulletType stop = (RocketBulletType)arbalestIncend.copy();
-        stop.layer = Layer.bullet - 1;
-        stop.homingRange = -1f;
-        stop.fragBullets = 1;
-        stop.fragBullet = strikedownRecursive;
-        stop.fragVelocityMin = 1f;
+        RocketBulletType cease = (RocketBulletType)arbalestIncend.copy();
+        cease.layer = Layer.bullet - 1;
+        cease.homingRange = -1f;
+        cease.fragBullets = 1;
+        cease.fragBullet = strikedownRecursive;
+        cease.fragVelocityMin = 1f;
 
-        ArcMissileBulletType pain = (ArcMissileBulletType)trinityBasic.copy();
-        pain.riseTime = -1f;
-        pain.speed = 2.5f;
-        pain.lifetime = 300f;
-        pain.homingRange = -1f;
-        pain.stopRadius = -1f;
-        pain.autoDropRadius = -1f;
-        pain.fragBullets = 10;
-        pain.fragBullet = stop;
+        ArcMissileBulletType enough = (ArcMissileBulletType)trinityBasic.copy();
+        enough.riseTime = -1f;
+        enough.speed = 2.5f;
+        enough.lifetime = 300f;
+        enough.homingRange = -1f;
+        enough.stopRadius = -1f;
+        enough.autoDropRadius = -1f;
+        enough.fragBullets = 10;
+        enough.fragBullet = cease;
 
-        sendHelp.splitBullet = pain;
+        ohno.splitBullet = enough;
     }
 }

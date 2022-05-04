@@ -154,7 +154,7 @@ public class PMUnitTypes{
                     autoDropRadius = 12f;
                     stopRadius = 8f;
 
-                    riseEngineSize = fallEngineSize = 5f;
+                    thrusterRadius = 5f;
 
                     trailSize = 0.125f;
                     targetRadius = 0.5f;

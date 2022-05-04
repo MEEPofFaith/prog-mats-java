@@ -1151,7 +1151,7 @@ public class PMBlocks{
             ammo(
                 basicNuke, PayloadBullets.trinityBasic,
                 clusterNuke, PayloadBullets.trinityCluster,
-                sandboxNuke, PayloadBullets.sendHelp
+                sandboxNuke, PayloadBullets.ohno
             );
             size = 7;
             hideDetails = false;

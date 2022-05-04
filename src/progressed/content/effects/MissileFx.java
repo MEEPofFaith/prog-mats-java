@@ -59,14 +59,13 @@ public class MissileFx{
     }),
 
     missileSmoke = new Effect(120, e -> {
-        if(e.data instanceof Float height){
-            float x = e.x + cameraXOffset(e.x, height),
-                y = e.y + cameraYOffset(e.y, height);
-            color(Color.gray);
-            alpha(Mathf.clamp(e.fout() * 1.6f - Interp.pow3In.apply(Mathf.clamp(e.rotation)) * 1.2f));
+        if(e.data instanceof float[] data){
+            float x = e.x + cameraXOffset(e.x, data[0]),
+                y = e.y + cameraYOffset(e.y, data[0]);
+            color(Color.gray, Mathf.clamp(e.fout() * 1.2f) * data[1]);
             Fill.circle(x, y, (1f + 10f * e.rotation) - e.fin() * 2f);
         }
-    }),
+    }).layer(Layer.effect + 0.21f),
 
     smallBoom = new Effect(30f, e -> {
         color(Pal.missileYellow);

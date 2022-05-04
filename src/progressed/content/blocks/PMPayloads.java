@@ -169,7 +169,7 @@ public class PMPayloads{
             size = 3;
 
             explosionArea = -1f;
-            ArcMissileBulletType b = PayloadBullets.sendHelp;
+            ArcMissileBulletType b = PayloadBullets.ohno;
             explosion = b.splitBullet;
             explosions = b.splitBullets;
             maxDelay = 20f;

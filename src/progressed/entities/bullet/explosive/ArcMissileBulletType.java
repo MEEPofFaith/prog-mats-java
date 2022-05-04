@@ -25,17 +25,15 @@ import static mindustry.Vars.*;
 /** @author MEEP */
 public class ArcMissileBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
-    public boolean resumeSeek = true, snapRot, randRot;
+    public boolean resumeSeek = true, randRot;
     public Effect rocketEffect = MissileFx.missileSmoke;
     public float trailChance = 0.5f, smokeTrailChance = 0.75f;
     public float targetRadius = 1f;
-    public float riseEngineTime, riseEngineSize = 8f, fallEngineTime = -1f, fallEngineSize = 6f;
+    public float thrusterRadius = 8f, thrusterLightRadius = -1f, thrusterLightOpacity = 0.5f;
     public float trailRnd, trailSize = 0.375f;
-    public float riseTime = 60f, fallTime = 40f, elevation = 1f, shadowOffset;
-    public float riseEngineLightRadius = 50f, fallEngineLightRadius = 42f, engineLightOpacity = 0.5f;
-    public Color engineLightColor = Pal.engine;
+    public float riseTime = 60f, fallTime = 40f, elevation = 1f, shadowOffset, growScl = 4f;
+    public Color thrusterColor = Pal.engine;
     public Color targetColor;
-    public float riseSpin = 0f, fallSpin = 0f;
     public Effect blockEffect = Fx.none;
     public float fartVolume = 50f;
     public int splitBullets;
@@ -63,7 +61,7 @@ public class ArcMissileBulletType extends BasicBulletType{
 
         drawSize = elevation + 64f;
         if(blockEffect == Fx.none) blockEffect = despawnEffect;
-        if(fallEngineTime < 0) fallEngineTime = fallTime;
+        if(thrusterLightRadius < 0) thrusterLightRadius = thrusterRadius * 6.5f;
 
         if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
@@ -90,10 +88,10 @@ public class ArcMissileBulletType extends BasicBulletType{
         if(b.data instanceof ArcMissileData data){
             float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
             if(rise < 1f && Mathf.chanceDelta(smokeTrailChance)){
-                float x = data.x;
-                float y = data.y;
-                float rRocket = 1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime));
-                rocketEffect.at(x + Mathf.range(trailRnd * rRocket), y + Mathf.range(trailRnd * rRocket), trailSize * rRocket, elevation * rise);
+                float x = data.x,
+                    y = data.y,
+                    scl = 1f + (growScl - 1f) * rise;
+                rocketEffect.at(x + Mathf.range(trailRnd * scl), y + Mathf.range(trailRnd * scl), trailSize * scl, new float[]{elevation * rise, 1f - rise});
             }
 
             //Find nearby target. Used for early dropping, starting and stopping, and homing.
@@ -247,12 +245,11 @@ public class ArcMissileBulletType extends BasicBulletType{
             float x = data.x;
             float y = data.y;
 
-            float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
-            float fadeOut = 1f - rise;
-            float fadeIn = Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime);
-            float fall = 1f - fadeIn;
-            float a = Interp.pow2Out.apply(fadeOut) + Interp.pow2Out.apply(fadeIn);
-            float rot = (snapRot ? b.rotation() + 90f : rise * riseSpin + fadeIn * fallSpin) + (randRot ? Mathf.randomSeed(b.id, 360f) : 0f);
+            float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime)),
+                fadeOut = 1f - rise,
+                fadeIn = Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime),
+                fall = 1f - fadeIn,
+                rot = randRot ? Mathf.randomSeed(b.id, 360f) : 0f;
             Tmp.v1.trns(225f, rise * fall * shadowOffset * 2f);
 
             //Target
@@ -270,56 +267,59 @@ public class ArcMissileBulletType extends BasicBulletType{
 
             //Missile
             if(fadeOut > 0 && fadeIn == 0){
-                float rX = x + Draw3D.cameraXOffset(x, rise * elevation);
-                float rY = y + Draw3D.cameraYOffset(y, rise * elevation);
-                float rRocket = Mathf.clamp(1f - Interp.pow5In.apply(Mathf.curve(b.time, riseEngineTime, riseTime)));
-                Draw.scl(rRocket);
+                float rX = x + Draw3D.cameraXOffset(x, rise * elevation),
+                    rY = y + Draw3D.cameraYOffset(y, rise * elevation),
+                    scl = 1f + (growScl - 1f) * rise;
+                Draw.scl(scl);
                 //Engine stolen from launchpad
-                if(riseEngineSize > 0f){
+                if(thrusterRadius > 0f){
                     Draw.z(Layer.effect + 0.001f);
-                    drawEngine(b.team, rX, rY, riseEngineSize, riseEngineLightRadius, rRocket, b.id);
+                    drawEngine(b.team, rX, rY, thrusterRadius, thrusterLightRadius, scl, fadeOut, b.id);
                 }
                 //Missile itself
                 Draw.z(Layer.weather - 1);
-                drawMissile(b.team, frontRegion, rX, rY, rot, a);
+                drawMissile(frontRegion, rX, rY, rot, fadeOut);
                 //Missile shadow
                 Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, a);
+                drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, fadeOut);
             }else if(fadeOut == 0f && fadeIn > 0f){
-                float fX = b.x + Draw3D.cameraXOffset(b.x, fall * elevation);
-                float fY = b.y + Draw3D.cameraYOffset(b.y, fall * elevation);
-                float rot2 = rot + 180f + Mathf.randomSeed(b.id + 3, 360f);
-                float fRocket = Mathf.clamp(Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime - fallTime + fallEngineTime)));
-                Draw.scl(fRocket);
+                float fX = b.x + Draw3D.cameraXOffset(b.x, fall * elevation),
+                    fY = b.y + Draw3D.cameraYOffset(b.y, fall * elevation),
+                    rot2 = rot + (randRot ? Mathf.randomSeed(b.id + 1, 360f) : 0f),
+                    scl = growScl - (growScl - 1f) * fadeIn;
+                Draw.scl(scl);
                 //Missile itself
                 Draw.z(Layer.weather - 2f);
-                drawMissile(b.team, backRegion, fX, fY, rot2, a);
+                drawMissile(backRegion, fX, fY, rot2, fadeIn);
                 //Engine stolen from launchpad
-                if(fallEngineSize > 0f){
+                if(thrusterRadius > 0f){
                     Draw.z(Layer.weather - 1f);
-                    drawEngine(b.team, fX, fY, fallEngineSize, fallEngineLightRadius, fRocket, b.id + 2);
+                    drawEngine(b.team, fX, fY, thrusterRadius, thrusterLightRadius, scl, fadeIn, b.id + 2);
                 }
                 //Missile shadow
                 Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(backRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, rot2, a);
+                drawShadow(backRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, rot, fadeIn);
             }
 
             Draw.reset();
         }
     }
 
-    public void drawMissile(Team team, TextureRegion region, float x, float y, float rot, float a){
+    public void drawMissile(TextureRegion region, float x, float y, float rot, float a){
         Draw.color();
         Draw.alpha(a);
         Draw.rect(region, x, y, rot);
-        Drawf.light(team, x, y, lightRadius * Draw.xscl, lightColor, lightOpacity * Draw.xscl);
     }
 
-    public void drawEngine(Team team, float x, float y, float size, float lightRadius, float scl, long seed){
-        Draw.color(engineLightColor);
-        Fill.light(x, y, 10, size * 1.5625f * scl, Tmp.c1.set(Pal.engine).mul(1f, 1f, 1f, scl), Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f));
+    public void drawEngine(Team team, float x, float y, float size, float lightRadius, float scl, float alpha, long seed){
+        Draw.color(thrusterColor, alpha);
+        Fill.light(x, y, 10,
+            size * 1.5625f * scl,
+            Tmp.c1.set(Pal.engine).mul(1f, 1f, 1f, alpha),
+            Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f)
+        );
         PMDrawf.cross(x, y, size * 0.375f, size * 2.5f * scl, Time.time * 1.5f + Mathf.randomSeed(seed, 360f));
-        Drawf.light(team, x, y, lightRadius * scl, engineLightColor, engineLightOpacity * scl);
+        Drawf.light(team, x, y, lightRadius * scl, thrusterColor, thrusterLightOpacity * alpha);
     }
 
     public void drawShadow(TextureRegion region, float x, float y, float rot, float a){
