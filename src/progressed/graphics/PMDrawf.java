@@ -344,12 +344,14 @@ public class PMDrawf{
             Lines.line(x - layout.width / 2f - 2f, y, x + layout.width / 2f + 1.5f, y);
         }
 
+        float width = layout.width;
+
         font.setUseIntegerPositions(ints);
         font.setColor(Color.white);
         font.getData().setScale(1f);
         Draw.reset();
         Pools.free(layout);
 
-        return layout.width;
+        return width;
     }
 }

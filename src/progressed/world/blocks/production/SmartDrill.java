@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -59,7 +60,7 @@ public class SmartDrill extends Drill{
                     60f / (drillTime + hardnessDrillMultiplier * item.hardness) * count,
                     2
                 ), tx, ty, valid, i == itemArray.size - 1);
-                float dx = tx - width / 2f - 4f,
+                float dx = tx - width / 2f - 3f,
                     dy = ty + size * tilesize / 2f + 5,
                     s = iconSmall / 4f;
                 Draw.mixcol(Color.darkGray, 1f);
@@ -195,7 +196,7 @@ public class SmartDrill extends Drill{
                     60f / (drillTime + hardnessDrillMultiplier * item.hardness) * count,
                     2
                 ), x, ty, true, i == itemArray.size - 1);
-                float dx = x - width / 2f - 4f,
+                float dx = x - width / 2f - 3f,
                     dy = ty + size * tilesize / 2f + 5,
                     s = iconSmall / 4f;
                 Draw.mixcol(Color.darkGray, 1f);
@@ -214,6 +215,27 @@ public class SmartDrill extends Drill{
             }
 
             return true;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.i(dominantItem.id);
+            write.i(dominantItems);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            if(revision >= 2){
+                dominantItem = content.item(read.i());
+                dominantItems = read.i();
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 2;
         }
     }
 }
