@@ -3,6 +3,7 @@ package progressed.world.meta;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -364,7 +365,13 @@ public class PMStatValues{
                 if(unlocked){
                     table.image(icon(b)).padRight(4).right().top();
                 }else{
-                    table.add(PMElements.imageStack(icon(b), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
+                    Image out = new Image(icon(b));
+                    Image res = new Image(Icon.tree.getRegion());
+                    res.setColor(Color.red);
+                    res.setSize(out.getWidth() / 2f);
+                    ShiftedStack s = new ShiftedStack(out, res);
+                    s.setStackPos(out.getWidth() - res.getWidth(), -out.getHeight() + res.getHeight());
+                    table.add(s).padRight(4).right().top();
                 }
                 table.table(n -> {
                     n.add(unlocked ? b.localizedName : "@pm-missing-research");

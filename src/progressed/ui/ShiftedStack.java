@@ -5,6 +5,7 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 
+/** The first is used as a background, the rest are stacked on top at stackX, stackY */
 public class ShiftedStack extends WidgetGroup{
     private float prefWidth, prefHeight, minWidth, minHeight;
     private boolean sizeInvalid = true;
