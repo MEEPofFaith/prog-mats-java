@@ -231,7 +231,7 @@ public class PMStatValues{
                             }
                         }
 
-                        if(type instanceof ArcMissileBulletType stype && stype.splitBullet != null){
+                        if(type instanceof BallisticMissileBulletType stype && stype.splitBullet != null){
                             sep(bt, bundle.format("bullet.pm-splits", stype.splitBullets));
                             bt.row();
 

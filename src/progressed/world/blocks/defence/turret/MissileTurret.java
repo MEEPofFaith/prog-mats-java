@@ -13,7 +13,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
-import progressed.entities.bullet.explosive.ArcMissileBulletType.*;
+import progressed.entities.bullet.explosive.BallisticMissileBulletType.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;

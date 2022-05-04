@@ -135,7 +135,7 @@ public class PMUnitTypes{
                 inaccuracy = 15f;
                 shootSound = Sounds.missile;
 
-                bullet = new ArcMissileBulletType(2.4f, 23f, "prog-mats-storm-missile"){{
+                bullet = new BallisticMissileBulletType(2.4f, 23f, "prog-mats-storm-missile"){{
                     lifetime = 90f;
 
                     splashDamage = 125f;

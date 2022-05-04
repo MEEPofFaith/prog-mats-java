@@ -23,7 +23,7 @@ import progressed.world.blocks.defence.ShieldProjector.*;
 import static mindustry.Vars.*;
 
 /** @author MEEP */
-public class ArcMissileBulletType extends BasicBulletType{
+public class BallisticMissileBulletType extends BasicBulletType{
     public float autoDropRadius, stopRadius, dropDelay, stopDelay;
     public boolean resumeSeek = true, randRot;
     public Effect rocketEffect = MissileFx.missileSmoke;
@@ -42,7 +42,7 @@ public class ArcMissileBulletType extends BasicBulletType{
 
     public Sortf unitSort = UnitSorts.closest;
 
-    public ArcMissileBulletType(float speed, float damage, String sprite){
+    public BallisticMissileBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
         ammoMultiplier = 1;
         collides = hittable = absorbable = reflectable = keepVelocity = false;
@@ -193,7 +193,7 @@ public class ArcMissileBulletType extends BasicBulletType{
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
                 Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof ArcMissileBulletType) f.data = new ArcMissileData(x, y);
+                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x, y);
             }
         }
 

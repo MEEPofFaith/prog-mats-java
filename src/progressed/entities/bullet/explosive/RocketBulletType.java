@@ -14,7 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import progressed.content.effects.*;
-import progressed.entities.bullet.explosive.ArcMissileBulletType.*;
+import progressed.entities.bullet.explosive.BallisticMissileBulletType.*;
 
 import static mindustry.Vars.*;
 
@@ -152,7 +152,7 @@ public class RocketBulletType extends BasicBulletType{
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
                 Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof ArcMissileBulletType) f.data = new ArcMissileData(x + Angles.trnsx(a, len), y + Angles.trnsy(a, len));
+                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x + Angles.trnsx(a, len), y + Angles.trnsy(a, len));
             }
         }
 
