@@ -208,6 +208,7 @@ public class PayloadBullets{
             autoDropRadius = 15f;
             stopRadius = 10f;
             thrusterRadius = 16f;
+            elevation = 2f;
             shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 30f;
@@ -232,6 +233,7 @@ public class PayloadBullets{
             autoDropRadius = 15f;
             stopRadius = 10f;
             thrusterRadius = 16f;
+            elevation = 2f;
             shadowOffset = 300f;
             riseTime = 45f;
             fallTime = 30f;
@@ -260,6 +262,7 @@ public class PayloadBullets{
                 stopDelay = 55f;
                 dropDelay = 35f;
                 thrusterRadius = 8f;
+                elevation = 2f;
                 shadowOffset = 260f;
                 riseTime = -1f;
                 fallTime = 30f;
@@ -288,6 +291,7 @@ public class PayloadBullets{
                     stopDelay = 35f;
                     dropDelay = 25f;
                     thrusterRadius = 8f;
+                    elevation = 2f;
                     shadowOffset = 230f;
                     riseTime = -1f;
                     fallTime = 30f;
@@ -348,7 +352,7 @@ public class PayloadBullets{
 
                 autoDropRadius = stopRadius = -1f;
                 thrusterRadius = 8f;
-                elevation = 3f;
+                elevation = 2f;
                 shadowOffset = 900f;
                 riseTime = -1f;
                 fallTime = 30;
