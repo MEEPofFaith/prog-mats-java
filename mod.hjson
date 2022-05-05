@@ -4,7 +4,7 @@ displayName: "Progression Ministry"
 name: "prog-mats"
 
 #your name
-author: "MEEP of Faith (And a bunch of contributors. Load the game with Progressed Materials enabled to view them.)"
+author: "MEEP of Faith (And a bunch of contributors. Load the game with Progression Ministry enabled to view them!)"
 
 #the fully qualified main class of the mod
 main: "progressed.ProgMats"
