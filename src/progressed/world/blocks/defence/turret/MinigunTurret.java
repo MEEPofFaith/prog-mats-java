@@ -17,7 +17,7 @@ import progressed.graphics.*;
 import progressed.util.*;
 
 public class MinigunTurret extends ItemTurret{
-    public float windupSpeed = 0.0001875f, windDownSpeed = 0.003125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
+    public float windupSpeed = 0.00625f, windDownSpeed = 0.0125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
     public float barX, barY, barStroke, barLength;
     public float width = 1.5f, height = 0.75f;
     public float[] shootLocs; //TODO This can be replaced with shot patterns when v7 gets merged
@@ -59,7 +59,7 @@ public class MinigunTurret extends ItemTurret{
     public void setBars(){
         super.setBars();
         bars.add("pm-minigun-speed", (MinigunTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-minigun-speed", PMUtls.stringsFixed(entity.speedf() * 100f + entity.speedf() * 0.01f)),
+            () -> Core.bundle.format("bar.pm-minigun-speed", PMUtls.stringsFixed(entity.speedf() * 100f)),
             entity::barColor,
             entity::speedf
         ));
@@ -119,15 +119,21 @@ public class MinigunTurret extends ItemTurret{
 
         @Override
         public void updateTile(){
-            if(!hasAmmo() || !isShooting() || !isActive()){
-                spinSpeed = Mathf.lerpDelta(spinSpeed, 0, windDownSpeed);
+            boolean notShooting = !hasAmmo() || !isShooting() || !isActive();;
+            if(notShooting){
+                spinSpeed = Mathf.approachDelta(spinSpeed, 0, windDownSpeed);
             }
 
             if(spinSpeed > getMaxSpeed()){
-                spinSpeed = Mathf.lerpDelta(spinSpeed, getMaxSpeed(), windDownSpeed);
+                spinSpeed = Mathf.approachDelta(spinSpeed, getMaxSpeed(), windDownSpeed);
             }
 
-            float add = spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) * Time.delta;
+            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            Liquid liquid = liquids.current();
+
+            float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed() * Mathf.num(!notShooting);
+            float add = spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) * delta() + used * liquid.heatCapacity * coolantMultiplier;
+            liquids.remove(liquid, used);
             spin += add;
             reload += add;
             for(int i = 0; i < 4; i++){
@@ -141,12 +147,7 @@ public class MinigunTurret extends ItemTurret{
         protected void updateShooting(){
             if(!hasAmmo()) return;
 
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = liquids.current();
-
-            float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed();
-            if(spinSpeed < getMaxSpeed()) spinSpeed = Mathf.lerpDelta(spinSpeed, getMaxSpeed(), windupSpeed * (1 + used) * liquid.heatCapacity * coolantMultiplier * peekAmmo().reloadMultiplier * timeScale);
-            liquids.remove(liquid, used);
+            spinSpeed = Mathf.approachDelta(spinSpeed, getMaxSpeed(), windupSpeed * peekAmmo().reloadMultiplier * timeScale);
 
             if(reload >= 90 && spinSpeed > minFiringSpeed){
                 BulletType type = peekAmmo();
@@ -174,7 +175,7 @@ public class MinigunTurret extends ItemTurret{
 
         @Override
         protected void updateCooling(){
-            //Do nothing, cooling is already in `updateShooting()`
+            //Handled elsewhere
         }
 
         protected float getMaxSpeed(){
