@@ -123,7 +123,7 @@ public class MinigunTurret extends ItemTurret{
                 spinSpeed = Mathf.lerpDelta(spinSpeed, 0, windDownSpeed);
             }
 
-            if(spinSpeed > getMaxSpeed() && logicShooting){
+            if(spinSpeed > getMaxSpeed()){
                 spinSpeed = Mathf.lerpDelta(spinSpeed, getMaxSpeed(), windDownSpeed);
             }
 
@@ -178,7 +178,7 @@ public class MinigunTurret extends ItemTurret{
         }
 
         protected float getMaxSpeed(){
-            return maxSpeed * (!isControlled() && logicShooting ? logicSpeedScl : 1f);
+            return maxSpeed * (!isControlled() && logicControlled() && logicShooting ? logicSpeedScl : 1f);
         }
 
         protected float speedf(){
