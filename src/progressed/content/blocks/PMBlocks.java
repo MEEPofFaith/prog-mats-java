@@ -1019,35 +1019,41 @@ public class PMBlocks{
             };
         }};
 
-        sergeant = new PayloadLaunchTurret("tinker"){{
-            requirements(Category.turret, with(
-                Items.copper, 125,
-                Items.lead, 75,
-                Items.silicon, 30,
-                Items.titanium, 50
-            ));
-            ammo(
-                basicSentry, PayloadBullets.barrageLaunch,
-                missileSentry, PayloadBullets.downpourLaunch,
-                dashSentry, PayloadBullets.rapierLaunch
-            );
+        sergeant = new PayloadLaunchTurret("tinker"){
+            {
+                requirements(Category.turret, with(
+                    Items.copper, 125,
+                    Items.lead, 75,
+                    Items.silicon, 30,
+                    Items.titanium, 50
+                ));
+                ammo(
+                    basicSentry, PayloadBullets.barrageLaunch,
+                    missileSentry, PayloadBullets.downpourLaunch,
+                    dashSentry, PayloadBullets.rapierLaunch
+                );
 
-            size = 3;
-            hideDetails = false;
-            health = 140 * size * size;
-            minRange = 5f * tilesize;
-            range = 40 * tilesize;
-            velocityInaccuracy = 0.2f;
-            cooldown = 0.03f;
-            recoilAmount = 6f;
-            restitution = 0.02f;
-            shootShake = 2f;
+                size = 3;
+                hideDetails = false;
+                health = 140 * size * size;
+                minRange = 5f * tilesize;
+                range = 40 * tilesize;
+                velocityInaccuracy = 0.2f;
+                cooldown = 0.03f;
+                recoilAmount = 6f;
+                restitution = 0.02f;
+                shootShake = 2f;
 
-            loadTime = 4f; //In LaunchTurret, this determines how far back the payload is shifted
-            chargeTime = 60f;
-            shootLength = 11f;
-            lineSpacing = 3.5f;
-        }};
+                chargeTime = 60f;
+                lineSpacing = 3.5f;
+            }
+
+            @Override
+            public void init(){
+                super.init();
+                shootLength = -4f;
+            }
+        };
 
         arbalest = new PayloadRocketTurret("arbalest"){{
             requirements(Category.turret, with(

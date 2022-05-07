@@ -8,12 +8,34 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class PMShaders{
+    public static MaterializeShader materializeShader;
     public static VerticalBuildShader vertBuild;
     public static BlockBuildCenteShader blockBuildCenter;
 
     public static void init(){
+        materializeShader = new MaterializeShader();
         vertBuild = new VerticalBuildShader();
         blockBuildCenter = new BlockBuildCenteShader();
+    }
+
+    public static class MaterializeShader extends PMLoadShader{
+        public float progress, offset;
+        public Color color = new Color();
+        public TextureRegion region;
+
+        MaterializeShader(){
+            super("materialize");
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_color", color);
+            setUniformf("u_progress", progress);
+            setUniformf("u_offset", offset);
+            setUniformf("u_uv", region.u, region.v);
+            setUniformf("u_uv2", region.u2, region.v2);
+            setUniformf("u_texsize", region.texture.width, region.texture.height);
+        }
     }
 
     public static class VerticalBuildShader extends PMLoadShader{

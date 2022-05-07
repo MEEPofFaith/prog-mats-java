@@ -4,8 +4,8 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -22,9 +22,8 @@ public class PayloadLaunchTurret extends PayloadTurret{
 
     @Override
     public void init(){
-        if(loadTime < 0) loadTime = size * tilesize / 4f;
-        if(lineStart < 0) lineStart = shootLength + 1.5f;
-        if(lineLength < 0) lineLength = loadTime + shootLength;
+        if(lineStart < 0) lineStart = size * tilesize / 2f + 1.5f;
+        if(lineLength < 0) lineLength = size * tilesize / 2f;
         if(lineSpacing < 0) lineSpacing = size * tilesize / 4f;
         clipSize = Math.max(clipSize, size * tilesize + (lineLength + lineStart) * 2f);
 
@@ -32,7 +31,35 @@ public class PayloadLaunchTurret extends PayloadTurret{
     }
 
     public class PayloadLaunchTurretBuild extends PayloadTurretBuild{
-        public float charge;
+        public float charge, materialization;
+
+        @Override
+        public void drawPayload(){
+            if(payload != null){
+                updatePayload();
+
+                if(hasArrived()){
+                    payRotation = rotation - 90f + rotOffset;
+                    Draw.draw(Layer.turret + 0.01f, () -> {
+                        PMShaders.materializeShader.region = payload.block().fullIcon;
+                        PMShaders.materializeShader.progress = Mathf.clamp(materialization / chargeTime * 2f);
+                        PMShaders.materializeShader.color = team.color;
+                        PMShaders.materializeShader.offset = 0.1f;
+
+                        Draw.shader(PMShaders.materializeShader);
+                        Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
+                        Draw.shader();
+
+                        Draw.reset();
+                    });
+                }else{
+                    Draw.z(Layer.blockOver);
+                    //payload.draw() but with rotation
+                    Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f * payloadf());
+                    Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
+                }
+            }
+        }
 
         @Override
         public void draw(){
@@ -70,67 +97,32 @@ public class PayloadLaunchTurret extends PayloadTurret{
         }
 
         @Override
-        public void loadPayload(){
-            if(loadProgress > -loadTime){
-                loadProgress -= payloadSpeed * delta();
-                loading = true;
-            }else{
-                loadProgress = -loadTime;
-                loading = false;
-            }
-        }
-
-        @Override
         protected void updateLaunching(){
             if(charging){
                 charge += edelta();
+                materialization += edelta();
                 if(charge >= chargeTime){
-                    charging = false;
                     charge = chargeTime;
-                }
-            }else{
-                BulletType type = peekAmmo();
-
-                if(loadProgress < shootLength){
-                    loadProgress += type.speed * delta();
-                    if(loadProgress >= shootLength){
-                        loaded = false;
-                        loadProgress = shootLength;
-                    }
-                }
-
-                if(!loaded){
-                    shoot(type);
-                    shooting = false;
-                    reload %= reloadTime;
+                    materialization = 0f;
+                    super.updateLaunching();
                 }
             }
-        }
-
-        @Override
-        public float payloadOffset(){
-            return loadProgress;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             write.f(charge);
+            write.f(materialization);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision == 1){
-                rotation = read.f();
-                loadProgress = read.f();
+            if(revision >= 4){
                 charge = read.f();
-                loaded = read.bool();
-                charging = read.bool();
-                shooting = read.bool();
-            }else if(revision >= 2){
-                charge = read.f();
+                materialization = read.f();
             }
         }
     }

@@ -75,14 +75,11 @@ public class PayloadRocketTurret extends PayloadTurret{
             if(payload != null){
                 updatePayload();
 
-                if(loaded){
-                    payRotation = rotation - 90f + rotOffset;
-                }
-
-                boolean ready = hasArrived() && loaded;
+                boolean ready = hasArrived();
+                if(ready) payRotation = rotation - 90f + rotOffset;
                 float a = ready ? Mathf.curve(risef(), 0.375f, 0.625f) : 1f;
                 Draw.z(Layer.blockOver);
-                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f, ready ? 1 - a : a);
+                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f * payloadf());
                 if(ready) Draw.z(Layer.turret + 0.01f);
                 //payload.draw() but with rotation
                 Draw.alpha(a);
@@ -145,12 +142,9 @@ public class PayloadRocketTurret extends PayloadTurret{
         @Override
         public void updateLoading(){
             super.updateLoading();
-            if(loaded){
-                if(riseProgress < riseTime){
-                    riseProgress += delta();
-                }else{
-                    riseProgress = riseTime;
-                }
+            if(riseProgress < riseTime){
+                riseProgress += delta();
+                riseProgress = Mathf.clamp(riseProgress, 0f, riseTime);
             }
         }
 
@@ -165,18 +159,8 @@ public class PayloadRocketTurret extends PayloadTurret{
             riseProgress = 0f;
         }
 
-        @Override
-        public void loadPayload(){
-            if(!rotating) super.loadPayload();
-        }
-
         public float risef(){
             return riseProgress / riseTime;
-        }
-
-        @Override
-        public float payloadOffset(){
-            return loadProgress / loadTime * shootLength;
         }
 
         @Override

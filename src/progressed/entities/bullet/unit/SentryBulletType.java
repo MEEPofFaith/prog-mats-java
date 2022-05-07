@@ -16,11 +16,12 @@ public class SentryBulletType extends BulletType{
 
         lifetime = 35f;
         collidesGround = collidesAir = collidesTiles = collides = false;
+        backMove = false;
         scaleVelocity = true;
         splashDamage = 60f;
         splashDamageRadius = 8f;
         hitEffect = despawnEffect = Fx.none;
-        layer = Layer.flyingUnitLow - 1f;
+        layer = Layer.turret + 0.01f;
     }
 
     @Override

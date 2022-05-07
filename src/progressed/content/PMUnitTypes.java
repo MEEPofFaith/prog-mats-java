@@ -167,7 +167,7 @@ public class PMUnitTypes{
                 reload = 60f;
                 shootCone = 5f;
                 shootSound = Sounds.missile;
-                layerOffset = -0.0001f;
+                layerOffset = -0.05f;
 
                 bullet = new RocketBulletType(4.5f, 36f, name){{
                     lifetime = 60f;

@@ -24,7 +24,6 @@ public class PayloadTurret extends PayloadMissileTurret{
     public float rotOffset = 0f;
 
     public float chargeTime = 0f;
-    public float loadTime = 20f;
 
     protected Vec2 tr = new Vec2();
     protected Vec2 tr2 = new Vec2();
@@ -67,8 +66,8 @@ public class PayloadTurret extends PayloadMissileTurret{
     }
 
     public class PayloadTurretBuild extends PayloadMissileTurretBuild{
-        public float rotation = 90f, recoil, loadProgress;
-        public boolean rotating, loading, loaded, charging, shooting;
+        public float rotation = 90f, recoil;
+        public boolean charging;
 
         @Override
         public void draw(){
@@ -99,13 +98,11 @@ public class PayloadTurret extends PayloadMissileTurret{
             if(payload != null){
                 updatePayload();
 
-                if(loaded){
-                    payRotation = rotation - 90f + rotOffset;
-                }
+                payRotation = rotation - 90f + rotOffset;
 
                 Draw.z(hasArrived() ? Layer.turret + 0.01f : Layer.blockOver);
                 //payload.draw() but with rotation
-                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f);
+                Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f * payloadf());
                 Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
             }
         }
@@ -180,10 +177,6 @@ public class PayloadTurret extends PayloadMissileTurret{
                         updateShooting();
                     }
                 }
-
-                if(shooting){
-                    updateLaunching();
-                }
             }else{
                 moveInPayload(false); //Rotating is done elsewhere
             }
@@ -194,38 +187,10 @@ public class PayloadTurret extends PayloadMissileTurret{
         }
 
         public boolean shouldTurn(){
-            return loaded;
+            return true;
         }
 
-        public void updateLoading(){
-            if(!loaded){
-                loadPayload();
-                rotatePayload();
-
-                if(!loading && !rotating){
-                    loaded = true;
-                }
-            }
-        }
-
-        public void loadPayload(){
-            if(loadProgress < loadTime){
-                loadProgress += payloadSpeed * delta();
-                loading = true;
-            }else{
-                loadProgress = loadTime;
-                loading = false;
-            }
-        }
-
-        public void rotatePayload(){
-            if(!Angles.within(payRotation, rotation - 90f + rotOffset, 0.01f)){
-                payRotation = Angles.moveToward(payRotation, rotation - 90f + rotOffset, payloadRotateSpeed * edelta());
-                rotating = true;
-            }else{
-                rotating = false;
-            }
-        }
+        public void updateLoading(){}
 
         protected void turnToTarget(float targetRot){
             rotation = Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * baseReloadSpeed());
@@ -235,18 +200,15 @@ public class PayloadTurret extends PayloadMissileTurret{
         protected void updateShooting(){
             reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
 
-            if(reload > reloadTime && loaded && !shooting){
+            if(reload > reloadTime){
                 charging = true;
-                shooting = true;
+                updateLaunching();
             }
         }
 
         protected void updateLaunching(){
-            loadProgress = 0f;
-            loaded = false;
             shoot(peekAmmo());
             charging = false;
-            shooting = false;
             reload %= reloadTime;
         }
 
@@ -254,13 +216,12 @@ public class PayloadTurret extends PayloadMissileTurret{
         protected void shoot(BulletType type){
             super.shoot(type);
             recoil = recoilAmount;
-            loadProgress = 0f;
         }
 
         protected void bullet(BulletType type){
             float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
-            tr.trns(rotation, -recoil + payloadOffset());
+            tr.trns(rotation, -recoil + shootLength);
             float angle = rotation + Mathf.range(inaccuracy + type.inaccuracy);
             type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
         }
@@ -269,7 +230,7 @@ public class PayloadTurret extends PayloadMissileTurret{
         public void updatePayload(){
             if(payload != null){
                 if(hasArrived()){
-                    tr.trns(rotation, -recoil + payloadOffset());
+                    tr.trns(rotation, -recoil + shootLength);
                     payload.set(x + tr.x, y + tr.y, payRotation);
                 }else{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);
@@ -277,42 +238,30 @@ public class PayloadTurret extends PayloadMissileTurret{
             }
         }
 
-        public float payloadOffset(){
-            return 0;
+        public float payloadf(){
+            return Mathf.clamp(payVector.len() / (size * tilesize / 2f));
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             write.f(rotation);
-            write.f(loadProgress);
-            write.bool(loaded);
             write.bool(charging);
-            write.bool(shooting);
-            write.bool(loading);
-            write.bool(rotating);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision >= 2){
+            if(revision >= 4){
                 rotation = read.f();
-                loadProgress = read.f();
-                loaded = read.bool();
                 charging = read.bool();
-                shooting = read.bool();
-                if(revision >= 3){
-                    loading = read.bool();
-                    rotating = read.bool();
-                }
             }
         }
 
         @Override
         public byte version(){
-            return 3;
+            return 4;
         }
     }
 }
