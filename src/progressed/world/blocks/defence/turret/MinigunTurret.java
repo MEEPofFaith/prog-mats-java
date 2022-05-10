@@ -77,11 +77,7 @@ public class MinigunTurret extends ItemTurret{
 
             tr2.trns(rotation, -recoil);
 
-            for(int i = 0; i < 4; i++){
-                Tmp.v1.trns(rotation, width * Mathf.cosDeg(spin - 90 * i), height * Mathf.sinDeg(spin - 90 * i)).add(tr2);
-                Drawf.shadow(barrelOutline, x + Tmp.v1.x - elevation, y + Tmp.v1.y - elevation, rotation - 90f);
-            }
-            Drawf.shadow(bodyOutline, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
+            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
             Draw.rect(bodyOutline, x + tr2.x, y + tr2.y, rotation - 90f);
 
             for(int i = 0; i < 4; i++){
@@ -119,7 +115,7 @@ public class MinigunTurret extends ItemTurret{
 
         @Override
         public void updateTile(){
-            boolean notShooting = !hasAmmo() || !isShooting() || !isActive();;
+            boolean notShooting = !hasAmmo() || !isShooting() || !isActive();
             if(notShooting){
                 spinSpeed = Mathf.approachDelta(spinSpeed, 0, windDownSpeed);
             }
