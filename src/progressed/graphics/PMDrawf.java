@@ -20,6 +20,7 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Mathf.*;
 import static mindustry.Vars.*;
+import static progressed.graphics.PMShaders.*;
 
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
@@ -165,35 +166,49 @@ public class PMDrawf{
     }
 
     public static void blockBuildCenter(float x, float y, TextureRegion region, Color color, float rotation, float progress){
-        PMShaders.blockBuildCenter.region = region;
-        PMShaders.blockBuildCenter.progress = progress;
+        blockBuildCenter.region = region;
+        blockBuildCenter.progress = progress;
 
         Draw.color(color);
-        Draw.shader(PMShaders.blockBuildCenter);
+        Draw.shader(blockBuildCenter);
         Draw.rect(region, x, y, rotation);
         Draw.shader();
         Draw.color();
     }
 
-    public static void vertConstruct(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time){
-        vertConstruct(x, y, region, Pal.accent, rotation, progress, speed, time);
+    public static void vertConstruct(float x, float y, TextureRegion region, float rotation, float progress, float alpha, float time){
+        vertConstruct(x, y, region, Pal.accent, rotation, progress, alpha, time);
     }
 
-    public static void vertConstruct(float x, float y, TextureRegion region, Color color, float rotation, float progress, float speed, float time){
-        PMShaders.vertBuild.region = region;
-        PMShaders.vertBuild.progress = progress;
-        PMShaders.vertBuild.color.set(color);
-        PMShaders.vertBuild.color.a = speed;
-        PMShaders.vertBuild.time = -time / 20f;
+    public static void vertConstruct(float x, float y, TextureRegion region, Color color, float rotation, float progress, float alpha, float time){
+        vertBuild.region = region;
+        vertBuild.progress = progress;
+        vertBuild.color.set(color);
+        vertBuild.color.a = alpha;
+        vertBuild.time = -time / 20f;
 
-        shader(PMShaders.vertBuild);
+        shader(vertBuild);
         rect(region, x, y, rotation);
         shader();
 
         reset();
     }
 
-    /** Draws a sprite that should be light-wise correct, Provided sprites myst be similar in shape */
+    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress, float time){
+        materialize.region = region;
+        materialize.progress = Mathf.clamp(progress);
+        materialize.color.set(color);
+        materialize.time = time;
+        materialize.offset = offset;
+
+        shader(materialize);
+        rect(region, x, y, rotation);
+        shader();
+
+        reset();
+    }
+
+    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape */
     public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
         float mr = mod(r, 360f);
         alpha(1f);

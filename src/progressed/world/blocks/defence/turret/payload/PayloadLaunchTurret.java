@@ -41,16 +41,13 @@ public class PayloadLaunchTurret extends PayloadTurret{
                 if(hasArrived()){
                     payRotation = rotation - 90f + rotOffset;
                     Draw.draw(Layer.turret + 0.01f, () -> {
-                        PMShaders.materializeShader.region = payload.block().fullIcon;
-                        PMShaders.materializeShader.progress = Mathf.clamp(materialization / chargeTime * 2f);
-                        PMShaders.materializeShader.color = team.color;
-                        PMShaders.materializeShader.offset = 0.1f;
-
-                        Draw.shader(PMShaders.materializeShader);
-                        Draw.rect(payload.block().fullIcon, payload.x(), payload.y(), payRotation);
-                        Draw.shader();
-
-                        Draw.reset();
+                        PMDrawf.materialize(
+                            payload.x(), payload.y(),
+                            payload.block().fullIcon,
+                            team.color, payRotation, 0.1f,
+                            materialization / chargeTime * 2f,
+                            -Time.time / 4f
+                        );
                     });
                 }else{
                     Draw.z(Layer.blockOver);

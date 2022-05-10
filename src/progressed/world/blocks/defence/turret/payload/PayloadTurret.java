@@ -67,7 +67,7 @@ public class PayloadTurret extends PayloadMissileTurret{
 
     public class PayloadTurretBuild extends PayloadMissileTurretBuild{
         public float rotation = 90f, recoil;
-        public boolean charging;
+        public boolean charging, launching;
 
         @Override
         public void draw(){
@@ -177,6 +177,8 @@ public class PayloadTurret extends PayloadMissileTurret{
                         updateShooting();
                     }
                 }
+
+                if(launching) updateLaunching();
             }else{
                 moveInPayload(false); //Rotating is done elsewhere
             }
@@ -201,14 +203,13 @@ public class PayloadTurret extends PayloadMissileTurret{
             reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
 
             if(reload > reloadTime){
-                charging = true;
-                updateLaunching();
+                charging = launching = true;
             }
         }
 
         protected void updateLaunching(){
             shoot(peekAmmo());
-            charging = false;
+            charging = launching = false;
             reload %= reloadTime;
         }
 
@@ -247,6 +248,7 @@ public class PayloadTurret extends PayloadMissileTurret{
             super.write(write);
             write.f(rotation);
             write.bool(charging);
+            write.bool(launching);
         }
 
         @Override
@@ -256,6 +258,7 @@ public class PayloadTurret extends PayloadMissileTurret{
             if(revision >= 4){
                 rotation = read.f();
                 charging = read.bool();
+                launching = read.bool();
             }
         }
 

@@ -9,6 +9,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.entities.units.entity.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -143,13 +144,8 @@ public class LiquidDroneStation extends DroneStation{
             float progress = build / constructTime;
             if(constructing){
                 Draw.draw(Layer.blockBuilding, () -> {
-                    Draw.color(isOrigin() ? Pal.accent : Pal.remove);
                     for(TextureRegion region : tankRegions){
-                        Shaders.blockbuild.region = region;
-                        Shaders.blockbuild.progress = progress;
-
-                        Draw.rect(region, x, y, 0);
-                        Draw.flush();
+                        PMDrawf.blockBuild(x, y, region, isOrigin() ? Pal.accent : Pal.remove, 0, progress);
                     }
                 });
             }

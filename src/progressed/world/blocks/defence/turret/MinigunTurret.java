@@ -157,7 +157,6 @@ public class MinigunTurret extends ItemTurret{
                 reload = spin % 90;
 
                 heats[Mathf.floor(spin - 90) % 360 / 90] = 1f;
-                Log.info(Mathf.floor(spin) % 360 / 90);
             }
         }
         
