@@ -16,7 +16,7 @@ description: "This mod is mostly just turrets. It's just me creating random idea
 version: 24.1
 
 #the minimum game build required to run this mod
-minGameVersion: 135
+minGameVersion: 136
 
 #this is a java mod
 java: true

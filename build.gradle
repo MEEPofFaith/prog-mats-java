@@ -14,7 +14,7 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v135'
+    mindustryVersion = 'v136'
     jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
@@ -27,11 +27,12 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-    //you may uncomment this dependency to properly use Java 17 features while still targeting Java 8.
-    //note that this fails on some systems for as-of-yet unknown reasons - if this happens to you, revert the changes
+    //compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    //compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:935b478139"
+    compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce564a07d9b36c8aead62fc62531dc05ab"
 }
 
 task jarAndroid{
