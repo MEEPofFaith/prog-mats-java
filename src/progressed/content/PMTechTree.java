@@ -258,19 +258,6 @@ public class PMTechTree{
             node(burstDriver, Seq.with(
                 new Research(plastaniumConveyor)
             ));
-
-            //Drones
-            node(dronePad, Seq.with(new Research(launchPad), new Research(mega)), () -> {
-                node(itemDroneStation, Seq.with(
-                    new Research(vault)
-                ));
-                node(liquidDroneStation, Seq.with(
-                    new Research(liquidTank)
-                ));
-                node(payloadDroneStation, Seq.with(
-                    new Research(payloadConveyor)
-                ));
-            });
         });
 
         // Crating

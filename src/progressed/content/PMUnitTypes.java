@@ -26,8 +26,7 @@ public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SentryUnitEntity.class, SentryUnitEntity::new),
-        prov(FlareUnitEntity.class, FlareUnitEntity::new),
-        prov(DroneUnitEntity.class, DroneUnitEntity::new)
+        prov(FlareUnitEntity.class, FlareUnitEntity::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -77,7 +76,7 @@ public class PMUnitTypes{
 
     public static UnitType
 
-    //A chain of air units with DriftTrail shenanigans.
+    //TODO A chain of air units with DriftTrail shenanigans.
     echo, presence, ghoul, phantom, apparition,
     
     //sentry
@@ -85,9 +84,6 @@ public class PMUnitTypes{
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
-
-    //drone
-    transportDrone,
     
     //sandy
     everythingUnit;
@@ -242,18 +238,6 @@ public class PMUnitTypes{
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;
-        }};
-
-        transportDrone = new DroneUnitType("drone"){{
-            health = 475;
-            hitSize = 17f;
-            hideDetails = false;
-            engineOffset = 26f / 4f;
-            engineSize = 1.5f;
-            engineSpread = 13f / 4f;
-            trailLength = 6;
-            powerUse = 3f;
-            powerCapacity = 3600f;
         }};
 
         everythingUnit = new UnitType("god"){

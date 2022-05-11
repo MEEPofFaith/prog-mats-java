@@ -26,7 +26,6 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.units.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -40,8 +39,6 @@ import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
-import progressed.world.blocks.distribution.drones.*;
-import progressed.world.blocks.distribution.drones.stations.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
 import progressed.world.blocks.sandbox.*;
@@ -114,9 +111,6 @@ public class PMBlocks{
 
     //Conveyor
     floatingConveyor,
-
-    //Drone
-    dronePad, itemDroneStation, liquidDroneStation, payloadDroneStation,
 
     //Misc
     burstDriver,
@@ -1270,20 +1264,6 @@ public class PMBlocks{
             researchCostMultiplier = 300f;
         }};
 
-        itemDroneStation = new ItemDroneStation("drone-station-items"){{
-            requirements(Category.distribution, with(
-                Items.titanium, 300,
-                Items.plastanium, 150,
-                Items.silicon, 125,
-                Items.lead, 175,
-                Items.thorium, 125,
-                PMItems.tenelium, 75
-            ));
-            size = 3;
-            itemCapacity = 500;
-            squareSprite = false;
-        }};
-
         burstDriver = new BurstDriver("burst-driver"){{
             requirements(Category.distribution, with(
                 Items.titanium, 275,
@@ -1299,22 +1279,6 @@ public class PMBlocks{
             delay = 0.75f;
             range = 560f;
             consumes.power(2.75f);
-        }};
-        // endregion
-
-        // region Liquids
-        liquidDroneStation = new LiquidDroneStation("drone-station-liquids"){{
-            requirements(Category.liquid, with(
-                Items.titanium, 250,
-                Items.plastanium, 125,
-                Items.silicon, 125,
-                Items.lead, 300,
-                Items.metaglass, 175,
-                PMItems.tenelium, 75
-            ));
-            size = 3;
-            liquidCapacity = 1000f;
-            squareSprite = false;
         }};
         // endregion
 
@@ -1591,41 +1555,6 @@ public class PMBlocks{
                 stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.strengthBoost));
             }
         };
-
-        dronePad = new DronePad("drone-pad"){{
-            requirements(Category.units, with(
-                Items.titanium, 600,
-                Items.thorium, 300,
-                Items.plastanium, 300,
-                Items.silicon, 550,
-                Items.lead, 500,
-                Items.surgeAlloy, 90,
-                PMItems.tenelium, 150
-            ));
-            size = 4;
-            chargeX = chargeY = 41f / 4f;
-            beamWidth = 0.5f;
-            droneType = (DroneUnitType)PMUnitTypes.transportDrone;
-            chargeRate = 12f; //5 second charge time
-            constructTime = 10f * 60f;
-            constructPowerUse = chargeRate / (constructTime / (droneType.powerCapacity / chargeRate)) + 4.5f;
-            hideDetails = false;
-            squareSprite = false;
-        }};
-
-        payloadDroneStation = new PayloadDroneStation("drone-station-payloads"){{
-            requirements(Category.units, with(
-                Items.titanium, 300,
-                Items.plastanium, 175,
-                Items.silicon, 100,
-                Items.lead, 250,
-                Items.thorium, 125,
-                PMItems.tenelium, 100
-            ));
-            size = 5;
-            maxPayloadSize = 4f;
-            squareSprite = false;
-        }};
         // endregion
 
         // region Effect
