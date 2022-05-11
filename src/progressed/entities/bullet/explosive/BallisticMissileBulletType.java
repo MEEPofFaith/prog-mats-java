@@ -319,7 +319,7 @@ public class BallisticMissileBulletType extends BasicBulletType{
             Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f)
         );
         PMDrawf.cross(x, y, size * 0.375f, size * 2.5f * scl, Time.time * 1.5f + Mathf.randomSeed(seed, 360f));
-        Drawf.light(team, x, y, lightRadius * scl, thrusterColor, thrusterLightOpacity * alpha);
+        Drawf.light(x, y, lightRadius * scl, thrusterColor, thrusterLightOpacity * alpha);
     }
 
     public void drawShadow(TextureRegion region, float x, float y, float rot, float a){

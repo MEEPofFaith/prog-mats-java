@@ -45,7 +45,7 @@ public class FuelCrafter extends GenericCrafter{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-fuel", (FuelCrafterBuild entity) -> new Bar(
+        addBar("pm-fuel", (FuelCrafterBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-fuel", entity.fuelNeeded() > 0 ? entity.fuel : Core.bundle.get("bar.pm-fuel-unneeded"), entity.fuelNeeded() > 0 ? ("/" + entity.fuelNeeded()) : ""),
             () -> fuelItem.color,
             () -> entity.fuelNeeded() > 0 ? (float)entity.fuel / (float)fuelCapacity : 1f

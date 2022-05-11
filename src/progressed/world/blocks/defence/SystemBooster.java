@@ -46,7 +46,7 @@ public class SystemBooster extends Block{
 
     @Override
     public void init(){
-        consumes.add(new DynamicConsumePower(b -> ((SystemBoosterBuild)b).totalPowerUse));
+        consume(new DynamicConsumePower(b -> ((SystemBoosterBuild)b).totalPowerUse));
 
         super.init();
 
@@ -76,7 +76,7 @@ public class SystemBooster extends Block{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("boost", (SystemBoosterBuild entity) -> new Bar(
+        addBar("boost", (SystemBoosterBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-totalboost", Mathf.round(Math.max((entity.realBoost() * 100 - 100), 0))),
             () -> Pal.accent,
             () -> entity.realBoost() / entity.maxBoost
@@ -92,8 +92,8 @@ public class SystemBooster extends Block{
 
         @Override
         public void updateTile(){
-            smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency(), 0.08f);
-            heat = Mathf.lerpDelta(heat, consValid() ? 1f : 0f, 0.08f);
+            smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency, 0.08f);
+            heat = Mathf.lerpDelta(heat, canConsume() ? 1f : 0f, 0.08f);
             charge += heat * Time.delta;
 
             updateBoost();
@@ -106,7 +106,7 @@ public class SystemBooster extends Block{
         }
 
         public float realBoost(){
-            return maxBoost * efficiency();
+            return maxBoost * efficiency;
         }
 
         public void updateBoost(){
@@ -123,7 +123,7 @@ public class SystemBooster extends Block{
             totalPowerUse = 0f;
             boosted = 0;
             power.graph.consumers.each(b -> b.block.canOverdrive, b -> {
-                ConsumePower consumePower = b.block.consumes.getPower();
+                ConsumePower consumePower = b.block.consPower;
                 totalPowerUse += consumePower.requestedPower(b) * b.delta();
                 boosted++;
             });

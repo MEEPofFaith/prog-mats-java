@@ -75,7 +75,7 @@ public class ModularTurret extends PayloadBlock{
 
     @Override
     public void init(){
-        consumes.add(new DynamicConsumePower(b -> ((ModularTurretBuild)b).mountPower()));
+        consume(new DynamicConsumePower(b -> ((ModularTurretBuild)b).mountPower()));
 
         super.init();
 
@@ -167,8 +167,8 @@ public class ModularTurret extends PayloadBlock{
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("liquid");
-        bars.remove("power");
+        removeBar("liquid");
+        removeBar("power");
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
@@ -247,8 +247,11 @@ public class ModularTurret extends PayloadBlock{
             }
 
             allMounts.each(m -> m.update(this));
+        }
 
-            if(Vars.control.input.frag.config.getSelectedTile() != this) unHighlight();
+        @Override
+        public void onConfigureClosed(){
+            unHighlight();
         }
 
         public void retarget(float x, float y){
@@ -396,7 +399,7 @@ public class ModularTurret extends PayloadBlock{
             table.table(t -> {
                 t.top();
                 for(ModuleSize mSize : ModuleSize.values()){
-                    t.button(mSize.title(), Styles.clearTogglet, () -> {
+                    t.button(mSize.title(), Styles.flatTogglet, () -> {
                         if(selSize != mSize){
                             selSize = mSize;
                             selNum = allMounts.indexOf(m -> m.checkSize(mSize));

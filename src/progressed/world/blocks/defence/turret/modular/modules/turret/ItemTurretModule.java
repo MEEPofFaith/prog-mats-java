@@ -40,7 +40,7 @@ public class ItemTurretModule extends TurretModule{
     public void setBars(){
         super.setBars();
 
-        bars.add("ammo", (entity, mount) -> new Bar(
+        addBar("ammo", (entity, mount) -> new Bar(
             "stat.ammo",
             Pal.ammo,
             () -> ((TurretMount)mount).totalAmmo / (float)maxAmmo

@@ -16,7 +16,7 @@ public class MountBars{
 
     public void remove(String name){
         if(!bars.containsKey(name)) PMUtls.uhOhSpeghettiOh("No bar with name '" + name + "' found; current bars: " + bars.keys().toSeq());
-        bars.remove(name);
+        removeBar(name);
     }
 
     public Iterable<Func2<ModularTurretBuild, BaseMount, Bar>> list(){

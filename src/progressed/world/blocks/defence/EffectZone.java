@@ -64,7 +64,6 @@ public class EffectZone extends Block{
 
     @Override
     public void init(){
-        if(powerUse > 0) consumes.powerCond(powerUse, EffectZoneBuild::isActive);
         if(lightRadius < 0) lightRadius = range * 2f;
 
         super.init();
@@ -90,10 +89,10 @@ public class EffectZone extends Block{
 
         @Override
         public void updateTile(){
-            smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency(), 0.08f);
-            heat = Mathf.lerpDelta(heat, Mathf.num(consValid()), 0.08f);
-            activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(consValid() && active), 0.08f);
-            activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(consValid() && active) * smoothEfficiency, 0.08f);
+            smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency, 0.08f);
+            heat = Mathf.lerpDelta(heat, Mathf.num(canConsume()), 0.08f);
+            activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(canConsume() && active), 0.08f);
+            activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(canConsume() && active) * smoothEfficiency, 0.08f);
             charge += heat * Time.delta;
 
             if(charge >= reload){
@@ -109,7 +108,8 @@ public class EffectZone extends Block{
             }
         }
 
-        public boolean isActive(){
+        @Override
+        public boolean shouldConsume(){
             return active;
         }
 
@@ -162,7 +162,7 @@ public class EffectZone extends Block{
             super.drawLight();
 
             if(activeHeat < 0.01f) return;
-            Drawf.light(team, x, y, lightRadius, baseColor,  0.8f * activeHeat);
+            Drawf.light(x, y, lightRadius, baseColor,  0.8f * activeHeat);
         }
 
         @Override

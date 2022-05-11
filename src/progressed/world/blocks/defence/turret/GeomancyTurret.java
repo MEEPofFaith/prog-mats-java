@@ -71,6 +71,7 @@ public class GeomancyTurret extends PowerTurret{
 
     public class GeomancyTurretBuild extends PowerTurretBuild{
         public Vec2 strikePos = new Vec2();
+        public boolean charging;
         public float[] armRecoil = new float[2], armHeat = new float[2];
 
         @Override
@@ -85,12 +86,12 @@ public class GeomancyTurret extends PowerTurret{
 
         @Override
         protected void updateShooting(){
-            if(!charging) super.updateShooting();
+            if(!charging()) super.updateShooting();
         }
 
         @Override
         protected void updateCooling(){
-            if(!charging) super.updateCooling();
+            if(!charging()) super.updateCooling();
         }
 
         @Override
@@ -106,20 +107,20 @@ public class GeomancyTurret extends PowerTurret{
             Draw.z(Layer.turret);
 
             for(int arm : Mathf.zeroOne){
-                tr2.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
+                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
                 Drawf.shadow(
                     armRegions[arm],
-                    x + tr2.x - elevation, y + tr2.y - elevation,
+                    x + recoilOffset.x - elevation, y + recoilOffset.y - elevation,
                     rotation - 90
                 );
             }
             Drawf.shadow(turretRegion, x - elevation, y - elevation, rotation - 90);
 
             for(int arm : Mathf.zeroOne){
-                tr2.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
+                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
                 Draw.rect(
                     armOutlines[arm],
-                    x + tr2.x, y + tr2.y,
+                    x + recoilOffset.x, y + recoilOffset.y,
                     rotation - 90
                 );
             }
@@ -132,10 +133,10 @@ public class GeomancyTurret extends PowerTurret{
             }
 
             for(int arm : Mathf.zeroOne){
-                tr2.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
+                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
                 Draw.rect(
                     armRegions[arm],
-                    x + tr2.x, y + tr2.y,
+                    x + recoilOffset.x, y + recoilOffset.y,
                     rotation - 90
                 );
 
@@ -144,7 +145,7 @@ public class GeomancyTurret extends PowerTurret{
                     Draw.alpha(armHeat[arm]);
                     Draw.rect(
                         armHeatRegion,
-                        x + tr2.x, y + tr2.y,
+                        x + recoilOffset.x, y + recoilOffset.y,
                         rotation - 90
                     );
                     Draw.color();
@@ -160,19 +161,19 @@ public class GeomancyTurret extends PowerTurret{
                 type.create(this, team, strikePos.x, strikePos.y, 0f);
                 charging = false;
             });
-            armRecoil[shotCounter % 2] = recoilAmount;
+            armRecoil[shotCounter % 2] = recoil;
             armHeat[shotCounter % 2] = 1f;
             heat = 1f;
             effects();
 
-            tr2.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootLength).add(x, y);
+            recoilOffset.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootY).add(x, y);
             float
-                dst = tr2.dst(strikePos),
+                dst = recoilOffset.dst(strikePos),
                 mdst = dst - ((PillarFieldBulletType)type).radius;
             if(mdst > 0){
-                tr.set(tr2).lerp(strikePos, mdst / dst);
+                tr.set(recoilOffset).lerp(strikePos, mdst / dst);
                 for(int i = 0; i < crackEffects; i++){
-                    crackEffect.at(tr2.x, tr2.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(tr), crackStroke, chargeTime / 2f, true, crackWidth));
+                    crackEffect.at(recoilOffset.x, recoilOffset.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(tr), crackStroke, chargeTime / 2f, true, crackWidth));
                 }
             }
 
@@ -180,7 +181,7 @@ public class GeomancyTurret extends PowerTurret{
         }
 
         protected void effects(){
-            tr.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootLength);
+            tr.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootY);
             Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
             Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
 
@@ -197,7 +198,12 @@ public class GeomancyTurret extends PowerTurret{
                 Effect.shake(shootShake, shootShake, this);
             }
 
-            recoil = recoilAmount;
+            curRecoil = recoil;
+        }
+
+        @Override
+        public boolean charging(){
+            return charging;
         }
     }
 }

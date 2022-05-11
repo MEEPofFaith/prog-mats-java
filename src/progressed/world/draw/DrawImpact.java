@@ -63,7 +63,7 @@ public class DrawImpact extends DrawBlock{
         if(!(build instanceof AcceleratingCrafterBuild b)) return;
 
         Drawf.light(
-            b.team, b.x, b.y,
+            b.x, b.y,
             (lightRadius + Mathf.absin(b.totalActivity, lightSinScl, lightSinMag)) * b.getSpeed() * b.block.size,
             Tmp.c1.set(plasma2).lerp(plasma1, Mathf.absin(7f, 0.2f)),
             0.8f * b.getSpeed()

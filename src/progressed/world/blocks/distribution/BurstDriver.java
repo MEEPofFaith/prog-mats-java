@@ -25,14 +25,14 @@ import static mindustry.Vars.*;
 public class BurstDriver extends Block{
     public float range;
     public float rotateSpeed = 0.04f;
-    public float shootLength = 7f;
+    public float shootY = 7f;
     public int minDistribute = 10;
 
-    public float recoilAmount = 4f;
+    public float recoil = 4f;
     public float restitution = 0.03f;
     public float elevation = -1f;
 
-    public float reloadTime = 100f;
+    public float reload = 100f;
 
     public float speed = 6.5f;
     public float lifetime = 100f;
@@ -50,7 +50,7 @@ public class BurstDriver extends Block{
     public TextureRegion baseRegion;
 
     protected Vec2 tr = new Vec2();
-    protected Vec2 tr2 = new Vec2();
+    protected Vec2 recoilOffset = new Vec2();
 
     public BurstDriver(String name){
         super(name);
@@ -73,7 +73,7 @@ public class BurstDriver extends Block{
         super.setStats();
 
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.reload, 60f / (reloadTime + 1) * shots, StatUnit.none);
+        stats.add(Stat.reload, 60f / (reload + 1) * shots, StatUnit.none);
     }
 
     @Override
@@ -102,9 +102,9 @@ public class BurstDriver extends Block{
         Drawf.dashCircle(x * tilesize, y * tilesize, range, Pal.accent);
 
         //check if a mass driver is selected while placing this driver
-        if(!control.input.frag.config.isShown()) return;
-        Building selected = control.input.frag.config.getSelectedTile();
-        if(selected == null || !(selected.block instanceof BurstDriver) || !(selected.within(x * tilesize, y * tilesize, range))) return;
+        if(!control.input.config.isShown()) return;
+        Building selected = control.input.config.getSelected();
+        if(selected == null || selected.block != this || !selected.within(x * tilesize, y * tilesize, range)) return;
 
         //if so, draw a dotted line towards it while it is in range
         float sin = Mathf.absin(Time.time, 6f, 1f);
@@ -131,9 +131,9 @@ public class BurstDriver extends Block{
         }
     }
 
-    public class BurstDriverBuild extends Building{ //These are incompatable with Mass Drivers. I had to copy the entirety of Mass Driver so that this isan't an instanceof MassDriverBuild
+    public class BurstDriverBuild extends Building{ //These are incompatable with Mass Drivers. I had to copy the entirety of Mass Driver so that this isn't an instanceof MassDriverBuild
         public int link = -1;
-        public float rotation = 90, reload, recoil;
+        public float rotation = 90, reloadCounter, curRecoil;
         public DriverState state = DriverState.idle;
         public OrderedSet<Tile> waitingShooters = new OrderedSet<>();
 
@@ -146,15 +146,15 @@ public class BurstDriver extends Block{
             Building link = world.build(this.link);
             boolean hasLink = linkValid();
 
-            recoil = Mathf.lerpDelta(recoil, 0f, restitution);
+            curRecoil = Mathf.lerpDelta(curRecoil, 0f, restitution);
 
             if(hasLink){
                 this.link = link.pos();
             }
 
             //reload regardless of state
-            if(reload > 0f){
-                reload = Mathf.clamp(reload - edelta() / reloadTime);
+            if(reloadCounter > 0f){
+                reloadCounter = Mathf.clamp(reloadCounter - edelta() / reload);
             }
 
             //cleanup waiting shooters that are not valid
@@ -177,8 +177,8 @@ public class BurstDriver extends Block{
                 dump();
             }
 
-            //skip when there's no power
-            if(!consValid()){
+            ///skip when there's no power
+            if(efficiency <= 0f){
                 return;
             }
 
@@ -190,7 +190,7 @@ public class BurstDriver extends Block{
                 }
 
                 //align to shooter rotation
-                rotation = Mathf.slerpDelta(rotation, tile.angleTo(currentShooter()), rotateSpeed * efficiency());
+                rotation = Mathf.slerpDelta(rotation, tile.angleTo(currentShooter()), rotateSpeed * efficiency);
             }else if(state == DriverState.shooting){
                 //if there's nothing to shoot at OR someone wants to shoot at this thing, bail
                 if(!hasLink || (!waitingShooters.isEmpty() && (itemCapacity - items.total() >= minDistribute))){
@@ -207,10 +207,10 @@ public class BurstDriver extends Block{
                     BurstDriverBuild other = (BurstDriverBuild)link;
                     other.waitingShooters.add(tile);
 
-                    if(reload <= 0.0001f){
+                    if(reloadCounter <= 0.0001f){
 
                         //align to target location
-                        rotation = Mathf.slerpDelta(rotation, targetRotation, rotateSpeed * efficiency());
+                        rotation = Mathf.slerpDelta(rotation, targetRotation, rotateSpeed * efficiency);
 
                         //fire when it's the first in the queue and angles are ready.
                         if(other.currentShooter() == tile &&
@@ -238,10 +238,10 @@ public class BurstDriver extends Block{
 
             Draw.z(Layer.turret);
 
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -curRecoil);
 
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90);
-            Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90);
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90);
+            Draw.rect(region, x + recoilOffset.x, y + recoilOffset.y, rotation - 90);
         }
 
         @Override
@@ -267,7 +267,7 @@ public class BurstDriver extends Block{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 configure(-1);
                 return false;
@@ -292,11 +292,11 @@ public class BurstDriver extends Block{
 
         protected void fire(BurstDriverBuild target){
             //reset reload, use power.
-            reload = 1f;
+            reloadCounter = 1f;
 
             for(int i = 0; i < Math.min(shots, sandy() ? shots : items.total()); i++){
                 Time.run(i * delay, () -> {
-                    if(!isValid() || !consValid()) return;
+                    if(!isValid() || efficiency <= 0) return;
 
                     BurstDriverData data = Pools.obtain(BurstDriverData.class, BurstDriverData::new);
                     boolean canShoot = false;
@@ -316,7 +316,7 @@ public class BurstDriver extends Block{
                     if(canShoot){
                         float angle = tile.angleTo(target);
 
-                        tr.trns(angle, shootLength, Mathf.range(xRand));
+                        tr.trns(angle, shootY, Mathf.range(xRand));
 
                         PMBullets.burstDriverOrb.create(this, team, x + tr.x, y + tr.y, angle, -1f, speed, lifetime, data);
 
@@ -324,7 +324,7 @@ public class BurstDriver extends Block{
                         smokeEffect.at(x + tr.x, y + tr.y, angle);
                         Effect.shake(shake, shake, this);
                         shootSound.at(tile, Mathf.random(0.9f, 1.1f));
-                        recoil = recoilAmount;
+                        curRecoil = recoil;
                     }
                 });
             }
@@ -339,8 +339,8 @@ public class BurstDriver extends Block{
             Effect.shake(shake, shake, this);
             receiveEffect.at(bullet);
 
-            reload = 1f;
-            recoil = recoilAmount;
+            reloadCounter = 1f;
+            curRecoil = recoil;
             bullet.remove();
         }
 

@@ -113,7 +113,7 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void drawLight(Bullet b){
-        Drawf.light(b.team, b, lightRadius, b.team.color, lightOpacity);
+        Drawf.light(b, lightRadius, b.team.color, lightOpacity);
     }
 
     @Override

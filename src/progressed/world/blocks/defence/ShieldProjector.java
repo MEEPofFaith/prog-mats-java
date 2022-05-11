@@ -52,14 +52,14 @@ public class ShieldProjector extends ForceProjector{
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("shield");
-        bars.add("shield", (ShieldBuild entity) -> new Bar(
+        removeBar("shield");
+        addBar("shield", (ShieldBuild entity) -> new Bar(
             () -> Core.bundle.get("stat.shieldhealth"),
             entity::getColor,
             () -> entity.broken ? 0f : entity.shieldf()
         ).blink(Color.white));
 
-        bars.add("charge", (ShieldBuild entity) -> new Bar(
+        addBar("charge", (ShieldBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(entity.charge / chargeTime * 100f)),
             () -> entity.team.color,
             () -> entity.charge / chargeTime
@@ -102,11 +102,11 @@ public class ShieldProjector extends ForceProjector{
 
         @Override
         public void updateTile(){
-            boolean phaseValid = consumes.get(ConsumeType.item).valid(this);
+            boolean phaseValid = itemConsumer != null && itemConsumer.efficiency(this) > 0;
 
             phaseHeat = Mathf.lerpDelta(phaseHeat, Mathf.num(phaseValid), 0.1f);
 
-            if(phaseValid && !broken && timer(timerUse, phaseUseTime) && efficiency() > 0){
+            if(phaseValid && !broken && timer(timerUse, phaseUseTime) && efficiency > 0){
                 consume();
             }
 
@@ -116,15 +116,18 @@ public class ShieldProjector extends ForceProjector{
                 Fx.reactorsmoke.at(x + Mathf.range(tilesize / 2f), y + Mathf.range(tilesize / 2f));
             }
 
-            warmup = Mathf.lerpDelta(warmup, efficiency(), 0.1f);
+            warmup = Mathf.lerpDelta(warmup, efficiency, 0.1f);
 
             if(buildup > 0){
                 float scale = !broken ? cooldownNormal : cooldownBrokenBase;
-                ConsumeLiquidFilter cons = consumes.get(ConsumeType.liquid);
-                if(cons.valid(this)){
-                    cons.update(this);
-                    scale *= (cooldownLiquid * (1f + (liquids.current().heatCapacity - 0.4f) * 0.9f));
+
+                if(coolantConsumer != null){
+                    if(coolantConsumer.efficiency(this) > 0){
+                        coolantConsumer.update(this);
+                        scale *= (cooldownLiquid * (1f + (liquids.current().heatCapacity - 0.4f) * 0.9f));
+                    }
                 }
+
 
                 if(!broken){
                     charge += edelta() * scale;

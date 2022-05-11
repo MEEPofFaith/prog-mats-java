@@ -179,7 +179,7 @@ public class CritBulletType extends BasicBulletType{
 
     public void bounce(Bullet b){
         if(bouncing){
-            Teamc target = Units.closestTarget(b.team, b.x, b.y, range() * b.fout(),
+            Teamc target = Units.closestTarget(b.team, b.x, b.y, range * b.fout(),
                 e -> e.isValid() && e.checkTarget(collidesAir, collidesGround) && !b.collided.contains(e.id),
                 t -> t.isValid() && collidesGround && !b.collided.contains(t.id)
             );

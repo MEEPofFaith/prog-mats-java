@@ -34,7 +34,7 @@ public class ChaosTurret extends PowerTurret{
             Draw.color(Tmp.c1);
     
             Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, tile.x + tr2.x, tile.y + tr2.y, tile.rotation - 90);
+            Draw.rect(heatRegion, tile.x + recoilOffset.x, tile.y + recoilOffset.y, tile.rotation - 90);
             Draw.blend();
             Draw.color();
         };
@@ -43,10 +43,10 @@ public class ChaosTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (ChaosTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (ChaosTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
     }
 
@@ -59,22 +59,22 @@ public class ChaosTurret extends PowerTurret{
 
             if(active()){
                 heat = 1f;
-                recoil = recoilAmount;
+                curRecoil = recoil;
                 wasShooting = true;
             }
         }
 
         @Override
         protected void updateCooling(){
-            if(consValid() && !active()){
+            if(canConsume() && !active()){
                 super.updateCooling();
             }
         }
 
         @Override
         protected void updateShooting(){
-            if(consValid() && !active()){
-                if(reload >= reloadTime && !charging){
+            if(canConsume() && !active()){
+                if(reload >= reload && !charging){
                     BulletType type = peekAmmo();
 
                     shoot(type);
@@ -90,14 +90,14 @@ public class ChaosTurret extends PowerTurret{
         protected void shoot(BulletType type){
             useAmmo();
 
-            tr.trns(rotation, shootLength);
+            tr.trns(rotation, shootY);
             chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, (Object)team);
             chargeSound.at(x + tr.x, y + tr.y, 1f);
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
                     if(!isValid()) return;
-                    tr.trns(rotation, shootLength);
+                    tr.trns(rotation, shootY);
                     chargeEffect.at(x + tr.x, y + tr.y, rotation);
                 });
             }
@@ -106,8 +106,8 @@ public class ChaosTurret extends PowerTurret{
 
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
-                tr.trns(rotation, shootLength);
-                recoil = recoilAmount;
+                tr.trns(rotation, shootY);
+                curRecoil = recoil;
                 heat = 1f;
                 for(int i = 0; i < shots; i++){
                     bullet(type, rotation + Mathf.range(inaccuracy));

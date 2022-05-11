@@ -18,7 +18,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.content.*;
@@ -194,7 +193,7 @@ public class PMBlocks{
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
-            recoilAmount = 3f;
+            recoil = 3f;
             restitution = 0.02f;
             cooldown = 0.11f;
             inaccuracy = 3f;
@@ -232,7 +231,7 @@ public class PMBlocks{
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
-            recoilAmount = 3f;
+            recoil = 3f;
             restitution = 0.02f;
             cooldown = 0.11f;
             inaccuracy = 3f;
@@ -272,7 +271,7 @@ public class PMBlocks{
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
-            recoilAmount = 3f;
+            recoil = 3f;
             restitution = 0.02f;
             cooldown = 0.11f;
             inaccuracy = 3f;
@@ -300,7 +299,7 @@ public class PMBlocks{
             );
             size = 1;
             health = 310;
-            reloadTime = 30f;
+            reload = 30f;
             powerUse = 3.6f;
             range = 72f;
             maxTargets = 6;
@@ -322,7 +321,7 @@ public class PMBlocks{
             );
             size = 2;
             health = 200 * size * size;
-            reloadTime = 20f;
+            reload = 20f;
             powerUse = 4.8f;
             range = 130f;
             maxTargets = 5;
@@ -397,7 +396,7 @@ public class PMBlocks{
             );
             size = 3;
             health = 180 * size * size;
-            reloadTime = 10f;
+            reload = 10f;
             powerUse = 8.9f;
             range = 210f;
             maxTargets = 16;
@@ -416,11 +415,11 @@ public class PMBlocks{
             ));
             size = 2;
             health = 310 * size * size;
-            reloadTime = 120f;
+            reload = 120f;
             shootSound = Sounds.rockBreak;
             range = 23f * tilesize;
-            recoilAmount = -25f / 4f;
-            shootLength = 8f + 15f / 4f;
+            recoil = -25f / 4f;
+            shootY = 8f + 15f / 4f;
             targetAir = false;
             cooldown = 0.005f;
             shootType = PMBullets.pillarField;
@@ -444,9 +443,9 @@ public class PMBlocks{
             powerUse = 14f;
             shootDuration = 90f;
             range = 240f;
-            reloadTime = 90f;
-            shootLength = 5f / 4f;
-            recoilAmount = 3f;
+            reload = 90f;
+            shootY = 5f / 4f;
+            recoil = 3f;
             shootType = new MagmaBulletType(62f, 14f){{
                 shake = 1f;
                 crackEffects = 4;
@@ -468,10 +467,10 @@ public class PMBlocks{
             powerUse = 17f;
             shootDuration = 120f;
             range = 280f;
-            reloadTime = 150f;
-            shootLength = 11f / 4f;
+            reload = 150f;
+            shootY = 11f / 4f;
             rotateSpeed = 3.5f;
-            recoilAmount = 4f;
+            recoil = 4f;
             beamStroke = 4f;
             beamWidth = 20f;
             shootType = new MagmaBulletType(76f, 24f){{
@@ -489,9 +488,9 @@ public class PMBlocks{
             ));
             size = 2;
             health = 300 * size * size;
-            reloadTime = 70f;
+            reload = 70f;
             rotateSpeed = 10f;
-            recoilAmount = 4f;
+            recoil = 4f;
             inaccuracy = 15f;
             range = 140f;
             powerUse = 1.35f;
@@ -514,7 +513,7 @@ public class PMBlocks{
                 size = 3;
                 health = 90 * size * size;
                 range = 23f * 8f;
-                reloadTime = 200f;
+                reload = 200f;
                 inaccuracy = 30f;
                 velocityInaccuracy = 0.2f;
                 burstSpacing = 5f;
@@ -532,10 +531,10 @@ public class PMBlocks{
             @Override
             public void setBars(){
                 super.setBars();
-                bars.add("pm-reload", (ItemTurretBuild entity) -> new Bar(
-                    () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+                addBar("pm-reload", (ItemTurretBuild entity) -> new Bar(
+                    () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
                     () -> entity.team.color,
-                    () -> Mathf.clamp(entity.reload / reloadTime)
+                    () -> Mathf.clamp(entity.reloadCounter / reload)
                 ));
             }
         };
@@ -558,11 +557,11 @@ public class PMBlocks{
             size = 3;
             hideDetails = false;
             health = 120 * size * size;
-            reloadTime = 450f;
+            reload = 450f;
             inaccuracy = 0f;
             range = 544f;
             rotateSpeed = 2.5f;
-            recoilAmount = 5f;
+            recoil = 5f;
             split = 3f;
             chargeTime = 150f;
             shootSound = Sounds.railgun;
@@ -584,8 +583,8 @@ public class PMBlocks{
             health = 250 * size * size;
             minRange = 5f * tilesize;
             range = 60f * tilesize;
-            shootLength = 23f / 4f;
-            reloadTime = 900f;
+            shootY = 23f / 4f;
+            reload = 900f;
             inaccuracy = 10f;
             velocityInaccuracy = 0.2f;
             shootSound = Sounds.shootSnap;
@@ -609,9 +608,9 @@ public class PMBlocks{
                 hideDetails = false;
                 health = 80 * size * size;
                 range = 17f * 8f;
-                shootLength = 21f / 4f;
+                shootY = 21f / 4f;
 
-                reloadTime = 120f;
+                reload = 120f;
 
                 shots = 4;
                 spread = 15f; //h
@@ -658,8 +657,8 @@ public class PMBlocks{
                 health = 260 * size * size;
                 size = 2;
                 powerUse = 5f;
-                reloadTime = 1.5f * 60f;
-                shootLength = 23f / 4f;
+                reload = 1.5f * 60f;
+                shootY = 23f / 4f;
                 shootSound = Sounds.plasmadrop;
                 retractDelay = 0.125f;
                 hideDetails = false;
@@ -670,10 +669,10 @@ public class PMBlocks{
 
                     Draw.z(Layer.effect + 1f);
                     Draw.color(Color.red);
-                    tr.trns(t.rotation, shootLength);
+                    Tmp.v1.trns(t.rotation, shootY);
 
-                    float x = t.x + tr.x + tr2.x,
-                        y = t.y + tr.y + tr2.y,
+                    float x = t.x + Tmp.v1.x + t.recoilOffset.x,
+                        y = t.y + Tmp.v1.y + t.recoilOffset.y,
                         fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
                         fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
                         scl = fin * fout;
@@ -721,8 +720,8 @@ public class PMBlocks{
             health = 230 * size * size;
             size = 3;
             powerUse = 8.5f;
-            reloadTime = 2f * 60f;
-            shootLength = 46f / 4f;
+            reload = 2f * 60f;
+            shootY = 46f / 4f;
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
 
@@ -745,10 +744,10 @@ public class PMBlocks{
 
                 Draw.z(Layer.bullet - 1f);
                 Draw.color(Color.black);
-                tr.trns(t.rotation, shootLength);
+                Tmp.v1.trns(t.rotation, shootY);
 
-                float x = t.x + tr.x + tr2.x,
-                    y = t.y + tr.y + tr2.y,
+                float x = t.x + Tmp.v1.x + t.recoilOffset.x,
+                    y = t.y + Tmp.v1.y + t.recoilOffset.y,
                     fin = Mathf.curve(t.bullet.fin(), 0f, rift.startDelay),
                     fout = 1f - Mathf.curve(t.bullet.fin(), rift.retractTime, rift.retractTime + 0.125f),
                     scl = fin * fout,
@@ -852,9 +851,9 @@ public class PMBlocks{
             hideDetails = false;
             health = 120 * size * size;
             
-            shootLength = 34f / 4f;
+            shootY = 34f / 4f;
             range = 328f;
-            reloadTime = 600f;
+            reload = 600f;
 
             powerUse = 29f;
 
@@ -879,7 +878,7 @@ public class PMBlocks{
             warningVolume = 3f;
             warningSound = PMSounds.sentinelWarning;
 
-            recoilAmount = 3f;
+            recoil = 3f;
             restitution = 0.02f;
             cooldown = 0.005f;
 
@@ -903,7 +902,7 @@ public class PMBlocks{
             hideDetails = false;
             health = 230 * size * size;
             canOverdrive = false;
-            reloadTime = 520f;
+            reload = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
             chargeBeginEffect = EnergyFx.kugelblitzChargeBegin;
@@ -912,10 +911,10 @@ public class PMBlocks{
             chargeEffects = 16;
             chargeTime = EnergyFx.kugelblitzChargeBegin.lifetime;
             rotateSpeed = 2f;
-            recoilAmount = 2f;
+            recoil = 2f;
             restitution = 0.015f;
             cooldown = 0.005f;
-            shootLength = 0f;
+            shootY = 0f;
             shootSound = Sounds.release;
             shootType = PMBullets.blackHole;
         }};
@@ -936,17 +935,17 @@ public class PMBlocks{
                 size = 6;
                 hideDetails = false;
                 health = 140 * size * size;
-                reloadTime = 450f;
+                reload = 450f;
                 range = 740f;
                 shootEffect = smokeEffect = Fx.none;
-                shootLength = 0f;
+                shootY = 0f;
                 cooldown = 0.0075f;
                 heatColor = Pal.surge;
                 chargeTime = 180f;
                 chargeSound = PMSounds.popeshadowCharge;
                 shootSound = Sounds.laserblast;
                 rotateSpeed = 2f;
-                recoilAmount = 8f;
+                recoil = 8f;
                 restitution = 0.05f;
                 shootType = PMBullets.excaliburLaser;
             }
@@ -1034,7 +1033,7 @@ public class PMBlocks{
                 range = 40 * tilesize;
                 velocityInaccuracy = 0.2f;
                 cooldown = 0.03f;
-                recoilAmount = 6f;
+                recoil = 6f;
                 restitution = 0.02f;
                 shootShake = 2f;
 
@@ -1045,7 +1044,7 @@ public class PMBlocks{
             @Override
             public void init(){
                 super.init();
-                shootLength = -4f;
+                shootY = -4f;
             }
         };
 
@@ -1065,12 +1064,12 @@ public class PMBlocks{
             size = 5;
             hideDetails = false;
             health = 180 * size * size;
-            reloadTime = 1.5f * 60f;
+            reload = 1.5f * 60f;
             range = 800f;
-            recoilAmount = 4f;
+            recoil = 4f;
             leadTargets = false;
 
-            shootLength = doorOffset = 6f / 4f;
+            shootY = doorOffset = 6f / 4f;
             doorWidth = 32f / 4f;
             doorLength = 116f / 4f;
             rotOffset = 90f;
@@ -1092,7 +1091,7 @@ public class PMBlocks{
             hideDetails = false;
             health = 120 * size * size;
             range = 160f;
-            reloadTime = 75f;
+            reload = 75f;
             shootSound = Sounds.missile;
             cooldown = 0.01f;
             shootShake = 1f;
@@ -1129,7 +1128,7 @@ public class PMBlocks{
             size = 4;
             hideDetails = false;
             health = 160 * size * size;
-            reloadTime = 60f;
+            reload = 60f;
             range = 656f;
             shootSound = Sounds.artillery;
             cooldown = 0.01f;
@@ -1175,7 +1174,7 @@ public class PMBlocks{
             ));
             size = 9;
             health = 480 * size * size;
-            reloadTime = 60f * 15f;
+            reload = 60f * 15f;
             range = 200f * tilesize;
             powerUse = 655f;
             damage = 12000f / 12f;
@@ -1194,7 +1193,7 @@ public class PMBlocks{
 
             float cooleantUse = 8f;
             coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
-            consumes.add(new ConsumeCoolant(cooleantUse)).update(false);
+            consume(new ConsumeCoolant(cooleantUse)).update(false);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
@@ -1242,8 +1241,7 @@ public class PMBlocks{
             drillEffect = Fx.mineBig;
             rotateSpeed = -4f;
 
-            consumes.powerCond(1.8f, SmartDrillBuild::isDrilling);
-            consumes.liquid(Liquids.water, 0.09f).boost();
+            consumeLiquid(Liquids.water, 0.09f).boost();
         }};
         // endregion
 
@@ -1274,11 +1272,11 @@ public class PMBlocks{
             ));
             size = 3;
             itemCapacity = 180;
-            reloadTime = 120f;
+            reload = 120f;
             shots = 90;
             delay = 0.75f;
             range = 560f;
-            consumes.power(2.75f);
+            consumePower(2.75f);
         }};
         // endregion
 
@@ -1307,12 +1305,12 @@ public class PMBlocks{
                 CrafterFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
             };
 
-            consumes.power(6f);
-            consumes.items(with(
+            consumePower(6f);
+            consumeItems(with(
                 Items.titanium, 2,
                 Items.thorium, 2
             ));
-            consumes.liquid(Liquids.cryofluid, 0.2f);
+            consumeLiquid(Liquids.cryofluid, 0.2f);
             outputItem = new ItemStack(PMItems.tenelium, 2);
         }};
 
@@ -1346,12 +1344,12 @@ public class PMBlocks{
             fuelPerCraft = 12;
             fuelCapacity = 48;
             fuelUseReduction = 0.8f;
-            consumes.items(with(
+            consumeItems(with(
                 Items.lead, 4,
                 Items.sand, 10,
                 Items.coal, 6
             ));
-            consumes.power(9f);
+            consumePower(9f);
             outputItems = with(
                 Items.silicon, 14,
                 Items.metaglass, 6
@@ -1572,7 +1570,7 @@ public class PMBlocks{
             clouds = 15;
             minCloudSize = 0.5f;
             maxCloudSize = 1.25f;
-            consumes.power(42.5f);
+            consumePower(42.5f);
         }};
 
         fence = new StaticNode("fence"){{
@@ -1633,8 +1631,8 @@ public class PMBlocks{
             phaseShieldCharge = 350f;
             cooldownBrokenBase *= 2f;
 
-            consumes.items(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
-            consumes.power(7f);
+            consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
+            consumePower(7f);
         }};
         // endregion
 
@@ -1649,12 +1647,12 @@ public class PMBlocks{
                 shootShake = 150f;
                 powerUse = 300f;
                 range = 560f;
-                recoilAmount = 8f;
+                recoil = 8f;
                 rotateSpeed = 0.3f;
                 shootCone = 20f;
                 cooldown = 0.0015f;
                 restitution = 0.008f;
-                reloadTime = 450f;
+                reload = 450f;
                 chargeTime = EnergyFx.harbingerCharge.lifetime;
                 chargeBeginEffect = EnergyFx.harbingerCharge;
                 chargeSound = PMSounds.harbingerCharge;
@@ -1665,7 +1663,7 @@ public class PMBlocks{
             @Override
             public void init(){
                 super.init();
-                shootLength -= 16f;
+                shootY -= 16f;
             }
 
             @Override
@@ -1688,7 +1686,7 @@ public class PMBlocks{
                 size = 6;
                 health = 999999999;
                 rotateSpeed = 20f;
-                reloadTime = 1f;
+                reload = 1f;
                 range = 4400f;
                 shootCone = 360f;
             }
@@ -1723,7 +1721,7 @@ public class PMBlocks{
             size = 2;
             health = 69420;
             range = 69 * tilesize;
-            reloadTime = 60f;
+            reload = 60f;
 
             shootType = new SnakeBulletType(3f, 50f, "aflare"){{
                 length = 5;
@@ -1740,11 +1738,11 @@ public class PMBlocks{
         sandDriver = new SandDriver("sand-driver"){{
             size = 3;
             itemCapacity = 180;
-            reloadTime = 120f;
+            reload = 120f;
             shots = 90;
             delay = 0.75f;
             range = 560f;
-            consumes.power(0.1f);
+            consumePower(0.1f);
         }};
 
         /// Liquid
@@ -1782,7 +1780,7 @@ public class PMBlocks{
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
             );
 
-            consumes.power(1f);
+            consumePower(1f);
         }};
 
         capBlock = new CapBlock("cap-block"){{

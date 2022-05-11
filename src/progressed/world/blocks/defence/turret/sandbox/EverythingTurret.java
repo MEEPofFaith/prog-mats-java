@@ -39,11 +39,10 @@ public class EverythingTurret extends PowerTurret{
         );
         alwaysUnlocked = true;
 
-        shootLength = 0f;
+        shootY = 0f;
         targetInterval = 1;
         minRange = 0f;
-        shootType = Bullets.standardCopper;
-        powerUse = 1f;
+        shootType = new BulletType();
     }
 
     @Override
@@ -57,7 +56,7 @@ public class EverythingTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-everything-strength", (EverythingTurretBuild entity) -> new Bar(
+        addBar("pm-everything-strength", (EverythingTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-everything-strength", PMUtls.stringsFixed(entity.levelf() * 100f)),
             () -> entity.team.color,
             entity::levelf
@@ -92,7 +91,7 @@ public class EverythingTurret extends PowerTurret{
             
             drawRot = Mathf.mod(drawRot - Time.delta * levelf * rotateSpeed, 360f);
       
-            if(isShooting() && consValid()){
+            if(isShooting() && canConsume()){
                 level = Mathf.approachDelta(level, 1f, growSpeed);
             }else{
                 level = Mathf.approachDelta(level, 0f, shrinkSpeed);
@@ -118,7 +117,7 @@ public class EverythingTurret extends PowerTurret{
 
         @Override
         protected void updateShooting(){
-            if(reload >= reloadTime && !charging){
+            if(reloadCounter >= reload && !charging()){
                 float levelf = levelf() * (1 + levelSclMax),
                     min = Mathf.clamp(levelf - levelScl) * ProgMats.allBullets.size,
                     max = Mathf.clamp(levelf) * ProgMats.allBullets.size;
@@ -128,19 +127,19 @@ public class EverythingTurret extends PowerTurret{
 
                 shoot(type);
 
-                reload = 0f;
+                reloadCounter = 0f;
             }else{
-                reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
 
         @Override
         protected void bullet(BulletType type, float angle){
             BulletData data = ProgMats.allBullets.get(selectedBullet);
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + recoilOffset.x, y + recoilOffset.y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
             float laserLifeScl = data.continuousBlock ? data.lifetime / type.lifetime : 1f;
 
-            type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl * laserLifeScl);
+            type.create(this, team, x + recoilOffset.x, y + recoilOffset.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl * laserLifeScl);
         }
 
         @Override

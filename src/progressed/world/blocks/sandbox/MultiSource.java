@@ -42,8 +42,8 @@ public class MultiSource extends Block{
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("items");
-        bars.remove("liquid");
+        removeBar("items");
+        removeBar("liquid");
     }
 
     @Override
@@ -56,12 +56,12 @@ public class MultiSource extends Block{
     }
 
     @Override
-    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanConfig(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(cross, req.drawx(), req.drawy());
         if(req.config instanceof Integer input){
             Point2 data = Point2.unpack(input);
-            drawRequestConfigCenter(req, content.item((short)data.x), name + "-center-0");
-            drawRequestConfigCenter(req, content.liquid((short)data.y), name + "-center-1");
+            drawPlanConfigCenter(req, content.item((short)data.x), name + "-center-0");
+            drawPlanConfigCenter(req, content.liquid((short)data.y), name + "-center-1");
         }
     }
     
@@ -119,7 +119,7 @@ public class MultiSource extends Block{
 
         @Override
         public void buildConfiguration(Table table){
-            ImageButtonStyle style = new ImageButtonStyle(Styles.clearTransi);
+            ImageButtonStyle style = new ImageButtonStyle(Styles.cleari);
             style.imageDisabledColor = Color.gray;
             Cell<ImageButton> b = table.button(Icon.cancel, style, () -> data.clear()).top().size(40f);
             b.get().setDisabled(data::invalid);
@@ -134,7 +134,7 @@ public class MultiSource extends Block{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 deselect();
                 return false;

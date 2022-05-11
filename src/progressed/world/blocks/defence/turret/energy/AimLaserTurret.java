@@ -35,25 +35,25 @@ public class AimLaserTurret extends PowerTurret{
         super.setStats();
 
         stats.remove(Stat.reload);
-        stats.add(Stat.reload, 60f / (reloadTime + chargeTime + 1) * (alternate ? 1 : shots), StatUnit.none);
+        stats.add(Stat.reload, 60f / (reload + chargeTime + 1) * (alternate ? 1 : shots), StatUnit.none);
     }
 
     @Override
     public void init(){
-        clipSize = Math.max(clipSize, (shootType.range() + shootLength + aimRnd + aimStroke * 2f + 3f) * 2f);
+        clipSize = Math.max(clipSize, (shootType.range + shootY + aimRnd + aimStroke * 2f + 3f) * 2f);
         super.init();
     }
 
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (AimLaserTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (AimLaserTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
 
-        bars.add("pm-charge", (AimLaserTurretBuild entity) -> new Bar(
+        addBar("pm-charge", (AimLaserTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
             () -> chargeColor,
             () -> entity.charge
@@ -83,10 +83,10 @@ public class AimLaserTurret extends PowerTurret{
 
                 Lines.stroke(aimStroke * a, aimColor);
 
-                float dst = shootType.range() + shootLength;
+                float dst = shootType.range + shootY;
                 Healthc box = PMDamage.linecast(targetGround, targetAir, team, x, y, rotation, dst);
 
-                Tmp.v1.trns(rotation, shootLength - recoil);
+                Tmp.v1.trns(rotation, shootY - curRecoil);
                 if(isAI() && target instanceof Unit){
                     Tmp.v2.trns(rotation, dst(targetPos)).limit(dst);
                 }else if(box != null){
@@ -151,14 +151,14 @@ public class AimLaserTurret extends PowerTurret{
         @Override
         protected void shoot(BulletType type){
             useAmmo();
-            tr.trns(rotation, shootLength);
+            tr.trns(rotation, shootY);
             drawCharge = 0;
             chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
                     if(!isValid()) return;
-                    tr.trns(rotation, shootLength);
+                    tr.trns(rotation, shootY);
                     chargeEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
                 });
             }
@@ -171,8 +171,8 @@ public class AimLaserTurret extends PowerTurret{
             });
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
-                tr.trns(rotation, shootLength);
-                recoil = recoilAmount;
+                tr.trns(rotation, shootY);
+                curRecoil = recoil;
                 heat = 1f;
                 bullet(type, rotation + Mathf.range(inaccuracy));
                 effects();
@@ -194,7 +194,7 @@ public class AimLaserTurret extends PowerTurret{
                 Effect.shake(shootShake, shootShake, this);
             }
 
-            recoil = recoilAmount;
+            curRecoil = recoil;
         }
 
         @Override

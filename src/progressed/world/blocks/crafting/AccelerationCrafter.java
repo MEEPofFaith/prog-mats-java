@@ -23,7 +23,7 @@ public class AccelerationCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        bars.add("speed", (AcceleratingCrafterBuild entity) -> new Bar(
+        addBar("speed", (AcceleratingCrafterBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-craft-speed", Mathf.round(entity.getSpeed() * 100f)),
             () -> Pal.surge,
             entity::getSpeed
@@ -46,9 +46,9 @@ public class AccelerationCrafter extends GenericCrafter{
                 updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4));
             }
 
-            if(consValid()){
+            if(canConsume()){
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed);
-                float e = efficiency();
+                float e = efficiency;
                 if(speed <= e){
                     speed = Mathf.approachDelta(speed, e, accelerationSpeed * e);
                 }else{

@@ -38,14 +38,14 @@ public class SandDriver extends BurstDriver{
 
             Draw.z(Layer.turret);
 
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -curRecoil);
 
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90);
-            Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90);
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90);
+            Draw.rect(region, x + recoilOffset.x, y + recoilOffset.y, rotation - 90);
 
 
             Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed));
-            Draw.rect(rainbow, x + tr2.x, y + tr2.y, rotation - 90);
+            Draw.rect(rainbow, x + recoilOffset.x, y + recoilOffset.y, rotation - 90);
             Draw.color();
         }
 

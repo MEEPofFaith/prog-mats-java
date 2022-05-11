@@ -91,15 +91,15 @@ public class LiquidTurretModule extends TurretModule{
         Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
         Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
-        fshootEffect.at(x + BaseModule.tr.x, y + BaseModule.tr.y, mount.rotation, mount.liquids.current().color);
-        fsmokeEffect.at(x + BaseModule.tr.x, y + BaseModule.tr.y, mount.rotation, mount.liquids.current().color);
-        shootSound.at(x + BaseModule.tr.x, y + BaseModule.tr.y, Mathf.random(0.9f, 1.1f));
+        fshootEffect.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, mount.rotation, mount.liquids.current().color);
+        fsmokeEffect.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, mount.rotation, mount.liquids.current().color);
+        shootSound.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, Mathf.random(0.9f, 1.1f));
 
         if(shootShake > 0){
             Effect.shake(shootShake, shootShake, x, y);
         }
 
-        mount.recoil = recoilAmount;
+        mount.curRecoil = recoil;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class LiquidTurretModule extends TurretModule{
 
     @Override
     public boolean hasAmmo(TurretMount mount){
-        return ammoTypes.get(mount.liquids.current()) != null && mount.liquids.total() >= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier;
+        return ammoTypes.get(mount.liquids.current()) != null && mount.liquids.currentAmount() >= 1f / ammoTypes.get(mount.liquids.current()).ammoMultiplier;
     }
 
     @Override

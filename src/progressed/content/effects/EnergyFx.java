@@ -136,7 +136,7 @@ public class EnergyFx{
         if(e.data instanceof AimLaserTurretBuild d){
             color(e.color);
 
-            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
+            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
             Fill.circle(d.x + v1.x, d.y + v1.y, 3f * e.fin());
 
             color();
@@ -147,7 +147,7 @@ public class EnergyFx{
         if(e.data instanceof AimLaserTurretBuild d){
             color(e.color);
 
-            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootLength);
+            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
             randLenVectors(e.id, 3, 24f * e.fout(), (x, y) -> {
                 Fill.circle(d.x + v1.x + x, d.y + v1.y + y, 2f * e.fin());
             });

@@ -54,10 +54,10 @@ public class MissileTurret extends ItemTurret{
     public void setBars(){
         super.setBars();
         if(reloadBar){
-            bars.add("pm-reload", (MissileTurretBuild entity) -> new Bar(
-                () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+            addBar("pm-reload", (MissileTurretBuild entity) -> new Bar(
+                () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
                 () -> entity.team.color,
-                () -> Mathf.clamp(entity.reload / reloadTime)
+                () -> Mathf.clamp(entity.reloadCounter / reload)
             ));
         }
     }
@@ -77,7 +77,7 @@ public class MissileTurret extends ItemTurret{
                 Draw.draw(Draw.z(), () -> {
                     for(int i = 0; i < Math.min(shots, currentAmmo); i++){
                         if(!hasShoot[i]){
-                            Drawf.construct(shootLocs[i][0] + x, shootLocs[i][1] + y, ((BasicBulletType)peekAmmo()).frontRegion, team.color, 0f, reload / reloadTime, speedScl, reload);
+                            Drawf.construct(shootLocs[i][0] + x, shootLocs[i][1] + y, ((BasicBulletType)peekAmmo()).frontRegion, team.color, 0f, reloadCounter / reload, speedScl, reloadCounter);
                         }
                     }
                 });
@@ -101,7 +101,7 @@ public class MissileTurret extends ItemTurret{
                 heats[i] = Mathf.lerpDelta(heats[i], 0f, cooldown);
             }
               
-            if(reload < reloadTime && hasAmmo() && consValid() && !firing){
+            if(reloadCounter < reload && hasAmmo() && canConsume() && !firing){
                 speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
             }else{
                 speedScl = Mathf.lerpDelta(speedScl, 0f, 0.05f);
@@ -110,13 +110,13 @@ public class MissileTurret extends ItemTurret{
 
         @Override
         protected void updateCooling(){
-            if(!firing && hasAmmo() && consValid()){
+            if(!firing && hasAmmo() && canConsume()){
                 float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
 
                 Liquid liquid = liquids.current();
         
-                float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
-                reload += used * liquid.heatCapacity * coolantMultiplier;
+                float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reload - reloadCounter) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
+                reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
                 liquids.remove(liquid, used);
 
                 if(Mathf.chance(0.06 * used)){
@@ -127,13 +127,13 @@ public class MissileTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(hasAmmo() && consValid()){
-                if(reload > reloadTime && !firing){
+            if(hasAmmo() && canConsume()){
+                if(reloadCounter > reload && !firing){
                     BulletType type = peekAmmo();
                   
                     shoot(type);
                 }else if(!firing){
-                    reload += Time.delta * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                    reloadCounter += Time.delta * peekAmmo().reloadMultiplier * baseReloadSpeed();
                 }
             }
         }
@@ -158,7 +158,7 @@ public class MissileTurret extends ItemTurret{
             }
             
             Time.run(burstSpacing * Math.min(shots, totalAmmo), () -> {
-                reload = 0f;
+                reloadCounter = 0f;
                 firing = false;
                 for(int i = 0; i < hasShoot.length; i++){
                     hasShoot[i] = false;
@@ -176,7 +176,7 @@ public class MissileTurret extends ItemTurret{
         public void handleItem(Building source, Item item){
             super.handleItem(source, item);
 
-            reload = 0f;
+            reloadCounter = 0f;
             if(!firing) currentAmmo += ammoTypes.get(item).ammoMultiplier;
         }
 

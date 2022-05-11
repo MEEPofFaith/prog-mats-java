@@ -13,7 +13,7 @@ import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class ReloadTurretModule extends BaseTurretModule{
-    public float reloadTime = 30f;
+    public float reload = 30f;
 
     public boolean acceptCoolant = true;
     public float coolantUsage = 0.2f;
@@ -34,7 +34,7 @@ public class ReloadTurretModule extends BaseTurretModule{
     public void init(){
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
             hasLiquids = true;
-            consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
+            consume(new ConsumeCoolant(coolantUsage)).update(false).boost();
         }
 
         super.init();
@@ -45,17 +45,17 @@ public class ReloadTurretModule extends BaseTurretModule{
         super.setStats(stats);
 
         if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(reloadTime, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
+            stats.add(Stat.booster, StatValues.boosters(reload, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
         }
     }
 
     public void updateCooling(ModularTurretBuild parent, BaseTurretMount mount){
-        if(mount.reload < reloadTime){
+        if(mount.reloadCounter < reload){
             float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
             Liquid liquid = mount.liquids.current();
 
             float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta) * efficiency(parent);
-            mount.reload += used * liquid.heatCapacity * coolantMultiplier;
+            mount.reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
             mount.liquids.remove(liquid, used);
 
             if(Mathf.chance(0.06 * used)){
@@ -73,7 +73,7 @@ public class ReloadTurretModule extends BaseTurretModule{
         super.write(write, mount);
 
         if(mount instanceof BaseTurretMount m){
-            write.f(m.reload);
+            write.f(m.reloadCounter);
         }
     }
 
@@ -82,7 +82,7 @@ public class ReloadTurretModule extends BaseTurretModule{
         super.read(read, revision, mount);
 
         if(mount instanceof BaseTurretMount m){
-            m.reload = read.f();
+            m.reloadCounter = read.f();
         }
     }
 }

@@ -8,10 +8,10 @@ import progressed.world.blocks.defence.turret.modular.modules.turret.*;
 
 public class BaseTurretMount extends BaseMount{
     public final BaseTurretModule module;
-    /** Reload in frames; 0 means ready to fire */
-    public float reload;
+    /** Reload in ticks */
+    public float reloadCounter;
     /** Weapon recoil */
-    public float recoil;
+    public float curRecoil;
     /** Target */
     public Posc target;
     /** Aim position */

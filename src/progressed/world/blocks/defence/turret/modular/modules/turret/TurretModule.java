@@ -25,9 +25,9 @@ public class TurretModule extends ReloadTurretModule{
     public boolean targetAir = true, targetGround = true, targetBlocks = true,
         targetEnemies = true, targetHealing;
     public boolean leadTargets = true, accurateDelay;
-    public boolean rotateShooting = true;
+    public boolean moveWhileShooting = true;
 
-    public float shootLength;
+    public float shootY;
     public int shots = 1;
     public boolean countAfter;
     public float barrelSpacing, angleSpread;
@@ -59,8 +59,8 @@ public class TurretModule extends ReloadTurretModule{
     public TurretModule(String name, ModuleSize size){
         super(name, size);
         mountType = TurretMount::new;
-        recoilAmount = size();
-        shootLength = size() * Vars.tilesize / 2f;
+        recoil = size();
+        shootY = size() * Vars.tilesize / 2f;
     }
 
     public TurretModule(String name){
@@ -80,7 +80,7 @@ public class TurretModule extends ReloadTurretModule{
         super.setStats(stats);
 
         stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
-        stats.add(Stat.reload, 60f / (reloadTime) * shots, StatUnit.perSecond);
+        stats.add(Stat.reload, 60f / (reload) * shots, StatUnit.perSecond);
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
     }
@@ -118,7 +118,7 @@ public class TurretModule extends ReloadTurretModule{
                 offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
             }
 
-            tr2.trns(mount.rotation, shootLength - mount.recoil);
+            recoilOffset.trns(mount.rotation, shootY - mount.curRecoil);
             mount.targetPos.set(Predict.intercept(mount, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
         }
 
@@ -140,11 +140,11 @@ public class TurretModule extends ReloadTurretModule{
 
         mount.wasShooting = false;
 
-        mount.recoil = Mathf.lerpDelta(mount.recoil, 0f, restitution);
+        mount.curRecoil = Mathf.lerpDelta(mount.curRecoil, 0f, restitution);
         mount.heat = Mathf.lerpDelta(mount.heat, 0f, cooldown);
 
         if(hasAmmo(mount)){
-            if(Float.isNaN(mount.reload)) mount.reload = 0;
+            if(Float.isNaN(mount.reloadCounter)) mount.reloadCounter = 0;
 
             if(validateTarget(parent, mount)){
                 boolean canShoot = true;
@@ -183,14 +183,14 @@ public class TurretModule extends ReloadTurretModule{
 
     public void updateShooting(ModularTurretBuild parent, TurretMount mount){
         if(!shouldReload(parent, mount)) return;
-        mount.reload += peekAmmo(mount).reloadMultiplier * delta(parent);
+        mount.reloadCounter += peekAmmo(mount).reloadMultiplier * delta(parent);
 
-        if(mount.reload >= reloadTime){
+        if(mount.reloadCounter >= reload){
             BulletType type = peekAmmo(mount);
 
             shoot(parent, mount, type);
 
-            mount.reload %= reloadTime;
+            mount.reloadCounter %= reload;
         }
 
         if(acceptCoolant){
@@ -221,15 +221,15 @@ public class TurretModule extends ReloadTurretModule{
             useAmmo(parent, mount);
             mount.chargeShot = type;
 
-            tr.trns(rot, shootLength);
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rot);
-            chargeSound.at(x + tr.x, y + tr.y, 1);
+            shootOffset.trns(rot, shootY);
+            chargeBeginEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
+            chargeSound.at(x + shootOffset.x, y + shootOffset.y, 1);
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
                     if(parent.dead) return;
-                    tr.trns(rot, shootLength);
-                    chargeEffect.at(x + tr.x, y + tr.y, rot);
+                    shootOffset.trns(rot, shootY);
+                    chargeEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
                 });
             }
 
@@ -268,10 +268,10 @@ public class TurretModule extends ReloadTurretModule{
         float rot = mount.rotation;
         float b = (mount.shotCounter % barrels) - (barrels - 1) / 2f;
 
-        tr.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootLength - mount.recoil);
+        shootOffset.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootY - mount.curRecoil);
         bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
-        mount.recoil = recoilAmount;
+        mount.curRecoil = recoil;
         mount.heat = 1f;
         if(!countAfter) mount.shotCounter++;
     }
@@ -280,16 +280,16 @@ public class TurretModule extends ReloadTurretModule{
         if(!hasAmmo(mount)) return;
         BulletType type = mount.chargeShot == null ? peekAmmo(mount) : mount.chargeShot;
 
-        tr.trns(mount.rotation, shootLength - mount.recoil);
+        shootOffset.trns(mount.rotation, shootY - mount.curRecoil);
         bullet(parent, mount, type, mount.rotation + Mathf.range(inaccuracy + type.inaccuracy));
         effects(mount, type);
     }
 
     protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
         float x = mount.x, y = mount.y;
-        float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, mount.targetPos.x, mount.targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+        float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + shootOffset.x, y + shootOffset.y, mount.targetPos.x, mount.targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
-        mount.bullet = type.create(parent, parent.team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        mount.bullet = type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
     }
 
     protected void effects(TurretMount mount, BulletType type){
@@ -298,22 +298,22 @@ public class TurretModule extends ReloadTurretModule{
         Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
         Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
-        fshootEffect.at(x + tr.x, y + tr.y, mount.rotation);
-        fsmokeEffect.at(x + tr.x, y + tr.y, mount.rotation);
-        shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+        fshootEffect.at(x + shootOffset.x, y + shootOffset.y, mount.rotation);
+        fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, mount.rotation);
+        shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
         if(shootShake > 0){
             Effect.shake(shootShake, shootShake, x, y);
         }
 
-        mount.recoil = recoilAmount;
+        mount.curRecoil = recoil;
     }
 
     protected void ejectEffects(TurretMount mount){
         float scl = Mathf.sign(alternate && mount.shotCounter % 2 == 0);
 
-        tr2.trns(mount.rotation - 90, ammoEjectX, ammoEjectY);
-        ammoUseEffect.at(mount.x + tr2.x, mount.y + tr2.y, mount.rotation * scl);
+        recoilOffset.trns(mount.rotation - 90, ammoEjectX, ammoEjectY);
+        ammoUseEffect.at(mount.x + recoilOffset.x, mount.y + recoilOffset.y, mount.rotation * scl);
     }
 
     /** Consume ammo and return a type. */
@@ -340,7 +340,7 @@ public class TurretModule extends ReloadTurretModule{
     }
 
     public boolean shouldTurn(TurretMount mount){
-        return !mount.charging && (rotateShooting || !mount.isShooting);
+        return !mount.charging && (moveWhileShooting || !mount.isShooting);
     }
 
     public void turnToTarget(ModularTurretBuild parent, TurretMount mount, float targetRot){
@@ -387,27 +387,27 @@ public class TurretModule extends ReloadTurretModule{
             return;
         }
 
-        tr.trns(rot + 90f, rotate ? -mount.recoil : 0f);
+        shootOffset.trns(rot + 90f, rotate ? -mount.curRecoil : 0f);
 
-        Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
+        Drawf.shadow(region, x + shootOffset.x - elevation, y + shootOffset.y - elevation, rot);
         applyColor(parent, mount);
-        Draw.rect(region, x + tr.x, y + tr.y, rot);
+        Draw.rect(region, x + shootOffset.x, y + shootOffset.y, rot);
 
         if(heatRegion.found() && mount.heat > 0.001f){
             Draw.color(heatColor, mount.heat);
             Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, x + tr.x, y + tr.y, rot);
+            Draw.rect(heatRegion, x + shootOffset.x, y + shootOffset.y, rot);
             Draw.blend();
             Draw.color();
         }
 
         if(liquidRegion.found()){
-            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot);
+            Drawf.liquid(liquidRegion, x + shootOffset.x, y + shootOffset.y, mount.liquids.currentAmount() / liquidCapacity, mount.liquids.current().color, rot);
         }
 
         if(topRegion.found()){
             Draw.z(Layer.turret + topLayerOffset);
-            Draw.rect(topRegion, x + tr.x, y + tr.y, rot);
+            Draw.rect(topRegion, x + shootOffset.x, y + shootOffset.y, rot);
         }
         Draw.mixcol();
     }

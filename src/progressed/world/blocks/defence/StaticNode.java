@@ -121,7 +121,7 @@ public class StaticNode extends Block{
 
     @Override
     public void init(){
-        consumes.add(new DynamicConsumePower(b -> ((StaticNodeBuild)b).powerUse()));
+        consume(new DynamicConsumePower(b -> ((StaticNodeBuild)b).powerUse()));
         clipSize = Math.max(clipSize, (laserRange + 1f) * tilesize * 2f);
 
         super.init();
@@ -138,7 +138,7 @@ public class StaticNode extends Block{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("connections", (StaticNodeBuild entity) -> new Bar(
+        addBar("connections", (StaticNodeBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.powerlines", entity.links.size, maxNodes),
             () -> entity.team.color,
             () -> (float)entity.links.size / (float)maxNodes
@@ -182,7 +182,7 @@ public class StaticNode extends Block{
 
         if(drawLaser){
             Tmp.v3.trns(angle1 - 90f, space);
-            Drawf.laser(team, laser, laserEnd,
+            Drawf.laser(laser, laserEnd,
                 x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y,
                 x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y,
                 scale
@@ -190,7 +190,7 @@ public class StaticNode extends Block{
 
             if(drawOther){
                 Tmp.v3.trns(angle1 + 90f, space);
-                Drawf.laser(team, laser, laserEnd,
+                Drawf.laser(laser, laserEnd,
                     x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y,
                     x1 + Tmp.v1.x + Tmp.v3.x, y1 + Tmp.v1.y + Tmp.v3.y,
                     scale
@@ -280,7 +280,7 @@ public class StaticNode extends Block{
     }
 
     @Override
-    public void drawRequestConfigTop(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanConfigTop(BuildPlan req, Eachable<BuildPlan> list){
         if(req.config instanceof Point2[] ps){
             Draw.color(Tmp.c1.set(player.team().color), Renderer.laserOpacity);
             for(Point2 point : ps){
@@ -355,7 +355,7 @@ public class StaticNode extends Block{
         public void updateTile(){
             super.updateTile();
 
-            if(consValid() && Groups.unit.contains(u -> u.team != team) && timer(shockTimer, reload / efficiency())){
+            if(canConsume() && Groups.unit.contains(u -> u.team != team) && timer(shockTimer, reload / efficiency)){
                 for(int i : links.items){
                     Building link = world.build(i);
 
@@ -372,7 +372,7 @@ public class StaticNode extends Block{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(linkValid(this, other)){
                 configure(other.pos());
                 return false;
@@ -440,7 +440,7 @@ public class StaticNode extends Block{
         
                 if(!linkValid(this, link) || !linked(link)) continue;
 
-                Draw.color(Tmp.c1.set(team.color).mul(minValue + efficiency() * (1f - minValue)), Renderer.laserOpacity);
+                Draw.color(Tmp.c1.set(team.color).mul(minValue + efficiency * (1f - minValue)), Renderer.laserOpacity);
 
                 staticLine(team, x, y, link.x, link.y, size, link.block.size, true, false, false);
             }

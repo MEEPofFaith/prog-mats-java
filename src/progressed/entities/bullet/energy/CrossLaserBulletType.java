@@ -74,7 +74,7 @@ public class CrossLaserBulletType extends LaserBulletType{
         //Main Light
         Tmp.v1.trns(b.rotation(), l);
         Tmp.v1.add(b.x, b.y);
-        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, w * 2f * fin * fout, colors[1], 0.6f);
+        Drawf.light(b.x, b.y, Tmp.v1.x, Tmp.v1.y, w * 2f * fin * fout, colors[1], 0.6f);
 
         //Cross laser
         if(data.valid()){
@@ -109,7 +109,7 @@ public class CrossLaserBulletType extends LaserBulletType{
                 Tmp.v2.trns(b.rotation(), cross);
                 Tmp.v2.add(b.x, b.y);
     
-                Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, cw[i] * 2f * fin * fout, colors[1], 0.6f);
+                Drawf.light(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, cw[i] * 2f * fin * fout, colors[1], 0.6f);
           }
         }
     }

@@ -72,13 +72,13 @@ public class PayloadLaunchTurret extends PayloadTurret{
                 Tmp.v2.trns(rotation, lineStart, w);
 
                 Lines.stroke(fin * 1.2f, Pal.accent);
-                Lines.lineAngle(x + Tmp.v1.x + tr2.x, y + Tmp.v1.y + tr2.y, rotation, lineLength);
-                Lines.lineAngle(x + Tmp.v2.x + tr2.x, y + Tmp.v2.y + tr2.y, rotation, lineLength);
+                Lines.lineAngle(x + Tmp.v1.x + recoilOffset.x, y + Tmp.v1.y + recoilOffset.y, rotation, lineLength);
+                Lines.lineAngle(x + Tmp.v2.x + recoilOffset.x, y + Tmp.v2.y + recoilOffset.y, rotation, lineLength);
 
                 Draw.scl(fin * 1.1f);
                 for(int i = 0; i < arrows; i++){
                     Tmp.v3.trns(rotation, lineStart + lineLength / (arrows + 1) * (i + 1));
-                    Draw.rect("bridge-arrow", x + Tmp.v3.x + tr2.x, y + Tmp.v3.y + tr2.y, rotation);
+                    Draw.rect("bridge-arrow", x + Tmp.v3.x + recoilOffset.x, y + Tmp.v3.y + recoilOffset.y, rotation);
                 }
                 Draw.scl();
             }

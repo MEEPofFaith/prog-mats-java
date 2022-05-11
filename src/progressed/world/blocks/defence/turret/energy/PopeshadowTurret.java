@@ -54,13 +54,13 @@ public class PopeshadowTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (PopeshadowTurretBuild entity) -> new Bar(
-            () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (PopeshadowTurretBuild entity) -> new Bar(
+            () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
 
-        bars.add("pm-charge", (PopeshadowTurretBuild entity) -> new Bar(
+        addBar("pm-charge", (PopeshadowTurretBuild entity) -> new Bar(
             () -> bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
             () -> Color.gold,
             () -> entity.charge
@@ -79,15 +79,15 @@ public class PopeshadowTurret extends PowerTurret{
             float openX = xOpen * Interp.pow2Out.apply(openAmount) - xOpen * Interp.pow2In.apply(closeAmount);
             float openY = yOpen * Interp.pow5In.apply(openAmount) - yOpen * Interp.pow5Out.apply(closeAmount);
 
-            Tmp.v1.trns(rotation - 90, -openX, openY - recoil);
-            Tmp.v2.trns(rotation - 90, openX, openY - recoil);
+            Tmp.v1.trns(rotation - 90, -openX, openY - curRecoil);
+            Tmp.v2.trns(rotation - 90, openX, openY - curRecoil);
             float[] sXPre = {Tmp.v1.x, Tmp.v2.x};
             float[] sYPre = {Tmp.v1.y, Tmp.v2.y};
             float[] sX = {sXPre[0] + x, sXPre[1] + x};
             float[] sY = {sYPre[0] + y, sYPre[1] + y};
             
-            tr2.trns(rotation, -recoil);
-            float tx = x + tr2.x, ty = y + tr2.y;
+            recoilOffset.trns(rotation, -curRecoil);
+            float tx = x + recoilOffset.x, ty = y + recoilOffset.y;
 
             Draw.rect(baseRegion, x, y);
             
@@ -124,7 +124,7 @@ public class PopeshadowTurret extends PowerTurret{
                     if(cellLights[i] > 0.001f){
                         Draw.alpha(cellLights[i]);
                         Draw.rect(cellRegions[i], tx, ty, rotation - 90f);
-                        PMDrawf.light(team, tx, ty, cellRegions[i], rotation - 90f, heatColor, cellLights[i] * lightOpactiy, false);
+                        PMDrawf.light(tx, ty, cellRegions[i], rotation - 90f, heatColor, cellLights[i] * lightOpactiy, false);
                     }
                 }
                 //Ending Lights
@@ -133,7 +133,7 @@ public class PopeshadowTurret extends PowerTurret{
                         Draw.alpha(cellLights[i - 3]);
                         for(int j = 0; j < 2; j++){
                             Draw.rect(cellRegions[i], sX[j], sY[j], cellRegions[i].width / 4f * Mathf.signs[j], cellRegions[i].height / 4f, rotation - 90f);
-                            PMDrawf.light(team, sX[j], sY[j], cellRegions[i], rotation - 90f, heatColor, cellLights[i - 3] * lightOpactiy, !Mathf.booleans[j]);
+                            PMDrawf.light(sX[j], sY[j], cellRegions[i], rotation - 90f, heatColor, cellLights[i - 3] * lightOpactiy, !Mathf.booleans[j]);
                         }
                     }
                 }

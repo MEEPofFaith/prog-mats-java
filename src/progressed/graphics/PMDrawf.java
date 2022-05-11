@@ -27,19 +27,13 @@ public class PMDrawf{
     private static final Font font = Fonts.outline;
     private static final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
-    public static void light(Team team, float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
-        if(allowLight(team)){
-            float res = color.toFloatBits();
-            renderer.lights.add(() -> {
-                Draw.color(res);
-                Draw.alpha(opacity);
-                Draw.rect(region, x, y, region.width / 4f * Mathf.sign(flip), region.height / 4f, rotation);
-            });
-        }
-    }
-
-    public static boolean allowLight(Team team){
-        return renderer != null && (team == Team.derelict || team == Vars.player.team() || state.rules.enemyLights);
+    public static void light(float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
+        float res = color.toFloatBits();
+        renderer.lights.add(() -> {
+            Draw.color(res);
+            Draw.alpha(opacity);
+            Draw.rect(region, x, y, region.width / 4f * Mathf.sign(flip), region.height / 4f, rotation);
+        });
     }
 
     public static void plus(float x, float y, float diameter, float angle){
@@ -123,7 +117,7 @@ public class PMDrawf{
 
     //Too much duplicated code, how to condense down laser drawing?
     /** Meltdown laser drawing */
-    public static void laser(Team team,  float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
+    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
         for(int s = 0; s < colors.length; s++){
             color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + absin(Time.time, 1f, 0.1f)));
             for(int i = 0; i < tscales.length; i++){
@@ -135,15 +129,15 @@ public class PMDrawf{
 
         vec1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
         vec2.trns(angle, length * lenscales[lenscales.length - 1]);
-        Drawf.light(team, x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y, width * 2f, lightColor, 0.7f * alpha);
+        Drawf.light(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y, width * 2f, lightColor, 0.7f * alpha);
     }
 
-    public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
-        laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, alpha);
+    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
+        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, alpha);
     }
 
-    public static void laser(Team team, float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
-        laser(team, x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
+    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
+        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
     }
 
     public static void blockBuild(float x, float y, TextureRegion region, float rotation, float progress){

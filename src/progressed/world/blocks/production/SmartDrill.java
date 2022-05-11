@@ -134,15 +134,8 @@ public class SmartDrill extends Drill{
 
             timeDrilled += warmup * delta();
 
-            if(items.total() < itemCapacity && dominantItems > 0 && consValid()){
-
-                float speed = 1f;
-
-                if(cons.optionalValid()){
-                    speed = liquidBoostIntensity;
-                }
-
-                speed *= efficiency(); // Drill slower when not at full power
+            if(items.total() < itemCapacity && dominantItems > 0 && canConsume()){
+                float speed = Mathf.lerp(1f, liquidBoostIntensity, optionalEfficiency) * efficiency;
 
                 lastDrillSpeed = (speed * dominantItems * warmup) / (drillTime + hardnessDrillMultiplier * dominantItem.hardness);
                 warmup = Mathf.approachDelta(warmup, speed, warmupSpeed);
@@ -169,6 +162,11 @@ public class SmartDrill extends Drill{
 
         public boolean isDrilling(){
             return dominantItem != null;
+        }
+
+        @Override
+        public boolean shouldConsume(){
+            return super.shouldConsume() && isDrilling();
         }
 
         @Override
@@ -207,7 +205,7 @@ public class SmartDrill extends Drill{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 deselect();
                 configure(null);

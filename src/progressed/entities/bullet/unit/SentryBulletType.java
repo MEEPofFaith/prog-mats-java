@@ -17,7 +17,7 @@ public class SentryBulletType extends BulletType{
         lifetime = 35f;
         collidesGround = collidesAir = collidesTiles = collides = false;
         backMove = false;
-        scaleVelocity = true;
+        scaleLife = true;
         splashDamage = 60f;
         splashDamageRadius = 8f;
         hitEffect = despawnEffect = Fx.none;

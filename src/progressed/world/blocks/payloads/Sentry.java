@@ -57,7 +57,7 @@ public class Sentry extends Missile{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(unit.fullIcon, req.drawx(), req.drawy(), req.rotation * 90 - 90f);
     }
 
@@ -137,7 +137,7 @@ public class Sentry extends Missile{
             Table cont = new Table();
             cont.defaults().size(40);
 
-            ImageButton button = cont.button(Tex.whiteui, Styles.clearToggleTransi, 24, this::spawn).get();
+            ImageButton button = cont.button(Tex.whiteui, Styles.clearTogglei, 24, this::spawn).get();
             button.getStyle().imageUp = Icon.upload;
 
             table.add(cont);

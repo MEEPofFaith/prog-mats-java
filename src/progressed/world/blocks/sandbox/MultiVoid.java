@@ -18,7 +18,7 @@ public class MultiVoid extends Block{
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("liquid");
+        removeBar("liquid");
     }
     
     @Override

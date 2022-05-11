@@ -59,11 +59,6 @@ public class RocketBulletType extends BasicBulletType{
     }
 
     @Override
-    public float range(){ //TODO proper range calculation
-        return super.range();
-    }
-
-    @Override
     public void update(Bullet b){
         if(b.data instanceof RocketData r){
             if(b.time < thrustDelay && thrustDelay > 0){

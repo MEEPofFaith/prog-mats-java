@@ -60,7 +60,7 @@ public class PMModules{
                     Items.thorium, ModuleBullets.shotgunThorium
                 );
 
-                reloadTime = 90f;
+                reload = 90f;
                 shootCone = 30;
                 range = 120f;
                 maxAmmo = 10;
@@ -89,7 +89,7 @@ public class PMModules{
                     targetBlocks = canOverdrive = false;
                     logicControl = playerControl = false;
                     single = true;
-                    reloadTime = 5.5f * 60f;
+                    reload = 5.5f * 60f;
                     heatColor = Color.red;
 
                     unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
@@ -119,11 +119,11 @@ public class PMModules{
                     Liquids.oil, ModuleBullets.oilShotMini
                 );
 
-                reloadTime = 5f;
+                reload = 5f;
                 range = 96f;
                 targetAir = false;
                 inaccuracy = 8;
-                recoilAmount = 0f;
+                recoil = 0f;
                 shootCone = 20f;
                 shootEffect = Fx.shootLiquid;
             }};
@@ -142,7 +142,7 @@ public class PMModules{
                     displayAmmoMultiplier = false;
                 }};
 
-                reloadTime = 35f;
+                reload = 35f;
                 shootCone = 40f;
                 powerUse = 3.5f;
                 targetAir = false;
@@ -165,10 +165,10 @@ public class PMModules{
             module = new PowerTurretModule("iris"){
                 {
                     powerUse = 1f;
-                    reloadTime = 30f;
+                    reload = 30f;
                     minRange = 4f * 8f;
                     range = 26f * 8f;
-                    shootLength = 0f;
+                    shootY = 0f;
                     rotate = false;
                     inaccuracy = 360f;
                     shootSound = Sounds.lasershoot;
@@ -180,11 +180,11 @@ public class PMModules{
                 protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
                     super.bullet(parent, mount, type, angle);
 
-                    tr2.set(mount.targetPos).sub(mount.x, mount.y);
-                    if(tr2.len() < minRange) tr2.setLength(minRange);
-                    tr2.add(mount.x, mount.y);
+                    recoilOffset.set(mount.targetPos).sub(mount.x, mount.y);
+                    if(recoilOffset.len() < minRange) recoilOffset.setLength(minRange);
+                    recoilOffset.add(mount.x, mount.y);
 
-                    mount.bullet.data = new DelayBulletData(tr2.x, tr2.y, 30f);
+                    mount.bullet.data = new DelayBulletData(recoilOffset.x, recoilOffset.y, 30f);
                 }
             };
         }};
@@ -234,7 +234,7 @@ public class PMModules{
 
                     activate = (p, m) -> {
                         m.charge = 0f;
-                        p.applyBoost(speedBoost * p.efficiency(), 61f);
+                        p.applyBoost(speedBoost * p.efficiency, 61f);
                     };
 
                     setStats = () -> stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
@@ -258,7 +258,7 @@ public class PMModules{
                     Items.thorium, ModuleBullets.shotgunThoriumCrit
                 );
 
-                reloadTime = 75f;
+                reload = 75f;
                 shootCone = 25;
                 range = 200f;
                 maxAmmo = 10;
@@ -284,7 +284,7 @@ public class PMModules{
                     Items.blastCompound, ModuleBullets.swarmBlast
                 );
 
-                reloadTime = 60f;
+                reload = 60f;
                 range = 200f;
                 shootCone = 45;
                 shots = 7;
@@ -304,7 +304,7 @@ public class PMModules{
                 Items.silicon, 60
             ));
             module = new PowerTurretModule("vulcan", ModuleSize.medium){{
-                reloadTime = 43f;
+                reload = 43f;
                 powerUse = 10f;
                 range = 116;
                 rotateSpeed = 6.5f;
@@ -337,7 +337,7 @@ public class PMModules{
                 final Effect waveEffect = Fx.none;
 
                 {
-                    reloadTime = 60f;
+                    reload = 60f;
                     shots = 8;
                     burstSpacing = 2f;
                     minRange = 4f * 8f;
@@ -356,12 +356,12 @@ public class PMModules{
                     float x = mount.x,
                         y = mount.y;
 
-                    tr.set(mount.targetPos).sub(mount.x, mount.y);
-                    if(tr.len() < minRange) tr.setLength(minRange);
-                    tr.add(mount.x, mount.y);
+                    shootOffset.set(mount.targetPos).sub(mount.x, mount.y);
+                    if(shootOffset.len() < minRange) shootOffset.setLength(minRange);
+                    shootOffset.add(mount.x, mount.y);
 
-                    float aimX = tr.x,
-                        aimY = tr.y;
+                    float aimX = shootOffset.x,
+                        aimY = shootOffset.y;
 
                     for(int i = 0; i < shots; i++){
                         mount.isShooting = true;
@@ -374,15 +374,15 @@ public class PMModules{
                                 return;
                             }
 
-                            tr.trns(rot, shootLength);
-                            type.create(parent, parent.team, x + tr.x, y + tr.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
+                            shootOffset.trns(rot, shootY);
+                            type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
 
                             Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
                             Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
-                            fshootEffect.at(x + tr.x, y + tr.y, rot);
-                            fsmokeEffect.at(x + tr.x, y + tr.y, rot);
-                            shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+                            fshootEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
+                            fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
+                            shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
                             if(shootShake > 0){
                                 Effect.shake(shootShake, shootShake, x, y);
@@ -427,7 +427,7 @@ public class PMModules{
             ));
             module = new PowerTurretModule("ambrosia", ModuleSize.medium){
                 {
-                    reloadTime = 12f * 60f;
+                    reload = 12f * 60f;
                     range = 23f * tilesize;
                     inaccuracy = 5f;
                     velocityInaccuracy = 0.1f;
@@ -467,8 +467,8 @@ public class PMModules{
             module = new PointDefenceModule("dispel", ModuleSize.medium){{
                 powerUse = 5f;
                 range = 200f;
-                shootLength = 0;
-                reloadTime = 8f;
+                shootY = 0;
+                reload = 8f;
                 bulletDamage = 40f;
                 pierceCap = 6;
             }};
@@ -491,9 +491,9 @@ public class PMModules{
                     );
 
                     range = 21f * tilesize;
-                    reloadTime = 75f;
-                    shootLength = 1f / 4f;
-                    recoilAmount = 1;
+                    reload = 75f;
+                    shootY = 1f / 4f;
+                    recoil = 1;
                     topLayerOffset = 0.3f;
                     shootEffect = ModuleFx.reboundShoot;
                 }
@@ -501,7 +501,7 @@ public class PMModules{
                 @Override
                 public void handleItem(Item item, BaseMount mount){
                     BulletType type = ammoTypes.get(item);
-                    if(type != null) ((TurretMount)mount).reload = 0f;
+                    if(type != null) ((TurretMount)mount).reloadCounter = 0f;
 
                     super.handleItem(item, mount);
                 }
@@ -514,15 +514,15 @@ public class PMModules{
                     Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
                     Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
 
-                    fshootEffect.at(x + tr.x, y + tr.y, b.width / 2f, b.backColor);
-                    fsmokeEffect.at(x + tr.x, y + tr.y, b.width / 2f, b.backColor);
-                    shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+                    fshootEffect.at(x + shootOffset.x, y + shootOffset.y, b.width / 2f, b.backColor);
+                    fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, b.width / 2f, b.backColor);
+                    shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
                     if(shootShake > 0){
                         Effect.shake(shootShake, shootShake, x, y);
                     }
 
-                    mount.recoil = recoilAmount;
+                    mount.curRecoil = recoil;
                 }
 
                 @Override
@@ -532,16 +532,16 @@ public class PMModules{
 
                     if(hasAmmo(mount)){
                         BoomerangBulletType b = (BoomerangBulletType)peekAmmo(mount);
-                        float r = mount.reload / reloadTime,
+                        float r = mount.reloadCounter / reload,
                             width = b.width * r,
                             height = b.height * r,
                             spin = mount.rotation + Time.time * b.spin;
-                        tr.trns(mount.rotation, -mount.recoil + shootLength);
+                        shootOffset.trns(mount.rotation, -mount.curRecoil + shootY);
                         Draw.z(b.layer);
                         Draw.color(b.backColor);
-                        Draw.rect(b.backRegion, mount.x + tr.x, mount.y + tr.y, width, height, spin);
+                        Draw.rect(b.backRegion, mount.x + shootOffset.x, mount.y + shootOffset.y, width, height, spin);
                         Draw.color(b.frontColor);
-                        Draw.rect(b.frontRegion, mount.x + tr.x, mount.y + tr.y, width, height, spin);
+                        Draw.rect(b.frontRegion, mount.x + shootOffset.x, mount.y + shootOffset.y, width, height, spin);
                     }
                 }
             };
@@ -561,14 +561,14 @@ public class PMModules{
                     );
 
                     range = 34f * tilesize;
-                    reloadTime = 120f;
+                    reload = 120f;
                     maxAmmo = 12;
                     shots = 3;
                     barrels = 3;
                     barrelSpacing = 6f;
-                    rotateShooting = false;
+                    moveWhileShooting = false;
                     burstSpacing = 15f;
-                    shootLength -= 6f;
+                    shootY -= 6f;
                     topLayerOffset = 0.30f;
                     shootSound = Sounds.artillery;
                 }
@@ -597,7 +597,7 @@ public class PMModules{
             module = new PowerTurretModule("ares", ModuleSize.large){{
                 powerUse = 12f;
                 range = 38f * tilesize;
-                reloadTime = 75f;
+                reload = 75f;
                 shootShake = 3f;
                 rotateSpeed = 3.5f;
                 shootSound = Sounds.laser;
@@ -620,10 +620,10 @@ public class PMModules{
                 TextureRegion jointBaseRegion, armBaseRegion, jointRegion, armRegion, endRegion, fullArm;
 
                 {
-                    reloadTime = 2.5f * 60f;
+                    reload = 2.5f * 60f;
                     range = 38f * 8f;
                     powerUse = 4f;
-                    recoilAmount = shootLength = 0;
+                    recoil = shootY = 0;
                     rotate = false;
                     chargeTime = ModuleFx.jupiterCharge.lifetime;
                     chargeBeginEffect = ModuleFx.jupiterCharge;
@@ -707,17 +707,17 @@ public class PMModules{
                             joint = Mathf.lerp(jointRadMin, jointRadMax, charge),
                             end = Mathf.lerp(endRadMin, endRadMax, charge);
 
-                        tr.trns(rot, baseRad);
-                        tr2.trns(rot, joint);
+                        shootOffset.trns(rot, baseRad);
+                        recoilOffset.trns(rot, joint);
 
-                        Draw.rect(jointBaseRegion, x + tr.x, y + tr.y, rot);
-                        PMDrawf.stretch(armBaseRegion, x + tr.x, y + tr.y, x + tr2.x, y + tr2.y);
-                        Draw.rect(jointRegion, x + tr2.x, y + tr2.y, rot);
+                        Draw.rect(jointBaseRegion, x + shootOffset.x, y + shootOffset.y, rot);
+                        PMDrawf.stretch(armBaseRegion, x + shootOffset.x, y + shootOffset.y, x + recoilOffset.x, y + recoilOffset.y);
+                        Draw.rect(jointRegion, x + recoilOffset.x, y + recoilOffset.y, rot);
 
-                        tr.trns(rot, end);
+                        shootOffset.trns(rot, end);
 
-                        PMDrawf.stretch(armRegion, x + tr2.x, y + tr2.y, x + tr.x, y + tr.y);
-                        Draw.rect(endRegion, x + tr.x, y + tr.y, rot);
+                        PMDrawf.stretch(armRegion, x + recoilOffset.x, y + recoilOffset.y, x + shootOffset.x, y + shootOffset.y);
+                        Draw.rect(endRegion, x + shootOffset.x, y + shootOffset.y, rot);
                     }
                     Draw.mixcol();
                 }

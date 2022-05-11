@@ -17,16 +17,16 @@ import static mindustry.Vars.*;
 public class PayloadTurret extends PayloadMissileTurret{
     public float rotateSpeed = 5;
 
-    public float recoilAmount = 1f;
+    public float recoil = 1f;
     public float restitution = 0.02f;
     public float shootCone = 8f;
-    public float shootLength = -1;
+    public float shootY = -1;
     public float rotOffset = 0f;
 
     public float chargeTime = 0f;
 
     protected Vec2 tr = new Vec2();
-    protected Vec2 tr2 = new Vec2();
+    protected Vec2 recoilOffset = new Vec2();
 
     public TextureRegion baseRegion;
     public float elevation = -1f;
@@ -47,7 +47,7 @@ public class PayloadTurret extends PayloadMissileTurret{
 
     @Override
     public void init(){
-        if(shootLength < 0) shootLength = size * tilesize / 2f;
+        if(shootY < 0) shootY = size * tilesize / 2f;
         if(elevation < 0) elevation = size / 2f;
 
         super.init();
@@ -59,14 +59,14 @@ public class PayloadTurret extends PayloadMissileTurret{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(baseRegion, req.drawx(), req.drawy());
         Draw.rect(topRegion, req.drawx(), req.drawy());
         Draw.rect(region, req.drawx(), req.drawy());
     }
 
     public class PayloadTurretBuild extends PayloadMissileTurretBuild{
-        public float rotation = 90f, recoil;
+        public float rotation = 90f, curRecoil;
         public boolean charging, launching;
 
         @Override
@@ -86,7 +86,7 @@ public class PayloadTurret extends PayloadMissileTurret{
             Draw.rect(topRegion, x, y);
 
             Draw.z(Layer.turret);
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -curRecoil);
             drawTurret();
             drawHeat();
 
@@ -108,16 +108,16 @@ public class PayloadTurret extends PayloadMissileTurret{
         }
 
         public void drawTurret(){
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90f);
             Draw.z(Layer.turret + 0.02f);
-            Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.rect(region, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
         }
 
         public void drawHeat(){
             if(heat >= 0.001f && heatRegion.found()){
                 Draw.color(heatColor, heat);
                 Draw.blend(Blending.additive);
-                Draw.rect(heatRegion, x + tr2.x, y + tr2.y, rotation - 90f);
+                Draw.rect(heatRegion, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
                 Draw.blend();
                 Draw.color();
             }
@@ -129,7 +129,7 @@ public class PayloadTurret extends PayloadMissileTurret{
 
             wasShooting = false;
 
-            recoil = Mathf.lerpDelta(recoil, 0f, restitution);
+            curRecoil = Mathf.lerpDelta(curRecoil, 0f, restitution);
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
 
             if(unit != null){
@@ -200,9 +200,9 @@ public class PayloadTurret extends PayloadMissileTurret{
 
         @Override
         protected void updateShooting(){
-            reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+            reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
 
-            if(reload > reloadTime){
+            if(reloadCounter > reload){
                 charging = launching = true;
             }
         }
@@ -210,19 +210,19 @@ public class PayloadTurret extends PayloadMissileTurret{
         protected void updateLaunching(){
             shoot(peekAmmo());
             charging = launching = false;
-            reload %= reloadTime;
+            reloadCounter %= reload;
         }
 
         @Override
         protected void shoot(BulletType type){
             super.shoot(type);
-            recoil = recoilAmount;
+            curRecoil = recoil;
         }
 
         protected void bullet(BulletType type){
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
-            tr.trns(rotation, -recoil + shootLength);
+            tr.trns(rotation, -curRecoil + shootY);
             float angle = rotation + Mathf.range(inaccuracy + type.inaccuracy);
             type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
         }
@@ -231,7 +231,7 @@ public class PayloadTurret extends PayloadMissileTurret{
         public void updatePayload(){
             if(payload != null){
                 if(hasArrived()){
-                    tr.trns(rotation, -recoil + shootLength);
+                    tr.trns(rotation, -curRecoil + shootY);
                     payload.set(x + tr.x, y + tr.y, payRotation);
                 }else{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);

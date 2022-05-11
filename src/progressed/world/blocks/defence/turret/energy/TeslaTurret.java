@@ -35,7 +35,7 @@ public class TeslaTurret extends Block{
     public boolean hasSpinners;
     public Color lightningColor = Pal.surge;
 
-    public float reloadTime;
+    public float reload;
     public float powerUse = 1f;
     public boolean acceptCoolant = true;
     public float coolantMultiplier = 5f;
@@ -79,7 +79,7 @@ public class TeslaTurret extends Block{
         super.setStats();
 
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
+        stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
         stats.add(Stat.ammo, PMStatValues.teslaZapping(damage, maxTargets, status));
     }
 
@@ -116,16 +116,12 @@ public class TeslaTurret extends Block{
         if(rings.size <= 0){
             PMUtls.uhOhSpeghettiOh(name + " does not have any rings!");
         }
-        if(maxTargets <= 0){
-            PMUtls.uhOhSpeghettiOh("The 'maxTargets' of " + name + " is 0!");
-        }
+        if(maxTargets <= 0) maxTargets = 1;
 
-        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
+        if(acceptCoolant){
             hasLiquids = true;
-            consumes.add(new ConsumeCoolant(0.2f)).update(false).boost();
+            consume(new ConsumeCoolant(0.2f)).update(false).boost();
         }
-
-        consumes.powerCond(powerUse, TeslaTurretBuild::active);
 
         if(elevation < 0) elevation = size / 2f;
         clipSize = Math.max(clipSize, (range + 3f) * 2f);
@@ -156,12 +152,8 @@ public class TeslaTurret extends Block{
     
     public class TeslaTurretBuild extends Building implements Ranged{
         protected float[] heats = new float[rings.size];
-        protected float rotation = 90f, speedScl, curStroke, reload;
+        protected float rotation = 90f, speedScl, curStroke, reloadCounter;
         protected boolean nearby;
-
-        public boolean active(){
-            return nearby;
-        }
 
         @Override
         public void drawSelect(){
@@ -243,7 +235,7 @@ public class TeslaTurret extends Block{
                 Lines.stroke((0.7f + Mathf.absin(blinkScl, 0.7f)) * curStroke, lightningColor);
                 for(int i = 0; i < sections; i++){
                     float rot = i * 360f / sections + Time.time * rotateSpeed;
-                    Lines.swirl(x, y, range, sectionRad, rot);
+                    Lines.arc(x, y, range, sectionRad, rot);
                 }
             }
         }
@@ -260,10 +252,10 @@ public class TeslaTurret extends Block{
                 heats[i] = Mathf.lerpDelta(heats[i], 0f, cooldown);
             }
 
-            if(!nearby || !cons.valid()){
+            if(!nearby || !canConsume()){
                 speedScl = Mathf.lerpDelta(speedScl, 0, spinDown);
             }
-            if(nearby && cons.valid()){
+            if(nearby && canConsume()){
                 Liquid liquid = liquids.current();
                 speedScl = Mathf.lerpDelta(speedScl, 1, spinUp * liquid.heatCapacity * coolantMultiplier * edelta());
             }
@@ -271,7 +263,7 @@ public class TeslaTurret extends Block{
             rotation -= speedScl * edelta();
             curStroke = Mathf.lerpDelta(curStroke, nearby ? 1 : 0, 0.09f);
 
-            if(consValid()){
+            if(canConsume()){
                 if(timer(timerCheck, checkInterval)){
                     nearby = PMDamage.checkForTargets(team, x, y, range);
                 }
@@ -282,7 +274,7 @@ public class TeslaTurret extends Block{
             if(nearby){
                 updateCooling();
 
-                if((reload += edelta()) >= reloadTime){
+                if((reloadCounter += edelta()) >= reload){
                     targets.clear();
                     PMDamage.allNearbyEnemies(team, x, y, range, targets::add);
 
@@ -326,19 +318,19 @@ public class TeslaTurret extends Block{
 
                         Effect.shake(shootShake, shootShake, this);
 
-                        reload %= reloadTime;
+                        reloadCounter %= reload;
                     }
                 }
             }
         }
 
         protected void updateCooling(){
-            if(reload < reloadTime){
+            if(reloadCounter < reload){
                 float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
                 Liquid liquid = liquids.current();
 
-                float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * efficiency();
-                reload += used * liquid.heatCapacity * coolantMultiplier;
+                float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * efficiency;
+                reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
                 liquids.remove(liquid, used);
 
                 if(Mathf.chance(0.06 * used)){
@@ -353,10 +345,15 @@ public class TeslaTurret extends Block{
         }
 
         @Override
+        public boolean shouldConsume(){
+            return super.shouldConsume() && nearby;
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 
-            write.f(reload);
+            write.f(reloadCounter);
             write.bool(nearby);
         }
 
@@ -365,7 +362,7 @@ public class TeslaTurret extends Block{
             super.read(read, revision);
 
             if(revision >= 2){
-                reload = read.f();
+                reloadCounter = read.f();
                 nearby = read.bool();
             }
         }

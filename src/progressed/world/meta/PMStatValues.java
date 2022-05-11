@@ -553,7 +553,7 @@ public class PMStatValues{
     }
 
     public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
-        return table.button("?", Styles.clearPartialt, () -> {
+        return table.button("?", Styles.floatBordert, () -> {
             ui.content.show(content);
         }).size(size).left().name("contentinfo");
     }

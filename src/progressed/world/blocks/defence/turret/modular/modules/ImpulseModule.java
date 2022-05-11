@@ -131,10 +131,10 @@ public class ImpulseModule extends RangedModule{
                 float ang = Mathf.mod(u.angleTo(m.x, m.y) + 180f, 360f);
                 Draw.mixcol(laserColor, Mathf.absin(44f, 0.6f));
 
-                tr.trns(ang, radius).add(m.x, m.y);
+                shootOffset.trns(ang, radius).add(m.x, m.y);
 
-                Drawf.laser(parent.team, laser, laserEnd, laserEnd,
-                    tr.x, tr.y, u.x, u.y,
+                Drawf.laser(laser, laserEnd, laserEnd,
+                    shootOffset.x, shootOffset.y, u.x, u.y,
                     efficiency(parent) * laserWidth
                 );
 

@@ -70,15 +70,15 @@ public class PayloadCrafter extends PayloadBlock{
     @Override
     public void init(){
         if(recipes.contains(r -> r.powerUse > 0)){
-            consumes.add(new DynamicConsumePower(b -> ((PayloadCrafterBuild)b).powerUse()));
+            consume(new DynamicConsumePower(b -> ((PayloadCrafterBuild)b).powerUse()));
             hasPower = true;
         }
         if(recipes.contains(r -> r.buildCost != null)){
-            consumes.add(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
+            consume(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
             hasItems = true;
         }
         if(recipes.contains(r -> r.liquidCost != null)){
-            consumes.add(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidCost : null));
+            consume(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidCost : null));
             hasLiquids = true;
         }
         if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
@@ -117,8 +117,8 @@ public class PayloadCrafter extends PayloadBlock{
         super.setBars();
 
         if(hasLiquids){
-            bars.remove("liquid");
-            bars.add("liquid", (PayloadCrafterBuild entity) -> {
+            removeBar("liquid");
+            addBar("liquid", (PayloadCrafterBuild entity) -> {
                 Liquid l = entity.hasRecipe() ? entity.recipe().getLiquidInput() : null;
                 return new Bar(
                     () -> l != null ? l.localizedName : Core.bundle.get("bar.liquid"),
@@ -128,7 +128,7 @@ public class PayloadCrafter extends PayloadBlock{
             });
         }
 
-        bars.add("progress", (PayloadCrafterBuild entity) -> new Bar(
+        addBar("progress", (PayloadCrafterBuild entity) -> new Bar(
             "bar.progress",
             Pal.ammo,
             () -> entity.recipe() == null ? 0f : (entity.progress / entity.recipe().craftTime)
@@ -136,7 +136,7 @@ public class PayloadCrafter extends PayloadBlock{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         if(recipes.contains(r -> r.inputBlock != null)) Draw.rect(inRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
@@ -176,7 +176,7 @@ public class PayloadCrafter extends PayloadBlock{
         public void updateTile(){
             super.updateTile();
             Recipe recipe = recipe();
-            produce = recipe != null && consValid() && (recipe.inputBlock != null ? (payload != null && hasArrived() && payload.block() == recipe.inputBlock) : payload == null);
+            produce = recipe != null && canConsume() && (recipe.inputBlock != null ? (payload != null && hasArrived() && payload.block() == recipe.inputBlock) : payload == null);
 
             if(recipe != null){
                 if(payload != null && payload.block() != recipe.inputBlock){
@@ -196,7 +196,7 @@ public class PayloadCrafter extends PayloadBlock{
                 if(progress >= recipe.craftTime){
                     craft(recipe);
                 }
-            }else if(recipe == null || !consValid()){
+            }else if(recipe == null || !canConsume()){
                 progress = 0f;
             }
 
@@ -296,7 +296,7 @@ public class PayloadCrafter extends PayloadBlock{
 
             for(Block b : content.blocks()){
                 if(recipes.contains(r -> r.outputBlock == b)){
-                    Cell<ImageButton> cell = cont.button(Tex.whiteui, Styles.clearToggleTransi, 24, () -> {}).group(group);
+                    Cell<ImageButton> cell = cont.button(Tex.whiteui, Styles.clearTogglei, 24, () -> {}).group(group);
                     ImageButton button = cell.get();
                     Recipe r = recipes.find(rec -> rec.outputBlock == b);
                     button.update(() -> button.setChecked(recipe == b));

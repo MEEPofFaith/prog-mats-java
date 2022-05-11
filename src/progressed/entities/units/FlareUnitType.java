@@ -166,11 +166,11 @@ public class FlareUnitType extends UnitType{
         table.table(bars -> {
             bars.defaults().growX().height(20f).pad(4);
 
-            bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
+            addBar(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
             FlareUnitEntity flare = ((FlareUnitEntity)unit);
-            bars.add(new Bar(
+            addBar(new Bar(
                 () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.durationf() * 100f)),
                 () -> Pal.accent,
                 flare::durationf

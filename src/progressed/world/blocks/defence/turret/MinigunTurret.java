@@ -58,7 +58,7 @@ public class MinigunTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-minigun-speed", (MinigunTurretBuild entity) -> new Bar(
+        addBar("pm-minigun-speed", (MinigunTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-minigun-speed", PMUtls.stringsFixed(entity.speedf() * 100f)),
             entity::barColor,
             entity::speedf
@@ -75,14 +75,14 @@ public class MinigunTurret extends ItemTurret{
 
             Draw.z(Layer.turret - 0.2f);
 
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -curRecoil);
 
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
-            Draw.rect(bodyOutline, x + tr2.x, y + tr2.y, rotation - 90f);
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90f);
+            Draw.rect(bodyOutline, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
 
             for(int i = 0; i < 4; i++){
                 Draw.z(Layer.turret - 0.2f);
-                Tmp.v1.trns(rotation - 90f, width * Mathf.cosDeg(spin - 90 * i), height * Mathf.sinDeg(spin - 90 * i)).add(tr2);
+                Tmp.v1.trns(rotation - 90f, width * Mathf.cosDeg(spin - 90 * i), height * Mathf.sinDeg(spin - 90 * i)).add(recoilOffset);
                 Draw.rect(barrelOutline, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
                 Draw.z(Layer.turret - 0.1f - Mathf.sinDeg(spin - 90 * i) / 100f);
                 Draw.rect(barrelRegion, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
@@ -97,14 +97,14 @@ public class MinigunTurret extends ItemTurret{
 
             Draw.z(Layer.turret);
 
-            Draw.rect(bodyRegion, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.rect(bodyRegion, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
 
             if(speedf() > 0.0001f){
                 Draw.color(barColor());
                 Lines.stroke(barStroke);
                 for(int i = 0; i < 2; i++){
-                    tr2.trns(rotation - 90f, barX * Mathf.signs[i], barY - recoil);
-                    Lines.lineAngle(x + tr2.x, y + tr2.y, rotation, barLength * Mathf.clamp(speedf()), false);
+                    recoilOffset.trns(rotation - 90f, barX * Mathf.signs[i], barY - curRecoil);
+                    Lines.lineAngle(x + recoilOffset.x, y + recoilOffset.y, rotation, barLength * Mathf.clamp(speedf()), false);
                 }
             }
         }
@@ -131,7 +131,7 @@ public class MinigunTurret extends ItemTurret{
             float add = spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) * delta() + used * liquid.heatCapacity * coolantMultiplier;
             liquids.remove(liquid, used);
             spin += add;
-            reload += add;
+            reloadCounter += add;
             for(int i = 0; i < 4; i++){
                 heats[i] = Mathf.lerpDelta(heats[i], 0f, cooldown);
             }
@@ -145,7 +145,7 @@ public class MinigunTurret extends ItemTurret{
 
             spinSpeed = Mathf.approachDelta(spinSpeed, getMaxSpeed(), windupSpeed * peekAmmo().reloadMultiplier * timeScale);
 
-            if(reload >= 90 && spinSpeed > minFiringSpeed){
+            if(reloadCounter >= 90 && spinSpeed > minFiringSpeed){
                 BulletType type = peekAmmo();
 
                 shoot(type);
@@ -160,7 +160,7 @@ public class MinigunTurret extends ItemTurret{
         protected void shoot(BulletType type){
             for(float shootLoc: shootLocs){
                 if(hasAmmo()){
-                    tr.trns(rotation - 90, shootLoc, shootLength - recoil);
+                    tr.trns(rotation - 90, shootLoc, shootY - curRecoil);
                     bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy));
                     effects();
                     useAmmo();

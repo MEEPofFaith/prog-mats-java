@@ -305,7 +305,7 @@ public class ModuleBullets{
             collides = collidesGround = collidesAir = false;
             frontColor = Color.white;
             backColor = trailColor = Pal.heal;
-            scaleVelocity = true;
+            scaleLife = true;
             width = height = 24f;
             shrinkX = shrinkY = 0.5f;
             spin = -2f;
@@ -386,7 +386,7 @@ public class ModuleBullets{
 
         aresOrb = new BasicBulletType(5f, 28f, "circle-bullet"){
             {
-                scaleVelocity = true;
+                scaleLife = true;
                 lightOpacity = 0.7f;
                 lightRadius = 70f;
                 drawSize = 250f;

@@ -39,7 +39,7 @@ public class PayloadMissileTurret extends PayloadBlock{
     /** How much reload is lowered by for each unit of liquid of heat capacity. */
     public float coolantMultiplier = 5f;
 
-    public float reloadTime = 2f * 60f;
+    public float reload = 2f * 60f;
 
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
@@ -89,7 +89,7 @@ public class PayloadMissileTurret extends PayloadBlock{
     public void init(){
         if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
             hasLiquids = true;
-            consumes.add(new ConsumeCoolant(coolantUsage)).update(false).boost();
+            consume(new ConsumeCoolant(coolantUsage)).update(false).boost();
         }
 
         super.init();
@@ -109,7 +109,7 @@ public class PayloadMissileTurret extends PayloadBlock{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.rect(topRegion, req.drawx(), req.drawy());
     }
@@ -127,13 +127,13 @@ public class PayloadMissileTurret extends PayloadBlock{
 
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
         stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
-        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
+        stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
         stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
 
         if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(reloadTime, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
+            stats.add(Stat.booster, StatValues.boosters(reload, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
         }
     }
 
@@ -143,7 +143,7 @@ public class PayloadMissileTurret extends PayloadBlock{
     }
 
     public class PayloadMissileTurretBuild extends PayloadBlockBuild<BuildPayload> implements Ranged, ControlBlock{
-        public float reload;
+        public float reloadCounter;
         public float heat, logicControlTime = -1;
         public int shotCounter;
         public boolean logicShooting = false;
@@ -189,7 +189,7 @@ public class PayloadMissileTurret extends PayloadBlock{
                 case shootX -> World.conv(targetPos.x);
                 case shootY -> World.conv(targetPos.y);
                 case shooting -> isShooting() ? 1 : 0;
-                case progress -> Mathf.clamp(reload / reloadTime);
+                case progress -> Mathf.clamp(reloadCounter / reload);
                 default -> super.sense(sensor);
             };
         }
@@ -331,14 +331,14 @@ public class PayloadMissileTurret extends PayloadBlock{
         }
 
         protected void updateShooting(){
-            reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+            reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
 
-            if(reload >= reloadTime){
+            if(reloadCounter >= reload){
                 BulletType type = peekAmmo();
 
                 shoot(type);
 
-                reload %= reloadTime;
+                reloadCounter %= reload;
             }
         }
 
@@ -351,7 +351,7 @@ public class PayloadMissileTurret extends PayloadBlock{
         }
 
         protected void bullet(BulletType type){
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
             float angle = angleTo(targetPos) + Mathf.range(inaccuracy + type.inaccuracy);
             type.create(this, team, x, y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
@@ -366,12 +366,12 @@ public class PayloadMissileTurret extends PayloadBlock{
         }
 
         protected void updateCooling(){
-            if(reload < reloadTime){
+            if(reloadCounter < reload){
                 float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
                 Liquid liquid = liquids.current();
 
                 float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed();
-                reload += used * liquid.heatCapacity * coolantMultiplier;
+                reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
                 liquids.remove(liquid, used);
 
                 if(Mathf.chance(0.06 * used)){
@@ -381,7 +381,7 @@ public class PayloadMissileTurret extends PayloadBlock{
         }
 
         protected float baseReloadSpeed(){
-            return efficiency();
+            return efficiency;
         }
 
         @Override
@@ -417,14 +417,14 @@ public class PayloadMissileTurret extends PayloadBlock{
         @Override
         public void write(Writes write){
             super.write(write);
-            write.f(reload);
+            write.f(reloadCounter);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            reload = read.f();
+            reloadCounter = read.f();
         }
     }
 }

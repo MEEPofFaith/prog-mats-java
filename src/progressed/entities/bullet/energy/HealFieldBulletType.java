@@ -63,6 +63,6 @@ public class HealFieldBulletType extends BulletType{
         float r = lightRadius * Math.min(b.time / growTime, 1f),
             fade = 1f - Mathf.curve(b.time, b.lifetime - fadeTime, b.lifetime);
         if(lightOpacity <= 0f || r <= 0f) return;
-        Drawf.light(b.team, b, r, lightColor, lightOpacity * fade);
+        Drawf.light(b, r, lightColor, lightOpacity * fade);
     }
 }

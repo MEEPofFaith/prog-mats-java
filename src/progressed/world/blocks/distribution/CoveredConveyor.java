@@ -34,8 +34,8 @@ public class CoveredConveyor extends Conveyor{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
-        super.drawRequestRegion(req, list);
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
+        super.drawPlanRegion(req, list);
 
         int[] bits = getTiling(req, list);
 

@@ -89,11 +89,11 @@ public class SandboxWall extends Wall{
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("health");
+        removeBar("health");
     }
 
     @Override
-    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanConfig(BuildPlan req, Eachable<BuildPlan> list){
         if(req.config instanceof byte[] b){
             //draw floating items to represent active mode
             int num = 0;
@@ -267,7 +267,7 @@ public class SandboxWall extends Wall{
         public void addButton(Table t, ButtonGroup<ImageButton> group, TextureRegion icon, int index){
             ImageButton button = t.button(
                 new TextureRegionDrawable(icon),
-                Styles.clearToggleTransi,
+                Styles.clearTogglei,
                 32f, () -> {}
             ).group(group).tooltip(buttonLabels[index]).get();
             button.changed(() -> configure(index));
@@ -275,7 +275,7 @@ public class SandboxWall extends Wall{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 deselect();
                 modes.reset();

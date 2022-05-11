@@ -50,10 +50,10 @@ public class EruptorTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (EruptorTurretBuild entity) -> new Bar(
-            () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (EruptorTurretBuild entity) -> new Bar(
+            () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
     }
 
@@ -87,20 +87,20 @@ public class EruptorTurret extends PowerTurret{
                 tr.trns(rotation, lengthScl * range, 0f);
                 bullet.set(x + tr.x, y + tr.y);
                 bullet.time(0f);
-                recoil = recoilAmount;
+                curRecoil = recoil;
                 heat = 1f;
-                bulletLife -= Time.delta / Math.max(efficiency(), 0.00001f);
+                bulletLife -= Time.delta / Math.max(efficiency, 0.00001f);
                 lengthScl += Time.delta / shootDuration;
                 if(timer(beamTimer, beamInterval)){
-                    tr2.trns(rotation, shootLength - recoil);
-                    UtilFx.lightning.at(x + tr2.x, y + tr2.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
+                    recoilOffset.trns(rotation, shootY - curRecoil);
+                    UtilFx.lightning.at(x + recoilOffset.x, y + recoilOffset.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
                     beamEffect.at(bullet, rotation);
                 }
                 if(bulletLife <= 0f){
                     bullet = null;
                     lengthScl = 0f;
                 }
-            }else if(reload < reloadTime){
+            }else if(reload < reload){
                 float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
                 Liquid liquid = liquids.current();
 

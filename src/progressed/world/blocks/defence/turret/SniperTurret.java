@@ -60,6 +60,12 @@ public class SniperTurret extends ItemTurret{
     }
 
     @Override
+    public void init(){
+        shootY = Math.max(shootY, shootY + split * (partCount - 1f));
+        super.init();
+    }
+
+    @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
         Outliner.outlineRegions(packer, parts, outlineColor, name + "-outline");
@@ -69,13 +75,13 @@ public class SniperTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (SniperTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (SniperTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
 
-        bars.add("pm-charge", (SniperTurretBuild entity) -> new Bar(
+        addBar("pm-charge", (SniperTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
             () -> Pal.surge,
             () -> entity.charge
@@ -92,35 +98,35 @@ public class SniperTurret extends ItemTurret{
             Draw.z(Layer.turret);
 
             float scl = split * Interp.pow2Out.apply(charge);
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -curRecoil);
 
             for(int i = 0; i < partCount; i++){
                 float tx = Angles.trnsx(rotation, scl * i);
                 float ty = Angles.trnsy(rotation, scl * i);
-                Drawf.shadow(outlines[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
+                Drawf.shadow(outlines[i], x + recoilOffset.x + tx - elevation, y + recoilOffset.y + ty - elevation, rotation - 90);
             }
 
             for(int i = 0; i < partCount - 1; i++){
                 float tx = Angles.trnsx(rotation, scl * (i + 0.5f));
                 float ty = Angles.trnsy(rotation, scl * (i + 0.5f));
-                Drawf.shadow(connectors[i], x + tr2.x + tx - elevation, y + tr2.y + ty - elevation, rotation - 90);
+                Drawf.shadow(connectors[i], x + recoilOffset.x + tx - elevation, y + recoilOffset.y + ty - elevation, rotation - 90);
             }
 
             for(int i = 0; i < partCount; i++){
                 float tx = Angles.trnsx(rotation, scl * i);
                 float ty = Angles.trnsy(rotation, scl * i);
-                Draw.rect(outlines[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                Draw.rect(outlines[i], x + recoilOffset.x + tx, y + recoilOffset.y + ty, rotation - 90);
             }
 
             for(int i = 0; i < partCount - 1; i++){
                 float tx = Angles.trnsx(rotation, scl * (i + 0.5f));
                 float ty = Angles.trnsy(rotation, scl * (i + 0.5f));
-                Draw.rect(connectors[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                Draw.rect(connectors[i], x + recoilOffset.x + tx, y + recoilOffset.y + ty, rotation - 90);
                 if(heat > 0.001f){
                     if(Core.atlas.isFound(cHeats[i])){
                         Draw.color(heatColor, heat);
                         Draw.blend(Blending.additive);
-                        Draw.rect(cHeats[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                        Draw.rect(cHeats[i], x + recoilOffset.x + tx, y + recoilOffset.y + ty, rotation - 90);
                         Draw.blend();
                         Draw.color();
                     }
@@ -130,7 +136,7 @@ public class SniperTurret extends ItemTurret{
             for(int i = 0; i < partCount; i++){
                 float tx = Angles.trnsx(rotation, scl * i);
                 float ty = Angles.trnsy(rotation, scl * i);
-                Draw.rect(parts[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                Draw.rect(parts[i], x + recoilOffset.x + tx, y + recoilOffset.y + ty, rotation - 90);
             }
 
             if(heat > 0.001f){
@@ -140,7 +146,7 @@ public class SniperTurret extends ItemTurret{
                     if(heats[i].found()){
                         float tx = Angles.trnsx(rotation, scl * i);
                         float ty = Angles.trnsy(rotation, scl * i);
-                        Draw.rect(heats[i], x + tr2.x + tx, y + tr2.y + ty, rotation - 90);
+                        Draw.rect(heats[i], x + recoilOffset.x + tx, y + recoilOffset.y + ty, rotation - 90);
                     }
                 }
                 Draw.blend();
@@ -161,56 +167,27 @@ public class SniperTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(consValid()){
-                if(reload >= reloadTime && !charging){
+            if(canConsume()){
+                if(reloadCounter >= reload && !charging){
                     BulletType type = peekAmmo();
         
                     shoot(type);
-                }else if(hasAmmo() && reload < reloadTime){
-                    reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                }else if(hasAmmo() && reloadCounter < reload){
+                    reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
                 }
             }
         }
 
         @Override
-        protected void shoot(BulletType type){
-            tr.trns(rotation, shootLength + split * (partCount - 1f));
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
-            chargeSound.at(x + tr.x, y + tr.y, 1);
-
-            for(int i = 0; i < chargeEffects; i++){
-                Time.run(Mathf.random(chargeMaxDelay), () -> {
-                    if(!isValid()) return;
-                    tr.trns(rotation, shootLength + split * (partCount - 1f));
-                    chargeEffect.at(x + tr.x, y + tr.y, rotation);
-                });
-            }
-
-            charging = true;
-
-            Time.run(chargeTime, () -> {
-                if(!isValid()) return;
-                tr.trns(rotation, shootLength + split * (partCount - 1f));
-                recoil = recoilAmount;
-                heat = 1f;
-                bullet(type, rotation + Mathf.range(inaccuracy));
-                useAmmo();
-                effects();
-                reload = 0;
-                charging = false;
-            });
-        }
-
-        @Override
         protected void updateCooling(){
-            if(hasAmmo() && consValid()){
+            if(hasAmmo() && canConsume()){
                 super.updateCooling();
             }
         }
         
         @Override
         protected void turnToTarget(float targetRot){
-            rotation = Angles.moveToward(rotation, targetRot, efficiency() * rotateSpeed * delta() * (charging ? (1 - chargeMoveFract * charge) : 1));
+            rotation = Angles.moveToward(rotation, targetRot, efficiency * rotateSpeed * delta() * (charging ? (1 - chargeMoveFract * charge) : 1));
         }
         
         @Override

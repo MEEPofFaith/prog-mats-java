@@ -31,7 +31,7 @@ public class BlackHoleTurret extends PowerTurret{
             Draw.color(Tmp.c1);
     
             Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, tile.x + tr2.x, tile.y + tr2.y, tile.rotation - 90);
+            Draw.rect(heatRegion, tile.x + recoilOffset.x, tile.y + recoilOffset.y, tile.rotation - 90);
             Draw.blend();
             Draw.color();
         };
@@ -55,13 +55,13 @@ public class BlackHoleTurret extends PowerTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (BlackHoleTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (BlackHoleTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
 
-        bars.add("pm-charge", (BlackHoleTurretBuild entity) -> new Bar(
+        addBar("pm-charge", (BlackHoleTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
             () -> Color.navy,
             () -> entity.charge
@@ -76,13 +76,13 @@ public class BlackHoleTurret extends PowerTurret{
             super.draw();
 
             Draw.color(Tmp.c1.set(team.color).lerp(Color.black, 0.7f + Mathf.absin(10f, 0.2f)), alpha);
-            Draw.rect(spaceRegion, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.rect(spaceRegion, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
             Draw.reset();
         }
 
         @Override
         public void updateTile(){
-            alpha = Mathf.lerpDelta(alpha, Mathf.num(consValid()), 0.1f);
+            alpha = Mathf.lerpDelta(alpha, Mathf.num(canConsume()), 0.1f);
 
             if(charging){
                 charge = Mathf.clamp(charge + Time.delta / chargeTime);
@@ -97,14 +97,14 @@ public class BlackHoleTurret extends PowerTurret{
         protected void shoot(BulletType type){
             useAmmo();
 
-            tr.trns(rotation, shootLength - recoil);
+            tr.trns(rotation, shootY - curRecoil);
             chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, team.color);
             chargeSound.at(x + tr.x, y + tr.y, 1);
 
             for(int i = 0; i < chargeEffects; i++){
                 Time.run(Mathf.random(chargeMaxDelay), () -> {
                     if(!isValid()) return;
-                    tr.trns(rotation, shootLength - recoil);
+                    tr.trns(rotation, shootY - curRecoil);
                     chargeEffect.at(x + tr.x, y + tr.y, rotation, team.color);
                 });
             }
@@ -113,8 +113,8 @@ public class BlackHoleTurret extends PowerTurret{
 
             Time.run(chargeTime, () -> {
                 if(!isValid()) return;
-                tr.trns(rotation, shootLength - recoil);
-                recoil = recoilAmount;
+                tr.trns(rotation, shootY - curRecoil);
+                curRecoil = recoil;
                 heat = 1f;
                 bullet(type, rotation + Mathf.range(inaccuracy));
                 effects();

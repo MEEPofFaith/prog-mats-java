@@ -121,7 +121,6 @@ public class ApotheosisChargeTower extends Block{
 
     @Override
     public void init(){
-        consumes.powerCond(powerUse, ApotheosisChargeTowerBuild::isActive);
         super.init();
 
         clipSize = Math.max(clipSize, (range + 2) * tilesize * 2f);
@@ -133,7 +132,7 @@ public class ApotheosisChargeTower extends Block{
     }
 
     @Override
-    public void drawRequestConfigTop(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanConfigTop(BuildPlan req, Eachable<BuildPlan> list){
         otherReq = null;
         list.each(other -> {
             if(other.block instanceof ApotheosisNexus && req != other && req.config instanceof Point2 p && p.equals(other.x - req.x, other.y - req.y)){
@@ -183,7 +182,7 @@ public class ApotheosisChargeTower extends Block{
                 Draw.z(Layer.effect + 0.0005f);
                 Tmp.v1.trns(rotation, startLength);
                 float baseLen = fullLaser ? (dst(getNexus()) - getNexusBlock().laserRadius - startLength) : (endLength - startLength) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f));
-                float wScl = (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency();
+                float wScl = (1f + (activeScl - 1f) * Mathf.clamp((chargef() - (1f/3f)) * 1.5f)) * scl * efficiency;
 
                 for(int s = 0; s < colors.length; s++){
                     Draw.color(Tmp.c1.set(colors[s]).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
@@ -196,7 +195,7 @@ public class ApotheosisChargeTower extends Block{
 
                 Tmp.v2.trns(rotation, baseLen * 1.1f);
 
-                Drawf.light(team, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, lightStroke, lightColor, 0.7f);
+                Drawf.light(x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y, lightStroke, lightColor, 0.7f);
                 Draw.reset();
             }
         }
@@ -235,7 +234,12 @@ public class ApotheosisChargeTower extends Block{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean shouldConsume(){
+            return super.shouldConsume() && isActive();
+        }
+
+        @Override
+        public boolean onConfigureBuildTapped(Building other){
             if(self() == other){
                 configure(null);
                 return true;

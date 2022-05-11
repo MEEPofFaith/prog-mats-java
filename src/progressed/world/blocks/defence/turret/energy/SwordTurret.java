@@ -71,7 +71,7 @@ public class SwordTurret extends BaseTurret{
     public float elevation = -1f, swordElevation = -1f;
 
     protected Vec2 tr = new Vec2();
-    protected Vec2 tr2 = new Vec2();
+    protected Vec2 recoilOffset = new Vec2();
 
     public TextureRegion baseRegion, outlineRegion, swordRegion, heatRegion;
 
@@ -85,7 +85,6 @@ public class SwordTurret extends BaseTurret{
 
     @Override
     public void init(){
-        consumes.powerCond(powerUse, SwordTurretBuild::isActive);
         if(elevation < 0) elevation = size / 2f;
         if(swordElevation < 0) swordElevation = elevation * 2f;
         if(expandedRadius < 0) expandedRadius = radius * 2.5f;
@@ -136,8 +135,8 @@ public class SwordTurret extends BaseTurret{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
-        super.drawRequestRegion(req, list);
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
+        super.drawPlanRegion(req, list);
 
         for(int i = 0; i < swords; i++){
             float rot = 90f + i * (360f / swords);
@@ -229,12 +228,8 @@ public class SwordTurret extends BaseTurret{
             return logicControlTime > 0f;
         }
 
-        public boolean isActive(){
-            return target != null || wasAttacking;
-        }
-
         public void targetPosition(Posc pos){
-            if(!consValid() || pos == null) return;
+            if(!canConsume() || pos == null) return;
             tr.trns(angleTo(pos), dst(pos)).limit(range).add(this);
             targetPos.set(Predict.intercept(curPos, tr, speed));
         }
@@ -260,9 +255,9 @@ public class SwordTurret extends BaseTurret{
             Lines.line(x + tr.x, y + tr.y, curPos.x, curPos.y);
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
-                tr2.trns(rot, -getRadius()).add(curPos).sub(this);
+                recoilOffset.trns(rot, -getRadius()).add(curPos).sub(this);
 
-                Lines.line(curPos.x, curPos.y, x + tr2.x, y + tr2.y);
+                Lines.line(curPos.x, curPos.y, x + recoilOffset.x, y + recoilOffset.y);
             }
             Fill.circle(x + tr.x, y + tr.y, connectorStroke / 2f);
             Fill.circle(curPos.x, curPos.y, connectorStroke / 2f);
@@ -327,7 +322,7 @@ public class SwordTurret extends BaseTurret{
         }
 
         protected void turnTo(float target){
-            lookAngle = Angles.moveToward(lookAngle, target - 90f, speed * 3f * cdelta() * efficiency());
+            lookAngle = Angles.moveToward(lookAngle, target - 90f, speed * 3f * cdelta() * efficiency);
         }
 
         @Override
@@ -345,7 +340,7 @@ public class SwordTurret extends BaseTurret{
                 logicControlTime -= Time.delta;
             }
 
-            if(consValid()){
+            if(canConsume()){
 
                 if(!ready && (!validateTarget() || aiTargetDistCheck()) && timer(timerTarget, targetInterval)){
                     findTarget();
@@ -380,7 +375,8 @@ public class SwordTurret extends BaseTurret{
             }
 
             if(ready){
-                animationTime += cdelta() * efficiency();
+                float e = Math.max(0.1f, efficiency);
+                animationTime += cdelta() * e;
                 if(animationTime >= pauseTime && animationTime <= stabTime){
                     heat = Mathf.curve(animationTime, pauseTime, stabTime);
                 }else{
@@ -395,14 +391,14 @@ public class SwordTurret extends BaseTurret{
                     if(hitShake > 0f){
                         Effect.shake(hitShake, hitShake, this);
                     }
-                    //Slow speed, weak hit -> * efficiency()
-                    PMDamage.completeDamage(team, curPos.x, curPos.y, damageRadius, damage * efficiency(), buildingDamageMultiplier, targetAir, targetGround);
+                    //Slow speed, weak hit -> * efficiency
+                    PMDamage.completeDamage(team, curPos.x, curPos.y, damageRadius, damage * e, buildingDamageMultiplier, targetAir, targetGround);
                     if(status != StatusEffects.none){
-                        Damage.status(team, curPos.x, curPos.y, damageRadius, status, statusDuration * efficiency(), targetAir, targetGround);
+                        Damage.status(team, curPos.x, curPos.y, damageRadius, status, statusDuration * e, targetAir, targetGround);
                     }
                 }
                 if(animationTime > totalTime){
-                    if(!validateTarget() || !isAttacking() || !consValid() || aiTargetDistCheck() || curPos.dst(targetPos) > attackRadius){
+                    if(!validateTarget() || !isAttacking() || !canConsume() || aiTargetDistCheck() || curPos.dst(targetPos) > attackRadius){
                         ready = false; //do not stop until dead or unable to attack
                         target = null;
                     }
@@ -416,7 +412,7 @@ public class SwordTurret extends BaseTurret{
 
             tr.trns(lookAngle + 90f, baseLength);
             if(tr.dst(curPos) > connectorStroke || isAttacking()) turnTo(angleTo(curPos));
-            rotation = (rotation - rotateSpeed * cdelta() * efficiency()) % 360f;
+            rotation = (rotation - rotateSpeed * cdelta() * efficiency) % 360f;
 
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
@@ -425,10 +421,10 @@ public class SwordTurret extends BaseTurret{
 
                 float sX = curPos.x + tr.x, sY = curPos.y + tr.y;
 
-                tr2.trns(rot + getRotation() + 90f, bladeCenter);
+                recoilOffset.trns(rot + getRotation() + 90f, bladeCenter);
 
                 if(ready){
-                    trails[i].updateRot(sX + tr2.x, sY + tr2.y, rot + getRotation());
+                    trails[i].updateRot(sX + recoilOffset.x, sY + recoilOffset.y, rot + getRotation());
                 }else{
                     trails[i].shorten();
                 }
@@ -436,15 +432,11 @@ public class SwordTurret extends BaseTurret{
         }
 
         protected void updateCooling(){
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+            coolant.update(this);
+            coolantScl = 1f + coolant.amount * edelta() * capacity * coolantMultiplier;
 
-            Liquid liquid = liquids.current();
-
-            float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, (speed / coolantMultiplier) / liquid.heatCapacity));
-            coolantScl = 1f + used;
-            liquids.remove(liquid, used);
-
-            if(Mathf.chance(0.06 * used)){
+            if(Mathf.chance(0.06 * coolant.amount)){
                 coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
             }
         }
@@ -458,14 +450,14 @@ public class SwordTurret extends BaseTurret{
             float angle = curPos.angleTo(pos);
             float dist = curPos.dst(pos);
             if(dist < attackRadius && readyUp) ready = true;
-            tr.trns(angle, speed * cdelta() * efficiency()).limit(dist);
+            tr.trns(angle, speed * cdelta() * efficiency).limit(dist);
             curPos.add(tr);
         }
 
         protected void resetPos(){
             tr.trns(lookAngle + 90f, baseLength);
-            tr2.set(x + tr.x, y + tr.y);
-            if(!curPos.within(tr2, 0.1f)) moveTo(tr2, false);
+            recoilOffset.set(x + tr.x, y + tr.y);
+            if(!curPos.within(recoilOffset, 0.1f)) moveTo(recoilOffset, false);
         }
 
         protected boolean validateTarget(){
@@ -484,6 +476,11 @@ public class SwordTurret extends BaseTurret{
             }
         }
 
+        @Override
+        public boolean shouldConsume(){
+            return super.shouldConsume() && target != null || wasAttacking;
+        }
+
         protected float cdelta(){
             return delta() * coolantScl;
         }
@@ -494,13 +491,6 @@ public class SwordTurret extends BaseTurret{
             for(PMTrail trail : trails){
                 UtilFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copyPM());
             }
-        }
-
-        @Override
-        public float efficiency(){
-            //disabled -> 0.1f efficiency
-            if(!enabled) return 0.1f;
-            return power != null && (block.consumes.has(ConsumeType.power) && !block.consumes.getPower().buffered) ? (0.1f + power.status * 0.9f) : 1f;
         }
 
         @Override

@@ -52,7 +52,7 @@ public class PayloadRocketTurret extends PayloadTurret{
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(baseRegion, req.drawx(), req.drawy());
         Draw.rect(topRegion, req.drawx(), req.drawy());
         Draw.rect(region, req.drawx(), req.drawy());
@@ -91,23 +91,23 @@ public class PayloadRocketTurret extends PayloadTurret{
         }
 
         public void drawTurret(){
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90f);
-            Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90f);
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90f);
+            Draw.rect(region, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
             for(int num : Mathf.zeroOne){
                 float scl = Mathf.curve(risef(), 0f, 0.375f) - Mathf.curve(risef(), 0.625f, 1f),
                     progress = Interp.sineIn.apply(scl);
                 Draw.color(doorColors[2], doorColors[num], progress);
                 tr.trns(rotation - 90f, (doorWidth / 4f + doorWidth / 4f * progress) * Mathf.signs[num], doorOffset);
                 Fill.rect(
-                    x + tr2.x + tr.x, y + tr2.y + tr.y,
+                    x + recoilOffset.x + tr.x, y + recoilOffset.y + tr.y,
                     doorWidth / 2f * (1f - progress), doorLength,
                     rotation - 90f
                 );
             }
             Draw.color();
-            Draw.rect(turretRegion, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.rect(turretRegion, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
             Draw.z(Layer.turret + 0.02f);
-            Draw.rect(turretTop, x + tr2.x, y + tr2.y, rotation - 90f);
+            Draw.rect(turretTop, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
         }
 
         @Override

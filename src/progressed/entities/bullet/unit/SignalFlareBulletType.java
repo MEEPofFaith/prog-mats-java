@@ -20,7 +20,7 @@ public class SignalFlareBulletType extends BulletType{
         this.spawn = spawn;
         this.lifetime = lifetime;
         
-        scaleVelocity = true;
+        scaleLife = true;
         shootEffect = smokeEffect = Fx.none;
         ammoMultiplier = 1;
         collidesGround = collidesAir = collidesTiles = collides = false;

@@ -23,7 +23,7 @@ public class SweepLaserBulletType extends BulletType{
 
     /** Just like with {@link PointBulletType}, speed = range */
     public SweepLaserBulletType(){
-        scaleVelocity = true;
+        scaleLife = true;
         lifetime = 40f;
         displayAmmoMultiplier = false;
         collides = keepVelocity = backMove = false;

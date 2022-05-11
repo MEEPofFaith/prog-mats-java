@@ -18,7 +18,7 @@ public class BaseTurretModule extends RangedModule{
     public float shootCone = 8f;
 
     public Color heatColor = Pal.turretHeat;
-    public float recoilAmount;
+    public float recoil;
     public float restitution = 0.02f;
     public float cooldown = 0.02f;
 

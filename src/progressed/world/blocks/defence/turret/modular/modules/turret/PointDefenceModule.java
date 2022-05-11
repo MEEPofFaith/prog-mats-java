@@ -26,7 +26,7 @@ public class PointDefenceModule extends ReloadTurretModule{
     public Sound shootSound = Sounds.lasershoot;
 
     public float bulletDamage = 10f;
-    public float shootLength = 3f;
+    public float shootY = 3f;
     public int pierceCap;
 
     public PointDefenceModule(String name, ModuleSize size){
@@ -43,7 +43,7 @@ public class PointDefenceModule extends ReloadTurretModule{
     public void setStats(Stats stats){
         super.setStats(stats);
 
-        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
+        stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
         if(pierceCap > 0) stats.add(Stat.damage, Core.bundle.format("stat.pm-point-defence-pierce", pierceCap));
     }
 
@@ -63,25 +63,25 @@ public class PointDefenceModule extends ReloadTurretModule{
             if(m.target instanceof Bullet b && b.within(m, range) && b.team != parent.team && b.type() != null && b.type().hittable){
                 float dest = m.angleTo(b);
                 m.rotation = Angles.moveToward(m.rotation, dest, rotateSpeed * edelta(parent));
-                m.reload += edelta(parent);
+                m.reloadCounter += edelta(parent);
 
                 if(acceptCoolant){
                     updateCooling(parent, m);
                 }
 
                 //Shoot when possible
-                if(Angles.within(m.rotation, dest, b.hitSize) && m.reload >= reloadTime){
-                    Tmp.v1.trns(m.rotation, shootLength);
+                if(Angles.within(m.rotation, dest, b.hitSize) && m.reloadCounter >= reload){
+                    Tmp.v1.trns(m.rotation, shootY);
                     float len = PMDamage.bulletCollideLine(
                         m.x + Tmp.v1.x, m.y + Tmp.v1.y,
-                        m.rotation, range - shootLength, parent.team,
+                        m.rotation, range - shootY, parent.team,
                         bulletDamage, pierceCap, hitEffect, color);
 
                     beamEffect.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, m.rotation, color, len);
                     shootEffect.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, m.rotation, color);
                     shootSound.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, Mathf.random(0.9f, 1.1f));
-                    m.reload = 0;
-                    m.recoil = recoilAmount;
+                    m.reloadCounter = 0;
+                    m.curRecoil = recoil;
                 }
             }
         }
@@ -102,27 +102,27 @@ public class PointDefenceModule extends ReloadTurretModule{
             return;
         }
 
-        tr.trns(rot + 90f, -mount.recoil);
+        shootOffset.trns(rot + 90f, -mount.curRecoil);
 
-        Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
+        Drawf.shadow(region, x + shootOffset.x - elevation, y + shootOffset.y - elevation, rot);
         applyColor(parent, mount);
-        Draw.rect(region, x + tr.x, y + tr.y, rot);
+        Draw.rect(region, x + shootOffset.x, y + shootOffset.y, rot);
 
         if(heatRegion.found() && mount.heat > 0.001f){
             Draw.color(heatColor, mount.heat);
             Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, x + tr.x, y + tr.y, rot);
+            Draw.rect(heatRegion, x + shootOffset.x, y + shootOffset.y, rot);
             Draw.blend();
             Draw.color();
         }
 
         if(liquidRegion.found()){
-            Drawf.liquid(liquidRegion, x + tr.x, y + tr.y, mount.liquids.total() / liquidCapacity, mount.liquids.current().color, rot);
+            Drawf.liquid(liquidRegion, x + shootOffset.x, y + shootOffset.y, mount.liquids.currentAmount() / liquidCapacity, mount.liquids.current().color, rot);
         }
 
         if(topRegion.found()){
             Draw.z(Layer.turret + topLayerOffset);
-            Draw.rect(topRegion, x + tr.x, y + tr.y, rot);
+            Draw.rect(topRegion, x + shootOffset.x, y + shootOffset.y, rot);
         }
         Draw.mixcol();
     }
@@ -130,7 +130,7 @@ public class PointDefenceModule extends ReloadTurretModule{
     @Override
     public void findTarget(ModularTurretBuild parent, BaseTurretMount m){
         m.target = Groups.bullet.intersect(m.x - range, m.y - range, range * 2, range * 2)
-            .min(b -> b.team != parent.team && b.type().hittable && !b.within(m, Mathf.maxZero(shootLength - 3f)), b -> b.dst2(m));
+            .min(b -> b.team != parent.team && b.type().hittable && !b.within(m, Mathf.maxZero(shootY - 3f)), b -> b.dst2(m));
     }
 
     @Override

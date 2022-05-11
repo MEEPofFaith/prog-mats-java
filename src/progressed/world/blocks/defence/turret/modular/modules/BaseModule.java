@@ -8,8 +8,8 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -19,7 +19,6 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.blocks.*;
 import progressed.graphics.*;
@@ -56,7 +55,7 @@ public class BaseModule implements Cloneable{
 
     public Func3<ModularTurretBuild, BaseModule, Integer, BaseMount> mountType = BaseMount::new;
 
-    public final MountBars bars = new MountBars();
+    public final OrderedMap<String, Func<ModularTurretBuild, Bar>> barMap = new OrderedMap<>();
     public final Consumers consumes = new Consumers();
 
     public TextureRegion region;
@@ -65,7 +64,7 @@ public class BaseModule implements Cloneable{
     public boolean outlineIcon;
     public Color outlineColor = Color.valueOf("404049");
 
-    public static final Vec2 tr = new Vec2(), tr2 = new Vec2();
+    public static final Vec2 shootOffset = new Vec2(), recoilOffset = new Vec2();
 
     public BaseModule(String name, ModuleSize size){
         this.name = "prog-mats-" + name;
@@ -117,7 +116,7 @@ public class BaseModule implements Cloneable{
     public void setBars(){
         if(hasLiquids){
             Func<BaseMount, Liquid> current = mount -> mount.liquids == null ? Liquids.water : mount.liquids.current();
-            bars.add("liquid", (entity, mount) -> new Bar(
+            addBar("liquid", (entity, mount) -> new Bar(
                 () -> mount.liquids.get(current.get(mount)) <= 0.001f ? Core.bundle.get("bar.liquid") : current.get(mount).localizedName,
                 () -> current.get(mount).barColor(),
                 () -> mount == null || mount.liquids == null ? 0f : mount.liquids.get(current.get(mount)) / liquidCapacity
@@ -125,13 +124,18 @@ public class BaseModule implements Cloneable{
         }
 
         if(powerUse > 0){
-            bars.add("power", (entity, mount) -> new Bar(
+            addBar("power", (entity, mount) -> new Bar(
                 "bar.power",
                 Pal.powerBar,
                 () -> entity.power.status
             ));
         }
     }
+
+    public void addBar(String name, Func<ModularTurretBuild, Bar> sup){
+        barMap.put(name, (Func2<ModularTurretBuild, BaseMount, Bar>)sup);
+    }
+
 
     public String displayDescription(){
         ModulePayload payload = getPayload();

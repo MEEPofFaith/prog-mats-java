@@ -121,7 +121,7 @@ public class ModuleFx{
         Draw.color(e.color, e.fout());
         Lines.stroke(1.5f);
         Lines.line(e.x, e.y, v1.x, v1.y);
-        Drawf.light(null, e.x, e.y, v1.x, v1.y, 20f, e.color, 0.6f * e.fout());
+        Drawf.light(e.x, e.y, v1.x, v1.y, 20f, e.color, 0.6f * e.fout());
     }),
 
     reboundShoot = new Effect(14f, e -> {

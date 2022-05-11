@@ -199,6 +199,8 @@ public class PMBullets{
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
+
+            
         }};
 
         harmanuke = new BasicBulletType(){{

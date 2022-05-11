@@ -34,13 +34,13 @@ public class SignalFlareTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("pm-reload", (SignalFlareTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reload / reloadTime) * 100f)),
+        addBar("pm-reload", (SignalFlareTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
             () -> entity.team.color,
-            () -> Mathf.clamp(entity.reload / reloadTime)
+            () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
 
-        bars.add("pm-flare-limit", (SignalFlareTurretBuild entity) -> new Bar(
+        addBar("pm-flare-limit", (SignalFlareTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-flare-limit", entity.flares, flareLimit),
             () -> entity.team.color,
             entity::countf
@@ -73,7 +73,7 @@ public class SignalFlareTurret extends ItemTurret{
         public void updateTile(){
             wasShooting = false;
 
-            recoil = Mathf.lerpDelta(recoil, 0f, restitution);
+            curRecoil = Mathf.lerpDelta(curRecoil, 0f, restitution);
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
 
             unit.health(health);
@@ -116,16 +116,16 @@ public class SignalFlareTurret extends ItemTurret{
         @Override
         protected void updateShooting(){
             if(flares < flareLimit && bullet == null){
-                if(reload >= reloadTime && !charging){
+                if(reloadCounter >= reload && !charging){
                     BulletType type = peekAmmo();
 
                     shoot(type);
 
-                    reload = 0f;
+                    reloadCounter = 0f;
 
                     targetFound = false;
                 }else{
-                    reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                    reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
                 }
             }
         }
@@ -165,7 +165,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void bullet(BulletType type, float angle){
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
             flares++;
             bullet = type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);

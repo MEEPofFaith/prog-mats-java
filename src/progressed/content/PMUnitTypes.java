@@ -204,13 +204,9 @@ public class PMUnitTypes{
                     bullet = new LaserBulletType(90f){
                         {
                             length = len;
+                            maxRange = length * rangeMul;
                             recoil = -10f;
                             colors = new Color[]{Pal.surge.cpy().a(0.4f), Pal.surge, Color.white};
-                        }
-
-                        @Override
-                        public float range(){
-                            return length * rangeMul;
                         }
                     };
                 }});

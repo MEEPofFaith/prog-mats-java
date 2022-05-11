@@ -90,7 +90,7 @@ public class CoreLink extends Block{
                 items = linkedCore.items;
             }
 
-            activationTime += Time.delta * Mathf.sign(consValid());
+            activationTime += Time.delta * Mathf.sign(canConsume());
             activationTime = Mathf.clamp(activationTime, 0f, activationDelay);
 
             if(!activated && isActive()){
@@ -137,8 +137,8 @@ public class CoreLink extends Block{
         }
 
         @Override
-        public boolean consValid(){
-            return super.consValid() && (power == null || power.status >= 1);
+        public boolean canConsume(){
+            return super.canConsume() && (power == null || power.status >= 1);
         }
 
         public boolean isActive(){
@@ -151,7 +151,7 @@ public class CoreLink extends Block{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return consValid() && isActive() && linkedCore != null && linkedCore.acceptItem(source, item);
+            return canConsume() && isActive() && linkedCore != null && linkedCore.acceptItem(source, item);
         }
 
         @Override
@@ -169,7 +169,7 @@ public class CoreLink extends Block{
 
         @Override
         public boolean canUnload(){
-            return super.canUnload() && linkedCore != null && consValid() && isActive();
+            return super.canUnload() && linkedCore != null && canConsume() && isActive();
         }
 
         @Override

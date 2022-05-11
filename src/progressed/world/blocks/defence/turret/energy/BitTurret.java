@@ -25,7 +25,7 @@ public class BitTurret extends PowerTurret{
 
             float drawRot = Mathf.mod(rotation - 90f, 360f);
             float rot = Mathf.round(drawRot + (360f / sides / 2f), 360f / sides);
-            tr.trns(rot + 90, -recoil);
+            tr.trns(rot + 90, -curRecoil);
 
             Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
             Draw.rect(region, x + tr.x, y + tr.y, rot);
