@@ -2,31 +2,26 @@ package progressed.world.blocks.consumers;
 
 import arc.func.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-@SuppressWarnings("unchecked")
 public class ConsumeLiquidDynamic extends Consume{
     public final Func<Building, LiquidStack> liquids;
 
+    @SuppressWarnings("unchecked")
     public <T extends Building>  ConsumeLiquidDynamic(Func<T, LiquidStack> liquids){
         this.liquids = (Func<Building, LiquidStack>)liquids;
     }
 
     @Override
-    public void applyLiquidFilter(Bits filter){
-        //this must be done dynamically
-    }
-
-    @Override
-    public ConsumeType type(){
-        return ConsumeType.liquid;
+    public void apply(Block block){
+        block.hasLiquids = true;
     }
 
     @Override
@@ -55,16 +50,6 @@ public class ConsumeLiquidDynamic extends Consume{
     }
 
     @Override
-    public String getIcon(){
-        return "icon-liquid-consume";
-    }
-
-    @Override
-    public void update(Building entity){
-
-    }
-
-    @Override
     public void trigger(Building entity){
         LiquidStack stack = liquids.get(entity);
         if(stack != null)
@@ -72,15 +57,8 @@ public class ConsumeLiquidDynamic extends Consume{
     }
 
     @Override
-    public boolean valid(Building entity){
-        if(entity.liquids == null) return false;
-
-        LiquidStack stack = liquids.get(entity);
-        return stack == null || !(entity.liquids.get(stack.liquid) < stack.amount);
-    }
-
-    @Override
-    public void display(Stats stats){
-        //should be handled by the block
+    public float efficiency(Building build){
+        LiquidStack l = liquids.get(build);
+        return Math.min(build.liquids.get(l.liquid) / (l.amount * build.edelta()), 1f);
     }
 }

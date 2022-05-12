@@ -19,8 +19,7 @@ import progressed.util.*;
 public class MinigunTurret extends ItemTurret{
     public float windupSpeed = 0.00625f, windDownSpeed = 0.0125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
     public float barX, barY, barStroke, barLength;
-    public float width = 1.5f, height = 0.75f;
-    public float[] shootLocs; //TODO This can be replaced with shot patterns when v7 gets merged
+    public float barWidth = 1.5f, barHeight = 0.75f;
 
     public TextureRegion barrelRegion, barrelOutline, bodyRegion, bodyOutline;
 
@@ -82,7 +81,7 @@ public class MinigunTurret extends ItemTurret{
 
             for(int i = 0; i < 4; i++){
                 Draw.z(Layer.turret - 0.2f);
-                Tmp.v1.trns(rotation - 90f, width * Mathf.cosDeg(spin - 90 * i), height * Mathf.sinDeg(spin - 90 * i)).add(recoilOffset);
+                Tmp.v1.trns(rotation - 90f, barWidth * Mathf.cosDeg(spin - 90 * i), barHeight * Mathf.sinDeg(spin - 90 * i)).add(recoilOffset);
                 Draw.rect(barrelOutline, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
                 Draw.z(Layer.turret - 0.1f - Mathf.sinDeg(spin - 90 * i) / 100f);
                 Draw.rect(barrelRegion, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
@@ -124,16 +123,13 @@ public class MinigunTurret extends ItemTurret{
                 spinSpeed = Mathf.approachDelta(spinSpeed, getMaxSpeed(), windDownSpeed);
             }
 
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = liquids.current();
-
-            float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed() * Mathf.num(!notShooting);
-            float add = spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) * delta() + used * liquid.heatCapacity * coolantMultiplier;
-            liquids.remove(liquid, used);
+            float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+            coolant.update(this);
+            float add = (spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) + coolant.amount * capacity * coolantMultiplier) * delta();
             spin += add;
             reloadCounter += add;
             for(int i = 0; i < 4; i++){
-                heats[i] = Mathf.lerpDelta(heats[i], 0f, cooldown);
+                heats[i] = Math.max(heats[i] - Time.delta / cooldownTime, 0);
             }
             
             super.updateTile();
@@ -153,18 +149,6 @@ public class MinigunTurret extends ItemTurret{
                 reload = spin % 90;
 
                 heats[Mathf.floor(spin - 90) % 360 / 90] = 1f;
-            }
-        }
-        
-        @Override
-        protected void shoot(BulletType type){
-            for(float shootLoc: shootLocs){
-                if(hasAmmo()){
-                    tr.trns(rotation - 90, shootLoc, shootY - curRecoil);
-                    bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy));
-                    effects();
-                    useAmmo();
-                }
             }
         }
 

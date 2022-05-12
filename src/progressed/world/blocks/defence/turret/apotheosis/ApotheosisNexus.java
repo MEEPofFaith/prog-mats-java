@@ -46,8 +46,6 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public final int timerTarget = timers++, damageTimer = timers++, pulseTimer = timers++, bigPulseTimer = timers++;
     public int targetInterval = 20, damageInterval = 5, pulseInterval = 45, bigPulseInterval = 135;
-
-    public float powerUse = 1f;
     public float speed, duration = 60f;
     public float damage, damageRadius = tilesize;
     public float buildingDamageMultiplier = 1f;
@@ -93,8 +91,7 @@ public class ApotheosisNexus extends ReloadTurret{
 
     public Sortf unitSort = Unit::dst2;
 
-    protected float sort;
-    protected Vec2 tr = new Vec2();
+    protected Vec2 drawOffset = new Vec2();
     protected Vec2 recoilOffset = new Vec2();
     protected Color tc = new Color();
 
@@ -107,10 +104,7 @@ public class ApotheosisNexus extends ReloadTurret{
         hasPower = true;
         canOverdrive = false;
         outlineIcon = false;
-        acceptCoolant = true;
         lightColor = PMPal.apotheosisLaser;
-
-        consume(new ConsumeCoolant(0.01f)).update(false);
         coolantMultiplier = 1f;
         liquidCapacity = 20f;
     }
@@ -169,7 +163,7 @@ public class ApotheosisNexus extends ReloadTurret{
         });
 
         stats.remove(Stat.booster);
-        stats.add(Stat.input, StatValues.boosters(reload, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, false, l -> consumes.liquidfilters.get(l.id)));
+        stats.add(Stat.input, StatValues.boosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
     }
 
     @Override
@@ -334,20 +328,20 @@ public class ApotheosisNexus extends ReloadTurret{
             Draw.z(Layer.turret + 1);
             for(int i = 0; i < 2; i++){
                 float s = Mathf.signs[i];
-                tr.trns(rotation * s, ringExpand[i] * spinUp);
-                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + tr.x, y + tr.y, rotation * s);
-                tr.rotate(180f);
-                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + tr.x, y + tr.y, rotation * s + 180f);
+                drawOffset.trns(rotation * s, ringExpand[i] * spinUp);
+                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + drawOffset.x, y + drawOffset.y, rotation * s);
+                drawOffset.rotate(180f);
+                PMDrawf.spinSprite(spinnerRegionsLight[i], spinnerRegionsDark[i], x + drawOffset.x, y + drawOffset.y, rotation * s + 180f);
             }
 
             Draw.z(Layer.effect); //S e n d   h e l p
             for(int i = 0; i < 2; i++){
                 float s = Mathf.signs[i];
                 ApotheosisChargeTower ct = chargeTower;
-                tr.trns(rotation * s, baseDst[i] + ringExpand[i] * spinUp);
+                drawOffset.trns(rotation * s, baseDst[i] + ringExpand[i] * spinUp);
                 for(int j = 0; j < 2; j++){
                     recoilOffset.trns(rotation * s + 90f * Mathf.signs[j], spinnerWidth[i]);
-                    recoilOffset.add(tr).add(this);
+                    recoilOffset.add(drawOffset).add(this);
                     PMDrawf.laser(recoilOffset.x, recoilOffset.y,
                         (dst(recoilOffset) - laserRadius) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
                         ct.width, recoilOffset.angleTo(this),
@@ -355,10 +349,10 @@ public class ApotheosisNexus extends ReloadTurret{
                         ct.tscales, ct.strokes, ct.lenscales, ct.oscScl, ct.oscMag, ct.spaceMag, ct.colors, ct.laserLightColor
                     );
                 }
-                tr.rotate(180f);
+                drawOffset.rotate(180f);
                 for(int j = 0; j < 2; j++){
                     recoilOffset.trns(rotation * s + 180f + 90f * Mathf.signs[j], spinnerWidth[i]);
-                    recoilOffset.add(tr).add(this);
+                    recoilOffset.add(drawOffset).add(this);
                     PMDrawf.laser(recoilOffset.x, recoilOffset.y,
                         (dst(recoilOffset) - laserRadius) * Interp.pow3Out.apply(Mathf.clamp(chargef() * 3f)),
                         ct.width, recoilOffset.angleTo(this),
@@ -514,9 +508,8 @@ public class ApotheosisNexus extends ReloadTurret{
         @Override
         protected void updateCooling(){
             Liquid liquid = liquids.current();
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-
-            float used = (cheating() ? maxUsed : Math.min(liquids.get(liquid), maxUsed)) * Time.delta;
+            float maxUsed = coolant.amount;
+            float used = (cheating() ? maxUsed : Math.min(liquids.get(liquid), maxUsed)) * delta();
             reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
             liquids.remove(liquid, used);
 

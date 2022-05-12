@@ -31,7 +31,7 @@ public class PMItemSelection{
             if(!item.unlockedNow()) continue;
 
             ImageButton button = cont.button(Tex.whiteui, Styles.clearTogglei, 24, () -> {
-                if(closeSelect) control.input.frag.config.hideConfig();
+                if(closeSelect) control.input.config.hideConfig();
             }).group(group).get();
             button.changed(() -> consumer.get(button.isChecked() ? item : returnOriginal ? holder.get() : null));
             button.getStyle().imageUp = new TextureRegionDrawable(item.uiIcon);

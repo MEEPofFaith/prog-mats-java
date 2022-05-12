@@ -24,7 +24,6 @@ public class LiquidTurretModule extends TurretModule{
     public LiquidTurretModule(String name, ModuleSize size){
         super(name, size);
 
-        acceptCoolant = false;
         hasLiquids = true;
         loopSound = Sounds.spray;
         shootSound = Sounds.none;
@@ -95,11 +94,11 @@ public class LiquidTurretModule extends TurretModule{
         fsmokeEffect.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, mount.rotation, mount.liquids.current().color);
         shootSound.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, Mathf.random(0.9f, 1.1f));
 
-        if(shootShake > 0){
-            Effect.shake(shootShake, shootShake, x, y);
+        if(shake > 0){
+            Effect.shake(shake, shake, x, y);
         }
 
-        mount.curRecoil = recoil;
+        mount.curRecoil = 1f;
     }
 
     @Override

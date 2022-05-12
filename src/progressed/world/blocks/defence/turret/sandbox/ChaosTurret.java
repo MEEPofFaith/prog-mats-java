@@ -59,7 +59,7 @@ public class ChaosTurret extends PowerTurret{
 
             if(active()){
                 heat = 1f;
-                curRecoil = recoil;
+                curRecoil = 1f;
                 wasShooting = true;
             }
         }
@@ -74,7 +74,7 @@ public class ChaosTurret extends PowerTurret{
         @Override
         protected void updateShooting(){
             if(canConsume() && !active()){
-                if(reload >= reload && !charging){
+                if(reload >= reload && !charging()){
                     BulletType type = peekAmmo();
 
                     shoot(type);
@@ -87,43 +87,14 @@ public class ChaosTurret extends PowerTurret{
         }
 
         @Override
-        protected void shoot(BulletType type){
-            useAmmo();
-
-            tr.trns(rotation, shootY);
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, (Object)team);
-            chargeSound.at(x + tr.x, y + tr.y, 1f);
-
-            for(int i = 0; i < chargeEffects; i++){
-                Time.run(Mathf.random(chargeMaxDelay), () -> {
-                    if(!isValid()) return;
-                    tr.trns(rotation, shootY);
-                    chargeEffect.at(x + tr.x, y + tr.y, rotation);
-                });
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
+            if(bullet != null){
+                this.bullet = bullet;
             }
-
-            charging = true;
-
-            Time.run(chargeTime, () -> {
-                if(!isValid()) return;
-                tr.trns(rotation, shootY);
-                curRecoil = recoil;
-                heat = 1f;
-                for(int i = 0; i < shots; i++){
-                    bullet(type, rotation + Mathf.range(inaccuracy));
-                }
-                effects();
-                charging = false;
-            });
-        }
-
-        @Override
-        protected void bullet(BulletType type, float angle){
-            bullet = type.create(tile.build, team, x + tr.x, y + tr.y, angle);
         }
 
         public boolean active(){
-            return bullet != null && bullet.time < bullet.lifetime ? true : false;
+            return bullet != null && bullet.time < bullet.lifetime;
         }
     }
 }

@@ -138,9 +138,9 @@ public class PMDamage{
                 float dist = b.dst(x, y) - b.hitSize() / 2f;
                 if(tmpBuilding == null ||
                     //if its closer and is at least equal priority
-                    (dist < tmpFloat && b.block.priority.ordinal() >= tmpBuilding.block.priority.ordinal()) ||
+                    (dist < tmpFloat && b.block.priority >= tmpBuilding.block.priority) ||
                     // block has higher priority (so range doesnt matter)
-                    (b.block.priority.ordinal() > tmpBuilding.block.priority.ordinal())){
+                    (b.block.priority > tmpBuilding.block.priority)){
                     tmpBuilding = b;
                     tmpFloat = dist;
                 }

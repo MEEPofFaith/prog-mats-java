@@ -11,6 +11,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
@@ -32,6 +33,8 @@ import static mindustry.type.ItemStack.*;
 public class PMModules{
     public static float maxClip = 0;
 
+    public static Block cons;
+
     public static ModulePayload
 
     //Region Small
@@ -47,6 +50,18 @@ public class PMModules{
     rebound, trifecta, ares, jupiter;
 
     public static void load(){
+        //Proxy block used by modules for consume filters
+        cons = new Block("module-consumes"){
+            {
+                requirements(Category.turret, BuildVisibility.hidden, empty);
+            }
+
+            @Override
+            public boolean isHidden(){
+                return true;
+            }
+        };
+
         //Region small
         shrapnel = new ModulePayload("shrapnel"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, with(
@@ -66,10 +81,12 @@ public class PMModules{
                 maxAmmo = 10;
                 shots = 5;
                 inaccuracy = 25;
-                velocityInaccuracy = 0.2f;
+                velocityRnd = 0.2f;
                 rotateSpeed = 9f;
 
                 limitRange(6f);
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -95,6 +112,8 @@ public class PMModules{
                     unitSort = (u, x, y) -> -u.health + Mathf.dst2(u.x, u.y, x, y) / 6400f + (u.hasEffect(PMStatusEffects.pinpointTarget) ? 69420 : 0);
 
                     limitRange(3f);
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -153,6 +172,8 @@ public class PMModules{
                 shootEffect = Fx.lightningShoot;
                 heatColor = Color.red;
                 shootSound = Sounds.spark;
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -174,6 +195,8 @@ public class PMModules{
                     shootSound = Sounds.lasershoot;
 
                     shootType = ModuleBullets.irisOrb;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -264,11 +287,13 @@ public class PMModules{
                 maxAmmo = 10;
                 shots = 6;
                 inaccuracy = 12;
-                velocityInaccuracy = 0.2f;
+                velocityRnd = 0.2f;
                 rotateSpeed = 9f;
                 shootSound = Sounds.shootBig;
 
                 limitRange(5f);
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -291,9 +316,11 @@ public class PMModules{
                 xRand = 4f;
                 burstSpacing = 2f;
                 inaccuracy = 7f;
-                velocityInaccuracy = 0.2f;
+                velocityRnd = 0.2f;
                 rotateSpeed = 3f;
                 shootSound = Sounds.missile;
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -323,6 +350,8 @@ public class PMModules{
                     makeFire = true;
                     status = StatusEffects.burning;
                 }};
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -349,6 +378,8 @@ public class PMModules{
                     rotate = false;
 
                     shootType = ModuleBullets.lotusLance;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -375,7 +406,7 @@ public class PMModules{
                             }
 
                             shootOffset.trns(rot, shootY);
-                            type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, rot, -1, 1f + Mathf.range(velocityInaccuracy), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
+                            type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, rot, -1, 1f + Mathf.range(velocityRnd), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
 
                             Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
                             Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
@@ -384,8 +415,8 @@ public class PMModules{
                             fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
                             shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
-                            if(shootShake > 0){
-                                Effect.shake(shootShake, shootShake, x, y);
+                            if(shake > 0){
+                                Effect.shake(shake, shake, x, y);
                             }
 
                             mount.heat = 1f;
@@ -416,6 +447,8 @@ public class PMModules{
                 maxTargets = 6;
                 force = 30f;
                 scaledForce = 22f;
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -430,11 +463,13 @@ public class PMModules{
                     reload = 12f * 60f;
                     range = 23f * tilesize;
                     inaccuracy = 5f;
-                    velocityInaccuracy = 0.1f;
+                    velocityRnd = 0.1f;
                     powerUse = 4f;
                     playerControl = logicControl = false;
 
                     shootType = ModuleBullets.ambrosiaPotion;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -471,6 +506,8 @@ public class PMModules{
                 reload = 8f;
                 bulletDamage = 40f;
                 pierceCap = 6;
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
         //endregion
@@ -496,6 +533,8 @@ public class PMModules{
                     recoil = 1;
                     topLayerOffset = 0.3f;
                     shootEffect = ModuleFx.reboundShoot;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -518,11 +557,11 @@ public class PMModules{
                     fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, b.width / 2f, b.backColor);
                     shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
-                    if(shootShake > 0){
-                        Effect.shake(shootShake, shootShake, x, y);
+                    if(shake > 0){
+                        Effect.shake(shake, shake, x, y);
                     }
 
-                    mount.curRecoil = recoil;
+                    mount.curRecoil = 1f;
                 }
 
                 @Override
@@ -571,6 +610,8 @@ public class PMModules{
                     shootY -= 6f;
                     topLayerOffset = 0.30f;
                     shootSound = Sounds.artillery;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
@@ -598,12 +639,14 @@ public class PMModules{
                 powerUse = 12f;
                 range = 38f * tilesize;
                 reload = 75f;
-                shootShake = 3f;
+                shake = 3f;
                 rotateSpeed = 3.5f;
                 shootSound = Sounds.laser;
                 heatColor = Color.red;
 
                 shootType = ModuleBullets.aresOrb;
+
+                coolant = consumeCoolant(0.2f);
             }};
         }};
 
@@ -630,6 +673,8 @@ public class PMModules{
                     shootSound = Sounds.laser;
 
                     shootType = ModuleBullets.jupiterOrb;
+
+                    coolant = consumeCoolant(0.2f);
                 }
 
                 @Override

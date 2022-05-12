@@ -324,7 +324,7 @@ public class BurstDriver extends Block{
                         smokeEffect.at(x + tr.x, y + tr.y, angle);
                         Effect.shake(shake, shake, this);
                         shootSound.at(tile, Mathf.random(0.9f, 1.1f));
-                        curRecoil = recoil;
+                        curRecoil = 1f;
                     }
                 });
             }
@@ -340,7 +340,7 @@ public class BurstDriver extends Block{
             receiveEffect.at(bullet);
 
             reloadCounter = 1f;
-            curRecoil = recoil;
+            curRecoil = 1f;
             bullet.remove();
         }
 

@@ -25,7 +25,7 @@ public class PayloadTurret extends PayloadMissileTurret{
 
     public float chargeTime = 0f;
 
-    protected Vec2 tr = new Vec2();
+    protected Vec2 drawOffset = new Vec2();
     protected Vec2 recoilOffset = new Vec2();
 
     public TextureRegion baseRegion;
@@ -183,9 +183,7 @@ public class PayloadTurret extends PayloadMissileTurret{
                 moveInPayload(false); //Rotating is done elsewhere
             }
 
-            if(acceptCoolant){
-                updateCooling();
-            }
+            updateCooling();
         }
 
         public boolean shouldTurn(){
@@ -216,23 +214,23 @@ public class PayloadTurret extends PayloadMissileTurret{
         @Override
         protected void shoot(BulletType type){
             super.shoot(type);
-            curRecoil = recoil;
+            curRecoil = 1f;
         }
 
         protected void bullet(BulletType type){
             float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
-            tr.trns(rotation, -curRecoil + shootY);
+            drawOffset.trns(rotation, -curRecoil + shootY);
             float angle = rotation + Mathf.range(inaccuracy + type.inaccuracy);
-            type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+            type.create(this, team, x + drawOffset.x, y + drawOffset.y, angle, 1f + Mathf.range(velocityRnd), lifeScl);
         }
 
         @Override
         public void updatePayload(){
             if(payload != null){
                 if(hasArrived()){
-                    tr.trns(rotation, -curRecoil + shootY);
-                    payload.set(x + tr.x, y + tr.y, payRotation);
+                    drawOffset.trns(rotation, -curRecoil + shootY);
+                    payload.set(x + drawOffset.x, y + drawOffset.y, payRotation);
                 }else{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);
                 }

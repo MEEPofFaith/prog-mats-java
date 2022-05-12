@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.logic.*;
@@ -73,8 +74,8 @@ public class SignalFlareTurret extends ItemTurret{
         public void updateTile(){
             wasShooting = false;
 
-            curRecoil = Mathf.lerpDelta(curRecoil, 0f, restitution);
-            heat = Mathf.lerpDelta(heat, 0f, cooldown);
+            curRecoil = Math.max(curRecoil - Time.delta / recoilTime , 0);
+            heat = Math.max(heat - Time.delta / cooldownTime, 0);
 
             unit.health(health);
             unit.rotation(rotation);
@@ -108,7 +109,7 @@ public class SignalFlareTurret extends ItemTurret{
                 }
             }
 
-            if(acceptCoolant){
+            if(coolant != null){
                 updateCooling();
             }
         }
@@ -116,7 +117,7 @@ public class SignalFlareTurret extends ItemTurret{
         @Override
         protected void updateShooting(){
             if(flares < flareLimit && bullet == null){
-                if(reloadCounter >= reload && !charging){
+                if(reloadCounter >= reload && !charging()){
                     BulletType type = peekAmmo();
 
                     shoot(type);
@@ -164,11 +165,11 @@ public class SignalFlareTurret extends ItemTurret{
         }
 
         @Override
-        protected void bullet(BulletType type, float angle){
-            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
-
-            flares++;
-            bullet = type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
+            if(bullet != null){
+                flares++;
+                this.bullet = bullet;
+            }
         }
 
         @Override

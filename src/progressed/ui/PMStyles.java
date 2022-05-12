@@ -9,9 +9,9 @@ public class PMStyles{
 
     public static void load(){
         squarei = new ImageButtonStyle(){{
-            over = buttonSquareOver;
-            up = buttonSquare;
-            checked = down = buttonSquareDown;
+            over = buttonOver;
+            up = button;
+            checked = down = buttonDown;
         }};
     }
 }

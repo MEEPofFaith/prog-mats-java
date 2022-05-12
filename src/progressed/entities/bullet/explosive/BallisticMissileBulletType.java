@@ -188,54 +188,39 @@ public class BallisticMissileBulletType extends BasicBulletType{
 
         Effect.shake(hitShake, hitShake, b);
 
-        if(fragBullet != null){
-            for(int i = 0; i < fragBullets; i++){
-                float len = Mathf.random(1f, 7f);
-                float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
-                Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x, y);
-            }
-        }
+        createFrags(b, x, y);
 
         ArcMissileData data = ((ArcMissileData)b.data);
 
         if(!data.blocked){
-            if(puddleLiquid != null && puddles > 0){
-                for (int i = 0; i < puddles; i++){
-                    Tile tile = world.tileWorld(x + Mathf.range(puddleRange), y + Mathf.range(puddleRange));
-                    Puddles.deposit(tile, puddleLiquid, puddleAmount);
-                }
+            createPuddles(b, x, y);
+            createIncend(b, x, y);
+
+            if(suppressionRange > 0){
+                //bullets are pooled, require separate Vec2 instance
+                Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
             }
 
-            if(Mathf.chance(incendChance)){
-                Damage.createIncend(x, y, incendSpread, incendAmount);
-            }
-
-            if(splashDamageRadius > 0 && !b.absorbed){
-                Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
-
-                if(status != StatusEffects.none){
-                    Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
-                }
-
-                if(healPercent > 0f){
-                    indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
-                        Fx.healBlockFull.at(other.x, other.y, other.block.size, Pal.heal);
-                        other.heal(healPercent / 100f * other.maxHealth());
-                    });
-                }
-
-                if(makeFire){
-                    indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
-                }
-            }
+            createSplashDamage(b, x, y);
 
             for(int i = 0; i < lightning; i++){
-                Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+                Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
             }
         }else{
             ShieldBuild s = data.shield;
             s.buildup += (b.damage() + splashDamage * s.realStrikeBlastResistance() * b.damageMultiplier()) * s.warmup;
+        }
+    }
+
+    @Override
+    public void createFrags(Bullet b, float x, float y){
+        if(fragBullet != null){
+            for(int i = 0; i < fragBullets; i++){
+                float len = Mathf.random(1f, 7f);
+                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
+                Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
+                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x, y);
+            }
         }
     }
 

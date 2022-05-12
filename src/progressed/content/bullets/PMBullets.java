@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
@@ -110,6 +111,8 @@ public class PMBullets{
             backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
+            //TODO merge
+            chargeEffect = new MultiEffect(EnergyFx.kugelblitzChargeBegin, EnergyFx.kugelblitzCharge);
         }};
 
         cataclysm = new BlackHoleCataclysmType();
@@ -126,7 +129,7 @@ public class PMBullets{
             }
 
             @Override
-            public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
+            public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
                 //do nothing
             }
 
@@ -156,11 +159,13 @@ public class PMBullets{
                 sideAngle = 25f;
                 sideWidth = width / 8f;
                 sideLength = length / 1.5f;
+
+                chargeEffect = EnergyFx.harbingerCharge;
             }
 
             @Override
-            public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
-                super.hitTile(b, build, initialHealth, direct);
+            public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+                super.hitTile(b, build, x, y, initialHealth, direct);
                 if(build.team != b.team) build.kill();
             }
 
@@ -199,8 +204,8 @@ public class PMBullets{
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
-
-            
+            //TODO merge
+            chargeEffect = new MultiEffect(EnergyFx.aimChargeBegin, EnergyFx.aimCharge);
         }};
 
         harmanuke = new BasicBulletType(){{

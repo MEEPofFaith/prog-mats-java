@@ -9,18 +9,19 @@ import mindustry.entities.*;
 import mindustry.type.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import mindustry.world.modules.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class ReloadTurretModule extends BaseTurretModule{
     public float reload = 30f;
 
-    public boolean acceptCoolant = true;
-    public float coolantUsage = 0.2f;
-    /** How much reload is lowered by for each unit of liquid of heat capacity. */
-    public float coolantMultiplier = 5f;
     /** Effect displayed when coolant is used. */
     public Effect coolEffect = Fx.fuelburn;
+    /** How much reload is lowered by for each unit of liquid of heat capacity. */
+    public float coolantMultiplier = 5f;
+    /** If not null, this consumer will be used for coolant. */
+    public ConsumeLiquidBase coolant;
 
     public ReloadTurretModule(String name, ModuleSize size){
         super(name, size);
@@ -31,37 +32,29 @@ public class ReloadTurretModule extends BaseTurretModule{
     }
 
     @Override
-    public void init(){
-        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
-            hasLiquids = true;
-            consume(new ConsumeCoolant(coolantUsage)).update(false).boost();
-        }
-
-        super.init();
-    }
-
-    @Override
     public void setStats(Stats stats){
         super.setStats(stats);
 
-        if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(reload, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
+        if(coolant != null){
+            stats.add(Stat.booster, StatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l)));
         }
     }
 
     public void updateCooling(ModularTurretBuild parent, BaseTurretMount mount){
-        if(mount.reloadCounter < reload){
-            float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-            Liquid liquid = mount.liquids.current();
+        LiquidModule pLiquid = parent.liquids;
+        parent.liquids = mount.liquids;
 
-            float used = Math.min(mount.liquids.get(liquid), maxUsed * Time.delta) * efficiency(parent);
-            mount.reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
-            mount.liquids.remove(liquid, used);
+        if(mount.reloadCounter < reload && coolant != null && coolant.efficiency(parent) > 0 && parent.efficiency > 0){
+            float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(parent).heatCapacity : 1f;
+            coolant.update(parent);
+            mount.reloadCounter += coolant.amount * edelta(parent) * capacity * coolantMultiplier;
 
-            if(Mathf.chance(0.06 * used)){
+            if(Mathf.chance(0.06 * coolant.amount)){
                 coolEffect.at(mount.x + Mathf.range(size() * Vars.tilesize / 2f), mount.y + Mathf.range(size() * Vars.tilesize / 2f));
             }
         }
+
+        parent.liquids = pLiquid;
     }
 
     public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){

@@ -66,7 +66,7 @@ public class ModuleInfoDialog extends BaseDialog{
             if(map.size == 0) continue;
 
             if(stats.useCategories){
-                table.add("@category." + cat.name()).color(Pal.accent).fillX();
+                table.add("@category." + cat.name).color(Pal.accent).fillX();
                 table.row();
             }
 

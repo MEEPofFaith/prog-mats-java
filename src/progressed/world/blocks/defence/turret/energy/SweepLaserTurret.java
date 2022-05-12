@@ -1,11 +1,9 @@
 package progressed.world.blocks.defence.turret.energy;
 
 import arc.func.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.entities.bullet.energy.*;
@@ -54,9 +52,9 @@ public class SweepLaserTurret extends PowerTurret{
 
             if(bullet != null){
                 heat = 1f;
-                curRecoil = recoil;
-                tr.trns(rotation, shootY - curRecoil);
-                bullet.set(x + tr.x, y + tr.y);
+                curRecoil = 1f;
+                Tmp.v1.trns(rotation, shootY - curRecoil);
+                bullet.set(x + Tmp.v1.x, y + Tmp.v1.y);
                 if(!bullet.isAdded() || bullet.type instanceof SweepLaserBulletType s && bullet.fin() >= s.retractTime + retractDelay) bullet = null;
             }
         }
@@ -77,11 +75,10 @@ public class SweepLaserTurret extends PowerTurret{
         }
 
         @Override
-        protected void bullet(BulletType type, float angle){
-            recoilOffset.trns(rotation, -recoil); //recoil is set after bullet creation
-            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + tr.x + recoilOffset.x, y + tr.y + recoilOffset.y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
-
-            bullet = type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
+            if(bullet != null){
+                this.bullet = bullet;
+            }
         }
     }
 }

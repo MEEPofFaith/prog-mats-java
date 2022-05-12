@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
@@ -31,7 +32,7 @@ public class DrawImpact extends DrawBlock{
     }
 
     @Override
-    public void draw(GenericCrafterBuild build){
+    public void draw(Building build){
         if(!(build instanceof AcceleratingCrafterBuild b)) return;
 
         Draw.rect(bottom, b.x, b.y);
@@ -59,7 +60,7 @@ public class DrawImpact extends DrawBlock{
     }
 
     @Override
-    public void drawLight(GenericCrafterBuild build){
+    public void drawLight(Building build){
         if(!(build instanceof AcceleratingCrafterBuild b)) return;
 
         Drawf.light(

@@ -65,9 +65,7 @@ public class PointDefenceModule extends ReloadTurretModule{
                 m.rotation = Angles.moveToward(m.rotation, dest, rotateSpeed * edelta(parent));
                 m.reloadCounter += edelta(parent);
 
-                if(acceptCoolant){
-                    updateCooling(parent, m);
-                }
+                updateCooling(parent, m);
 
                 //Shoot when possible
                 if(Angles.within(m.rotation, dest, b.hitSize) && m.reloadCounter >= reload){
@@ -81,7 +79,7 @@ public class PointDefenceModule extends ReloadTurretModule{
                     shootEffect.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, m.rotation, color);
                     shootSound.at(m.x + Tmp.v1.x, m.y + Tmp.v1.y, Mathf.random(0.9f, 1.1f));
                     m.reloadCounter = 0;
-                    m.curRecoil = recoil;
+                    m.curRecoil = 1f;
                 }
             }
         }

@@ -117,6 +117,11 @@ public class PMUnitTypes{
                     lifetime = 80f;
                 }};
             }});
+
+            setEnginesMirror(
+                new UnitEngine(4f, 4f, 2f, 45f),
+                new UnitEngine(4f, -4f, 2f, 315f)
+            );
         }};
 
         downpour = new SentryUnitType("downpour"){{
@@ -177,10 +182,16 @@ public class PMUnitTypes{
                     layer = Layer.flyingUnitLow - 1f;
                 }};
             }});
+
+            setEnginesMirror(
+                new UnitEngine(4f, 4f, 2f, 45f),
+                new UnitEngine(4f, -4f, 2f, 315f)
+            );
         }};
 
         rapier = new SentryUnitType("rapier"){
             final float len = 56f, rangeMul = 16f;
+
             {
                 health = 800f;
                 hideDetails = false;
@@ -210,6 +221,11 @@ public class PMUnitTypes{
                         }
                     };
                 }});
+
+                setEnginesMirror(
+                    new UnitEngine(4f, 4f, 2f, 45f),
+                    new UnitEngine(4f, -4f, 2f, 315f)
+                );
             }
         };
 
@@ -242,7 +258,6 @@ public class PMUnitTypes{
                 alwaysUnlocked = true;
                 flying = true;
                 lowAltitude = true;
-                onTitleScreen = false;
                 mineSpeed = 100f;
                 mineTier = 10000;
                 buildSpeed = 10000f;
@@ -254,7 +269,6 @@ public class PMUnitTypes{
                 health = 200000f;
                 engineOffset = 5.5f;
                 hitSize = 11f;
-                commandLimit = 100;
             }
 
             @Override

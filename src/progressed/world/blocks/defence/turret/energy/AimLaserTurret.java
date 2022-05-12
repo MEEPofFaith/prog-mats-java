@@ -124,7 +124,7 @@ public class AimLaserTurret extends PowerTurret{
         public void updateTile(){
             alpha = Mathf.lerpDelta(alpha, 0f, 0.05f);
 
-            if(charging){
+            if(charging()){
                 charge = Mathf.clamp(charge + Time.delta / chargeTime);
                 alpha = Math.max(alpha, charge);
                 drawCharge = charge;
@@ -137,64 +137,15 @@ public class AimLaserTurret extends PowerTurret{
 
         @Override
         protected void updateCooling(){
-            if(!charging){
+            if(!charging()){
                 super.updateCooling();
             }
         }
         @Override
         protected void updateShooting(){
-            if(!charging){
+            if(!charging()){
                 super.updateShooting();
             }
-        }
-
-        @Override
-        protected void shoot(BulletType type){
-            useAmmo();
-            tr.trns(rotation, shootY);
-            drawCharge = 0;
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
-
-            for(int i = 0; i < chargeEffects; i++){
-                Time.run(Mathf.random(chargeMaxDelay), () -> {
-                    if(!isValid()) return;
-                    tr.trns(rotation, shootY);
-                    chargeEffect.at(x + tr.x, y + tr.y, rotation, chargeColor, self());
-                });
-            }
-
-            charging = true;
-
-            Time.run(chargeTime - warningDelay, () -> {
-                if(!isValid()) return;
-                warningSound.at(x, y, 1f, warningVolume);
-            });
-            Time.run(chargeTime, () -> {
-                if(!isValid()) return;
-                tr.trns(rotation, shootY);
-                curRecoil = recoil;
-                heat = 1f;
-                bullet(type, rotation + Mathf.range(inaccuracy));
-                effects();
-                charging = false;
-                charge = 0;
-            });
-        }
-        
-        @Override
-        protected void effects(){
-            Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
-            Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
-
-            fshootEffect.at(x + tr.x, y + tr.y, rotation);
-            fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
-            shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f), shootSoundVolume);
-
-            if(shootShake > 0){
-                Effect.shake(shootShake, shootShake, this);
-            }
-
-            curRecoil = recoil;
         }
 
         @Override

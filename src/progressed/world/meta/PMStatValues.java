@@ -19,6 +19,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.entities.bullet.*;
@@ -280,7 +281,7 @@ public class PMStatValues{
         return table -> {
             table.table(t -> {
                 t.table(ct -> {
-                    for(ItemStack stack : crafter.consumes.getItem().items){
+                    for(ItemStack stack : ((ConsumeItems)(crafter.findConsumer(c -> c instanceof ConsumeItems))).items){
                         ct.add(new ItemDisplay(stack.item, stack.amount, crafter.craftTime, true)).padRight(5);
                     }
                 }).left().get().background(Tex.underline);
@@ -553,7 +554,7 @@ public class PMStatValues{
     }
 
     public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
-        return table.button("?", Styles.floatBordert, () -> {
+        return table.button("?", Styles.flatBordert, () -> {
             ui.content.show(content);
         }).size(size).left().name("contentinfo");
     }

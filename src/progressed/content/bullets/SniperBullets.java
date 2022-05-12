@@ -85,41 +85,16 @@ public class SniperBullets{
                 width = 9f;
                 height = 16f;
                 pierceCap = 13;
-                fragBullets = 5;
-                fragBullet = sniperBoltTenliumFrag;
-                fragVelocityMin = 0.8f;
-                fragVelocityMax = 1.2f;
-                fragCone = 30f;
                 critChance = 0.1f;
                 critMultiplier = 3f;
                 despawnHitEffects = false;
-            }
 
-            @Override
-            public void hit(Bullet b, float x, float y){
-                //Don't frag on hit
-
-                b.hit = true;
-                if(!((CritBulletData)b.data).despawned){
-                    hitEffect.at(x, y, b.rotation(), hitColor);
-                    hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
-                }
-
-                Effect.shake(hitShake, hitShake, b);
-            }
-
-            @Override
-            public void removed(Bullet b){
-                CritBulletData data = (CritBulletData)b.data;
-                for(int i = 0; i < fragBullets; i++){
-                    float a = b.rotation() + ((fragCone / fragBullets) * (i - (fragBullets - 1f) / 2f)) + Mathf.range(fragInacc);
-                    if(fragBullet instanceof CritBulletType critB){
-                        Bullet bullet = critB.create(b.owner, b.team, b.x, b.y, a, -1f, Mathf.random(fragVelocityMin, fragVelocityMax), 1f, new CritBulletData(data.crit));
-                        bullet.trail = ((PMTrail)(b.trail)).copyPM();
-                        if(b.collided.size > 0) bullet.collided.add(b.collided.peek());
-                    }
-                }
-                Sounds.missile.at(b, Mathf.random(0.9f, 1.1f));
+                fragOnHit = false;
+                fragBullets = 5;
+                fragVelocityMin = 0.8f;
+                fragVelocityMax = 1.2f;
+                fragRandomSpread = 30f;
+                fragBullet = sniperBoltTenliumFrag;
             }
         };
     }

@@ -17,7 +17,6 @@ public class RocketWeapon extends Weapon{
 
         rotate = true;
         shootX = shootY = 0f;
-        shots = 1;
         inaccuracy = velocityRnd = 0;
     }
 

@@ -10,6 +10,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -17,7 +18,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.content.*;
@@ -95,7 +96,7 @@ public class PMBlocks{
     sergeant, arbalest,
 
     //Missiles
-    firestorm, strikedown, trinity,
+    strikedown, trinity,
 
     //Apotheosis
     apotheosisNexus, apotheosisCharger,
@@ -140,7 +141,7 @@ public class PMBlocks{
 
     fence, web,
 
-    systemBooster, shieldProjector,
+    systemBooster, ballisticProjector,
 
     // endregion
     // region Sandbox
@@ -194,8 +195,8 @@ public class PMBlocks{
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
             recoil = 3f;
-            restitution = 0.02f;
-            cooldown = 0.11f;
+            recoilTime = 90f;
+            cooldownTime = 10f;
             inaccuracy = 3f;
             shootEffect = smokeEffect = ammoUseEffect = Fx.none;
             heatColor = Pal.turretHeat;
@@ -205,7 +206,7 @@ public class PMBlocks{
             barStroke = 1f;
             barLength = 9f;
 
-            shootLocs = new float[]{0f};
+            coolant = consumeCoolant(0.2f);
         }};
 
         miinigun = new MinigunTurret("miinigun"){{
@@ -232,8 +233,8 @@ public class PMBlocks{
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
             recoil = 3f;
-            restitution = 0.02f;
-            cooldown = 0.11f;
+            recoilTime = 90f;
+            cooldownTime = 10f;
             inaccuracy = 3f;
             shootEffect = smokeEffect = ammoUseEffect = Fx.none;
             heatColor = Pal.turretHeat;
@@ -243,7 +244,13 @@ public class PMBlocks{
             barStroke = 1f;
             barLength = 9f;
 
-            shootLocs = new float[]{-4f, 4f};
+            shoot = new ShootBarrel(){{
+                barrels = new float[]{
+                    -4f, 0f, 0f,
+                    4f, 0f, 0f
+                };
+            }};
+            coolant = consumeCoolant(0.2f);
         }};
 
         mivnigun = new MinigunTurret("mivnigun"){{
@@ -272,8 +279,8 @@ public class PMBlocks{
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
             recoil = 3f;
-            restitution = 0.02f;
-            cooldown = 0.11f;
+            recoilTime = 90f;
+            cooldownTime = 10f;
             inaccuracy = 3f;
             shootEffect = smokeEffect = ammoUseEffect = Fx.none;
             heatColor = Pal.turretHeat;
@@ -283,7 +290,15 @@ public class PMBlocks{
             barStroke = 1f;
             barLength = 9f;
 
-            shootLocs = new float[]{-9f, -3f, 3f, 9f};
+            shoot = new ShootBarrel(){{
+                barrels = new float[]{
+                    -9f, -3f / 4f, 0f
+                    -3f, 0f, 0f,
+                    3f, 0f, 0f,
+                    9f, 3f / 4f, 0f
+                };
+            }};
+            coolant = consumeCoolant(0.2f);
         }};
 
         shock = new TeslaTurret("shock"){{
@@ -305,6 +320,7 @@ public class PMBlocks{
             maxTargets = 6;
             damage = 20f;
             status = StatusEffects.shocked;
+            coolant = consumeCoolant(0.2f);
         }};
 
         spark = new TeslaTurret("spark"){{
@@ -327,6 +343,7 @@ public class PMBlocks{
             maxTargets = 5;
             damage = 23f;
             status = StatusEffects.shocked;
+            coolant = consumeCoolant(0.2f);
         }};
 
         storm = new TeslaTurret("storm"){{
@@ -404,6 +421,7 @@ public class PMBlocks{
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;
+            coolant = consumeCoolant(0.2f);
         }};
 
         concretion = new GeomancyTurret("concretion"){{
@@ -421,12 +439,14 @@ public class PMBlocks{
             recoil = -25f / 4f;
             shootY = 8f + 15f / 4f;
             targetAir = false;
-            cooldown = 0.005f;
+            cooldownTime = 300f;
             shootType = PMBullets.pillarField;
-            chargeTime = 10f;
+            shoot.firstShotDelay = 10f;
 
             armX = 15f / 4f;
             armY = -2f / 4f;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
         flame = new EruptorTurret("flame"){{
@@ -440,7 +460,6 @@ public class PMBlocks{
             ));
             size = 3;
             health = 210 * size * size;
-            powerUse = 14f;
             shootDuration = 90f;
             range = 240f;
             reload = 90f;
@@ -450,6 +469,9 @@ public class PMBlocks{
                 shake = 1f;
                 crackEffects = 4;
             }};
+
+            coolant = consumeCoolant(0.2f);
+            consumePower(14f);
         }};
 
         blaze = new EruptorTurret("blaze"){{
@@ -464,7 +486,6 @@ public class PMBlocks{
             ));
             size = 4;
             health = 190 * size * size;
-            powerUse = 17f;
             shootDuration = 120f;
             range = 280f;
             reload = 150f;
@@ -477,6 +498,9 @@ public class PMBlocks{
                 shake = 2f;
                 crackEffects = 6;
             }};
+
+            coolant = consumeCoolant(0.2f);
+            consumePower(17f);
         }};
 
         bit = new BitTurret("bit"){{
@@ -493,8 +517,10 @@ public class PMBlocks{
             recoil = 4f;
             inaccuracy = 15f;
             range = 140f;
-            powerUse = 1.35f;
             shootType = PMBullets.pixel;
+
+            coolant = consumeCoolant(0.2f);
+            consumePower(1.35f);
         }};
 
         magnet = new ItemTurret("attraction"){
@@ -515,9 +541,12 @@ public class PMBlocks{
                 range = 23f * 8f;
                 reload = 200f;
                 inaccuracy = 30f;
-                velocityInaccuracy = 0.2f;
-                burstSpacing = 5f;
-                shots = 4;
+
+                velocityRnd = 0.2f;
+                shoot.shots = 4;
+                shoot.shotDelay = 5f;
+
+                coolant = consumeCoolant(0.2f);
             }
 
             @Override
@@ -563,8 +592,10 @@ public class PMBlocks{
             rotateSpeed = 2.5f;
             recoil = 5f;
             split = 3f;
-            chargeTime = 150f;
+            shoot.firstShotDelay = 150f;
             shootSound = Sounds.railgun;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
         allure = new SignalFlareTurret("signal"){{
@@ -586,10 +617,12 @@ public class PMBlocks{
             shootY = 23f / 4f;
             reload = 900f;
             inaccuracy = 10f;
-            velocityInaccuracy = 0.2f;
+            velocityRnd = 0.2f;
             shootSound = Sounds.shootSnap;
             maxAmmo = 30;
             ammoPerShot = 10;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
         vaccinator = new ItemTurret("vaccinator"){
@@ -612,11 +645,15 @@ public class PMBlocks{
 
                 reload = 120f;
 
-                shots = 4;
-                spread = 15f; //h
-                burstSpacing = 3f;
+                shoot = new ShootSpread(){{
+                    shots = 4;
+                    shotDelay = 3;
+                    spread = 15;
+                }};
 
                 shootSound = Sounds.shootSnap;
+
+                coolant = consumeCoolant(0.2f);
             }
 
             @Override
@@ -656,9 +693,8 @@ public class PMBlocks{
                 ));
                 health = 260 * size * size;
                 size = 2;
-                powerUse = 5f;
                 reload = 1.5f * 60f;
-                shootY = 23f / 4f;
+                shootY = 23f / 4f - recoil;
                 shootSound = Sounds.plasmadrop;
                 retractDelay = 0.125f;
                 hideDetails = false;
@@ -679,6 +715,9 @@ public class PMBlocks{
 
                     Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
                 };
+
+                coolant = consumeCoolant(0.2f);
+                consumePower(5f);
             }
 
             @Override
@@ -719,11 +758,13 @@ public class PMBlocks{
             ));
             health = 230 * size * size;
             size = 3;
-            powerUse = 8.5f;
             reload = 2f * 60f;
-            shootY = 46f / 4f;
+            shootY = 46f / 4f - recoil;
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
+
+            coolant = consumeCoolant(0.2f);
+            consumePower(8.5f);
 
             RiftBulletType rift = new RiftBulletType(550f){{
                 speed = brange;
@@ -855,17 +896,7 @@ public class PMBlocks{
             range = 328f;
             reload = 600f;
 
-            powerUse = 29f;
-
-            float mul = 3.5f;
-            coolantUsage *= mul;
-            coolantMultiplier /= mul;
-
-            chargeTime = EnergyFx.aimChargeBegin.lifetime;
-            chargeBeginEffect = EnergyFx.aimChargeBegin;
-            chargeEffect = EnergyFx.aimCharge;
-            chargeEffects = 30;
-            chargeMaxDelay = EnergyFx.aimChargeBegin.lifetime - EnergyFx.aimCharge.lifetime;
+            shoot.firstShotDelay = EnergyFx.aimChargeBegin.lifetime;
 
             heatColor = Pal.lancerLaser;
             chargeSound = Sounds.techloop;
@@ -879,13 +910,13 @@ public class PMBlocks{
             warningSound = PMSounds.sentinelWarning;
 
             recoil = 3f;
-            restitution = 0.02f;
-            cooldown = 0.005f;
-
             aimRnd = 16f;
 
             shootType = PMBullets.sentinelLaser;
             unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(1f);
+            consumePower(29f);
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
@@ -905,58 +936,49 @@ public class PMBlocks{
             reload = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
-            chargeBeginEffect = EnergyFx.kugelblitzChargeBegin;
-            chargeEffect = EnergyFx.kugelblitzCharge;
-            chargeMaxDelay = 30f;
-            chargeEffects = 16;
-            chargeTime = EnergyFx.kugelblitzChargeBegin.lifetime;
+            shoot.firstShotDelay = EnergyFx.kugelblitzChargeBegin.lifetime;
             rotateSpeed = 2f;
             recoil = 2f;
-            restitution = 0.015f;
-            cooldown = 0.005f;
+            recoilTime = 240f;
+            cooldownTime = 300f;
             shootY = 0f;
             shootSound = Sounds.release;
             shootType = PMBullets.blackHole;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
-        excalibur = new PopeshadowTurret("excalibur"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 1200,
-                    Items.lead, 1100,
-                    Items.graphite, 800,
-                    Items.silicon, 1500,
-                    Items.titanium, 800,
-                    Items.thorium, 700,
-                    Items.plastanium, 350,
-                    Items.surgeAlloy, 450,
-                    PMItems.tenelium, 800
-                ));
-                size = 6;
-                hideDetails = false;
-                health = 140 * size * size;
-                reload = 450f;
-                range = 740f;
-                shootEffect = smokeEffect = Fx.none;
-                shootY = 0f;
-                cooldown = 0.0075f;
-                heatColor = Pal.surge;
-                chargeTime = 180f;
-                chargeSound = PMSounds.popeshadowCharge;
-                shootSound = Sounds.laserblast;
-                rotateSpeed = 2f;
-                recoil = 8f;
-                restitution = 0.05f;
-                shootType = PMBullets.excaliburLaser;
-            }
+        excalibur = new PopeshadowTurret("excalibur"){{
+            requirements(Category.turret, with(
+                Items.copper, 1200,
+                Items.lead, 1100,
+                Items.graphite, 800,
+                Items.silicon, 1500,
+                Items.titanium, 800,
+                Items.thorium, 700,
+                Items.plastanium, 350,
+                Items.surgeAlloy, 450,
+                PMItems.tenelium, 800
+            ));
+            size = 6;
+            hideDetails = false;
+            health = 140 * size * size;
+            reload = 450f;
+            range = 740f;
+            shootEffect = smokeEffect = Fx.none;
+            shootY = 0f;
+            cooldownTime = 600f;
+            heatColor = Pal.surge;
+            shoot.firstShotDelay = 180f;
+            chargeSound = PMSounds.popeshadowCharge;
+            shootSound = Sounds.laserblast;
+            rotateSpeed = 2f;
+            recoil = 8f;
+            recoilTime = 300f;
+            shootType = PMBullets.excaliburLaser;
 
-            @Override
-            public void load(){
-                super.load();
-
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
-        };
+            coolant = consumeCoolant(0.2f);
+        }};
 
         council = new ModularTurret("council"){{
             requirements(Category.turret, with(
@@ -1031,14 +1053,16 @@ public class PMBlocks{
                 health = 140 * size * size;
                 minRange = 5f * tilesize;
                 range = 40 * tilesize;
-                velocityInaccuracy = 0.2f;
+                velocityRnd = 0.2f;
                 cooldown = 0.03f;
                 recoil = 6f;
                 restitution = 0.02f;
-                shootShake = 2f;
+                shake = 2f;
 
                 chargeTime = 60f;
                 lineSpacing = 3.5f;
+
+                coolant = consumeCoolant(0.2f);
             }
 
             @Override
@@ -1075,41 +1099,8 @@ public class PMBlocks{
             rotOffset = 90f;
 
             unitSort = UnitSorts.strongest;
-        }};
 
-        firestorm = new MissileTurret("firestorm"){{
-            requirements(Category.turret, with(
-                Items.copper, 180,
-                Items.graphite, 140,
-                Items.silicon, 65,
-                Items.titanium, 70
-            ));
-            ammo(
-                Items.blastCompound, PayloadBullets.firestormMissile
-            );
-            size = 3;
-            hideDetails = false;
-            health = 120 * size * size;
-            range = 160f;
-            reload = 75f;
-            shootSound = Sounds.missile;
-            cooldown = 0.01f;
-            shootShake = 1f;
-            targetAir = false;
-            burstSpacing = 7f;
-            inaccuracy = 15f;
-            maxAmmo = 36;
-            shootLocs = new float[][]{
-                {-31f/4f, 31f/4f}, //TL
-                {31f/4f, 31f/4f}, //TR
-                {-31f/4f, -31f/4f}, //BL
-                {31f/4f, -31f/4f}, //BR
-                {0f, 29f/4f}, //T
-                {-29f/4f, 0f}, //L
-                {0f, -29f/4f}, //B
-                {29f/4f, 0f}, //R
-                {0f, 0f} //C
-            };
+            coolant = consumeCoolant(0.2f);
         }};
 
         strikedown = new PayloadMissileTurret("strikedown"){{
@@ -1132,9 +1123,11 @@ public class PMBlocks{
             range = 656f;
             shootSound = Sounds.artillery;
             cooldown = 0.01f;
-            shootShake = 5f;
+            shake = 5f;
             inaccuracy = 5f;
             unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
         trinity = new PayloadMissileTurret("arbiter"){{
@@ -1158,8 +1151,10 @@ public class PMBlocks{
             range = 2800f;
             shootSound = Sounds.explosionbig;
             cooldown = 0.005f;
-            shootShake = 10f;
+            shake = 10f;
             unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
         }};
 
         apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
@@ -1176,7 +1171,6 @@ public class PMBlocks{
             health = 480 * size * size;
             reload = 60f * 15f;
             range = 200f * tilesize;
-            powerUse = 655f;
             damage = 12000f / 12f;
             damageRadius = 6f * tilesize;
             buildingDamageMultiplier = 0.25f;
@@ -1193,7 +1187,8 @@ public class PMBlocks{
 
             float cooleantUse = 8f;
             coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
-            consume(new ConsumeCoolant(cooleantUse)).update(false);
+            coolant = consumeCoolant(cooleantUse);
+            consumePower(655f);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
@@ -1209,7 +1204,6 @@ public class PMBlocks{
             size = 7;
             health = 360 * size * size;
             range = 30f;
-            powerUse = 163f;
             damageBoost = 6000f / 12f;
             boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
             radiusBoost = 1f;
@@ -1220,6 +1214,8 @@ public class PMBlocks{
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;
             effectLength = endLength - 4f;
+
+            consumePower(163f);
         }};
 
         ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
@@ -1332,12 +1328,15 @@ public class PMBlocks{
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 1f; //Big flame louder sound. LIKE REALLY LOUD.
 
-            drawer = new DrawSmelter(Color.valueOf("ffef99")){{
-                flameRadiusIn = 4f;
-                flameRadius = 7.5f;
-                flameRadiusMag = 2.5f;
-                flameRadiusScl = 8f;
-            }};
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawFlame(Color.valueOf("ffef99")){{
+                    flameRadiusIn = 4f;
+                    flameRadius = 7.5f;
+                    flameRadiusMag = 2.5f;
+                    flameRadiusScl = 8f;
+                }}
+            );
 
             fuelItem = Items.pyratite;
             fuelPerItem = 3;
@@ -1615,7 +1614,7 @@ public class PMBlocks{
             powerPerBlock = 0.08f;
         }};
 
-        shieldProjector = new ShieldProjector("shield-projector"){{
+        ballisticProjector = new ShieldProjector("shield-projector"){{
             requirements(Category.effect, with(
                 Items.lead, 325,
                 Items.titanium, 225,
@@ -1642,22 +1641,23 @@ public class PMBlocks{
             {
                 size = 8;
                 health = 999999999;
-                shots = 100;
                 inaccuracy = 45f;
-                shootShake = 150f;
-                powerUse = 300f;
+                shake = 150f;
                 range = 560f;
                 recoil = 8f;
                 rotateSpeed = 0.3f;
                 shootCone = 20f;
-                cooldown = 0.0015f;
-                restitution = 0.008f;
+                cooldownTime = 600f;
+                recoilTime = 600f;
                 reload = 450f;
-                chargeTime = EnergyFx.harbingerCharge.lifetime;
-                chargeBeginEffect = EnergyFx.harbingerCharge;
+                shoot.firstShotDelay = EnergyFx.harbingerCharge.lifetime;
                 chargeSound = PMSounds.harbingerCharge;
                 shootSound = PMSounds.harbingerBlast;
                 shootType = PMBullets.harbingerLaser;
+
+                shoot.shots = 100;
+
+                consumePower(300f);
             }
 
             @Override
@@ -1673,30 +1673,16 @@ public class PMBlocks{
                 stats.remove(Stat.ammo);
                 stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
             }
-
-            @Override
-            public void load(){
-                super.load();
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
         };
 
-        everythingGun = new EverythingTurret("everything-gun"){
-            {
-                size = 6;
-                health = 999999999;
-                rotateSpeed = 20f;
-                reload = 1f;
-                range = 4400f;
-                shootCone = 360f;
-            }
-
-            @Override
-            public void load(){
-                super.load();
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
-        };
+        everythingGun = new EverythingTurret("everything-gun"){{
+            size = 6;
+            health = 999999999;
+            rotateSpeed = 20f;
+            reload = 1f;
+            range = 4400f;
+            shootCone = 360f;
+        }};
 
         omegaCharger = new ApotheosisChargeTower("omega-charger"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);

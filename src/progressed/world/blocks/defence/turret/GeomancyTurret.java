@@ -11,6 +11,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
@@ -153,52 +154,49 @@ public class GeomancyTurret extends PowerTurret{
             }
         }
 
+        //Should only ever be one at a time. If more, uh, just don't
         @Override
-        protected void shoot(BulletType type){
-            charging = true;
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
             strikePos.set(targetPos).sub(x, y).limit(range).add(x, y); //Constrain to range
-            Time.run(chargeTime, () -> {
-                type.create(this, team, strikePos.x, strikePos.y, 0f);
-                charging = false;
-            });
-            armRecoil[shotCounter % 2] = recoil;
-            armHeat[shotCounter % 2] = 1f;
-            heat = 1f;
-            effects();
+            bullet.set(strikePos);
+            armRecoil[totalShots % 2] = armHeat[totalShots % 2] = 1f;
 
-            recoilOffset.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootY).add(x, y);
+            recoilOffset.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
             float
                 dst = recoilOffset.dst(strikePos),
-                mdst = dst - ((PillarFieldBulletType)type).radius;
+                mdst = dst - ((PillarFieldBulletType)(bullet.type)).radius;
             if(mdst > 0){
-                tr.set(recoilOffset).lerp(strikePos, mdst / dst);
+                Tmp.v1.set(recoilOffset).lerp(strikePos, mdst / dst);
                 for(int i = 0; i < crackEffects; i++){
-                    crackEffect.at(recoilOffset.x, recoilOffset.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(tr), crackStroke, chargeTime / 2f, true, crackWidth));
+                    crackEffect.at(recoilOffset.x, recoilOffset.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(Tmp.v1), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
                 }
             }
 
-            shotCounter++;
+            Floor f = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y).floor();
+            if(f != null){
+                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, f.mapColor);
+            }
         }
 
         protected void effects(){
-            tr.trns(rotation - 90f, armX * Mathf.signs[shotCounter % 2], shootY);
+            Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY);
             Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
             Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
 
-            Floor f = Vars.world.tileWorld(x + tr.x, y + tr.y).floor();
+            Floor f = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y).floor();
             if(f != null){
-                slamEffect.at(x + tr.x, y + tr.y, rotation, f.mapColor);
+                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, f.mapColor);
             }
 
-            fshootEffect.at(x + tr.x, y + tr.y, rotation);
-            fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
-            shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+            fshootEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+            fsmokeEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+            shootSound.at(x + Tmp.v1.x, y + Tmp.v1.y, Mathf.random(0.9f, 1.1f));
 
-            if(shootShake > 0){
-                Effect.shake(shootShake, shootShake, this);
+            if(shake > 0){
+                Effect.shake(shake, shake, this);
             }
 
-            curRecoil = recoil;
+            curRecoil = 1f;
         }
 
         @Override

@@ -1,12 +1,12 @@
 package progressed.content;
 
 import arc.struct.*;
-import arc.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import progressed.content.blocks.*;
 import progressed.util.*;
 
 import static mindustry.content.Blocks.*;
@@ -14,7 +14,6 @@ import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
 import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
-import static progressed.content.PMUnitTypes.*;
 import static progressed.content.blocks.PMBlocks.*;
 import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
@@ -123,23 +122,19 @@ public class PMTechTree{
 
         vanillaNode(ripple, () -> {
             //Missile Launchers
-            node(firestorm, Seq.with(
+            node(strikedown, combineCosts(strikedown, emptyMissile, basicMissile), Seq.with(
                 new SectorComplete(SectorPresets.impact0078),
-                new Research(launchPad)
+                new Research(launchPad),
+                new Research(arbalest)
             ), () -> {
-                node(strikedown, combineCosts(strikedown, emptyMissile, basicMissile), Seq.with(
-                    new SectorComplete(SectorPresets.nuclearComplex),
-                    new Research(arbalest)
+                node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
+                    new Research(interplanetaryAccelerator)
                 ), () -> {
-                    node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
-                        new Research(interplanetaryAccelerator)
+                    //Apotheosis
+                    node(apotheosisNexus, Seq.with(
+                        new Research(impactReactor) //I should probably think of power generation ideas for PM
                     ), () -> {
-                        //Apotheosis
-                        node(apotheosisNexus, Seq.with(
-                            new Research(impactReactor) //I should probably think of power generation ideas for PM
-                        ), () -> {
-                            node(apotheosisCharger);
-                        });
+                        node(apotheosisCharger);
                     });
                 });
             });
@@ -176,7 +171,7 @@ public class PMTechTree{
 
                 nodeFree(sentryBuilder, sergeant, () -> {
                     nodeFree(basicSentry, sergeant);
-                    node(missileSentry, Seq.with(new Research(firestorm)));
+                    node(missileSentry, Seq.with(new Research(strikedown)));
                     node(dashSentry, Seq.with(
                         new Research(lancer),
                         new Research(quasar)
@@ -304,7 +299,7 @@ public class PMTechTree{
 
         vanillaNode(forceProjector, () -> {
             //Shield Projector
-            node(shieldProjector, Seq.with(
+            node(ballisticProjector, Seq.with(
                 new Research(strikedown)
             ));
         });
@@ -319,8 +314,9 @@ public class PMTechTree{
         return content.researchRequirements();
     }
 
-    private static void vanillaNode(UnlockableContent parent, Runnable children){
-        context = TechTree.get(parent);
+    //"TODO: replace this with the standard TechTree API, it's public now -Anuke" -Betamindy
+    private static void vanillaNode( UnlockableContent parent, Runnable children){
+        context = TechTree.all.find(t -> t.content == parent);
         children.run();
     }
 
@@ -371,7 +367,7 @@ public class PMTechTree{
     }
 
     private static void nodeProduce(UnlockableContent content, Seq<Objective> objectives, Runnable children){
-        node(content, content.researchRequirements(), objectives.and(new Produce(content)), children);
+        node(content, content.researchRequirements(), objectives.add(new Produce(content)), children);
     }
 
     private static void nodeProduce(UnlockableContent content, Seq<Objective> objectives){

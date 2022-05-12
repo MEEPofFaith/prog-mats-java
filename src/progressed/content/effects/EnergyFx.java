@@ -367,7 +367,7 @@ public class EnergyFx{
         for(int i = 0; i < 36; i++){
             v1.trns(i * 10f, 384f * (1 - e.finpow()));
             v2.trns(i * 10f + 10f, 384f * (1f - e.finpow()));
-            light((Team)e.data, e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
+            light(e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
         }
 
         float fade = 1f - Mathf.curve(e.time, e.lifetime - 30f, e.lifetime);
@@ -387,7 +387,7 @@ public class EnergyFx{
 
                     v1.trns((e.rotation + 360f * e.finpow() + side) * dir, baseLen * 1.1f);
 
-                    light((Team)e.data, e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
+                    light(e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
                 }
             }
             Draw.reset();

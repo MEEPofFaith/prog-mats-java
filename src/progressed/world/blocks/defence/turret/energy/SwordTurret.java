@@ -80,7 +80,7 @@ public class SwordTurret extends BaseTurret{
         hasPower = true;
         rotateSpeed = 4f;
         //coolant not supported
-        acceptCoolant = canOverdrive = false;
+        canOverdrive = false;
     }
 
     @Override
@@ -122,11 +122,6 @@ public class SwordTurret extends BaseTurret{
     @Override
     public void setStats(){
         super.setStats();
-
-        if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(speed, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
-        }
-
         stats.add(Stat.reload, PMUtls.stringsFixed(totalTime / 60f));
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
@@ -148,7 +143,7 @@ public class SwordTurret extends BaseTurret{
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
         public @Nullable Posc target;
         public Vec2 targetPos = new Vec2(), curPos = new Vec2();
-        protected float animationTime, coolantScl = 1f, logicControlTime = -1, lookAngle, heat;
+        protected float animationTime, logicControlTime = -1, lookAngle, heat;
         public BlockUnitc unit;
         protected boolean logicShooting, wasAttacking, ready, hit;
         protected PMTrail[] trails = new PMTrail[swords];
@@ -322,7 +317,7 @@ public class SwordTurret extends BaseTurret{
         }
 
         protected void turnTo(float target){
-            lookAngle = Angles.moveToward(lookAngle, target - 90f, speed * 3f * cdelta() * efficiency);
+            lookAngle = Angles.moveToward(lookAngle, target - 90f, speed * 3f * delta() * efficiency);
         }
 
         @Override
@@ -361,22 +356,19 @@ public class SwordTurret extends BaseTurret{
                     if(canAttack){
                         wasAttacking = true;
                         moveTo(targetPos, true);
-                        if(acceptCoolant){
-                            updateCooling();
-                        }
                     }else if(!ready){
-                        reset();
+                        resetPos();
                     }
                 }else if(!ready){
-                    reset();
+                    resetPos();
                 }
             }else if(!ready){
-                reset();
+                resetPos();
             }
 
             if(ready){
                 float e = Math.max(0.1f, efficiency);
-                animationTime += cdelta() * e;
+                animationTime += delta() * e;
                 if(animationTime >= pauseTime && animationTime <= stabTime){
                     heat = Mathf.curve(animationTime, pauseTime, stabTime);
                 }else{
@@ -412,7 +404,7 @@ public class SwordTurret extends BaseTurret{
 
             tr.trns(lookAngle + 90f, baseLength);
             if(tr.dst(curPos) > connectorStroke || isAttacking()) turnTo(angleTo(curPos));
-            rotation = (rotation - rotateSpeed * cdelta() * efficiency) % 360f;
+            rotation = (rotation - rotateSpeed * delta() * efficiency) % 360f;
 
             for(int i = 0; i < swords; i++){
                 float rot = rotation + i * (360f / swords);
@@ -431,26 +423,11 @@ public class SwordTurret extends BaseTurret{
             }
         }
 
-        protected void updateCooling(){
-            float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
-            coolant.update(this);
-            coolantScl = 1f + coolant.amount * edelta() * capacity * coolantMultiplier;
-
-            if(Mathf.chance(0.06 * coolant.amount)){
-                coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
-            }
-        }
-
-        protected void reset(){
-            coolantScl = 1f;
-            resetPos();
-        }
-
         protected void moveTo(Vec2 pos, boolean readyUp){
             float angle = curPos.angleTo(pos);
             float dist = curPos.dst(pos);
             if(dist < attackRadius && readyUp) ready = true;
-            tr.trns(angle, speed * cdelta() * efficiency).limit(dist);
+            tr.trns(angle, speed * delta() * efficiency).limit(dist);
             curPos.add(tr);
         }
 
@@ -479,10 +456,6 @@ public class SwordTurret extends BaseTurret{
         @Override
         public boolean shouldConsume(){
             return super.shouldConsume() && target != null || wasAttacking;
-        }
-
-        protected float cdelta(){
-            return delta() * coolantScl;
         }
 
         @Override

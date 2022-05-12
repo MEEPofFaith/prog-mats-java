@@ -31,13 +31,13 @@ public class TurretModule extends ReloadTurretModule{
     public int shots = 1;
     public boolean countAfter;
     public float barrelSpacing, angleSpread;
-    public float shootShake;
+    public float shake;
     public float xRand;
     /** Currently used for artillery only. */
     public float minRange = 0f;
     public float burstSpacing = 0;
     public int barrels = 1;
-    public float inaccuracy, velocityInaccuracy;
+    public float inaccuracy, velocityRnd;
 
     public Effect shootEffect = Fx.none;
     public Effect smokeEffect = Fx.none;
@@ -193,9 +193,7 @@ public class TurretModule extends ReloadTurretModule{
             mount.reloadCounter %= reload;
         }
 
-        if(acceptCoolant){
-            updateCooling(parent, mount);
-        }
+        updateCooling(parent, mount);
     }
 
     public void updateCharging(ModularTurretBuild parent, TurretMount mount){
@@ -271,7 +269,7 @@ public class TurretModule extends ReloadTurretModule{
         shootOffset.trns(rot - 90, barrelSpacing * b + Mathf.range(xRand), shootY - mount.curRecoil);
         bullet(parent, mount, type, rot + Mathf.range(inaccuracy + type.inaccuracy) + (count - (int)(shots / 2f)) * angleSpread);
 
-        mount.curRecoil = recoil;
+        mount.curRecoil = 1f;
         mount.heat = 1f;
         if(!countAfter) mount.shotCounter++;
     }
@@ -289,7 +287,7 @@ public class TurretModule extends ReloadTurretModule{
         float x = mount.x, y = mount.y;
         float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + shootOffset.x, y + shootOffset.y, mount.targetPos.x, mount.targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
-        mount.bullet = type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+        mount.bullet = type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, angle, 1f + Mathf.range(velocityRnd), lifeScl);
     }
 
     protected void effects(TurretMount mount, BulletType type){
@@ -302,11 +300,11 @@ public class TurretModule extends ReloadTurretModule{
         fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, mount.rotation);
         shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
 
-        if(shootShake > 0){
-            Effect.shake(shootShake, shootShake, x, y);
+        if(shake > 0){
+            Effect.shake(shake, shake, x, y);
         }
 
-        mount.curRecoil = recoil;
+        mount.curRecoil = 1f;
     }
 
     protected void ejectEffects(TurretMount mount){

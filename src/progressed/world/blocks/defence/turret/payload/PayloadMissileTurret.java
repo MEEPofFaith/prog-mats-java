@@ -33,11 +33,12 @@ import static mindustry.Vars.*;
 public class PayloadMissileTurret extends PayloadBlock{
     public float range = 80f;
 
-    public boolean acceptCoolant = true;
     /** Effect displayed when coolant is used. */
     public Effect coolEffect = Fx.fuelburn;
     /** How much reload is lowered by for each unit of liquid of heat capacity. */
     public float coolantMultiplier = 5f;
+    /** If not null, this consumer will be used for coolant. */
+    public ConsumeLiquidBase coolant;
 
     public float reload = 2f * 60f;
 
@@ -52,10 +53,10 @@ public class PayloadMissileTurret extends PayloadBlock{
 
     //general info
     public float inaccuracy = 0f;
-    public float velocityInaccuracy = 0f;
+    public float velocityRnd = 0f;
     public float cooldown = 0.02f;
     public float coolantUsage = 0.2f;
-    public float shootShake = 0f;
+    public float shake = 0f;
     /** Currently used for artillery only. */
     public float minRange = 0f;
     public boolean targetAir = true;
@@ -83,16 +84,6 @@ public class PayloadMissileTurret extends PayloadBlock{
     /** Initializes accepted ammo map. Format: [block1, bullet1, block2, bullet2...] */
     public void ammo(Object... objects){
         ammoTypes = ObjectMap.of(objects);
-    }
-
-    @Override
-    public void init(){
-        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
-            hasLiquids = true;
-            consume(new ConsumeCoolant(coolantUsage)).update(false).boost();
-        }
-
-        super.init();
     }
 
     @Override
@@ -132,8 +123,8 @@ public class PayloadMissileTurret extends PayloadBlock{
         stats.add(Stat.targetsGround, targetGround);
         stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
 
-        if(acceptCoolant){
-            stats.add(Stat.booster, StatValues.boosters(reload, consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount, coolantMultiplier, true, l -> consumes.liquidfilters.get(l.id)));
+        if(coolant != null){
+            stats.add(Stat.booster, StatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l)));
         }
     }
 
@@ -294,14 +285,12 @@ public class PayloadMissileTurret extends PayloadBlock{
                 moveInPayload(false);
             }
 
-            if(acceptCoolant){
-                updateCooling();
-            }
+            updateCooling();
         }
 
         @Override
         public void handleLiquid(Building source, Liquid liquid, float amount){
-            if(acceptCoolant && liquids.currentAmount() <= 0.001f){
+            if(coolant != null && liquids.currentAmount() <= 0.001f){
                 Events.fire(Trigger.turretCool);
             }
 
@@ -354,27 +343,24 @@ public class PayloadMissileTurret extends PayloadBlock{
             float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x, y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
 
             float angle = angleTo(targetPos) + Mathf.range(inaccuracy + type.inaccuracy);
-            type.create(this, team, x, y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl);
+            type.create(this, team, x, y, angle, 1f + Mathf.range(velocityRnd), lifeScl);
         }
 
         protected void effects(){
             shootSound.at(x, y, Mathf.random(0.9f, 1.1f));
 
-            if(shootShake > 0){
-                Effect.shake(shootShake, shootShake, this);
+            if(shake > 0){
+                Effect.shake(shake, shake, this);
             }
         }
 
         protected void updateCooling(){
-            if(reloadCounter < reload){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-                Liquid liquid = liquids.current();
+            if(reloadCounter < reload && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
+                float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+                coolant.update(this);
+                reloadCounter += coolant.amount * edelta() * capacity * coolantMultiplier;
 
-                float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed();
-                reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
-                liquids.remove(liquid, used);
-
-                if(Mathf.chance(0.06 * used)){
+                if(Mathf.chance(0.06 * coolant.amount)){
                     coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 }
             }

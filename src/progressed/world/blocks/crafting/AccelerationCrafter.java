@@ -36,7 +36,7 @@ public class AccelerationCrafter extends GenericCrafter{
         @Override
         public void updateTile(){
             float s = getSpeed();
-            if(consumes.has(ConsumeType.item) && consumes.getItem().valid(this) || !consumes.has(ConsumeType.item)){
+            if(canConsume()){
                 progress += getProgressIncrease(craftTime) * s;
                 totalProgress += delta() * s;
             }

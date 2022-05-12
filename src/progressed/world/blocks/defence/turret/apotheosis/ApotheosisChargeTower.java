@@ -27,7 +27,6 @@ public class ApotheosisChargeTower extends Block{
     public float range = 10f;
     public float damageBoost, radiusBoost, speedBoost, durationBoost;
     public float boostFalloff = 1f;
-    public float powerUse = 1f;
 
     public float startLength, effectLength, endLength;
     public Color placeLine = PMPal.apotheosisLaser;

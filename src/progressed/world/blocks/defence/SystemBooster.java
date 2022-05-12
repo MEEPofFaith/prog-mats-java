@@ -46,7 +46,7 @@ public class SystemBooster extends Block{
 
     @Override
     public void init(){
-        consume(new DynamicConsumePower(b -> ((SystemBoosterBuild)b).totalPowerUse));
+        consumePowerDynamic(b -> ((SystemBoosterBuild)b).totalPowerUse);
 
         super.init();
 

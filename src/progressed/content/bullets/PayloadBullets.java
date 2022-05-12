@@ -23,8 +23,6 @@ public class PayloadBullets{
     arbalestBasic, arbalestIncend, arbalestBomber;
 
     public static BallisticMissileBulletType
-
-    firestormMissile, //not payload, but it fits with the other missiles so whatever
     strikedownBasic, strikedownRecursive,
     trinityBasic, trinityCluster,
 
@@ -160,37 +158,9 @@ public class PayloadBullets{
             }
         };
 
-        float firestormSize = 0.125f,
-            trinitySize = 1f,
+        float trinitySize = 1f,
             strikedownRnd = 1.5f,
             trinityRnd = 3f;
-
-        firestormMissile = new BallisticMissileBulletType(2.4f, 28f, "prog-mats-storm-missile"){{
-            splashDamage = 72f;
-            splashDamageRadius = 30f;
-            lifetime = 90f;
-            homingPower = 0.035f;
-            homingRange = 200f;
-            ammoMultiplier = 4f;
-            hitSound = Sounds.bang;
-            collidesAir = false;
-            hitShake = 2f;
-            despawnEffect = MissileFx.smallBoom;
-            blockEffect = MissileFx.missileBlockedSmall;
-
-            targetColor = PMPal.missileBasic;
-
-            shadowOffset = 150f;
-            riseTime = 30f;
-            fallTime = 20f;
-
-            autoDropRadius = 0f;
-            stopRadius = 8f;
-            resumeSeek = false;
-            thrusterRadius = 5f;
-            trailSize = firestormSize;
-            targetRadius = 0.5f;
-        }};
 
         strikedownBasic = new BallisticMissileBulletType(2f, 80f, "prog-mats-basic-missile"){{
             splashDamage = 750f;

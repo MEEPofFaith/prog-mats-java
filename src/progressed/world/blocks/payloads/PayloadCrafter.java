@@ -70,16 +70,13 @@ public class PayloadCrafter extends PayloadBlock{
     @Override
     public void init(){
         if(recipes.contains(r -> r.powerUse > 0)){
-            consume(new DynamicConsumePower(b -> ((PayloadCrafterBuild)b).powerUse()));
-            hasPower = true;
+            consumePowerDynamic(b -> ((PayloadCrafterBuild)b).powerUse());
         }
         if(recipes.contains(r -> r.buildCost != null)){
             consume(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
-            hasItems = true;
         }
         if(recipes.contains(r -> r.liquidCost != null)){
             consume(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidCost : null));
-            hasLiquids = true;
         }
         if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
         if(recipes.contains(r -> r.outputBlock != null)) outputsPayload = true;

@@ -19,6 +19,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.blocks.*;
 import progressed.graphics.*;
@@ -55,8 +56,16 @@ public class BaseModule implements Cloneable{
 
     public Func3<ModularTurretBuild, BaseModule, Integer, BaseMount> mountType = BaseMount::new;
 
-    public final OrderedMap<String, Func<ModularTurretBuild, Bar>> barMap = new OrderedMap<>();
-    public final Consumers consumes = new Consumers();
+    public final OrderedMap<String, Func2<ModularTurretBuild, BaseMount, Bar>> barMap = new OrderedMap<>();
+    public boolean[] liquidFilter = {};
+    /** Array of consumers used by this block. Only populated after init(). */
+    public Consume[] consumers = {}, optionalConsumers = {}, nonOptionalConsumers = {}, updateConsumers = {};
+    /** Set to true if this block has any consumers in its array. */
+    public boolean hasConsumers;
+    /** List for building up consumption before init(). */
+    protected Seq<Consume> consumeBuilder = new Seq<>();
+    /** The single power consumer, if applicable. */
+    public ConsumePower consPower;
 
     public TextureRegion region;
 
@@ -83,7 +92,18 @@ public class BaseModule implements Cloneable{
         if(deployTime < 0) deployTime = size() * 2f * 60f;
         clipSize = Math.max(clipSize, size() * tilesize);
 
-        consumes.init();
+        consumers = consumeBuilder.toArray(Consume.class);
+        optionalConsumers = consumeBuilder.select(c -> c.optional && !c.ignore()).toArray(Consume.class);
+        nonOptionalConsumers = consumeBuilder.select(c -> !c.optional && !c.ignore()).toArray(Consume.class);
+        updateConsumers = consumeBuilder.select(c -> c.update && !c.ignore()).toArray(Consume.class);
+        hasConsumers = consumers.length > 0;
+
+        for(Consume cons : consumers){
+            cons.apply(PMModules.cons);
+        }
+
+        liquidFilter = PMModules.cons.liquidFilter.clone();
+        hasLiquids = PMModules.cons.hasLiquids;
 
         setBars();
 
@@ -94,6 +114,33 @@ public class BaseModule implements Cloneable{
         region = Core.atlas.find(name);
     }
 
+    /**
+     * Creates a consumer which directly uses power without buffering it.
+     * @param powerPerTick The amount of power which is required each tick for 100% efficiency.
+     * @return the created consumer object.
+     */
+    public ConsumePower consumePower(float powerPerTick){
+        return consume(new ConsumePower(powerPerTick, 0.0f, false));
+    }
+
+    public ConsumeCoolant consumeCoolant(float amount){
+        return consume(new ConsumeCoolant(amount));
+    }
+
+    public <T extends Consume> T consume(T consume){
+        if(consume instanceof ConsumePower){
+            //there can only be one power consumer
+            consumeBuilder.removeAll(b -> b instanceof ConsumePower);
+            consPower = (ConsumePower)consume;
+        }
+        consumeBuilder.add(consume);
+        return consume;
+    }
+
+    public boolean consumesLiquid(Liquid liq){
+        return liquidFilter[liq.id];
+    }
+
     /** Set stats for both the module payload and the module. */
     public void setStats(Stats stats){
         if(powerUse > 0) stats.add(Stat.powerUse, powerUse * 60f, StatUnit.powerSecond);
@@ -101,7 +148,9 @@ public class BaseModule implements Cloneable{
         stats.add(Stat.size, " | ");
         stats.add(Stat.size, size.fullTitle());
 
-        consumes.display(stats);
+        for(var c : consumers){
+            c.display(stats);
+        }
     }
 
     /** Set stats for just the module. */
@@ -132,8 +181,8 @@ public class BaseModule implements Cloneable{
         }
     }
 
-    public void addBar(String name, Func<ModularTurretBuild, Bar> sup){
-        barMap.put(name, (Func2<ModularTurretBuild, BaseMount, Bar>)sup);
+    public void addBar(String name, Func2<ModularTurretBuild, BaseMount, Bar> sup){
+        barMap.put(name, sup);
     }
 
 
@@ -177,7 +226,7 @@ public class BaseModule implements Cloneable{
     }
 
     public float delta(ModularTurretBuild parent){
-        return Time.delta * (canOverdrive ? parent.timeScale : 1f);
+        return Time.delta * (canOverdrive ? parent.timeScale() : 1f);
     }
 
     public float efficiency(ModularTurretBuild parent){
@@ -278,7 +327,7 @@ public class BaseModule implements Cloneable{
     }
 
     public void displayBars(ModularTurretBuild parent, Table table, BaseMount mount){
-        for(Func2<ModularTurretBuild, BaseMount, Bar> bar : bars.list()){
+        for(Func2<ModularTurretBuild, BaseMount, Bar> bar : barMap.values()){
             try{
                 table.add(bar.get(parent, mount));
                 table.row();
@@ -301,7 +350,7 @@ public class BaseModule implements Cloneable{
     }
 
     public boolean acceptLiquid(Liquid liquid, BaseMount mount){
-        return isDeployed(mount) && hasLiquids && consumes.liquidfilters.get(liquid.id) && mount.liquids.get(liquid) < liquidCapacity;
+        return isDeployed(mount) && hasLiquids && consumesLiquid(liquid) && mount.liquids.get(liquid) < liquidCapacity;
     }
 
     public void handleItem(Item item, BaseMount mount){}

@@ -84,42 +84,13 @@ public class BlackHoleTurret extends PowerTurret{
         public void updateTile(){
             alpha = Mathf.lerpDelta(alpha, Mathf.num(canConsume()), 0.1f);
 
-            if(charging){
+            if(charging()){
                 charge = Mathf.clamp(charge + Time.delta / chargeTime);
             }else{
                 charge = 0;
             }
 
             super.updateTile();
-        }
-
-        @Override
-        protected void shoot(BulletType type){
-            useAmmo();
-
-            tr.trns(rotation, shootY - curRecoil);
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation, team.color);
-            chargeSound.at(x + tr.x, y + tr.y, 1);
-
-            for(int i = 0; i < chargeEffects; i++){
-                Time.run(Mathf.random(chargeMaxDelay), () -> {
-                    if(!isValid()) return;
-                    tr.trns(rotation, shootY - curRecoil);
-                    chargeEffect.at(x + tr.x, y + tr.y, rotation, team.color);
-                });
-            }
-
-            charging = true;
-
-            Time.run(chargeTime, () -> {
-                if(!isValid()) return;
-                tr.trns(rotation, shootY - curRecoil);
-                curRecoil = recoil;
-                heat = 1f;
-                bullet(type, rotation + Mathf.range(inaccuracy));
-                effects();
-                charging = false;
-            });
         }
     }
 }

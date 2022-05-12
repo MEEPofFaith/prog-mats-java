@@ -104,7 +104,6 @@ public class EverythingTurret extends PowerTurret{
 
         @Override
         public void draw(){
-            Draw.rect(baseRegion, x, y);
             Draw.z(Layer.turret);
             Drawf.shadow(region, x - elevation, y - elevation, drawRot);
             Drawf.spinSprite(region, x, y, drawRot);
@@ -134,24 +133,37 @@ public class EverythingTurret extends PowerTurret{
         }
 
         @Override
-        protected void bullet(BulletType type, float angle){
+        protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
+            queuedBullets --;
+
+            if(dead || (!consumeAmmoOnce && !hasAmmo())) return;
+
+            float
+                bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset, shootY + yOffset),
+                bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset, shootY + yOffset),
+                shootAngle = rotation + angleOffset + Mathf.range(inaccuracy);
+
             BulletData data = ProgMats.allBullets.get(selectedBullet);
             float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + recoilOffset.x, y + recoilOffset.y, targetPos.x, targetPos.y) / type.range, minRange / type.range, range / type.range) : 1f;
             float laserLifeScl = data.continuousBlock ? data.lifetime / type.lifetime : 1f;
 
-            type.create(this, team, x + recoilOffset.x, y + recoilOffset.y, angle, 1f + Mathf.range(velocityInaccuracy), lifeScl * laserLifeScl);
-        }
+            handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl * laserLifeScl, null, mover, targetPos.x, targetPos.y), xOffset, yOffset, angleOffset);
 
-        @Override
-        protected void effects(){
-            BulletData data = ProgMats.allBullets.get(selectedBullet);
             data.shootEffect.at(x, y, rotation, team.color);
             data.smokeEffect.at(x, y, rotation, team.color);
             data.shootSound.at(x, y, Mathf.random(0.9f, 1.1f));
 
             float shake = data.shake;
+
             if(shake > 0){
                 Effect.shake(shake, shake, this);
+            }
+
+            curRecoil = 1f;
+            heat = 1f;
+
+            if(!consumeAmmoOnce){
+                useAmmo();
             }
         }
 

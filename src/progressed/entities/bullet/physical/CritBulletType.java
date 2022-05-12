@@ -1,6 +1,7 @@
 package progressed.entities.bullet.physical;
 
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -97,8 +98,8 @@ public class CritBulletType extends BasicBulletType{
     }
 
     @Override
-    public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
-        super.hitTile(b, build, initialHealth, direct);
+    public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+        super.hitTile(b, build, x, y, initialHealth, direct);
 
         if(direct){
             bounce(b);
@@ -133,47 +134,33 @@ public class CritBulletType extends BasicBulletType{
 
         Effect.shake(hitShake, hitShake, b);
 
+        if(fragOnHit){
+            createFrags(b, x, y);
+        }
+        createPuddles(b, x, y);
+        createIncend(b, x, y);
+
+        if(suppressionRange > 0){
+            //bullets are pooled, require separate Vec2 instance
+            Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
+        }
+
+        createSplashDamage(b, x, y);
+
+        for(int i = 0; i < lightning; i++){
+            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+        }
+    }
+
+    @Override
+    public void createFrags(Bullet b, float x, float y){
         if(fragBullet != null){
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
-                float a = b.rotation() + Mathf.range(fragCone/2) + fragAngle;
+                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
                 Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof CritBulletType) f.data = new CritBulletData(crit);
+                if(f.type instanceof CritBulletType) f.data = new CritBulletData(((CritBulletData)b.data).crit);
             }
-        }
-
-        if(puddleLiquid != null && puddles > 0){
-            for(int i = 0; i < puddles; i++){
-                Tile tile = world.tileWorld(x + Mathf.range(puddleRange), y + Mathf.range(puddleRange));
-                Puddles.deposit(tile, puddleLiquid, puddleAmount);
-            }
-        }
-
-        if(Mathf.chance(incendChance)){
-            Damage.createIncend(x, y, incendSpread, incendAmount);
-        }
-
-        if(splashDamageRadius > 0 && !b.absorbed){
-            Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier() * critBonus, collidesAir, collidesGround);
-
-            if(status != StatusEffects.none){
-                Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
-            }
-
-            if(healPercent > 0f){
-                indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
-                    Fx.healBlockFull.at(other.x, other.y, other.block.size, Pal.heal);
-                    other.heal(healPercent * critBonus / 100f * other.maxHealth());
-                });
-            }
-
-            if(makeFire){
-                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
-            }
-        }
-
-        for(int i = 0; i < lightning; i++){
-            Lightning.create(b, lightningColor, (lightningDamage < 0 ? damage : lightningDamage) * critBonus, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
         }
     }
 

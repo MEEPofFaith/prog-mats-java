@@ -22,9 +22,6 @@ public class EmptyAI implements UnitController{
     }
 
     @Override
-    public void command(UnitCommand command){}
-
-    @Override
     public void updateUnit(){}
 
     @Override

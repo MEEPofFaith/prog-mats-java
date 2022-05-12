@@ -33,14 +33,13 @@ public class FlareUnitType extends UnitType{
         super(name);
         this.duration = duration;
         constructor = FlareUnitEntity::new;
-        defaultController = EmptyAI::new;
+        aiController = EmptyAI::new;
 
         drag = 1f;
         speed = accel = 0f;
-        isCounted = false;
+        isEnemy = false;
         canDrown = false;
         flying = false;
-        commandLimit = 0;
         fallSpeed = 1f / 30f;
         hitSize = 1f;
     }
@@ -145,7 +144,6 @@ public class FlareUnitType extends UnitType{
 
         stats.remove(Stat.flying);
         stats.remove(Stat.speed);
-        stats.remove(Stat.commandLimit);
         stats.remove(Stat.canBoost);
         stats.remove(Stat.itemCapacity);
         stats.remove(Stat.range);
@@ -166,11 +164,11 @@ public class FlareUnitType extends UnitType{
         table.table(bars -> {
             bars.defaults().growX().height(20f).pad(4);
 
-            addBar(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
+            bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
             FlareUnitEntity flare = ((FlareUnitEntity)unit);
-            addBar(new Bar(
+            bars.add(new Bar(
                 () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.durationf() * 100f)),
                 () -> Pal.accent,
                 flare::durationf

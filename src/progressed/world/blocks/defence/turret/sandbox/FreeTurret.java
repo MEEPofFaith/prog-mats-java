@@ -31,8 +31,7 @@ public class FreeTurret extends Turret{
         @Override
         public double sense(LAccess sensor){
             return switch(sensor){
-                case ammo -> 1;
-                case ammoCapacity -> 1;
+                case ammo, ammoCapacity -> 1;
                 default -> super.sense(sensor);
             };
         }

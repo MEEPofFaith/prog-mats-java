@@ -26,7 +26,6 @@ public class SniperTurret extends ItemTurret{
     public SniperTurret(String name){
         super(name);
 
-        cooldown = 0.01f;
         unitSort = UnitSorts.strongest;
     }
 
@@ -156,8 +155,8 @@ public class SniperTurret extends ItemTurret{
 
         @Override
         public void updateTile(){
-            if(charging){
-                charge = Mathf.clamp(charge + Time.delta / chargeTime);
+            if(charging()){
+                charge = Mathf.clamp(charge + Time.delta / shoot.firstShotDelay);
             }else{
                 charge = 0;
             }
@@ -168,7 +167,7 @@ public class SniperTurret extends ItemTurret{
         @Override
         protected void updateShooting(){
             if(canConsume()){
-                if(reloadCounter >= reload && !charging){
+                if(reloadCounter >= reload && !charging()){
                     BulletType type = peekAmmo();
         
                     shoot(type);
@@ -187,7 +186,7 @@ public class SniperTurret extends ItemTurret{
         
         @Override
         protected void turnToTarget(float targetRot){
-            rotation = Angles.moveToward(rotation, targetRot, efficiency * rotateSpeed * delta() * (charging ? (1 - chargeMoveFract * charge) : 1));
+            rotation = Angles.moveToward(rotation, targetRot, efficiency * rotateSpeed * delta() * (charging() ? (1 - chargeMoveFract * charge) : 1));
         }
         
         @Override

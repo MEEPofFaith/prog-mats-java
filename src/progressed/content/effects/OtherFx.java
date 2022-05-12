@@ -147,7 +147,7 @@ public class OtherFx{
 
         color();
 
-        light(Team.derelict, e.x, e.y, 20f * e.fslope(), Pal.lightFlame, 0.5f);
+        light(e.x, e.y, 20f * e.fslope(), Pal.lightFlame, 0.5f);
     }),
 
     linkActivation = new Effect(30f, e -> {

@@ -121,7 +121,7 @@ public class StaticNode extends Block{
 
     @Override
     public void init(){
-        consume(new DynamicConsumePower(b -> ((StaticNodeBuild)b).powerUse()));
+        consumePowerDynamic(b -> ((StaticNodeBuild)b).powerUse());
         clipSize = Math.max(clipSize, (laserRange + 1f) * tilesize * 2f);
 
         super.init();
@@ -255,16 +255,16 @@ public class StaticNode extends Block{
                 return t != null && t.build == other;
             });
 
-        tempTileEnts.clear();
+        tempBuilds.clear();
 
         Geometry.circle(tile.x, tile.y, laserRange + 2, (x, y) -> {
             Building other = world.build(x, y);
-            if(valid.get(other) && !tempTileEnts.contains(other)){
-                tempTileEnts.add(other);
+            if(valid.get(other) && !tempBuilds.contains(other)){
+                tempBuilds.add(other);
             }
         });
 
-        tempTileEnts.sort((a, b) -> {
+        tempBuilds.sort((a, b) -> {
             int type = -Boolean.compare(a.block instanceof StaticNode, b.block instanceof StaticNode);
             if(type != 0) return type;
             return Float.compare(a.dst2(tile), b.dst2(tile));
@@ -272,7 +272,7 @@ public class StaticNode extends Block{
 
         returnInt = 0;
 
-        tempTileEnts.each(valid, t -> {
+        tempBuilds.each(valid, t -> {
             if(returnInt++ < maxNodes){
                 others.get(t);
             }

@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.content.*;
@@ -25,15 +26,15 @@ public class BitTurret extends PowerTurret{
 
             float drawRot = Mathf.mod(rotation - 90f, 360f);
             float rot = Mathf.round(drawRot + (360f / sides / 2f), 360f / sides);
-            tr.trns(rot + 90, -curRecoil);
+            Tmp.v1.trns(rot + 90, -curRecoil);
 
-            Drawf.shadow(region, x + tr.x - elevation, y + tr.y - elevation, rot);
-            Draw.rect(region, x + tr.x, y + tr.y, rot);
+            Drawf.shadow(region, x + Tmp.v1.x - elevation, y + Tmp.v1.y - elevation, rot);
+            Draw.rect(region, x + Tmp.v1.x, y + Tmp.v1.y, rot);
 
             if(Core.atlas.isFound(heatRegion) && heat > 0.01){
                 Draw.color(heatColor, heat);
                 Draw.blend(Blending.additive);
-                Draw.rect(heatRegion, x + tr.x, y + tr.y, rot);
+                Draw.rect(heatRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot);
                 Draw.blend();
                 Draw.color();
             }

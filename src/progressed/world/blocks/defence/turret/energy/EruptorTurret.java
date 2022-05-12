@@ -68,7 +68,7 @@ public class EruptorTurret extends PowerTurret{
 
             //when delay is accurate, assume unit has moved by chargeTime already
             if(accurateDelay && pos instanceof Hitboxc h){
-                offset.set(h.deltaX(), h.deltaY()).scl(chargeTime / Time.delta);
+                offset.set(h.deltaX(), h.deltaY()).scl(shoot.firstShotDelay / Time.delta);
             }
 
             targetPos.set(Predict.intercept(this, pos, offset.x, offset.y, range / shootDuration));
@@ -84,10 +84,10 @@ public class EruptorTurret extends PowerTurret{
 
             if(bulletLife > 0 && bullet != null){
                 wasShooting = true;
-                tr.trns(rotation, lengthScl * range, 0f);
-                bullet.set(x + tr.x, y + tr.y);
+                Tmp.v1.trns(rotation, lengthScl * range, 0f);
+                bullet.set(x + Tmp.v1.x, y + Tmp.v1.y);
                 bullet.time(0f);
-                curRecoil = recoil;
+                curRecoil = 1f;
                 heat = 1f;
                 bulletLife -= Time.delta / Math.max(efficiency, 0.00001f);
                 lengthScl += Time.delta / shootDuration;
@@ -100,15 +100,12 @@ public class EruptorTurret extends PowerTurret{
                     bullet = null;
                     lengthScl = 0f;
                 }
-            }else if(reload < reload){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-                Liquid liquid = liquids.current();
+            }else if(reloadCounter < reload && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
+                float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+                coolant.update(this);
+                reloadCounter += coolant.amount * edelta() * capacity * coolantMultiplier;
 
-                float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * baseReloadSpeed();
-                reload += used * liquid.heatCapacity * coolantMultiplier;
-                liquids.remove(liquid, used);
-
-                if(Mathf.chance(0.06 * used)){
+                if(Mathf.chance(0.06 * coolant.amount)){
                     coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 }
             }
@@ -131,12 +128,14 @@ public class EruptorTurret extends PowerTurret{
 
             super.updateShooting();
         }
-        
+
         @Override
-        protected void bullet(BulletType type, float angle){
-            bullet = type.create(this, team, x + tr.x, y + tr.y, angle);
-            lengthScl = 0;
-            bulletLife = shootDuration;
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
+            if(bullet != null){
+                this.bullet = bullet;
+                lengthScl = 0f;
+                bulletLife = shootDuration;
+            }
         }
 
         @Override

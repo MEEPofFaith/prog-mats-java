@@ -37,8 +37,9 @@ public class TeslaTurret extends Block{
 
     public float reload;
     public float powerUse = 1f;
-    public boolean acceptCoolant = true;
     public float coolantMultiplier = 5f;
+    /** If not null, this consumer will be used for coolant. */
+    public ConsumeLiquidBase coolant;
 
     public int maxTargets;
     public float range, damage;
@@ -54,7 +55,7 @@ public class TeslaTurret extends Block{
     public Effect hitEffect = Fx.hitLaserBlast;
     public Effect coolEffect = Fx.fuelburn;
     public Color heatColor = Pal.turretHeat;
-    public float shootShake;
+    public float shake;
 
     public float elevation = -1f;
     public float cooldown = 0.04f;
@@ -81,6 +82,10 @@ public class TeslaTurret extends Block{
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
         stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
         stats.add(Stat.ammo, PMStatValues.teslaZapping(damage, maxTargets, status));
+
+        if(coolant != null){
+            stats.add(Stat.booster, StatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l)));
+        }
     }
 
     @Override
@@ -117,11 +122,6 @@ public class TeslaTurret extends Block{
             PMUtls.uhOhSpeghettiOh(name + " does not have any rings!");
         }
         if(maxTargets <= 0) maxTargets = 1;
-
-        if(acceptCoolant){
-            hasLiquids = true;
-            consume(new ConsumeCoolant(0.2f)).update(false).boost();
-        }
 
         if(elevation < 0) elevation = size / 2f;
         clipSize = Math.max(clipSize, (range + 3f) * 2f);
@@ -316,7 +316,7 @@ public class TeslaTurret extends Block{
                             UtilFx.lightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
                         }
 
-                        Effect.shake(shootShake, shootShake, this);
+                        Effect.shake(shake, shake, this);
 
                         reloadCounter %= reload;
                     }
@@ -325,15 +325,12 @@ public class TeslaTurret extends Block{
         }
 
         protected void updateCooling(){
-            if(reloadCounter < reload){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-                Liquid liquid = liquids.current();
+            if(reloadCounter < reload && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
+                float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+                coolant.update(this);
+                reloadCounter += coolant.amount * edelta() * capacity * coolantMultiplier;
 
-                float used = Math.min(liquids.get(liquid), maxUsed * Time.delta) * efficiency;
-                reloadCounter += used * liquid.heatCapacity * coolantMultiplier;
-                liquids.remove(liquid, used);
-
-                if(Mathf.chance(0.06 * used)){
+                if(Mathf.chance(0.06 * coolant.amount)){
                     coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 }
             }

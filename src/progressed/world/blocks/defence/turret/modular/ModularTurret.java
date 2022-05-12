@@ -75,7 +75,7 @@ public class ModularTurret extends PayloadBlock{
 
     @Override
     public void init(){
-        consume(new DynamicConsumePower(b -> ((ModularTurretBuild)b).mountPower()));
+        consumePowerDynamic(b -> ((ModularTurretBuild)b).mountPower());
 
         super.init();
 
