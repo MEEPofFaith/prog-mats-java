@@ -64,8 +64,6 @@ public class SwordTurret extends BaseTurret{
     public Color hitColor = Pal.surge;
     public float hitShake;
 
-    public float powerUse = 1f;
-
     public Sortf unitSort = Unit::dst2;
 
     public float elevation = -1f, swordElevation = -1f;

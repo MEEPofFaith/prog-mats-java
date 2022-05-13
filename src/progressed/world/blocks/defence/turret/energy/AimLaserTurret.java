@@ -35,7 +35,7 @@ public class AimLaserTurret extends PowerTurret{
         super.setStats();
 
         stats.remove(Stat.reload);
-        stats.add(Stat.reload, 60f / (reload + chargeTime + 1) * (alternate ? 1 : shots), StatUnit.none);
+        stats.add(Stat.reload, 60f / (reload + shoot.firstShotDelay + 1) * shoot.shots, StatUnit.none);
     }
 
     @Override
@@ -123,9 +123,8 @@ public class AimLaserTurret extends PowerTurret{
         @Override
         public void updateTile(){
             alpha = Mathf.lerpDelta(alpha, 0f, 0.05f);
-
             if(charging()){
-                charge = Mathf.clamp(charge + Time.delta / chargeTime);
+                charge = Mathf.clamp(charge + Time.delta / shoot.firstShotDelay);
                 alpha = Math.max(alpha, charge);
                 drawCharge = charge;
             }
@@ -151,6 +150,11 @@ public class AimLaserTurret extends PowerTurret{
         @Override
         public boolean shouldTurn(){
             return true;
+        }
+
+        @Override
+        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
+            drawCharge = 0f;
         }
 
         @Override

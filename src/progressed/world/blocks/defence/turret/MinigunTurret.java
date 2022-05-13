@@ -4,44 +4,85 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
+
+import static mindustry.Vars.tilesize;
 
 public class MinigunTurret extends ItemTurret{
     public float windupSpeed = 0.00625f, windDownSpeed = 0.0125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
     public float barX, barY, barStroke, barLength;
     public float barWidth = 1.5f, barHeight = 0.75f;
 
-    public TextureRegion barrelRegion, barrelOutline, bodyRegion, bodyOutline;
-
     public MinigunTurret(String name){
         super(name);
-    }
 
-    @Override
-    public void load(){
-        super.load();
+        drawer = new DrawTurret(){
+            TextureRegion barrel, barrelOutline;
 
-        barrelRegion = Core.atlas.find(name + "-barrel");
-        barrelOutline = Core.atlas.find(name + "-barrel-outline");
-        bodyRegion = Core.atlas.find(name + "-body");
-        bodyOutline = Core.atlas.find(name + "-body-outline");
-    }
+            @Override
+            public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
+                super.getRegionsToOutline(block, out);
+                out.add(barrel);
+            }
 
-    @Override
-    public void createIcons(MultiPacker packer){
-        Outliner.outlineRegion(packer, barrelRegion, outlineColor, name + "-barrel-outline");
-        Outliner.outlineRegion(packer, bodyRegion, outlineColor, name + "-body-outline");
-        super.createIcons(packer);
+            @Override
+            public void load(Block block){
+                super.load(block);
+
+                barrel = Core.atlas.find(block.name + "-barrel");
+                barrelOutline = Core.atlas.find(block.name + "-barrel-outline");
+            }
+
+            @Override
+            public void drawTurret(Turret block, TurretBuild build){
+                if(!(build instanceof MinigunTurretBuild m)) return;
+
+                Vec2 v = Tmp.v1;
+
+                for(int i = 0; i < 4; i++){
+                    Draw.z(Layer.turret - 0.1f);
+                    v.trns(m.rotation - 90f, barWidth * Mathf.cosDeg(m.spin - 90 * i), barHeight * Mathf.sinDeg(m.spin - 90 * i)).add(m.recoilOffset);
+                    Draw.rect(barrelOutline, m.x + v.x, m.y + v.y, m.drawrot());
+                    Draw.z(Layer.turret - 0.05f - Mathf.sinDeg(m.spin - 90 * i) / 100f);
+                    Draw.rect(barrel, m.x + v.x, m.y + v.y, m.drawrot());
+                    if(m.heats[i] > 0.001f){
+                        Drawf.additive(heat, heatColor.write(Tmp.c1).a(m.heat), m.x + m.recoilOffset.x, m.y + m.recoilOffset.y, m.drawrot(), Draw.z());
+                    }
+                }
+
+                Draw.z((Layer.turret));
+                super.drawTurret(block, build);
+
+                if(m.speedf() > 0.0001f){
+                    Draw.color(m.barColor());
+                    Lines.stroke(barStroke);
+                    for(int i = 0; i < 2; i++){
+                        v.trns(m.drawrot(), barX * Mathf.signs[i], barY).add(m.recoilOffset);
+                        Lines.lineAngle(m.x + v.x, m.y + v.y, m.rotation, barLength * Mathf.clamp(m.speedf()), false);
+                    }
+                }
+            }
+
+            @Override
+            public void drawHeat(Turret block, TurretBuild build){
+                //Don't
+            }
+        };
     }
 
     @Override
@@ -49,8 +90,8 @@ public class MinigunTurret extends ItemTurret{
         super.setStats();
         
         stats.remove(Stat.reload);
-        float minValue = minFiringSpeed / 90f * 60f * shootLocs.length;
-        float maxValue = maxSpeed / 90f * 60f * shootLocs.length;
+        float minValue = minFiringSpeed / 90f * 60f * shoot.shots;
+        float maxValue = maxSpeed / 90f * 60f * shoot.shots;
         stats.add(Stat.reload, PMUtls.stringsFixed(minValue) + " - " + PMUtls.stringsFixed(maxValue) + StatUnit.perSecond.localized());
     }
 
@@ -68,46 +109,6 @@ public class MinigunTurret extends ItemTurret{
         protected float[] heats = {0f, 0f, 0f, 0f};
         protected float spinSpeed, spin;
 
-        @Override
-        public void draw(){
-            Draw.rect(baseRegion, x, y);
-
-            Draw.z(Layer.turret - 0.2f);
-
-            recoilOffset.trns(rotation, -curRecoil);
-
-            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90f);
-            Draw.rect(bodyOutline, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
-
-            for(int i = 0; i < 4; i++){
-                Draw.z(Layer.turret - 0.2f);
-                Tmp.v1.trns(rotation - 90f, barWidth * Mathf.cosDeg(spin - 90 * i), barHeight * Mathf.sinDeg(spin - 90 * i)).add(recoilOffset);
-                Draw.rect(barrelOutline, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
-                Draw.z(Layer.turret - 0.1f - Mathf.sinDeg(spin - 90 * i) / 100f);
-                Draw.rect(barrelRegion, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
-                if(heats[i] > 0.001f){
-                    Draw.blend(Blending.additive);
-                    Draw.color(heatColor, heats[i]);
-                    Draw.rect(heatRegion, x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90f);
-                    Draw.blend();
-                    Draw.color();
-                }
-            }
-
-            Draw.z(Layer.turret);
-
-            Draw.rect(bodyRegion, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f);
-
-            if(speedf() > 0.0001f){
-                Draw.color(barColor());
-                Lines.stroke(barStroke);
-                for(int i = 0; i < 2; i++){
-                    recoilOffset.trns(rotation - 90f, barX * Mathf.signs[i], barY - curRecoil);
-                    Lines.lineAngle(x + recoilOffset.x, y + recoilOffset.y, rotation, barLength * Mathf.clamp(speedf()), false);
-                }
-            }
-        }
-
         public Color barColor(){
             return spinSpeed > minFiringSpeed ? team.color : team.palette[2];
         }
@@ -123,11 +124,6 @@ public class MinigunTurret extends ItemTurret{
                 spinSpeed = Mathf.approachDelta(spinSpeed, getMaxSpeed(), windDownSpeed);
             }
 
-            float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
-            coolant.update(this);
-            float add = (spinSpeed * (hasAmmo() ? peekAmmo().reloadMultiplier : 1f) + coolant.amount * capacity * coolantMultiplier) * delta();
-            spin += add;
-            reloadCounter += add;
             for(int i = 0; i < 4; i++){
                 heats[i] = Math.max(heats[i] - Time.delta / cooldownTime, 0);
             }
@@ -146,15 +142,28 @@ public class MinigunTurret extends ItemTurret{
 
                 shoot(type);
 
-                reload = spin % 90;
+                reloadCounter = spin % 90;
 
                 heats[Mathf.floor(spin - 90) % 360 / 90] = 1f;
             }
         }
 
         @Override
-        protected void updateCooling(){
-            //Handled elsewhere
+        protected void updateReload(){
+            boolean shooting = hasAmmo() && isShooting() && isActive();
+            float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+            float add = spinSpeed * multiplier;
+            if(shooting && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
+                float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
+                coolant.update(this);
+                add += coolant.amount * edelta() * capacity * coolantMultiplier;
+
+                if(Mathf.chance(0.06 * coolant.amount)){
+                    coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
+                }
+            }
+            spin += add;
+            reloadCounter += add;
         }
 
         protected float getMaxSpeed(){

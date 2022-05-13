@@ -100,6 +100,17 @@ public class PayloadMissileTurret extends PayloadBlock{
     }
 
     @Override
+    public void init(){
+        if(coolant != null){
+            coolant.update = false;
+            coolant.booster = true;
+            coolant.optional = true;
+        }
+
+        super.init();
+    }
+
+    @Override
     public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.rect(topRegion, req.drawx(), req.drawy());

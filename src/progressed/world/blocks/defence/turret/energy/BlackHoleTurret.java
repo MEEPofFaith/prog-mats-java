@@ -8,8 +8,10 @@ import arc.math.Interp.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.bullet.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.util.*;
 import progressed.world.meta.*;
@@ -21,19 +23,20 @@ public class BlackHoleTurret extends PowerTurret{
     
     public BlackHoleTurret(String name){
         super(name);
-        heatDrawer = tile -> {
-            if(tile.heat <= 0.00001f) return;
-            float r = pow.apply(tile.heat);
-            float g = (Interp.pow3In.apply(tile.heat) + ((1f - Interp.pow3In.apply(tile.heat)) * 0.12f)) / 2f;
-            float b = Interp.pow2Out.apply(tile.heat);
-            float a = Interp.pow2Out.apply(tile.heat);
-            Tmp.c1.set(r, g, b, a);
-            Draw.color(Tmp.c1);
-    
-            Draw.blend(Blending.additive);
-            Draw.rect(heatRegion, tile.x + recoilOffset.x, tile.y + recoilOffset.y, tile.rotation - 90);
-            Draw.blend();
-            Draw.color();
+
+        drawer = new DrawTurret(){
+            @Override
+            public void drawHeat(Turret block, TurretBuild build){
+                if(build.heat <= 0.00001f || !heat.found()) return;
+
+                float r = pow.apply(build.heat);
+                float g = (Interp.pow3In.apply(build.heat) + ((1f - Interp.pow3In.apply(build.heat)) * 0.12f)) / 2f;
+                float b = Interp.pow2Out.apply(build.heat);
+                float a = Interp.pow2Out.apply(build.heat);
+                Tmp.c1.set(r, g, b, a);
+
+                Drawf.additive(heat, Tmp.c1, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot(), Layer.turretHeat);
+            }
         };
     }
 
@@ -85,7 +88,7 @@ public class BlackHoleTurret extends PowerTurret{
             alpha = Mathf.lerpDelta(alpha, Mathf.num(canConsume()), 0.1f);
 
             if(charging()){
-                charge = Mathf.clamp(charge + Time.delta / chargeTime);
+                charge = Mathf.clamp(charge + Time.delta / shoot.firstShotDelay);
             }else{
                 charge = 0;
             }

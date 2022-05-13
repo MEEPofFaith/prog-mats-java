@@ -447,8 +447,6 @@ public class PMModules{
                 maxTargets = 6;
                 force = 30f;
                 scaledForce = 22f;
-
-                coolant = consumeCoolant(0.2f);
             }};
         }};
 

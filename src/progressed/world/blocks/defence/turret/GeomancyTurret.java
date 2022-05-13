@@ -11,10 +11,14 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
@@ -31,28 +35,75 @@ public class GeomancyTurret extends PowerTurret{
     public Effect crackEffect = UtilFx.groundCrack;
     public Effect slamEffect = OtherFx.concretionSlam;
 
-    public TextureRegion turretRegion;
-    public TextureRegion[]
-        armRegions = new TextureRegion[2],
-        armOutlines = new TextureRegion[2],
-        armHeatRegions = new TextureRegion[2];
-
     public GeomancyTurret(String name){
         super(name);
 
         accurateDelay = true;
-    }
 
-    @Override
-    public void load(){
-        super.load();
+        drawer = new DrawTurret(){
+            public final TextureRegion[]
+                armRegions = new TextureRegion[2],
+                armOutlines = new TextureRegion[2],
+                armHeatRegions = new TextureRegion[2];
 
-        turretRegion  = Core.atlas.find(name + "-turret");
-        for(int arm : Mathf.zeroOne){
-            armRegions[arm] = Core.atlas.find(name + "-arm-" + arm);
-            armOutlines[arm] = Core.atlas.find(name + "-arm-outline-" + arm);
-            armHeatRegions[arm] = Core.atlas.find(name + "-arm-heat-" + arm);
-        }
+            @Override
+            public void load(Block block){
+                super.load(block);
+
+                for(int arm : Mathf.zeroOne){
+                    armRegions[arm] = Core.atlas.find(block.name + "-arm-" + arm);
+                    armOutlines[arm] = Core.atlas.find(block.name + "-arm-" + arm + "-outline");
+                    armHeatRegions[arm] = Core.atlas.find(block.name + "-arm-heat-" + arm);
+                }
+            }
+
+            @Override
+            public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
+                super.getRegionsToOutline(block, out);
+                out.add(armRegions);
+            }
+
+            @Override
+            public void draw(Building build){
+                GeomancyTurret turret = (GeomancyTurret)build.block;
+                GeomancyTurretBuild tb = (GeomancyTurretBuild)build;
+
+                Draw.rect(base, build.x, build.y);
+                Draw.color();
+
+                Draw.z(Layer.turret - 0.02f);
+
+                Drawf.shadow(region, build.x - turret.elevation, build.y - turret.elevation, tb.drawrot());
+                for(int arm : Mathf.zeroOne){
+                    tb.recoilOffset.trns(tb.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(tb, arm));
+                    Drawf.shadow(armRegions[arm], build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
+                }
+
+                Draw.z(Layer.turret);
+
+                tb.recoilOffset.setZero();
+                drawTurret(turret, tb);
+                drawHeat(turret, tb);
+                drawArms(tb);
+            }
+
+            public void drawArms(GeomancyTurretBuild build){
+                for(int arm : Mathf.zeroOne){
+                    build.recoilOffset.trns(build.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(build, arm));
+                    Draw.z(Layer.turret - 0.01f);
+                    Draw.rect(armOutlines[arm], build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
+                    Draw.z(Layer.turret);
+                    Draw.rect(armRegions[arm], build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
+
+                    if(build.armHeat[arm] <= 0.00001f || !armHeatRegions[arm].found()) continue;
+                    Drawf.additive(armHeatRegions[arm], heatColor.write(Tmp.c1).a(build.heat), build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot(), Layer.turretHeat);
+                }
+            }
+
+            public float armRecoil(GeomancyTurretBuild b, int side){
+                return Mathf.pow(b.armRecoil[side], recoilPow) * recoil;
+            }
+        };
     }
 
     @Override
@@ -63,13 +114,6 @@ public class GeomancyTurret extends PowerTurret{
         stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
-    @Override
-    public void createIcons(MultiPacker packer){
-        super.createIcons(packer);
-        Outliner.outlineRegion(packer, turretRegion, outlineColor, name + "-turret");
-        Outliner.outlineRegions(packer, armRegions, outlineColor, name + "-arm-outline");
-    }
-
     public class GeomancyTurretBuild extends PowerTurretBuild{
         public Vec2 strikePos = new Vec2();
         public boolean charging;
@@ -78,8 +122,8 @@ public class GeomancyTurret extends PowerTurret{
         @Override
         public void updateTile(){
             for(int i = 0; i < 2; i++){
-                armRecoil[i] = Mathf.lerpDelta(armRecoil[i], 0f, restitution);
-                armHeat[i] = Mathf.lerpDelta(armHeat[i], 0f, cooldown);
+                armRecoil[i] = Math.max(armRecoil[i] - Time.delta / recoilTime , 0);
+                armHeat[i] = Math.max(armHeat[i] - Time.delta / cooldownTime, 0);
             }
 
             super.updateTile();
@@ -101,80 +145,30 @@ public class GeomancyTurret extends PowerTurret{
         }
 
         @Override
-        public void draw(){
-            Draw.rect(baseRegion, x, y);
-            Draw.color();
+        protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
+            queuedBullets--;
 
-            Draw.z(Layer.turret);
+            if(dead || (!consumeAmmoOnce && !hasAmmo())) return;
 
-            for(int arm : Mathf.zeroOne){
-                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
-                Drawf.shadow(
-                    armRegions[arm],
-                    x + recoilOffset.x - elevation, y + recoilOffset.y - elevation,
-                    rotation - 90
-                );
-            }
-            Drawf.shadow(turretRegion, x - elevation, y - elevation, rotation - 90);
-
-            for(int arm : Mathf.zeroOne){
-                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
-                Draw.rect(
-                    armOutlines[arm],
-                    x + recoilOffset.x, y + recoilOffset.y,
-                    rotation - 90
-                );
-            }
-
-            Draw.rect(turretRegion, x, y, rotation - 90);
-            if(heatRegion.found() && heat > 0.01f){
-                Draw.alpha(heat);
-                Draw.rect(heatRegion, x, y, rotation - 90);
-                Draw.color();
-            }
-
-            for(int arm : Mathf.zeroOne){
-                recoilOffset.trns(rotation - 90f, armX * Mathf.signs[arm], armY - armRecoil[arm]);
-                Draw.rect(
-                    armRegions[arm],
-                    x + recoilOffset.x, y + recoilOffset.y,
-                    rotation - 90
-                );
-
-                TextureRegion armHeatRegion = armHeatRegions[arm];
-                if(armHeatRegion.found() && armHeat[arm] > 0.01f){
-                    Draw.alpha(armHeat[arm]);
-                    Draw.rect(
-                        armHeatRegion,
-                        x + recoilOffset.x, y + recoilOffset.y,
-                        rotation - 90
-                    );
-                    Draw.color();
-                }
-            }
-        }
-
-        //Should only ever be one at a time. If more, uh, just don't
-        @Override
-        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
             strikePos.set(targetPos).sub(x, y).limit(range).add(x, y); //Constrain to range
-            bullet.set(strikePos);
+            handleBullet(type.create(this, team, strikePos.x, strikePos.y, 0f), xOffset, yOffset, angleOffset);
+
             armRecoil[totalShots % 2] = armHeat[totalShots % 2] = 1f;
 
-            recoilOffset.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
+            Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
             float
-                dst = recoilOffset.dst(strikePos),
-                mdst = dst - ((PillarFieldBulletType)(bullet.type)).radius;
+                dst = Tmp.v1.dst(strikePos),
+                mdst = dst - ((PillarFieldBulletType)(type)).radius;
             if(mdst > 0){
-                Tmp.v1.set(recoilOffset).lerp(strikePos, mdst / dst);
+                Tmp.v1.lerp(strikePos, mdst / dst);
                 for(int i = 0; i < crackEffects; i++){
-                    crackEffect.at(recoilOffset.x, recoilOffset.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(Tmp.v1), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
+                    crackEffect.at(Tmp.v1.x, Tmp.v1.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(Tmp.v1), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
                 }
             }
 
-            Floor f = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y).floor();
-            if(f != null){
-                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, f.mapColor);
+            Tile t = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y);
+            if(t != null && t.floor() != null){
+                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, t.floor().mapColor);
             }
         }
 

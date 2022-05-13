@@ -126,7 +126,7 @@ public class MissileFx{
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
             });
         });
-    }),
+    }).layer(Layer.bullet - 0.021f),
 
     nuclearExplosion = new Effect(30, 500f, e -> {
         float intensity = 8f;
@@ -165,7 +165,7 @@ public class MissileFx{
                 light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
             });
         });
-    }),
+    }).layer(Layer.bullet - 0.021f),
 
     missileBlockedSmall = new Effect(38f, e -> {
         color(Pal.missileYellow);

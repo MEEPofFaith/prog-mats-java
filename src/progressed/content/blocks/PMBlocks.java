@@ -10,6 +10,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -245,6 +246,7 @@ public class PMBlocks{
             barLength = 9f;
 
             shoot = new ShootBarrel(){{
+                shots = 2;
                 barrels = new float[]{
                     -4f, 0f, 0f,
                     4f, 0f, 0f
@@ -282,7 +284,9 @@ public class PMBlocks{
             recoilTime = 90f;
             cooldownTime = 10f;
             inaccuracy = 3f;
-            shootEffect = smokeEffect = ammoUseEffect = Fx.none;
+            shootEffect = Fx.shootSmall;
+            smokeEffect = Fx.shootSmallSmoke;
+            ammoUseEffect = Fx.none;
             heatColor = Pal.turretHeat;
 
             barX = 5f;
@@ -291,11 +295,12 @@ public class PMBlocks{
             barLength = 9f;
 
             shoot = new ShootBarrel(){{
+                shots = 4;
                 barrels = new float[]{
                     -9f, -3f / 4f, 0f
                     -3f, 0f, 0f,
                     3f, 0f, 0f,
-                    9f, 3f / 4f, 0f
+                    9f, -3f / 4f, 0f
                 };
             }};
             coolant = consumeCoolant(0.2f);
@@ -315,12 +320,13 @@ public class PMBlocks{
             size = 1;
             health = 310;
             reload = 30f;
-            powerUse = 3.6f;
             range = 72f;
             maxTargets = 6;
             damage = 20f;
             status = StatusEffects.shocked;
+
             coolant = consumeCoolant(0.2f);
+            consumePower(3.6f);
         }};
 
         spark = new TeslaTurret("spark"){{
@@ -338,12 +344,13 @@ public class PMBlocks{
             size = 2;
             health = 200 * size * size;
             reload = 20f;
-            powerUse = 4.8f;
             range = 130f;
             maxTargets = 5;
             damage = 23f;
             status = StatusEffects.shocked;
+
             coolant = consumeCoolant(0.2f);
+            consumePower(4.8f);
         }};
 
         storm = new TeslaTurret("storm"){{
@@ -414,14 +421,15 @@ public class PMBlocks{
             size = 3;
             health = 180 * size * size;
             reload = 10f;
-            powerUse = 8.9f;
             range = 210f;
             maxTargets = 16;
             coolantMultiplier = 1f;
             hasSpinners = true;
             damage = 27f;
             status = StatusEffects.shocked;
+
             coolant = consumeCoolant(0.2f);
+            consumePower(8.9f);
         }};
 
         concretion = new GeomancyTurret("concretion"){{
@@ -447,6 +455,7 @@ public class PMBlocks{
             armY = -2f / 4f;
 
             coolant = consumeCoolant(0.2f);
+            consumePower(2f);
         }};
 
         flame = new EruptorTurret("flame"){{
@@ -568,7 +577,7 @@ public class PMBlocks{
             }
         };
 
-        caliber = new SniperTurret("caliber"){{
+        caliber = new ItemTurret("caliber"){{
             requirements(Category.turret, with(
                 Items.copper, 220,
                 Items.titanium, 200,
@@ -591,7 +600,7 @@ public class PMBlocks{
             range = 544f;
             rotateSpeed = 2.5f;
             recoil = 5f;
-            split = 3f;
+            cooldownTime = 300f;
             shoot.firstShotDelay = 150f;
             shootSound = Sounds.railgun;
 
@@ -826,10 +835,11 @@ public class PMBlocks{
             hideDetails = false;
             health = 340 * size * size;
             range = 180f;
-            powerUse = 6.5f;
             minRadius = 16.5f;
             bladeCenter = 9f;
             trailWidth = 30f / 4f;
+
+            consumePower(6.5f);
         }};
 
         ball = new SwordTurret("ball"){
@@ -846,7 +856,6 @@ public class PMBlocks{
                 hideDetails = false;
                 health = 230 * size * size;
                 range = 260f;
-                powerUse = 13.5f;
                 damage = 1000f;
                 bladeCenter = 122f / 8f;
                 trailWidth = 18f;
@@ -868,6 +877,8 @@ public class PMBlocks{
                 float pitchDecrease = 0.25f;
                 minPitch -= pitchDecrease;
                 maxPitch -= pitchDecrease;
+
+                consumePower(13.5f);
             }
 
             @Override
@@ -948,7 +959,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        excalibur = new PopeshadowTurret("excalibur"){{
+        excalibur = new PowerTurret("excalibur"){{
             requirements(Category.turret, with(
                 Items.copper, 1200,
                 Items.lead, 1100,
@@ -967,10 +978,10 @@ public class PMBlocks{
             range = 740f;
             shootEffect = smokeEffect = Fx.none;
             shootY = 0f;
-            cooldownTime = 600f;
+            cooldownTime = 300f;
+            shootWarmupSpeed = 0.05f;
+            minWarmup = 0.75f;
             heatColor = Pal.surge;
-            shoot.firstShotDelay = 180f;
-            chargeSound = PMSounds.popeshadowCharge;
             shootSound = Sounds.laserblast;
             rotateSpeed = 2f;
             recoil = 8f;
@@ -978,6 +989,45 @@ public class PMBlocks{
             shootType = PMBullets.excaliburLaser;
 
             coolant = consumeCoolant(0.2f);
+            consumePower(30f);
+
+            Color transSurge = Pal.surge.cpy().a(0);
+            drawer = new DrawTurret(){{
+                parts.addAll(
+                    new RegionPart("-cell"){{
+                        progress = PartProgress.reload.inv();
+                        color = transSurge;
+                        colorTo = Pal.surge;
+                    }},
+                    new RegionPart("-side-l"){{
+                        progress = PartProgress.warmup.curve(Interp.pow2Out);
+                        moves.add(new PartMove(PartProgress.warmup.curve(Interp.pow5In), 0f, -3f, 0f));
+                        moveX = -9f / 4f;
+                        children.add(
+                            new RegionPart("-side-cell-l"){{
+                                progress = PartProgress.reload.inv();
+                                color = transSurge;
+                                colorTo = Pal.surge;
+                            }}
+                        );
+                    }},
+                    new RegionPart("-side-r"){{
+                        progress = PartProgress.warmup.curve(Interp.pow2Out);
+                        moves.add(new PartMove(PartProgress.warmup.curve(Interp.pow5In), 0f, -3f, 0f));
+                        moveX = 9f / 4f;
+                        children.add(
+                            new RegionPart("-side-cell-r"){{
+                                progress = PartProgress.smoothReload.inv();
+                                color = transSurge;
+                                colorTo = Pal.surge;
+                            }}
+                        );
+                    }},
+                    new RegionPart("-cross"){{
+                        heatColor = Pal.surge;
+                    }}
+                );
+            }};
         }};
 
         council = new ModularTurret("council"){{

@@ -35,6 +35,7 @@ public class SentryUnitType extends UnitType{
         useUnitCap = false;
         itemCapacity = 10;
         health = 200;
+        engineSize = -1f;
     }
 
     @Override

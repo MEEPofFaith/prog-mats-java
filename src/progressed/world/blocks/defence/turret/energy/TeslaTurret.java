@@ -36,7 +36,6 @@ public class TeslaTurret extends Block{
     public Color lightningColor = Pal.surge;
 
     public float reload;
-    public float powerUse = 1f;
     public float coolantMultiplier = 5f;
     /** If not null, this consumer will be used for coolant. */
     public ConsumeLiquidBase coolant;
@@ -125,6 +124,12 @@ public class TeslaTurret extends Block{
 
         if(elevation < 0) elevation = size / 2f;
         clipSize = Math.max(clipSize, (range + 3f) * 2f);
+
+        if(coolant != null){
+            coolant.update = false;
+            coolant.booster = true;
+            coolant.optional = true;
+        }
 
         super.init();
     }

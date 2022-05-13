@@ -41,7 +41,7 @@ public class ReloadTurretModule extends BaseTurretModule{
     }
 
     public void updateCooling(ModularTurretBuild parent, BaseTurretMount mount){
-        LiquidModule pLiquid = parent.liquids;
+        LiquidModule pLiquid = parent.liquids; //A hacky solution to a hacky system
         parent.liquids = mount.liquids;
 
         if(mount.reloadCounter < reload && coolant != null && coolant.efficiency(parent) > 0 && parent.efficiency > 0){

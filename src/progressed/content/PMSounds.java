@@ -19,7 +19,6 @@ public class PMSounds{
     harbingerCharge = new Sound(),
     harbingerBlast = new Sound(),
     riftSplit = new Sound(),
-    popeshadowCharge = new Sound(),
     swordStab = new Sound(),
     rocketLaunch = new Sound(),
     nuclearExplosion = new Sound(),
@@ -38,7 +37,6 @@ public class PMSounds{
         harbingerCharge = loadSound("harbinger-charge");
         harbingerBlast = loadSound("harbinger-blast");
         riftSplit = loadSound("rift-split");
-        popeshadowCharge = loadSound("popeshadow-charge");
         swordStab = loadSound("sword-stab");
         nuclearExplosion = loadSound("nuclear-explosion");
         rocketLaunch = loadSound("rocket");
