@@ -14,7 +14,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
-import mindustry.world.consumers.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.explosive.BallisticMissileBulletType.*;

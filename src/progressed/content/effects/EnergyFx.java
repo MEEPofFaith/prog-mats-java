@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.energy.*;
@@ -14,6 +13,7 @@ import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
 import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
@@ -134,25 +134,14 @@ public class EnergyFx{
 
     aimChargeBegin = new Effect(300f, e -> {
         if(e.data instanceof AimLaserTurretBuild d){
-            color(e.color);
+            color(Pal.lancerLaser);
 
             v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
             Fill.circle(d.x + v1.x, d.y + v1.y, 3f * e.fin());
 
-            color();
-        }
-    }).layer(Layer.bullet - 0.01f),
-
-    aimCharge = new Effect(30f, e -> {
-        if(e.data instanceof AimLaserTurretBuild d){
-            color(e.color);
-
-            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
-            randLenVectors(e.id, 3, 24f * e.fout(), (x, y) -> {
+            randLenVectors(e.id, 12, 28f * e.fout(), (x, y) -> {
                 Fill.circle(d.x + v1.x + x, d.y + v1.y + y, 2f * e.fin());
             });
-
-            color();
         }
     }).layer(Layer.bullet - 0.01f),
 

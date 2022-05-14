@@ -11,7 +11,6 @@ import arc.scene.ui.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.*;
-import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
@@ -200,6 +199,10 @@ public class PMDrawf{
         shader();
 
         reset();
+    }
+
+    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress){
+        materialize(x, y, region, color, rotation, offset, progress, Time.time);
     }
 
     /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape */

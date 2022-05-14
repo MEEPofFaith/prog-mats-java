@@ -7,6 +7,7 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
@@ -59,4 +60,12 @@ public class BaseTurretModule extends RangedModule{
     public void findTarget(ModularTurretBuild parent, BaseTurretMount mount){}
 
     public void targetPosition(BaseTurretMount mount, Posc pos){}
+
+    @Override
+    public void drawDeploy(ModularTurretBuild parent, BaseMount mount){
+        Draw.draw(Draw.z(), () -> {
+            PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime);
+            if(buildTop) PMDrawf.materialize(mount.x, mount.y, topRegion, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime);
+        });
+    }
 }

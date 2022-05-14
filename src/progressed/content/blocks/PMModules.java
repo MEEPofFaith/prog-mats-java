@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -19,6 +20,7 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.DelayBulletType.*;
+import progressed.entities.pattern.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
@@ -78,8 +80,7 @@ public class PMModules{
                 reload = 90f;
                 shootCone = 30;
                 range = 120f;
-                maxAmmo = 10;
-                shots = 5;
+                shoot.shots = 5;
                 inaccuracy = 25;
                 velocityRnd = 0.2f;
                 rotateSpeed = 9f;
@@ -117,10 +118,9 @@ public class PMModules{
                 }
 
                 @Override
-                protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
-                    super.bullet(parent, mount, type, angle);
-
-                    mount.bullet.data = mount.target;
+                protected void handleBullet(ModularTurretBuild parent, TurretMount mount, Bullet bullet, float offsetX, float offsetY, float angleOffset){
+                    super.handleBullet(parent, mount, bullet, offsetX, offsetY, angleOffset);
+                    bullet.data = mount.target;
                 }
             };
         }};
@@ -166,12 +166,17 @@ public class PMModules{
                 powerUse = 3.5f;
                 targetAir = false;
                 range = 100f;
-                barrels = shots = 2;
-                barrelSpacing = 3;
-                countAfter = false;
                 shootEffect = Fx.lightningShoot;
                 heatColor = Color.red;
                 shootSound = Sounds.spark;
+
+                shoot = new ShootBarrel(){{
+                    shots = 2;
+                    barrels = new float[]{
+                        -1.5f, 0f, 0f,
+                        1.5f, 0f, 0f
+                    };
+                }};
 
                 coolant = consumeCoolant(0.2f);
             }};
@@ -200,14 +205,14 @@ public class PMModules{
                 }
 
                 @Override
-                protected void bullet(ModularTurretBuild parent, TurretMount mount, BulletType type, float angle){
-                    super.bullet(parent, mount, type, angle);
+                protected void handleBullet(ModularTurretBuild parent, TurretMount mount, Bullet bullet, float offsetX, float offsetY, float angleOffset){
+                    super.handleBullet(parent, mount, bullet, offsetX, offsetY, angleOffset);
 
-                    recoilOffset.set(mount.targetPos).sub(mount.x, mount.y);
-                    if(recoilOffset.len() < minRange) recoilOffset.setLength(minRange);
-                    recoilOffset.add(mount.x, mount.y);
+                    Tmp.v1.set(mount.targetPos).sub(mount.x, mount.y);
+                    if(Tmp.v1.len() < minRange) Tmp.v1.setLength(minRange);
+                    Tmp.v1.add(mount.x, mount.y);
 
-                    mount.bullet.data = new DelayBulletData(recoilOffset.x, recoilOffset.y, 30f);
+                    bullet.data = new DelayBulletData(Tmp.v1.x, Tmp.v1.y, 30f);
                 }
             };
         }};
@@ -284,8 +289,7 @@ public class PMModules{
                 reload = 75f;
                 shootCone = 25;
                 range = 200f;
-                maxAmmo = 10;
-                shots = 6;
+                shoot.shots = 6;
                 inaccuracy = 12;
                 velocityRnd = 0.2f;
                 rotateSpeed = 9f;
@@ -312,13 +316,16 @@ public class PMModules{
                 reload = 60f;
                 range = 200f;
                 shootCone = 45;
-                shots = 7;
-                xRand = 4f;
-                burstSpacing = 2f;
                 inaccuracy = 7f;
                 velocityRnd = 0.2f;
                 rotateSpeed = 3f;
                 shootSound = Sounds.missile;
+
+                shoot = new ShootRand(){{
+                    shots = 7;
+                    xRand = 4f;
+                    shotDelay = 2f;
+                }};
 
                 coolant = consumeCoolant(0.2f);
             }};
@@ -367,8 +374,6 @@ public class PMModules{
 
                 {
                     reload = 60f;
-                    shots = 8;
-                    burstSpacing = 2f;
                     minRange = 4f * 8f;
                     range = 29f * 8f;
                     shootSound = Sounds.flame2;
@@ -379,54 +384,34 @@ public class PMModules{
 
                     shootType = ModuleBullets.lotusLance;
 
+                    shoot = new ShootBarrel(){{
+                        shots = 8;
+                        shotDelay = 2f;
+
+                        float
+                            d1 = size() * tilesize / 2f,
+                            d2 = Tmp.v1.trns(45f, d1).x;
+                        barrels = new float[]{
+                            0f, d1, 90f,
+                            d2, d2, 45f,
+                            d1, 0f, 0f,
+                            d2, -d2, -45f,
+                            0f, -d1, -90f,
+                            -d2, -d2, -135f,
+                            -d1, 0f, 180f,
+                            -d2, d2, 135f
+                        };
+                    }};
+
                     coolant = consumeCoolant(0.2f);
                 }
 
                 @Override
                 public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
-                    float x = mount.x,
-                        y = mount.y;
-
-                    shootOffset.set(mount.targetPos).sub(mount.x, mount.y);
-                    if(shootOffset.len() < minRange) shootOffset.setLength(minRange);
-                    shootOffset.add(mount.x, mount.y);
-
-                    float aimX = shootOffset.x,
-                        aimY = shootOffset.y;
-
-                    for(int i = 0; i < shots; i++){
-                        mount.isShooting = true;
-                        float rot = 90f - 360f / shots * i;
-                        int ii = i;
-                        Time.run(burstSpacing * i, () -> {
-                            mount.isShooting = true;
-                            if(!mount.valid(parent)){
-                                mount.isShooting = false;
-                                return;
-                            }
-
-                            shootOffset.trns(rot, shootY);
-                            type.create(parent, parent.team, x + shootOffset.x, y + shootOffset.y, rot, -1, 1f + Mathf.range(velocityRnd), 1f, new DelayBulletData(aimX, aimY, delay - ii * burstSpacing));
-
-                            Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
-                            Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
-
-                            fshootEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
-                            fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, rot);
-                            shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
-
-                            if(shake > 0){
-                                Effect.shake(shake, shake, x, y);
-                            }
-
-                            mount.heat = 1f;
-
-                            if(ii == shots - 1) mount.isShooting = false;
-                        });
-                    }
+                    super.shoot(parent, mount, type);
 
                     Time.run(delay, () -> {
-                        if(mount.valid(parent)) waveEffect.at(x, y);
+                        if(mount.valid(parent)) waveEffect.at(mount);
                     });
                 }
             };
@@ -544,25 +529,6 @@ public class PMModules{
                 }
 
                 @Override
-                protected void effects(TurretMount mount, BulletType type){
-                    float x = mount.x, y = mount.y;
-                    BoomerangBulletType b = (BoomerangBulletType)type;
-
-                    Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
-                    Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
-
-                    fshootEffect.at(x + shootOffset.x, y + shootOffset.y, b.width / 2f, b.backColor);
-                    fsmokeEffect.at(x + shootOffset.x, y + shootOffset.y, b.width / 2f, b.backColor);
-                    shootSound.at(x + shootOffset.x, y + shootOffset.y, Mathf.random(0.9f, 1.1f));
-
-                    if(shake > 0){
-                        Effect.shake(shake, shake, x, y);
-                    }
-
-                    mount.curRecoil = 1f;
-                }
-
-                @Override
                 public void draw(ModularTurretBuild parent, BaseMount m){
                     TurretMount mount = (TurretMount)m;
                     super.draw(parent, mount);
@@ -600,14 +566,20 @@ public class PMModules{
                     range = 34f * tilesize;
                     reload = 120f;
                     maxAmmo = 12;
-                    shots = 3;
-                    barrels = 3;
-                    barrelSpacing = 6f;
                     moveWhileShooting = false;
-                    burstSpacing = 15f;
                     shootY -= 6f;
                     topLayerOffset = 0.30f;
                     shootSound = Sounds.artillery;
+
+                    shoot = new ShootBarrel(){{
+                        shots = 3;
+                        shotDelay = 15f;
+                        barrels = new float[]{
+                            -6f, 0f, 0f,
+                            0f, 0f, 0f,
+                            6f, 0f, 0f
+                        };
+                    }};
 
                     coolant = consumeCoolant(0.2f);
                 }
@@ -666,11 +638,11 @@ public class PMModules{
                     powerUse = 4f;
                     recoil = shootY = 0;
                     rotate = false;
-                    chargeTime = ModuleFx.jupiterCharge.lifetime;
-                    chargeBeginEffect = ModuleFx.jupiterCharge;
                     shootSound = Sounds.laser;
 
                     shootType = ModuleBullets.jupiterOrb;
+
+                    shoot.firstShotDelay = ModuleFx.jupiterCharge.lifetime;
 
                     coolant = consumeCoolant(0.2f);
                 }
@@ -688,14 +660,13 @@ public class PMModules{
 
                 @Override
                 public void updateCharging(ModularTurretBuild parent, TurretMount mount){
-                    if(!mount.charging){
+                    if(!charging(mount)){
                         mount.charge = Mathf.approachDelta(mount.charge, 0f, 3f);
                     }else{
-                        mount.charge = Mathf.approachDelta(mount.charge, chargeTime, 1f);
+                        mount.charge = Mathf.approachDelta(mount.charge, shoot.firstShotDelay, 1f);
 
-                        if(mount.charge >= chargeTime){
-                            mount.charging = false;
-                            chargeShot(parent, mount);
+                        if(mount.charge >= shoot.firstShotDelay){
+                            mount.charge = shoot.firstShotDelay;
                         }
                     }
                 }
@@ -711,32 +682,13 @@ public class PMModules{
                 }
 
                 @Override
-                public void drawPayload(ModulePayloadBuild payload){
-                    float x = payload.x,
-                        y = payload.y;
-
-                    Draw.rect(region, x, y);
-                    for(int i = 0; i < 4; i++){
-                        float rot = i * 90 - 45f;
-                        Draw.rect(fullArm, x, y, rot);
-                    }
-                }
-
-                @Override
                 public void draw(ModularTurretBuild parent, BaseMount m){
                     TurretMount mount = (TurretMount)m;
                     float x = mount.x,
                         y = mount.y;
 
                     if(mount.progress < deployTime){
-                        Draw.draw(Draw.z(), () -> {
-                            float progress = mount.progress / deployTime;
-                            PMDrawf.blockBuildCenter(x, y, region, 0, progress);
-                            for(int i = 0; i < 4; i++){
-                                float rot = i * 90 - 45f;
-                                PMDrawf.blockBuildCenter(x, y, fullArm, rot, progress);
-                            }
-                        });
+                        drawDeploy(parent, m);
                         return;
                     }
 
@@ -744,7 +696,7 @@ public class PMModules{
                     Draw.rect(region, x, y);
 
                     Lines.stroke(6f);
-                    float charge = Interp.pow2Out.apply(mount.charge / chargeTime);
+                    float charge = Interp.pow2Out.apply(mount.charge / shoot.firstShotDelay);
                     for(int i = 0; i < 4; i++){
                         float rot = i * 90 - 45f,
                             joint = Mathf.lerp(jointRadMin, jointRadMax, charge),
@@ -763,6 +715,30 @@ public class PMModules{
                         Draw.rect(endRegion, x + shootOffset.x, y + shootOffset.y, rot);
                     }
                     Draw.mixcol();
+                }
+
+                @Override
+                public void drawDeploy(ModularTurretBuild parent, BaseMount mount){
+                    Draw.draw(Draw.z(), () -> {
+                        float progress = mount.progress / deployTime;
+                        Draw.draw(Draw.z(), () -> PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, 0f, 0.1f, progress));
+                        for(int i = 0; i < 4; i++){
+                            float rot = i * 90 - 45f;
+                            Draw.draw(Draw.z(), () -> PMDrawf.materialize(mount.x, mount.y, fullArm, parent.team.color, rot, 0.1f, progress));
+                        }
+                    });
+                }
+
+                @Override
+                public void drawPayload(ModulePayloadBuild payload){
+                    float x = payload.x,
+                        y = payload.y;
+
+                    Draw.rect(region, x, y);
+                    for(int i = 0; i < 4; i++){
+                        float rot = i * 90 - 45f;
+                        Draw.rect(fullArm, x, y, rot);
+                    }
                 }
             };
         }};

@@ -9,19 +9,16 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.part.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.graphics.*;
 import progressed.util.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class MinigunTurret extends ItemTurret{
     public float windupSpeed = 0.00625f, windDownSpeed = 0.0125f, minFiringSpeed = 3f, logicSpeedScl = 0.25f, maxSpeed = 30f;
@@ -37,6 +34,7 @@ public class MinigunTurret extends ItemTurret{
             @Override
             public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
                 super.getRegionsToOutline(block, out);
+                out.add(region);
                 out.add(barrel);
             }
 
@@ -54,14 +52,16 @@ public class MinigunTurret extends ItemTurret{
 
                 Vec2 v = Tmp.v1;
 
+                Draw.z(Layer.turret- 0.01f);
+                Draw.rect(outline, build.x, build.y, build.drawrot());
                 for(int i = 0; i < 4; i++){
-                    Draw.z(Layer.turret - 0.1f);
+                    Draw.z(Layer.turret - 0.01f);
                     v.trns(m.rotation - 90f, barWidth * Mathf.cosDeg(m.spin - 90 * i), barHeight * Mathf.sinDeg(m.spin - 90 * i)).add(m.recoilOffset);
                     Draw.rect(barrelOutline, m.x + v.x, m.y + v.y, m.drawrot());
-                    Draw.z(Layer.turret - 0.05f - Mathf.sinDeg(m.spin - 90 * i) / 100f);
+                    Draw.z(Layer.turret - 0.005f - Mathf.sinDeg(m.spin - 90 * i) / 1000f);
                     Draw.rect(barrel, m.x + v.x, m.y + v.y, m.drawrot());
                     if(m.heats[i] > 0.001f){
-                        Drawf.additive(heat, heatColor.write(Tmp.c1).a(m.heat), m.x + m.recoilOffset.x, m.y + m.recoilOffset.y, m.drawrot(), Draw.z());
+                        Drawf.additive(heat, heatColor.write(Tmp.c1).a(m.heat), m.x + v.x, m.y + v.y, m.drawrot(), Layer.turretHeat);
                     }
                 }
 

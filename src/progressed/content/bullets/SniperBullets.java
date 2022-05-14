@@ -1,13 +1,10 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
-import arc.math.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.physical.*;
-import progressed.graphics.*;
 
 public class SniperBullets{
     public static BulletType
@@ -77,8 +74,6 @@ public class SniperBullets{
         }};
 
         sniperBoltTenelium = new CritBulletType(13f, 800f){
-            final float fragInacc = 5f;
-
             {
                 lifetime = 23f;
                 knockback = 4f;
@@ -89,12 +84,19 @@ public class SniperBullets{
                 critMultiplier = 3f;
                 despawnHitEffects = false;
 
+                setDefaults = false;
                 fragOnHit = false;
                 fragBullets = 5;
                 fragVelocityMin = 0.8f;
                 fragVelocityMax = 1.2f;
                 fragRandomSpread = 30f;
                 fragBullet = sniperBoltTenliumFrag;
+            }
+
+            @Override
+            public void removed(Bullet b){
+                super.removed(b);
+                if(!((CritBulletData)b.data).despawned) createFrags(b, b.x, b.y);
             }
         };
     }

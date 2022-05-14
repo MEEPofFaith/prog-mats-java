@@ -12,15 +12,12 @@ import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.*;
 import progressed.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.ShieldProjector.*;
-
-import static mindustry.Vars.*;
 
 /** @author MEEP */
 public class BallisticMissileBulletType extends BasicBulletType{

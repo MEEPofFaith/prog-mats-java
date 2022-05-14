@@ -1,12 +1,10 @@
 package progressed.world.blocks.defence.turret.modular.modules.turret;
 
 import arc.math.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.type.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.modules.*;
@@ -58,7 +56,11 @@ public class ReloadTurretModule extends BaseTurretModule{
     }
 
     public boolean shouldReload(ModularTurretBuild parent, TurretMount mount){
-        return !mount.charging && !mount.isShooting && powerValid(parent);
+        return !charging(mount) && mount.queuedBullets == 0 && powerValid(parent);
+    }
+
+    public boolean charging(TurretMount mount){
+        return false;
     }
 
     @Override

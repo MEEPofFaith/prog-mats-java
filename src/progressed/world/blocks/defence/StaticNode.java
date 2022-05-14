@@ -19,7 +19,6 @@ import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;

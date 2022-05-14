@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.game.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
@@ -14,6 +13,7 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
 import static mindustry.Vars.*;
+import static mindustry.graphics.Drawf.light;
 import static mindustry.graphics.Drawf.*;
 import static progressed.graphics.PMDrawf.*;
 import static progressed.util.PMUtls.*;

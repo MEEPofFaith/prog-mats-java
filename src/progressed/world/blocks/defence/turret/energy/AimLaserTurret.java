@@ -6,7 +6,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -20,14 +19,16 @@ import progressed.graphics.*;
 import progressed.util.*;
 
 public class AimLaserTurret extends PowerTurret{
-    public float aimStroke = 2f, aimRnd;
+    public float aimStroke = 1.5f, aimRnd;
     public float chargeVolume = 1f, minPitch = 1f, maxPitch = 1f, shootSoundVolume = 1f;
     public float warningDelay, warningVolume = 1f;
-    public Color aimColor = Pal.remove, chargeColor = Pal.lancerLaser;
-    public Sound warningSound = Sounds.none;
+    public Color aimColor = Pal.remove;
+    public Sound chargingSound = Sounds.none, warningSound = Sounds.none;
 
     public AimLaserTurret(String name){
         super(name);
+
+        moveWhileCharging = true;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class AimLaserTurret extends PowerTurret{
 
     @Override
     public void init(){
-        clipSize = Math.max(clipSize, (shootType.range + shootY + aimRnd + aimStroke * 2f + 3f) * 2f);
+        clipSize = Math.max(clipSize, (shootType.range + shootY + aimStroke * 2f + 3f) * 2f);
         super.init();
     }
 
@@ -52,17 +53,11 @@ public class AimLaserTurret extends PowerTurret{
             () -> entity.team.color,
             () -> Mathf.clamp(entity.reloadCounter / reload)
         ));
-
-        addBar("pm-charge", (AimLaserTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-charge", PMUtls.stringsFixed(Mathf.clamp(entity.charge) * 100f)),
-            () -> chargeColor,
-            () -> entity.charge
-        ));
     }
 
     public class AimLaserTurretBuild extends PowerTurretBuild{
-        protected float charge, drawCharge, alpha;
-        protected PitchedSoundLoop sound = new PitchedSoundLoop(chargeSound, chargeVolume);
+        public float charge;
+        protected PitchedSoundLoop sound = new PitchedSoundLoop(chargingSound, chargeVolume);
         
         public boolean isAI(){
             return !(isControlled() || (logicControlled() && logicShooting));
@@ -73,13 +68,12 @@ public class AimLaserTurret extends PowerTurret{
             super.draw();
 
             //a n x i e t y
-            if(alpha > 0.01f){
+            if(warmup() > 0.01f){
                 Draw.mixcol();
 
                 Draw.z(Layer.bullet - 0.01f);
 
-                float c = Interp.pow2Out.apply(drawCharge);
-                float a = Interp.pow2Out.apply(alpha);
+                float a = Interp.pow2Out.apply(warmup());
 
                 Lines.stroke(aimStroke * a, aimColor);
 
@@ -94,10 +88,10 @@ public class AimLaserTurret extends PowerTurret{
                 }else{
                     Tmp.v2.trns(rotation, dst);
                 }
-                Tmp.v3.rnd(Mathf.random(aimRnd * (1f - c)));
-                Tmp.v4.set(Tmp.v2).add(Tmp.v3);
+                Tmp.v3.rnd(Mathf.random(aimRnd * (1f - a)));
+                Tmp.v2.add(Tmp.v3);
 
-                PMDrawf.vecLine(x, y, Tmp.v1, Tmp.v4, false);
+                PMDrawf.vecLine(x, y, Tmp.v1, Tmp.v2, false);
 
                 if(isAI() && target instanceof Unit u){
                     Draw.alpha(0.75f);
@@ -113,20 +107,45 @@ public class AimLaserTurret extends PowerTurret{
                 }
 
                 Fill.circle(x + Tmp.v1.x, y + Tmp.v1.y, aimStroke / 2f * a);
-                Fill.circle(x + Tmp.v4.x, y + Tmp.v4.y, aimStroke / 2f * a);
-                Lines.circle(x + Tmp.v4.x, y + Tmp.v4.y, aimStroke * 2f * (0.5f + a / 2f));
+                Fill.circle(x + Tmp.v2.x, y + Tmp.v2.y, aimStroke / 2f * a);
+                Lines.circle(x + Tmp.v2.x, y + Tmp.v2.y, aimStroke * 2f * (0.5f + a / 2f));
 
                 Draw.color();
             }
         }
 
+        protected void shoot(BulletType type){
+            float
+                bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+
+            if(shoot.firstShotDelay > 0){
+                chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+                type.chargeEffect.at(bulletX, bulletY, rotation, this);
+                Time.run(shoot.firstShotDelay - warningDelay, () -> warningSound.at(x, y, 1f, warningVolume));
+            }
+
+            shoot.shoot(totalShots, (xOffset, yOffset, angle, delay, mover) -> {
+                queuedBullets ++;
+                if(delay > 0f){
+                    Time.run(delay, () -> bullet(type, xOffset, yOffset, angle, mover));
+                }else{
+                    bullet(type, xOffset, yOffset, angle, mover);
+                }
+                totalShots ++;
+            });
+
+            if(consumeAmmoOnce){
+                useAmmo();
+            }
+        }
+
         @Override
         public void updateTile(){
-            alpha = Mathf.lerpDelta(alpha, 0f, 0.05f);
             if(charging()){
                 charge = Mathf.clamp(charge + Time.delta / shoot.firstShotDelay);
-                alpha = Math.max(alpha, charge);
-                drawCharge = charge;
+            }else{
+                charge = 0f;
             }
 
             sound.update(x, y, chargeVolume * charge, Mathf.lerp(minPitch, maxPitch, charge));
@@ -135,26 +154,15 @@ public class AimLaserTurret extends PowerTurret{
         }
 
         @Override
+        protected void updateReload(){
+            if(charging()) return;
+            super.updateReload();
+        }
+
+        @Override
         protected void updateCooling(){
-            if(!charging()){
-                super.updateCooling();
-            }
-        }
-        @Override
-        protected void updateShooting(){
-            if(!charging()){
-                super.updateShooting();
-            }
-        }
-
-        @Override
-        public boolean shouldTurn(){
-            return true;
-        }
-
-        @Override
-        protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
-            drawCharge = 0f;
+            if(charging()) return;
+            super.updateCooling();
         }
 
         @Override

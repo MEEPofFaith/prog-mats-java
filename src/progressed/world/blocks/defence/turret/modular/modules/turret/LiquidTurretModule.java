@@ -84,24 +84,6 @@ public class LiquidTurretModule extends TurretModule{
     }
 
     @Override
-    protected void effects(TurretMount mount, BulletType type){
-        float x = mount.x, y = mount.y;
-
-        Effect fshootEffect = shootEffect == Fx.none ? type.shootEffect : shootEffect;
-        Effect fsmokeEffect = smokeEffect == Fx.none ? type.smokeEffect : smokeEffect;
-
-        fshootEffect.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, mount.rotation, mount.liquids.current().color);
-        fsmokeEffect.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, mount.rotation, mount.liquids.current().color);
-        shootSound.at(x + BaseModule.shootOffset.x, y + BaseModule.shootOffset.y, Mathf.random(0.9f, 1.1f));
-
-        if(shake > 0){
-            Effect.shake(shake, shake, x, y);
-        }
-
-        mount.curRecoil = 1f;
-    }
-
-    @Override
     public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
         if(parent.cheating()) return ammoTypes.get(mount.liquids.current());
         BulletType type = ammoTypes.get(mount.liquids.current());

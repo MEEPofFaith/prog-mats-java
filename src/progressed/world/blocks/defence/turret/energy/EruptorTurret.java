@@ -5,9 +5,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
@@ -47,16 +45,6 @@ public class EruptorTurret extends PowerTurret{
         stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
-    @Override
-    public void setBars(){
-        super.setBars();
-        addBar("pm-reload", (EruptorTurretBuild entity) -> new Bar(
-            () -> bundle.format("bar.pm-reload", PMUtls.stringsFixed(Mathf.clamp(entity.reloadCounter / reload) * 100f)),
-            () -> entity.team.color,
-            () -> Mathf.clamp(entity.reloadCounter / reload)
-        ));
-    }
-
     public class EruptorTurretBuild extends PowerTurretBuild{
         protected Bullet bullet;
         protected float bulletLife, lengthScl;
@@ -84,29 +72,22 @@ public class EruptorTurret extends PowerTurret{
 
             if(bulletLife > 0 && bullet != null){
                 wasShooting = true;
+                curRecoil = 1f;
+                heat = 1f;
+
                 Tmp.v1.trns(rotation, lengthScl * range, 0f);
                 bullet.set(x + Tmp.v1.x, y + Tmp.v1.y);
                 bullet.time(0f);
-                curRecoil = 1f;
-                heat = 1f;
                 bulletLife -= Time.delta / Math.max(efficiency, 0.00001f);
                 lengthScl += Time.delta / shootDuration;
                 if(timer(beamTimer, beamInterval)){
-                    recoilOffset.trns(rotation, shootY - curRecoil);
-                    UtilFx.lightning.at(x + recoilOffset.x, y + recoilOffset.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
+                    Tmp.v1.trns(rotation, shootY - curRecoil);
+                    UtilFx.lightning.at(x + Tmp.v1.x, y + Tmp.v1.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
                     beamEffect.at(bullet, rotation);
                 }
                 if(bulletLife <= 0f){
                     bullet = null;
                     lengthScl = 0f;
-                }
-            }else if(reloadCounter < reload && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
-                float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
-                coolant.update(this);
-                reloadCounter += coolant.amount * edelta() * capacity * coolantMultiplier;
-
-                if(Mathf.chance(0.06 * coolant.amount)){
-                    coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 }
             }
         }
@@ -117,8 +98,21 @@ public class EruptorTurret extends PowerTurret{
         }
 
         @Override
+        protected void updateReload(){
+            if(bulletLife > 0 && bullet != null){
+                return;
+            }
+
+            super.updateReload();
+        }
+
+        @Override
         protected void updateCooling(){
-            //Copied into updateTile so that it isn't always running.
+            if(bulletLife > 0 && bullet != null){
+                return;
+            }
+
+            super.updateCooling();
         }
         @Override
         protected void updateShooting(){

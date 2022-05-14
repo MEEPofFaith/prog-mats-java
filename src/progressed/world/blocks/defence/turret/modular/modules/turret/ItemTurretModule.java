@@ -10,6 +10,7 @@ import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
@@ -117,7 +118,7 @@ public class ItemTurretModule extends TurretModule{
     @Override
     public boolean acceptItem(Item item, BaseMount mount){
         if(!(mount instanceof TurretMount m)) return false;
-        return isDeployed(mount) && ammoTypes.get(item) != null && m.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
+        return isDeployed(m) && ammoTypes.get(item) != null && m.totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
     }
 
     @Override

@@ -8,7 +8,6 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
 
@@ -108,9 +107,7 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void despawned(Bullet b){
-        if(b.data instanceof CritBulletData data){
-            data.despawned = true;
-        }
+        ((CritBulletData)b.data).despawned = true;
         super.despawned(b);
     }
 
@@ -148,18 +145,43 @@ public class CritBulletType extends BasicBulletType{
         createSplashDamage(b, x, y);
 
         for(int i = 0; i < lightning; i++){
-            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+            Lightning.create(b, lightningColor, (lightningDamage < 0 ? damage : lightningDamage) * critBonus, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
         }
     }
 
     @Override
     public void createFrags(Bullet b, float x, float y){
         if(fragBullet != null){
+            boolean crit = ((CritBulletData)b.data).crit;
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
                 Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof CritBulletType) f.data = new CritBulletData(((CritBulletData)b.data).crit);
+                if(f.type instanceof CritBulletType) f.data = new CritBulletData(crit);
+            }
+        }
+    }
+
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y){
+        float critBonus = ((CritBulletData)b.data).crit ? this.critMultiplier : 1f;
+
+        if(splashDamageRadius > 0 && !b.absorbed){
+            Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier() * critBonus, false, collidesAir, collidesGround, scaledSplashDamage, b);
+
+            if(status != StatusEffects.none){
+                Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+            }
+
+            if(heals()){
+                indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
+                    healEffect.at(other.x, other.y, 0f, healColor, other.block);
+                    other.heal((healPercent / 100f * other.maxHealth() + healAmount) * critBonus);
+                });
+            }
+
+            if(makeFire){
+                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
             }
         }
     }

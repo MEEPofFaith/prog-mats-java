@@ -472,7 +472,7 @@ public class PMBlocks{
             shootDuration = 90f;
             range = 240f;
             reload = 90f;
-            shootY = 5f / 4f;
+            shootY = -0.25f;
             recoil = 3f;
             shootType = new MagmaBulletType(62f, 14f){{
                 shake = 1f;
@@ -498,7 +498,7 @@ public class PMBlocks{
             shootDuration = 120f;
             range = 280f;
             reload = 150f;
-            shootY = 11f / 4f;
+            shootY = 0.25f;
             rotateSpeed = 3.5f;
             recoil = 4f;
             beamStroke = 4f;
@@ -601,7 +601,6 @@ public class PMBlocks{
             rotateSpeed = 2.5f;
             recoil = 5f;
             cooldownTime = 300f;
-            shoot.firstShotDelay = 150f;
             shootSound = Sounds.railgun;
 
             coolant = consumeCoolant(0.2f);
@@ -910,7 +909,7 @@ public class PMBlocks{
             shoot.firstShotDelay = EnergyFx.aimChargeBegin.lifetime;
 
             heatColor = Pal.lancerLaser;
-            chargeSound = Sounds.techloop;
+            chargingSound = Sounds.techloop;
             shootSound = Sounds.laserblast;
             chargeVolume = 2f;
             minPitch = 0.75f;
@@ -921,7 +920,8 @@ public class PMBlocks{
             warningSound = PMSounds.sentinelWarning;
 
             recoil = 3f;
-            aimRnd = 16f;
+            aimRnd = 12f;
+            shootWarmupSpeed = 0.03f;
 
             shootType = PMBullets.sentinelLaser;
             unitSort = UnitSorts.strongest;
@@ -980,7 +980,7 @@ public class PMBlocks{
             shootY = 0f;
             cooldownTime = 300f;
             shootWarmupSpeed = 0.05f;
-            minWarmup = 0.75f;
+            minWarmup = 0.9f;
             heatColor = Pal.surge;
             shootSound = Sounds.laserblast;
             rotateSpeed = 2f;
@@ -995,31 +995,22 @@ public class PMBlocks{
             drawer = new DrawTurret(){{
                 parts.addAll(
                     new RegionPart("-cell"){{
-                        progress = PartProgress.reload.inv();
+                        outline = false;
+                        progress = heatProgress = PartProgress.reload.inv();
                         color = transSurge;
-                        colorTo = Pal.surge;
+                        colorTo = heatColor = Pal.surge;
                     }},
-                    new RegionPart("-side-l"){{
+                    new RegionPart("-side"){{
                         progress = PartProgress.warmup.curve(Interp.pow2Out);
                         moves.add(new PartMove(PartProgress.warmup.curve(Interp.pow5In), 0f, -3f, 0f));
                         moveX = -9f / 4f;
+                        mirror = true;
                         children.add(
-                            new RegionPart("-side-cell-l"){{
-                                progress = PartProgress.reload.inv();
+                            new RegionPart("-side-cell"){{
+                                outline = false;
+                                progress = heatProgress = PartProgress.reload.inv();
                                 color = transSurge;
-                                colorTo = Pal.surge;
-                            }}
-                        );
-                    }},
-                    new RegionPart("-side-r"){{
-                        progress = PartProgress.warmup.curve(Interp.pow2Out);
-                        moves.add(new PartMove(PartProgress.warmup.curve(Interp.pow5In), 0f, -3f, 0f));
-                        moveX = 9f / 4f;
-                        children.add(
-                            new RegionPart("-side-cell-r"){{
-                                progress = PartProgress.smoothReload.inv();
-                                color = transSurge;
-                                colorTo = Pal.surge;
+                                colorTo = heatColor = Pal.surge;
                             }}
                         );
                     }},
@@ -1752,7 +1743,7 @@ public class PMBlocks{
             effectLength = endLength - 1f;
         }};
 
-        testTurret = new FreeTurret("test-turret"){{
+        testTurret = new PowerTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             size = 2;
             health = 69420;

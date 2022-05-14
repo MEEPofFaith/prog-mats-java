@@ -93,10 +93,7 @@ public class PointDefenceModule extends ReloadTurretModule{
             rot = mount.rotation - 90f;
 
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> {
-                PMDrawf.blockBuildCenter(x, y, region, rot, mount.progress / deployTime);
-                if(buildTop) PMDrawf.blockBuildCenter(x, y, topRegion, rot, mount.progress / deployTime);
-            });
+            drawDeploy(parent, m);
             return;
         }
 

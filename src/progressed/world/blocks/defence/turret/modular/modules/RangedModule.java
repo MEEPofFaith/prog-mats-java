@@ -34,6 +34,10 @@ public class RangedModule extends BaseModule{
 
     @Override
     public void drawHighlight(ModularTurretBuild parent, BaseMount mount){
-        Drawf.dashCircle(mount.x, mount.y, range, parent.team.color);
+        Drawf.dashCircle(mount.x, mount.y, range(mount), parent.team.color);
+    }
+
+    public float range(BaseMount mount){
+        return range;
     }
 }

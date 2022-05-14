@@ -11,10 +11,8 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
@@ -60,6 +58,7 @@ public class GeomancyTurret extends PowerTurret{
             @Override
             public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
                 super.getRegionsToOutline(block, out);
+                out.add(region);
                 out.add(armRegions);
             }
 
@@ -75,8 +74,8 @@ public class GeomancyTurret extends PowerTurret{
 
                 Drawf.shadow(region, build.x - turret.elevation, build.y - turret.elevation, tb.drawrot());
                 for(int arm : Mathf.zeroOne){
-                    tb.recoilOffset.trns(tb.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(tb, arm));
-                    Drawf.shadow(armRegions[arm], build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
+                    Tmp.v1.trns(tb.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(tb, arm));
+                    Drawf.shadow(armRegions[arm], build.x + Tmp.v1.x - turret.elevation, build.y + Tmp.v1.y - turret.elevation, tb.drawrot());
                 }
 
                 Draw.z(Layer.turret);
@@ -89,14 +88,15 @@ public class GeomancyTurret extends PowerTurret{
 
             public void drawArms(GeomancyTurretBuild build){
                 for(int arm : Mathf.zeroOne){
-                    build.recoilOffset.trns(build.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(build, arm));
+                    Tmp.v1.trns(build.drawrot(), armX * Mathf.signs[arm], armY - armRecoil(build, arm));
                     Draw.z(Layer.turret - 0.01f);
-                    Draw.rect(armOutlines[arm], build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
+                    Draw.rect(outline, build.x, build.y, build.drawrot());
+                    Draw.rect(armOutlines[arm], build.x + Tmp.v1.x, build.y + Tmp.v1.y, build.drawrot());
                     Draw.z(Layer.turret);
-                    Draw.rect(armRegions[arm], build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
+                    Draw.rect(armRegions[arm], build.x + Tmp.v1.x, build.y + Tmp.v1.y, build.drawrot());
 
                     if(build.armHeat[arm] <= 0.00001f || !armHeatRegions[arm].found()) continue;
-                    Drawf.additive(armHeatRegions[arm], heatColor.write(Tmp.c1).a(build.heat), build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot(), Layer.turretHeat);
+                    Drawf.additive(armHeatRegions[arm], heatColor.write(Tmp.c1).a(build.armHeat[arm]), build.x + Tmp.v1.x, build.y + Tmp.v1.y, build.drawrot(), Layer.turretHeat);
                 }
             }
 
@@ -153,7 +153,7 @@ public class GeomancyTurret extends PowerTurret{
             strikePos.set(targetPos).sub(x, y).limit(range).add(x, y); //Constrain to range
             handleBullet(type.create(this, team, strikePos.x, strikePos.y, 0f), xOffset, yOffset, angleOffset);
 
-            armRecoil[totalShots % 2] = armHeat[totalShots % 2] = 1f;
+            armRecoil[totalShots % 2] = armHeat[totalShots % 2] = heat = 1f;
 
             Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
             float
@@ -170,27 +170,6 @@ public class GeomancyTurret extends PowerTurret{
             if(t != null && t.floor() != null){
                 slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, t.floor().mapColor);
             }
-        }
-
-        protected void effects(){
-            Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY);
-            Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
-            Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
-
-            Floor f = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y).floor();
-            if(f != null){
-                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, f.mapColor);
-            }
-
-            fshootEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
-            fsmokeEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation);
-            shootSound.at(x + Tmp.v1.x, y + Tmp.v1.y, Mathf.random(0.9f, 1.1f));
-
-            if(shake > 0){
-                Effect.shake(shake, shake, this);
-            }
-
-            curRecoil = 1f;
         }
 
         @Override

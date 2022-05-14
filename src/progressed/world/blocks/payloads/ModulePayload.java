@@ -3,9 +3,7 @@ package progressed.world.blocks.payloads;
 import arc.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 
 public class ModulePayload extends Block{

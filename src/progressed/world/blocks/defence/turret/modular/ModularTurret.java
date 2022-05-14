@@ -24,7 +24,6 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;

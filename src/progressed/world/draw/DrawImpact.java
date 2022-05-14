@@ -8,7 +8,6 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.GenericCrafter.*;
 import mindustry.world.draw.*;
 import progressed.world.blocks.crafting.AccelerationCrafter.*;
 

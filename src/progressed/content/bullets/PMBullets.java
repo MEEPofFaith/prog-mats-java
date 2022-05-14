@@ -204,8 +204,10 @@ public class PMBullets{
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.explosionbig;
             hitSoundVolume = 4f;
-            //TODO merge
-            chargeEffect = new MultiEffect(EnergyFx.aimChargeBegin, EnergyFx.aimCharge);
+            chargeEffect = EnergyFx.aimChargeBegin;
+
+            //Calculate ahead of time for Sentinel's init() checking the bullet's range.
+            range = calculateRange();
         }};
 
         harmanuke = new BasicBulletType(){{

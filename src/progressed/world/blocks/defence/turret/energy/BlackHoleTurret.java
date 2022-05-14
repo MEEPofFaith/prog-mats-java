@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.math.Interp.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;

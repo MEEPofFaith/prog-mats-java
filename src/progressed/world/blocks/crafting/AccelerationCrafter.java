@@ -7,7 +7,6 @@ import arc.util.io.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.consumers.*;
 
 public class AccelerationCrafter extends GenericCrafter{
     public float accelerationSpeed = 0.03f, decelerationSpeed = 0.05f;

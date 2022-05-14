@@ -16,7 +16,6 @@ import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
-import progressed.graphics.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -325,7 +324,7 @@ public class ModuleBullets{
         reboundTitanium = new BoomerangBulletType(5f, 15f){{
             lifetime = 120f;
             width = height = 10.5f;
-            lightColor = backColor = Items.titanium.color;
+            hitColor = lightColor = backColor = Items.titanium.color;
             riseStart = 3f;
             riseEnd = 4f;
             layer = Layer.turret + 0.015f;
@@ -336,30 +335,22 @@ public class ModuleBullets{
             pierceCap = 4;
         }};
 
-        reboundSurge = new BoomerangBulletType(5f, 84f){
-            {
-                lifetime = 134f;
-                width = height = 12f;
-                lightColor = backColor = Pal.surge;
-                riseStart = 3f;
-                riseEnd = 4f;
-                layer = Layer.turret + 0.015f;
-                targetLayer = Layer.bullet - 1f;
-                shootEffect = smokeEffect = Fx.none;
-                ammoMultiplier = 2;
-                pierceCap = 6;
-                lightning = 1;
-                lightningLength = 7;
-                lightningDamage = 26f;
-            }
-
-            @Override
-            public void init(){
-                super.init();
-
-                despawnHit = false; //bruh
-            }
-        };
+        reboundSurge = new BoomerangBulletType(5f, 84f){{
+            lifetime = 134f;
+            width = height = 12f;
+            hitColor = lightColor = backColor = Pal.surge;
+            riseStart = 3f;
+            riseEnd = 4f;
+            layer = Layer.turret + 0.015f;
+            targetLayer = Layer.bullet - 1f;
+            shootEffect = smokeEffect = Fx.none;
+            ammoMultiplier = 2;
+            pierceCap = 6;
+            lightning = 1;
+            lightningLength = 7;
+            lightningDamage = 26f;
+            setDefaults = false;
+        }};
 
         trifectaMissile = new RocketBulletType(2.5f, 30f, "prog-mats-trifecta-missile"){{
             lifetime = 40f;
@@ -488,6 +479,7 @@ public class ModuleBullets{
                 lightOpacity = 0.6f;
                 lightColor = Pal.lancerLaser;
                 shootEffect = smokeEffect = Fx.none;
+                chargeEffect = ModuleFx.jupiterCharge;
                 hitEffect = ModuleFx.jupiterHit;
                 despawnEffect = ModuleFx.jupiterDespawn;
                 trailEffect = ModuleFx.jupiterTrail;

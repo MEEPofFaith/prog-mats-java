@@ -89,7 +89,7 @@ public class BaseModule implements Cloneable{
     public void init(){
         //small = 1, medium = 2, large = 3
         if(elevation < 0) elevation = size() / 2f;
-        if(deployTime < 0) deployTime = size() * 2f * 60f;
+        if(deployTime < 0) deployTime = size() * 60f;
         clipSize = Math.max(clipSize, size() * tilesize);
 
         consumers = consumeBuilder.toArray(Consume.class);
@@ -243,7 +243,7 @@ public class BaseModule implements Cloneable{
 
     public void draw(ModularTurretBuild parent, BaseMount mount){
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
+            drawDeploy(parent, mount);
             return;
         }
 
@@ -251,6 +251,12 @@ public class BaseModule implements Cloneable{
         applyColor(parent, mount);
         Draw.rect(region, mount.x, mount.y);
         Draw.mixcol();
+    }
+
+    public void drawDeploy(ModularTurretBuild parent, BaseMount mount){
+        Draw.draw(Draw.z(), () -> {
+            PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime);
+        });
     }
 
     public void drawHighlight(ModularTurretBuild parent, BaseMount mount){}

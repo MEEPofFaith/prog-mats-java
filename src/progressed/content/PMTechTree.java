@@ -6,7 +6,6 @@ import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import progressed.content.blocks.*;
 import progressed.util.*;
 
 import static mindustry.content.Blocks.*;

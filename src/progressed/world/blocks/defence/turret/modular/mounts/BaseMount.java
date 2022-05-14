@@ -36,6 +36,7 @@ public class BaseMount implements Position{
         this.mountNumber = swapNumber = mountNumber;
         updatePos(parent);
 
+        if(module.hasLiquids) liquids = new LiquidModule();
         if(module.loopSound != Sounds.none) sound = new SoundLoop(module.loopSound, module.loopSoundVolume);
     }
 

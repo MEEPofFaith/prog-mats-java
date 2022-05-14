@@ -22,7 +22,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.audio.*;

@@ -62,7 +62,7 @@ public class ChargeModule extends BaseModule{
     @Override
     public void draw(ModularTurretBuild parent, BaseMount mount){
         if(mount.progress < deployTime){
-            Draw.draw(Draw.z(), () -> PMDrawf.blockBuildCenter(mount.x, mount.y, region, mount.rotation - 90, mount.progress / deployTime));
+            drawDeploy(parent, mount);
             return;
         }
 
