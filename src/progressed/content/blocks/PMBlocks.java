@@ -11,6 +11,7 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
+import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -992,27 +993,42 @@ public class PMBlocks{
             consumePower(30f);
 
             Color transSurge = Pal.surge.cpy().a(0);
+            PartProgress[] p = {PartProgress.reload.inv().curve(0f, 0.3f),
+                PartProgress.reload.inv().curve(0.3f, 0.3f),
+                PartProgress.reload.inv().curve(0.7f, 0.1f),
+                PartProgress.reload.inv().curve(0.8f, 0.1f),
+                PartProgress.reload.inv().curve(0.9f, 0.1f)
+            };
             drawer = new DrawTurret(){{
+                for(int i = 0; i < 5; i++){
+                    int ii = i;
+                    parts.add(
+                        new RegionPart("-cell-" + ii){{
+                            outline = false;
+                            progress = heatProgress = p[ii];
+                            color = transSurge;
+                            colorTo = heatColor = Pal.surge;
+                        }}
+                    );
+                }
+
                 parts.addAll(
-                    new RegionPart("-cell"){{
-                        outline = false;
-                        progress = heatProgress = PartProgress.reload.inv();
-                        color = transSurge;
-                        colorTo = heatColor = Pal.surge;
-                    }},
                     new RegionPart("-side"){{
                         progress = PartProgress.warmup.curve(Interp.pow2Out);
                         moves.add(new PartMove(PartProgress.warmup.curve(Interp.pow5In), 0f, -3f, 0f));
                         moveX = -9f / 4f;
                         mirror = true;
-                        children.add(
-                            new RegionPart("-side-cell"){{
-                                outline = false;
-                                progress = heatProgress = PartProgress.reload.inv();
-                                color = transSurge;
-                                colorTo = heatColor = Pal.surge;
-                            }}
-                        );
+                        for(int i = 2; i < 5; i++){
+                            int ii = i;
+                            children.add(
+                                new RegionPart("-side-cell-" + (ii - 2)){{
+                                    outline = false;
+                                    progress = heatProgress = p[ii];
+                                    color = transSurge;
+                                    colorTo = heatColor = Pal.surge;
+                                }}
+                            );
+                        }
                     }},
                     new RegionPart("-cross"){{
                         heatColor = Pal.surge;
