@@ -1,5 +1,6 @@
 package progressed.content.bullets;
 
+import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -350,6 +351,7 @@ public class PayloadBullets{
         //aaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         ohno = (BallisticMissileBulletType)trinityCluster.copy();
         ohno.sprite = "prog-mats-send-help";
+        ohno.targetColor = Color.red;
 
         RocketBulletType cease = (RocketBulletType)arbalestIncend.copy();
         cease.layer = Layer.bullet - 1;

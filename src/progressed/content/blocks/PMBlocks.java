@@ -652,8 +652,8 @@ public class PMBlocks{
                 health = 80 * size * size;
                 range = 17f * 8f;
                 shootY = 21f / 4f;
-
                 reload = 120f;
+                buildingFilter = b -> false; //Don't shoot buildings
 
                 shoot = new ShootSpread(){{
                     shots = 4;
@@ -1527,6 +1527,8 @@ public class PMBlocks{
                 };
 
                 activate = () -> all.contains(Healthc::damaged);
+
+                consumePower(7f);
             }
 
             @Override
@@ -1549,6 +1551,9 @@ public class PMBlocks{
                 height = 0.125f;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
+
+
+                consumePower(3f);
             }
 
             @Override
@@ -1573,6 +1578,8 @@ public class PMBlocks{
                 baseColor = Pal.redderDust;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
+
+                consumePower(10f);
             }
 
 

@@ -13,6 +13,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.entities.units.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -22,7 +23,6 @@ public class EffectZone extends Block{
 
     public float reload = 20f;
     public float range = 10f * 8f;
-    public float powerUse = 1f;
     public boolean affectEnemyTeam, affectOwnTeam = true;
 
     public Color
@@ -100,7 +100,11 @@ public class EffectZone extends Block{
 
                 all.clear();
                 Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
-                    if(!other.dead && (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)) all.add(other);
+                    if(
+                        !other.dead &&
+                        !(other instanceof SwordUnit) &&
+                        (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
+                    ) all.add(other);
                 });
                 active = activate.get();
 
