@@ -28,7 +28,7 @@ void main(){
     float y = 1.0 - coords.y;
     vec4 c = texture2D(u_texture, v_texCoords.xy);
     if(y > top){
-        c.a = 0;
+        c.a = 0.0;
     }else if(y > bottom){
         c.rgb = u_color.rgb;
     }
