@@ -3,6 +3,9 @@ package progressed;
 import arc.*;
 import arc.audio.*;
 import arc.func.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -31,13 +34,12 @@ import static mindustry.Vars.*;
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static ModuleInfoDialog moduleInfoDialog;
-    public static PMSettings PMSettings = new PMSettings();
     public static Seq<BulletData> allBullets = new Seq<>();
 
     public ProgMats(){
         super();
         Events.on(ClientLoadEvent.class, e -> {
-            PMSettings.init();
+            loadSettings();
             PMPal.init();
         });
 
@@ -124,6 +126,17 @@ public class ProgMats extends Mod{
         PMTechTree.load();
     }
 
+    void loadSettings(){
+        ui.settings.addCategory(bundle.get("setting.pm-title"), "prog-mats-settings-icon", t -> {
+            t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
+            t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
+            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
+            t.checkPref("pm-tesla-range", true);
+            t.checkPref("pm-sandbox-everything", false);
+            t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
+        });
+    }
+
     public static boolean farting(){
         return settings.getBool("pm-farting", false);
     }
@@ -162,17 +175,15 @@ public class ProgMats extends Mod{
     }
 
     public static void setupEveryBullets(Turret base){
-        content.units().each(u -> {
-            u.weapons.each(w -> {
-                if(w.bullet != null && !w.bullet.killShooter){
-                    BulletType bul = w.bullet;
-                    BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
-                    if(!allBullets.contains(data)){
-                        allBullets.add(data);
-                    }
+        content.units().each(u -> u.weapons.each(w -> {
+            if(w.bullet != null && !w.bullet.killShooter){
+                BulletType bul = w.bullet;
+                BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
+                if(!allBullets.contains(data)){
+                    allBullets.add(data);
                 }
-            });
-        });
+            }
+        }));
         content.blocks().each(b -> {
             if(b != base && b instanceof Turret){
                 if(b instanceof LaserTurret block && block.shootType != null){
