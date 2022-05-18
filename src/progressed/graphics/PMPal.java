@@ -17,7 +17,7 @@ public class PMPal{
     heal = Color.valueOf("84f491"),
     overdrive = valueOf("feb380"),
 
-    darkOutline = Color.valueOf("2e3142"),
+    outline = valueOf("404049"),
 
     magma = valueOf("ff9c5a"),
 

@@ -52,6 +52,7 @@ public class SwordUnitType extends UnitType{
         hidden = true;
         drawCell = false;
         engineLayer = Layer.effect;
+        outlineColor = PMPal.outline; //Block outline color
 
         speed = 8f;
         rotateSpeed = 3f;
@@ -102,8 +103,8 @@ public class SwordUnitType extends UnitType{
 
         if(sword.driftTrails == null){
             sword.driftTrails = new DriftTrail[]{
-                new DriftTrail(trailLength, unit, trailY),
-                new DriftTrail(trailLength, unit, trailY)
+                new DriftTrail(trailLength),
+                new DriftTrail(trailLength)
             };
         }
 

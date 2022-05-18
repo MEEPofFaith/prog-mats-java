@@ -166,7 +166,7 @@ public class SmartDrill extends Drill{
 
         @Override
         public boolean shouldConsume(){
-            return super.shouldConsume() && isDrilling();
+            return enabled && isDrilling() && items.get(dominantItem) < itemCapacity;
         }
 
         @Override

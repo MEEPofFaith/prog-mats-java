@@ -210,7 +210,7 @@ public class PMTechTree{
                 new SectorComplete(SectorPresets.overgrowth),
                 new Research(incision)
             ), () -> {
-                node(ball, Seq.with(
+                node(masquerade, Seq.with(
                     new SectorComplete(SectorPresets.nuclearComplex)
                 ));
             });

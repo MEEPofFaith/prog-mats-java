@@ -84,7 +84,7 @@ public class PMBlocks{
     incision, fissure,
 
     //Swords
-    dance, ball,
+    dance, masquerade,
 
     //Why do I hear anxiety piano
     sentinel,
@@ -840,9 +840,10 @@ public class PMBlocks{
 
             buildPowerUse = 4f;
             attackPowerUse = 6.5f;
+            buildY = 13f / 4f;
         }};
 
-        ball = new SwordTurret("ball"){{
+        masquerade = new SwordTurret("ball"){{
             requirements(Category.turret, with(
                 Items.copper, 1400,
                 Items.graphite, 350,
@@ -857,10 +858,11 @@ public class PMBlocks{
             range = 260f;
             swordType = (SwordUnitType)PMUnitTypes.ballSword;
             maxSwords = 5;
-            buildWaveOffset = 0.05f;
 
             buildPowerUse = 6f;
             attackPowerUse = 13.5f;
+            buildY = 31f / 4f;
+            buildWaveOffset = 0.05f;
         }};
 
         sentinel = new AimLaserTurret("sentinel"){{
@@ -1208,7 +1210,7 @@ public class PMBlocks{
             speed = 4f;
             duration = 4f * 60f;
             shake = laserShake = 5f;
-            outlineColor = PMPal.darkOutline;
+            outlineColor = Pal.darkOutline;
 
             unitSort = UnitSorts.strongest;
 
@@ -1240,7 +1242,7 @@ public class PMBlocks{
             radiusBoost = 1f;
             speedBoost = 1f / 8f;
             durationBoost = 5f;
-            outlineColor = PMPal.darkOutline;
+            outlineColor = Pal.darkOutline;
 
             startLength = size * tilesize / -4f - 5f;
             endLength = size * tilesize / 2f - 2f;
@@ -1268,6 +1270,7 @@ public class PMBlocks{
             drillEffect = Fx.mineBig;
             rotateSpeed = -4f;
 
+            consumePower(1.8f);
             consumeLiquid(Liquids.water, 0.09f).boost();
         }};
         // endregion
@@ -1732,7 +1735,7 @@ public class PMBlocks{
             radiusBoost = 5f * tilesize;
             speedBoost = 3f;
             durationBoost = 18f;
-            outlineColor = PMPal.darkOutline;
+            outlineColor = Pal.darkOutline;
 
             width = 0.25f;
             startLength = -6f / 4f;

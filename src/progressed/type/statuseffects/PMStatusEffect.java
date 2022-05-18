@@ -7,7 +7,7 @@ import progressed.graphics.*;
 
 public class PMStatusEffect extends StatusEffect{
     /** Outlined icon color.*/
-    public Color outlineColor = Color.valueOf("404049");
+    public Color outlineColor = PMPal.outline;
 
     public PMStatusEffect(String name){
         super(name);

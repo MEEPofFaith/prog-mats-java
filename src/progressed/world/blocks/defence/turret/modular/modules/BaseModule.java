@@ -71,7 +71,7 @@ public class BaseModule implements Cloneable{
 
     /** Usually shares sprite with the module payload, so default to false. */
     public boolean outlineIcon;
-    public Color outlineColor = Color.valueOf("404049");
+    public Color outlineColor = PMPal.outline;
 
     public static final Vec2 shootOffset = new Vec2(), recoilOffset = new Vec2();
 
