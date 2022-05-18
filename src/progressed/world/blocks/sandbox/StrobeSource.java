@@ -9,6 +9,7 @@ import mindustry.world.meta.*;
 import progressed.util.*;
 
 public class StrobeSource extends StrobeNode{
+    public final int timerBoost = timers++;
     public float powerProduction = 2000000000f / 60f;
     public float speedBoost;
 
@@ -16,6 +17,13 @@ public class StrobeSource extends StrobeNode{
         super(name);
         outputsPower = true;
         consumesPower = false;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        if(speedBoost  > 0.01f) update = true;
     }
 
     @Override
@@ -48,7 +56,7 @@ public class StrobeSource extends StrobeNode{
         @Override
         public void updateTile(){
             super.updateTile();
-            if(speedBoost > 0.01f && timer(0, 60f)){
+            if(speedBoost > 0.01f && timer(timerBoost, 60f)){
                 power.graph.all.each(b -> b.applyBoost(speedBoost, 65f));
             }
         }

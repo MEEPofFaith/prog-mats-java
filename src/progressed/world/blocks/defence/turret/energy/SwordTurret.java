@@ -57,6 +57,7 @@ public class SwordTurret extends BaseTurret{
         super(name);
 
         outlinedIcon = 1;
+        canOverdrive = false;
         consumePowerDynamic(SwordTurretBuild::powerUse);
     }
 
