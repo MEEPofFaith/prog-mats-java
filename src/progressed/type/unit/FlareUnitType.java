@@ -1,4 +1,4 @@
-package progressed.entities.units;
+package progressed.type.unit;
 
 import arc.*;
 import arc.graphics.*;
@@ -17,7 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
-import progressed.entities.units.entity.*;
+import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -32,7 +32,7 @@ public class FlareUnitType extends UnitType{
     public FlareUnitType(String name, float duration){
         super(name);
         this.duration = duration;
-        constructor = FlareUnitEntity::new;
+        constructor = FlareUnit::new;
         aiController = EmptyAI::new;
 
         drag = 1f;
@@ -58,7 +58,7 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public void update(Unit unit){
-        FlareUnitEntity flare = (FlareUnitEntity)unit;
+        FlareUnit flare = (FlareUnit)unit;
         flare.duration -= Time.delta;
         flare.clampDuration();
 
@@ -81,7 +81,7 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public void drawSoftShadow(Unit unit){
-        FlareUnitEntity flare = (FlareUnitEntity)unit;
+        FlareUnit flare = (FlareUnit)unit;
 
         Draw.color(0, 0, 0, 0.4f * flare.animation);
         float rad = 1.6f;
@@ -95,7 +95,7 @@ public class FlareUnitType extends UnitType{
         Draw.reset();
 
         if(Core.atlas.isFound(outlineRegion)){
-            FlareUnitEntity flare = (FlareUnitEntity)unit;
+            FlareUnit flare = (FlareUnit)unit;
 
             Draw.alpha(flare.animation);
             Draw.rect(outlineRegion, unit.x, unit.y, outlineRegion.width / 4f, outlineRegion.height / 4f * flare.height, unit.rotation - 90f);
@@ -106,7 +106,7 @@ public class FlareUnitType extends UnitType{
     @Override
     public void drawBody(Unit unit){
         applyColor(unit);
-        FlareUnitEntity flare = (FlareUnitEntity)unit;
+        FlareUnit flare = (FlareUnit)unit;
 
         Draw.alpha(flare.animation);
         Draw.rect(region, unit.x, unit.y, region.width / 4f, region.height / 4f * flare.height, unit.rotation - 90f);
@@ -116,7 +116,7 @@ public class FlareUnitType extends UnitType{
     @Override
     public void drawCell(Unit unit){
         applyColor(unit);
-        FlareUnitEntity flare = (FlareUnitEntity)unit;
+        FlareUnit flare = (FlareUnit)unit;
 
         Draw.color(cellColor(unit));
         Draw.rect(cellRegion, unit.x, unit.y, cellRegion.width / 4f, cellRegion.height / 4f * flare.height, unit.rotation - 90);
@@ -125,7 +125,7 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public Color cellColor(Unit unit){
-        return super.cellColor(unit).mul(1f, 1f, 1f, ((FlareUnitEntity)unit).animation);
+        return super.cellColor(unit).mul(1f, 1f, 1f, ((FlareUnit)unit).animation);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class FlareUnitType extends UnitType{
         unit.health = health;
         unit.maxHealth = attraction;
         unit.rotation = 90f;
-        ((FlareUnitEntity)unit).duration = duration;
+        ((FlareUnit)unit).duration = duration;
         return unit;
     }
 
@@ -167,7 +167,7 @@ public class FlareUnitType extends UnitType{
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
-            FlareUnitEntity flare = ((FlareUnitEntity)unit);
+            FlareUnit flare = ((FlareUnit)unit);
             bars.add(new Bar(
                 () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.durationf() * 100f)),
                 () -> Pal.accent,

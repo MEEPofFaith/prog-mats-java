@@ -119,7 +119,7 @@ public class PMDamage{
 
         Units.nearbyEnemies(team, cx - range, cy - range, range * 2f, range * 2f, unit -> {
             float cost = unitSort.cost(unit, x, y);
-            if(!unit.dead && tmpFloat < cost && unit.within(cx, cy, range + unit.hitSize / 2f)){
+            if(!unit.dead && tmpFloat < cost && unit.within(cx, cy, range + unit.hitSize / 2f) && pred.get(unit)){
                 tmpUnit = unit;
                 tmpFloat = cost;
             }
@@ -223,7 +223,7 @@ public class PMDamage{
 
             seg1.set(x, y);
             seg2.set(seg1).add(tr);
-            world.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
+            World.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
                 collider.get(cx, cy);
 
                 for(Point2 p : Geometry.d4){
@@ -343,7 +343,7 @@ public class PMDamage{
         tmpBuilding = null;
 
         if(ground){
-            world.raycastEachWorld(x, y, x + tr.x, y + tr.y, (cx, cy) -> {
+            World.raycastEachWorld(x, y, x + tr.x, y + tr.y, (cx, cy) -> {
                 Building tile = world.build(cx, cy);
                 if(tile != null && tile.team != team){
                     tmpBuilding = tile;

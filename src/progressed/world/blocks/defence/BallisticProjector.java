@@ -21,7 +21,7 @@ import progressed.util.*;
 
 import static mindustry.Vars.*;
 
-public class ShieldProjector extends ForceProjector{
+public class BallisticProjector extends ForceProjector{
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
     public Effect chargeEffect = OtherFx.squareShieldRecharge;
     public Color lerpColor = Color.gray;
@@ -42,7 +42,7 @@ public class ShieldProjector extends ForceProjector{
         }
     };
 
-    public ShieldProjector(String name){
+    public BallisticProjector(String name){
         super(name);
 
         radius = 80f; //Make it square based because I'm too lazy to do math

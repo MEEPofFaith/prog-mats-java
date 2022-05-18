@@ -16,8 +16,8 @@ import progressed.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
-import progressed.entities.units.entity.*;
 import progressed.graphics.*;
+import progressed.type.unit.*;
 import progressed.type.weapons.*;
 import progressed.ui.*;
 
@@ -25,8 +25,9 @@ import progressed.ui.*;
 public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(SentryUnitEntity.class, SentryUnitEntity::new),
-        prov(FlareUnitEntity.class, FlareUnitEntity::new)
+        prov(SentryUnit.class, SentryUnit::new),
+        prov(FlareUnit.class, FlareUnit::new),
+        prov(SwordUnit.class, SwordUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -84,6 +85,9 @@ public class PMUnitTypes{
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
+
+    //swords
+    danceSword, ballSword,
     
     //sandy
     everythingUnit;
@@ -250,6 +254,24 @@ public class PMUnitTypes{
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;
+        }};
+
+        danceSword = new SwordUnitType("dance-sword"){{
+            baseY = -4f;
+            tipY = 11f;
+            damage = 50f;
+            hitEffect = OtherFx.swordStab;
+            trailLength = 5;
+        }};
+
+        ballSword = new SwordUnitType("ball-sword"){{
+            baseY = -33f / 4f;
+            tipY = 89f / 4f;
+            damage = 80f;
+            hitEffect = OtherFx.swordStab;
+            trailLength = 8;
+            trailScl = 4;
+            trailVel = 8;
         }};
 
         everythingUnit = new UnitType("god"){

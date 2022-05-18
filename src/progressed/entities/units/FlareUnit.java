@@ -1,4 +1,4 @@
-package progressed.entities.units.entity;
+package progressed.entities.units;
 
 import arc.math.*;
 import arc.math.geom.*;
@@ -7,10 +7,10 @@ import arc.util.io.*;
 import mindustry.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.content.*;
-import progressed.entities.units.*;
+import progressed.type.unit.*;
 import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
 
-public class FlareUnitEntity extends SentryUnitEntity{
+public class FlareUnit extends SentryUnit{
     public int parent;
     public float animation = 1f, height = 0f;
 
@@ -131,6 +131,6 @@ public class FlareUnitEntity extends SentryUnitEntity{
 
     @Override
     public int classId(){
-        return PMUnitTypes.classID(FlareUnitEntity.class);
+        return PMUnitTypes.classID(FlareUnit.class);
     }
 }

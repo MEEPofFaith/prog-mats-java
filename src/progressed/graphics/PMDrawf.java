@@ -187,22 +187,31 @@ public class PMDrawf{
         reset();
     }
 
+    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress){
+        materialize(x, y, region, color, rotation, offset, progress, Time.time, false);
+    }
+
+    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress, boolean shadow){
+        materialize(x, y, region, color, rotation, offset, progress, Time.time, shadow);
+    }
+
     public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress, float time){
+        materialize(x, y, region, color, rotation, offset, progress, time, false);
+    }
+
+    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress, float time, boolean shadow){
         materialize.region = region;
         materialize.progress = Mathf.clamp(progress);
         materialize.color.set(color);
         materialize.time = time;
         materialize.offset = offset;
+        materialize.shadow = Mathf.num(shadow);
 
         shader(materialize);
         rect(region, x, y, rotation);
         shader();
 
         reset();
-    }
-
-    public static void materialize(float x, float y, TextureRegion region, Color color, float rotation, float offset, float progress){
-        materialize(x, y, region, color, rotation, offset, progress, Time.time);
     }
 
     /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape */

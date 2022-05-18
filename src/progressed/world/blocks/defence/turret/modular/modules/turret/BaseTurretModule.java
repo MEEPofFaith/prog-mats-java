@@ -64,6 +64,7 @@ public class BaseTurretModule extends RangedModule{
     @Override
     public void drawDeploy(ModularTurretBuild parent, BaseMount mount){
         Draw.draw(Draw.z(), () -> {
+            PMDrawf.materialize(mount.x - elevation, mount.y - elevation, region, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime, true);
             PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime);
             if(buildTop) PMDrawf.materialize(mount.x, mount.y, topRegion, parent.team.color, mount.rotation - 90f, 0.1f, mount.progress / deployTime);
         });

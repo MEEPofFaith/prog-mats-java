@@ -27,7 +27,7 @@ import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.InjectorBulletType.*;
 import progressed.entities.bullet.unit.*;
-import progressed.entities.units.*;
+import progressed.type.unit.*;
 import progressed.ui.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;

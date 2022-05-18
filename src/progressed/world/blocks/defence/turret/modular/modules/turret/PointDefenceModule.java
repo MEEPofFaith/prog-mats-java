@@ -13,7 +13,6 @@ import mindustry.graphics.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
-import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 

@@ -20,6 +20,7 @@ public class PMShaders{
 
     public static class MaterializeShader extends PMLoadShader{
         public float progress, offset, time;
+        public int shadow;
         public Color color = new Color();
         public TextureRegion region;
 
@@ -33,6 +34,7 @@ public class PMShaders{
             setUniformf("u_offset", offset);
             setUniformf("u_time", time);
             setUniformf("u_width", region.width);
+            setUniformf("u_shadow", shadow);
             setUniformf("u_color", color);
             setUniformf("u_uv", region.u, region.v);
             setUniformf("u_uv2", region.u2, region.v2);

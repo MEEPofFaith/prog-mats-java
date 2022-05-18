@@ -10,7 +10,6 @@ import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;

@@ -1,17 +1,19 @@
 package progressed.world.blocks.defence.turret.energy;
 
-import arc.audio.*;
+import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
-import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -20,145 +22,116 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
-import progressed.content.effects.*;
-import progressed.entities.*;
+import progressed.entities.units.*;
 import progressed.graphics.*;
-import progressed.util.*;
-import progressed.world.meta.*;
+import progressed.type.unit.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import java.util.*;
 
 public class SwordTurret extends BaseTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
-    public static final float logicControlCooldown = 60 * 2;
+    public final static float logicControlCooldown = 60 * 2;
 
     public final int timerTarget = timers++;
-    public int targetInterval = 20;
+    /** Ticks between attempt at finding a target. */
+    public float targetInterval = 20;
 
-    public boolean targetAir = true;
-    public boolean targetGround = true;
+    public SwordUnitType swordType = (SwordUnitType)PMUnitTypes.danceSword;
+    public int maxSwords = 1;
+    public float buildTime = 60f * 5f;
+    public float buildPowerUse, attackPowerUse;
+    public float buildY = Float.NEGATIVE_INFINITY, buildWaveOffset = 0.1f;
+    /** Visual elevation of turret shadow, -1 to use defaults. */
+    public float elevation = -1f;
+    public Color swordColor;
+    /** Function for choosing which unit to target. */
+    public Sortf unitSort = UnitSorts.closest;
+    /** Filter for types of units to attack. */
+    public Boolf<Unit> unitFilter = u -> true;
+    /** Filter for types of buildings to attack. */
+    public Boolf<Building> buildingFilter = b -> !b.block.underBullets;
 
-    public int swords = 3;
-    public float minRadius = tilesize, radius = 3f * tilesize, expandedRadius = -1;
-    public float expandTime = 9f, pauseTime = 15f, stabTime = 18f, totalTime = 30f;
-    public float attackRadius = 2f * tilesize, speed = 2f;
-    public Color heatColor = Pal.surge;
-    public float cooldown = 0.05f;
-
-    public float bladeCenter, trailWidth = 8f;
-    public Color trailColor = Color.crimson;
-    public int trailLength = 8;
-
-    public float baseLength = -1f;
-    public float connectorStroke = 4f;
-
-    public float damage = 450f, buildingDamageMultiplier = 0.25f, damageRadius = tilesize;
-    public StatusEffect status = StatusEffects.none;
-    public float statusDuration = 10 * 60;
-    public Sound hitSound = PMSounds.swordStab;
-    public float minVolume = 1f, maxVolume = 1f;
-    public float minPitch = 0.9f, maxPitch = 1.1f;
-    public Effect hitEffect = OtherFx.swordStab;
-    public Color hitColor = Pal.surge;
-    public float hitShake;
-
-    public Sortf unitSort = Unit::dst2;
-
-    public float elevation = -1f, swordElevation = -1f;
-
-    protected Vec2 tr = new Vec2();
-    protected Vec2 recoilOffset = new Vec2();
-
-    public TextureRegion baseRegion, outlineRegion, swordRegion, heatRegion;
+    public TextureRegion baseRegion;
 
     public SwordTurret(String name){
         super(name);
-        hasPower = true;
-        rotateSpeed = 4f;
-        //coolant not supported
-        canOverdrive = false;
-    }
 
-    @Override
-    public void init(){
-        if(elevation < 0) elevation = size / 2f;
-        if(swordElevation < 0) swordElevation = elevation * 2f;
-        if(expandedRadius < 0) expandedRadius = radius * 2.5f;
-        if(baseLength < 0) baseLength = size * tilesize / 2f;
-
-        super.init();
+        outlinedIcon = 1;
+        consumePowerDynamic(SwordTurretBuild::powerUse);
     }
 
     @Override
     public void load(){
         super.load();
 
-        baseRegion = atlas.find(name + "-base", "block-" + size);
-        swordRegion = atlas.find(name + "-sword");
-        outlineRegion = atlas.find(name + "-sword-outline");
-        heatRegion = atlas.find(name + "-sword-heat");
+        baseRegion = Core.atlas.find(name + "-base", "block-" + size);
 
-        clipSize = Math.max(clipSize, (range + expandedRadius + swordRegion.height) * 2f);
+        if(!baseRegion.found() && minfo.mod != null) baseRegion = Core.atlas.find(minfo.mod.name + "-block-" + size);
     }
 
     @Override
-    public TextureRegion[] icons(){
-        return new TextureRegion[]{
-            baseRegion,
-            region
-        };
-    }
-
-    @Override
-    public void createIcons(MultiPacker packer){
-        super.createIcons(packer);
-        Outliner.outlineRegion(packer, swordRegion, outlineColor, name + "-sword-outline");
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{baseRegion, region};
     }
 
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.reload, PMUtls.stringsFixed(totalTime / 60f));
-        stats.add(Stat.targetsAir, targetAir);
-        stats.add(Stat.targetsGround, targetGround);
 
-        stats.add(Stat.ammo, PMStatValues.swordDamage(damage, damageRadius, buildingDamageMultiplier, speed, status));
+        stats.add(Stat.weapons, table -> {
+            table.row();
+            table.image(swordType.fullIcon).padRight(4).right().top();
+            table.add("[lightgray]x" + maxSwords).padRight(10).left().bottom();
+            table.table(s -> {
+                if(swordType.damage > 0){
+                    s.add(Core.bundle.format("bullet.damage", swordType.damage));
+                }
+                s.row();
+                s.add("@bullet.infinitepierce");
+                if(swordType.status != StatusEffects.none){
+                    s.row();
+                    s.add((swordType.status.minfo.mod == null ? swordType.status.emoji() : "") + "[stat]" + swordType.status.localizedName);
+                }
+            }).left().top().get().background(Tex.underline);
+        });
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
-        super.drawPlanRegion(req, list);
+    public void init(){
+        super.init();
 
-        for(int i = 0; i < swords; i++){
-            float rot = 90f + i * (360f / swords);
-            tr.trns(rot, -radius);
-            Draw.rect(outlineRegion, req.drawx() + tr.x, req.drawy() + tr.y + baseLength, rot);
+        if(swordType.orbitRadius == -1){
+            swordType.orbitRadius = size * Vars.tilesize;
+            if(buildY == Float.NEGATIVE_INFINITY) buildY = swordType.orbitRadius;
         }
+
+        if(buildY == Float.NEGATIVE_INFINITY) buildY = size * Vars.tilesize / 2f;
+        if(elevation < 0) elevation = size / 2f;
     }
 
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
-        public @Nullable Posc target;
-        public Vec2 targetPos = new Vec2(), curPos = new Vec2();
-        protected float animationTime, logicControlTime = -1, lookAngle, heat;
-        public BlockUnitc unit;
-        protected boolean logicShooting, wasAttacking, ready, hit;
-        protected PMTrail[] trails = new PMTrail[swords];
+        public IntSeq readUnitIds = new IntSeq(maxSwords);
+        public Seq<Unit> swords = new Seq<>(maxSwords);
+        public float buildProgress, totalProgress;
+        public float logicControlTime = -1;
+        public boolean logicShooting;
+        public Posc target;
+        public Vec2 targetPos = new Vec2();
+        public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
+        public boolean wasShooting;
 
         @Override
-        public void created(){
-            unit = (BlockUnitc)UnitTypes.block.create(team);
+        public Unit unit(){
+            //make sure stats are correct
             unit.tile(this);
-            curPos.set(x, y + baseLength);
-            for(int i = 0; i < swords; i++){
-                trails[i] = new PMTrail(trailLength);
-            }
+            unit.team(team);
+            return (Unit)unit;
         }
 
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
             if(type == LAccess.shoot && !unit.isPlayer()){
-                targetPos.trns(angleTo(World.unconv((float)p1), World.unconv((float)p2)), dst(World.unconv((float)p1), World.unconv((float)p2))).limit(range).add(this);
+                targetPos.set(World.unconv((float)p1), World.unconv((float)p2)).sub(this).limit(range).add(this);
                 logicControlTime = logicControlCooldown;
                 logicShooting = !Mathf.zero(p3);
             }
@@ -168,328 +141,227 @@ public class SwordTurret extends BaseTurret{
 
         @Override
         public void control(LAccess type, Object p1, double p2, double p3, double p4){
-            if(type == LAccess.shootp && !unit.isPlayer()){
+            if(type == LAccess.shootp && (unit == null || !unit.isPlayer())){
                 logicControlTime = logicControlCooldown;
                 logicShooting = !Mathf.zero(p2);
 
-                if(p1 instanceof Posc p){
-                    targetPosition(p);
+                if(p1 instanceof Posc pos){
+                    targetPosition(pos);
                 }
             }
 
             super.control(type, p1, p2, p3, p4);
         }
 
-        @Override
-        public double sense(LAccess sensor){
-            //Ignore the "Java 14" error, it somehow works
-            return switch(sensor){
-                case ammo -> power.status;
-                case shootX -> World.conv(targetPos.x);
-                case shootY -> World.conv(targetPos.y);
-                case shooting -> isAttacking() ? 1 : 0;
-                default -> super.sense(sensor);
-            };
-        }
-
-        /** @return whether this block is being controlled by a player. */
-        public boolean isControlled(){
-            return unit().isPlayer();
-        }
-
-        /** @return whether this block can be controlled at all. */
-        public boolean canControl(){
-            return true;
-        }
-
-        /** @return whether targets should automatically be selected (on mobile) */
-        public boolean shouldAutoTarget(){
-            return true;
-        }
-
         public boolean isAttacking(){
             return (isControlled() ? unit.isShooting() : logicControlled() ? logicShooting : target != null);
         }
 
-        @Override
-        public Unit unit(){
-            return (Unit)unit;
+        public boolean logicControlled(){
+            return logicControlTime > 0;
         }
 
-        public boolean logicControlled(){
-            return logicControlTime > 0f;
+        public boolean isActive(){
+            return isAttacking() && enabled && canConsume();
         }
 
         public void targetPosition(Posc pos){
-            if(!canConsume() || pos == null) return;
-            tr.trns(angleTo(pos), dst(pos)).limit(range).add(this);
-            targetPos.set(Predict.intercept(curPos, tr, speed));
+            if(pos == null) return;
+
+            targetPos.set(pos).sub(this).limit(range).add(this);
+
+            if(targetPos.isZero()){
+                targetPos.set(pos);
+            }
+        }
+
+        @Override
+        public float drawrot(){
+            return rotation - 90f;
         }
 
         @Override
         public void draw(){
-            //Base turret
             Draw.rect(baseRegion, x, y);
 
+            Draw.z(Layer.turret - 0.02f);
+            Drawf.shadow(region, x - elevation, y - elevation, drawrot());
+
             Draw.z(Layer.turret);
+            Draw.rect(region, x, y, drawrot());
 
-            Drawf.shadow(region, x - elevation, y - elevation, lookAngle);
-            Draw.rect(region, x, y, lookAngle);
+            if(swordCount() < maxSwords && buildProgress > 0.001f){
+                float
+                    swordX = x + Angles.trnsx(rotation, buildY),
+                    swordY = y + Angles.trnsy(rotation, buildY),
+                    z = Layer.flyingUnitLow - 1f;
 
-            //Swords
-            float opacity = settings.getInt("pm-sword-opacity", 100) / 100f;
+                Draw.draw(Math.min(Layer.darkness, z - 1f), () -> PMDrawf.materialize(
+                    swordX + UnitType.shadowTX, swordY + UnitType.shadowTY,
+                    swordType.fullIcon, swordColor == null ? team.color : swordColor,
+                    drawrot(), buildWaveOffset, buildProgress, true
+                ));
 
-            tr.trns(lookAngle + 90f, baseLength);
-            Lines.stroke(connectorStroke);
-            Draw.color(Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, opacity / 4f));
-            Draw.z(Layer.flyingUnit + 0.002f);
-
-            Lines.line(x + tr.x, y + tr.y, curPos.x, curPos.y);
-            for(int i = 0; i < swords; i++){
-                float rot = rotation + i * (360f / swords);
-                recoilOffset.trns(rot, -getRadius()).add(curPos).sub(this);
-
-                Lines.line(curPos.x, curPos.y, x + recoilOffset.x, y + recoilOffset.y);
+                Draw.draw(z, () -> PMDrawf.materialize(
+                    swordX, swordY,
+                    swordType.fullIcon, swordColor == null ? team.color : swordColor,
+                    drawrot(), buildWaveOffset, buildProgress
+                ));
             }
-            Fill.circle(x + tr.x, y + tr.y, connectorStroke / 2f);
-            Fill.circle(curPos.x, curPos.y, connectorStroke / 2f);
-
-            Tmp.c1.set(trailColor).lerp(heatColor, heat).mul(1f, 1f, 1f, opacity);
-
-            Draw.z(Layer.flyingUnit + 0.003f);
-            for(PMTrail t : trails){
-                t.draw(Tmp.c1, trailWidth);
-            }
-
-            for(int i = 0; i < swords; i++){
-                float rot = rotation + i * (360f / swords);
-
-                SwordTurret.this.tr.trns(rot, -getRadius());
-
-                float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
-
-                Draw.z(Layer.flyingUnit + 0.001f);
-                PMDrawf.shadowAlpha(outlineRegion, sX - swordElevation, sY - swordElevation, rot + getRotation(), opacity);
-
-                Draw.alpha(opacity);
-                Draw.z(Layer.flyingUnit + 0.004f);
-                Draw.rect(outlineRegion, sX, sY, rot + getRotation());
-            }
-
-            for(int i = 0; i < swords; i++){
-                float rot = rotation + i * (360f / swords);
-
-                SwordTurret.this.tr.trns(rot, -getRadius());
-
-                float sX = curPos.x + SwordTurret.this.tr.x, sY = curPos.y + SwordTurret.this.tr.y;
-
-                Draw.alpha(opacity);
-                Draw.z(Layer.flyingUnit + 0.005f);
-                Draw.rect(swordRegion, sX, sY, rot + getRotation());
-
-                if(ready && heat > 0f){
-                    Draw.color(heatColor, heat * opacity);
-                    Draw.blend(Blending.additive);
-                    Draw.rect(heatRegion, sX, sY, rot + getRotation());
-                    Draw.color();
-                    Draw.blend();
-                }
-            }
-        }
-
-        protected float getRotation(){
-            float expand = Mathf.curve(animationTime, 0f, expandTime);
-            float attack = Mathf.curve(animationTime, pauseTime, stabTime);
-            float endRot = Mathf.curve(animationTime, stabTime + (totalTime - stabTime) * 0.2f, totalTime);
-            return -270 * expand + -180f * attack + -270f * endRot;
-        }
-
-        protected float getRadius(){
-            float expand = Mathf.curve(animationTime, 0f, expandTime);
-            float pause = Mathf.curve(animationTime, expandTime, pauseTime);
-            float attack = Mathf.curve(animationTime, pauseTime, stabTime);
-            float reset = Mathf.curve(animationTime, stabTime, totalTime);
-            float progress = (expand + pause + attack + reset) / 4f;
-            return PMUtls.multiLerp(new float[]{radius, expandedRadius, expandedRadius, minRadius, radius}, progress);
-        }
-
-        protected void turnTo(float target){
-            lookAngle = Angles.moveToward(lookAngle, target - 90f, speed * 3f * delta() * efficiency);
         }
 
         @Override
         public void updateTile(){
-            if(!validateTarget() || aiTargetDistCheck()) target = null;
+            //Sword construction stuff
+            for(int i = 0; i < Math.min(readUnitIds.size, maxSwords); i++){
+                int id = readUnitIds.get(i);
+                if(id != -1){
+                    Unit u = Groups.unit.getByID(id);
+                    if(u instanceof SwordUnit st){
+                        st.orbitPos(i);
+                    }
+                    swords.add(u);
+                    readUnitIds.set(i, -1);
+                }
+            }
 
-            wasAttacking = false;
+            if(shouldConsume() && swordCount() < maxSwords){
+                buildProgress += edelta() / buildTime;
+                totalProgress += edelta();
 
-            unit.health(health);
+                if(buildProgress >= 1f){
+                    Unit u = swordType.create(team);
+                    if(u instanceof BuildingTetherc bt){
+                        bt.building(this);
+                    }
+                    if(u instanceof SwordUnit st){
+                        st.orbitPos(swordCount());
+                    }
+                    float
+                        spawnX = x + Angles.trnsx(rotation, buildY),
+                        spawnY = y + Angles.trnsy(rotation, buildY);
+                    u.set(spawnX, spawnY);
+                    u.rotation = rotation;
+                    u.add();
+
+                    swords.add(u);
+
+                    Fx.spawn.at(spawnX, spawnY);
+                    buildProgress = 0f;
+                }
+            }
+
+            //Turret stuff
+            if(!validateTarget()) target = null;
+
+            unit.tile(this);
             unit.rotation(rotation);
             unit.team(team);
-            unit.set(x, y);
 
-            if(logicControlTime > 0){
+            if(logicControlTime > 0f){
                 logicControlTime -= Time.delta;
             }
 
-            if(canConsume()){
+            wasShooting = false;
 
-                if(!ready && (!validateTarget() || aiTargetDistCheck()) && timer(timerTarget, targetInterval)){
+            if(swordCount() > 0){
+                if(timer(timerTarget, targetInterval)){
                     findTarget();
                 }
 
                 if(validateTarget()){
-                    boolean canAttack = true;
+                    wasShooting = true;
 
-                    if(isControlled()){ //player behavior
-                        targetPos.trns(unit.angleTo(unit.aimX(), unit.aimY()), unit.dst(unit.aimX(), unit.aimY())).limit(range).add(this);
-                        canAttack = unit.isShooting();
-                    }else if(logicControlled()){ //logic behavior
-                        canAttack = logicShooting;
+                    if(isControlled()){ //player control
+                        targetPos.set(unit.aimX(), unit.aimY()).sub(this).limit(range).add(this);
+                        wasShooting = unit.isShooting();
+                    }else if(logicControlled()){ //logic control
+                        wasShooting = logicShooting;
                     }else{ //default AI behavior
                         targetPosition(target);
+
+                        if(Float.isNaN(rotation)) rotation = 0;
                     }
 
-                    if(canAttack){
-                        wasAttacking = true;
-                        moveTo(targetPos, true);
-                    }else if(!ready){
-                        resetPos();
-                    }
-                }else if(!ready){
-                    resetPos();
-                }
-            }else if(!ready){
-                resetPos();
-            }
-
-            if(ready){
-                float e = Math.max(0.1f, efficiency);
-                animationTime += delta() * e;
-                if(animationTime >= pauseTime && animationTime <= stabTime){
-                    heat = Mathf.curve(animationTime, pauseTime, stabTime);
-                }else{
-                    heat = Mathf.lerpDelta(heat, 0f, cooldown);
-                }
-                if(animationTime >= stabTime && !hit){
-                    hit = true;
-                    hitEffect.at(curPos.x, curPos.y, hitColor);
-                    for(int i = 0; i < swords; i++){
-                        hitSound.at(curPos.x, curPos.y, Mathf.random(minPitch, maxPitch), Mathf.random(minVolume, maxVolume));
-                    }
-                    if(hitShake > 0f){
-                        Effect.shake(hitShake, hitShake, this);
-                    }
-                    //Slow speed, weak hit -> * efficiency
-                    PMDamage.completeDamage(team, curPos.x, curPos.y, damageRadius, damage * e, buildingDamageMultiplier, targetAir, targetGround);
-                    if(status != StatusEffects.none){
-                        Damage.status(team, curPos.x, curPos.y, damageRadius, status, statusDuration * e, targetAir, targetGround);
-                    }
-                }
-                if(animationTime > totalTime){
-                    if(!validateTarget() || !isAttacking() || !canConsume() || aiTargetDistCheck() || curPos.dst(targetPos) > attackRadius){
-                        ready = false; //do not stop until dead or unable to attack
-                        target = null;
-                    }
-                    hit = false;
-                    animationTime = 0f;
-                }
-            }else{
-                heat = Mathf.lerpDelta(heat, 0f, cooldown);
-                animationTime = 0f;
-            }
-
-            tr.trns(lookAngle + 90f, baseLength);
-            if(tr.dst(curPos) > connectorStroke || isAttacking()) turnTo(angleTo(curPos));
-            rotation = (rotation - rotateSpeed * delta() * efficiency) % 360f;
-
-            for(int i = 0; i < swords; i++){
-                float rot = rotation + i * (360f / swords);
-
-                tr.trns(rot, -getRadius());
-
-                float sX = curPos.x + tr.x, sY = curPos.y + tr.y;
-
-                recoilOffset.trns(rot + getRotation() + 90f, bladeCenter);
-
-                if(ready){
-                    trails[i].updateRot(sX + recoilOffset.x, sY + recoilOffset.y, rot + getRotation());
-                }else{
-                    trails[i].shorten();
+                    turnToTarget(angleTo(targetPos));
                 }
             }
         }
 
-        protected void moveTo(Vec2 pos, boolean readyUp){
-            float angle = curPos.angleTo(pos);
-            float dist = curPos.dst(pos);
-            if(dist < attackRadius && readyUp) ready = true;
-            tr.trns(angle, speed * delta() * efficiency).limit(dist);
-            curPos.add(tr);
-        }
-
-        protected void resetPos(){
-            tr.trns(lookAngle + 90f, baseLength);
-            recoilOffset.set(x + tr.x, y + tr.y);
-            if(!curPos.within(recoilOffset, 0.1f)) moveTo(recoilOffset, false);
+        public int swordCount(){
+            return swords.size;
         }
 
         protected boolean validateTarget(){
-            return (!Units.invalidateTarget(target, team, x, y) || isControlled() || logicControlled());
+            return !Units.invalidateTarget(target, team, x, y) || isControlled() || logicControlled();
         }
 
-        protected boolean aiTargetDistCheck(){ //Returns true if the turret is not controlled and the target it out of range.
-            return (!isControlled() && !logicControlled()) && dst(target) > range;
-        }
-
-        protected void findTarget(){
-            if(targetAir && !targetGround){
-                target = Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded(), unitSort);
+        public void findTarget(){
+            UnitType u = swordType;
+            if(u.targetAir && !u.targetGround){
+                target = Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() && unitFilter.get(e), unitSort);
             }else{
-                target = Units.bestTarget(team, x, y, range, e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> true, unitSort);
+                target = Units.bestTarget(team, x, y, range, e -> !e.dead() && unitFilter.get(e) && (e.isGrounded() || u.targetAir) && (!e.isGrounded() || u.targetGround), b -> u.targetGround && buildingFilter.get(b), unitSort);
             }
+        }
+
+        protected void turnToTarget(float targetRot){
+            rotation = Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * potentialEfficiency);
         }
 
         @Override
         public boolean shouldConsume(){
-            return super.shouldConsume() && target != null || wasAttacking;
+            return swordCount() < maxSwords || isAttacking();
         }
 
         @Override
-        public void onRemoved(){
-            super.onRemoved();
-            for(PMTrail trail : trails){
-                UtilFx.PMTrailFade.at(x, y, trailWidth, trailColor, trail.copyPM());
-            }
+        public float progress(){
+            return buildProgress;
+        }
+
+        @Override
+        public float totalProgress(){
+            return totalProgress;
+        }
+
+        public float powerUse(){
+            return (swordCount() < maxSwords ? buildPowerUse : 0) + (isAttacking() ? attackPowerUse : 0);
+        }
+
+        @Override
+        public void created(){
+            super.created();
+
+            Arrays.fill(readUnitIds.items, -1);
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.bool(ready);
-            write.bool(hit);
-            write.f(lookAngle);
-            write.f(animationTime);
-            write.f(curPos.x);
-            write.f(curPos.y);
+
+            write.f(rotation);
+            write.f(buildProgress);
+            write.i(swords.size);
+            swords.each(u -> write.i(u == null ? -1 : u.id));
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision >= 1){
-                ready = read.bool();
-                hit = read.bool();
-                lookAngle = read.f();
-                animationTime = read.f();
-                curPos.set(read.f(), read.f());
+            if(revision >= 2){
+                rotation = read.f();
+                buildProgress = read.f();
+                int size = read.i();
+                for(int i = 0; i < size; i++){
+                    readUnitIds.add(read.i());
+                }
             }
         }
 
         @Override
         public byte version(){
-            return 1;
+            return 2;
         }
     }
 }

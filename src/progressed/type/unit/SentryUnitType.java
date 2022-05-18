@@ -1,4 +1,4 @@
-package progressed.entities.units;
+package progressed.type.unit;
 
 import arc.*;
 import arc.graphics.*;
@@ -16,7 +16,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
-import progressed.entities.units.entity.*;
+import progressed.entities.units.*;
 import progressed.util.*;
 
 public class SentryUnitType extends UnitType{
@@ -24,7 +24,7 @@ public class SentryUnitType extends UnitType{
 
     public SentryUnitType(String name){
         super(name);
-        constructor = SentryUnitEntity::new;
+        constructor = SentryUnit::new;
         aiController = SentryAI::new;
         
         speed = accel = 0f;
@@ -48,7 +48,7 @@ public class SentryUnitType extends UnitType{
         if(unit.elevation < 1 && !unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
 
         if(unit.health < Float.POSITIVE_INFINITY){ //I want my invincibility to work.
-            SentryUnitEntity sentry = ((SentryUnitEntity)unit);
+            SentryUnit sentry = ((SentryUnit)unit);
             sentry.duration -= Time.delta;
             sentry.clampDuration();
             if(sentry.duration <= 0f){
@@ -64,7 +64,7 @@ public class SentryUnitType extends UnitType{
         Unit unit = super.create(team);
         unit.elevation = 0;
         unit.health = unit.maxHealth;
-        ((SentryUnitEntity)unit).duration = duration;
+        ((SentryUnit)unit).duration = duration;
         return unit;
     }
 
@@ -93,7 +93,7 @@ public class SentryUnitType extends UnitType{
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
             
-            SentryUnitEntity sentry = ((SentryUnitEntity)unit);
+            SentryUnit sentry = ((SentryUnit)unit);
             bars.add(new Bar(
                 () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(sentry.durationf() * 100f)),
                 () -> Pal.accent,

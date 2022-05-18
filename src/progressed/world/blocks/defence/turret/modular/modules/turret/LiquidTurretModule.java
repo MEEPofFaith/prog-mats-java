@@ -12,7 +12,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
-import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.meta.*;
 

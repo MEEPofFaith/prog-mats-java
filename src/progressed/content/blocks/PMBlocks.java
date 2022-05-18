@@ -10,8 +10,8 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
-import mindustry.entities.part.*;
 import mindustry.entities.part.DrawPart.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -29,6 +29,7 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
+import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
@@ -422,7 +423,7 @@ public class PMBlocks{
             size = 3;
             health = 180 * size * size;
             reload = 10f;
-            range = 210f;
+            range = 315f;
             maxTargets = 16;
             coolantMultiplier = 1f;
             hasSpinners = true;
@@ -444,7 +445,7 @@ public class PMBlocks{
             health = 310 * size * size;
             reload = 120f;
             shootSound = Sounds.rockBreak;
-            range = 23f * tilesize;
+            range = 35f * tilesize;
             recoil = -25f / 4f;
             shootY = 8f + 15f / 4f;
             targetAir = false;
@@ -835,59 +836,32 @@ public class PMBlocks{
             hideDetails = false;
             health = 340 * size * size;
             range = 180f;
-            minRadius = 16.5f;
-            bladeCenter = 9f;
-            trailWidth = 30f / 4f;
+            maxSwords = 3;
 
-            consumePower(6.5f);
+            buildPowerUse = 4f;
+            attackPowerUse = 6.5f;
         }};
 
-        ball = new SwordTurret("ball"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 1400,
-                    Items.graphite, 350,
-                    Items.silicon, 400,
-                    Items.surgeAlloy, 400,
-                    Items.phaseFabric, 200,
-                    PMItems.tenelium, 450
-                ));
-                size = 5;
-                hideDetails = false;
-                health = 230 * size * size;
-                range = 260f;
-                damage = 1000f;
-                bladeCenter = 122f / 8f;
-                trailWidth = 18f;
-                trailLength = 6;
-                float attackScl = 1.25f;
-                damageRadius *= attackScl;
-                attackRadius *= attackScl;
-                swords = 5;
-                minRadius = 33.25f;
-                radius = 6.25f * tilesize;
-                float timeScl = 0.9f;
-                expandTime *= timeScl;
-                pauseTime *= timeScl;
-                stabTime *= timeScl;
-                totalTime *= timeScl;
-                cooldown *= timeScl;
-                speed = 3f;
-                rotateSpeed = 4.5f;
-                float pitchDecrease = 0.25f;
-                minPitch -= pitchDecrease;
-                maxPitch -= pitchDecrease;
+        ball = new SwordTurret("ball"){{
+            requirements(Category.turret, with(
+                Items.copper, 1400,
+                Items.graphite, 350,
+                Items.silicon, 400,
+                Items.surgeAlloy, 400,
+                Items.phaseFabric, 200,
+                PMItems.tenelium, 450
+            ));
+            size = 5;
+            hideDetails = false;
+            health = 230 * size * size;
+            range = 260f;
+            swordType = (SwordUnitType)PMUnitTypes.ballSword;
+            maxSwords = 5;
+            buildWaveOffset = 0.05f;
 
-                consumePower(13.5f);
-            }
-
-            @Override
-            public void load(){
-                super.load();
-
-                baseRegion = Core.atlas.find("prog-mats-block-" + size);
-            }
-        };
+            buildPowerUse = 6f;
+            attackPowerUse = 13.5f;
+        }};
 
         sentinel = new AimLaserTurret("sentinel"){{
             requirements(Category.turret, with(
@@ -1671,7 +1645,7 @@ public class PMBlocks{
             powerPerBlock = 0.08f;
         }};
 
-        ballisticProjector = new ShieldProjector("shield-projector"){{
+        ballisticProjector = new BallisticProjector("shield-projector"){{
             requirements(Category.effect, with(
                 Items.lead, 325,
                 Items.titanium, 225,
@@ -1798,7 +1772,6 @@ public class PMBlocks{
 
         strobeBoost = new StrobeSource("rainbow-power-boost"){{
             size = 2;
-            boost = true;
             speedBoost = 100f;
         }};
 
@@ -1852,3 +1825,11 @@ public class PMBlocks{
         // endregion
     }
 }
+
+//Oops, someone dropped their colons
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;
+;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;

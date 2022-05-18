@@ -2,10 +2,8 @@ package progressed.entities.bullet.energy;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;

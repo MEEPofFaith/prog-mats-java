@@ -10,7 +10,6 @@ import progressed.util.*;
 
 public class StrobeSource extends StrobeNode{
     public float powerProduction = 2000000000f / 60f;
-    public boolean boost;
     public float speedBoost;
 
     public StrobeSource(String name){
@@ -23,7 +22,7 @@ public class StrobeSource extends StrobeNode{
     public void setStats(){
         super.setStats();
 
-        if(boost){
+        if(speedBoost > 0.01f){
             stats.add(Stat.speedIncrease, t -> t.add(new FLabel("{wave}{rainbow}" + PMUtls.stringsFixed(100 * speedBoost) + StatUnit.percent.localized())));
         }
     }
@@ -31,7 +30,7 @@ public class StrobeSource extends StrobeNode{
     @Override
     public void setBars(){
         super.setBars();
-        if(boost){
+        if(speedBoost > 0.01f){
             addBar("pm-gay", (StrobeSourceBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.pm-gay", PMUtls.stringsFixed(speedBoost * 100f)),
                 () -> Tmp.c1.set(laserColor1).lerp(laserColor3, Mathf.absin(Time.time * lerpSpeed, 1f, 1f)).shiftHue(Time.time * Core.settings.getInt("pm-strobespeed") / 2f),
@@ -49,7 +48,7 @@ public class StrobeSource extends StrobeNode{
         @Override
         public void updateTile(){
             super.updateTile();
-            if(boost && timer(0, 60f)){
+            if(speedBoost > 0.01f && timer(0, 60f)){
                 power.graph.all.each(b -> b.applyBoost(speedBoost, 65f));
             }
         }

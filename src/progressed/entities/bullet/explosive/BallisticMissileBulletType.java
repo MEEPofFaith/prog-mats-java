@@ -17,7 +17,7 @@ import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.ShieldProjector.*;
+import progressed.world.blocks.defence.BallisticProjector.*;
 
 /** @author MEEP */
 public class BallisticMissileBulletType extends BasicBulletType{

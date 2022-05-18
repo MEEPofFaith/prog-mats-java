@@ -8,14 +8,12 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.environment.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
@@ -145,31 +143,47 @@ public class GeomancyTurret extends PowerTurret{
         }
 
         @Override
+        protected void shoot(BulletType type){
+            strikePos.set(targetPos).sub(x, y).limit(range).add(x, y); //Constrain to range
+
+            shoot.shoot(totalShots, (xOffset, yOffset, angle, delay, mover) -> {
+                queuedBullets++;
+                if(delay > 0f){
+                    Time.run(delay, () -> bullet(type, strikePos.x, strikePos.y, angle, mover));
+                }else{
+                    bullet(type, strikePos.x, strikePos.y, angle, mover);
+                }
+                totalShots++;
+
+                Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
+                if(shoot.firstShotDelay > 0){
+                    float
+                        dst = Tmp.v1.dst(strikePos),
+                        mdst = dst - ((PillarFieldBulletType)(type)).radius;
+                    if(mdst > 0){
+                        Tmp.v2.set(Tmp.v1).lerp(strikePos, mdst / dst);
+                        for(int i = 0; i < crackEffects; i++){
+                            crackEffect.at(Tmp.v1.x, Tmp.v1.y, angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
+                        }
+                    }
+                }
+
+                Tile t = Vars.world.tileWorld(Tmp.v1.x, Tmp.v1.y);
+                if(t != null && t.floor() != null){
+                    slamEffect.at(Tmp.v1.x, Tmp.v1.y, rotation, t.floor().mapColor);
+                }
+
+                armRecoil[totalShots % 2] = armHeat[totalShots % 2] = heat = 1f;
+            });
+        }
+
+        @Override
         protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
             queuedBullets--;
 
             if(dead || (!consumeAmmoOnce && !hasAmmo())) return;
 
-            strikePos.set(targetPos).sub(x, y).limit(range).add(x, y); //Constrain to range
-            handleBullet(type.create(this, team, strikePos.x, strikePos.y, 0f), xOffset, yOffset, angleOffset);
-
-            armRecoil[totalShots % 2] = armHeat[totalShots % 2] = heat = 1f;
-
-            Tmp.v1.trns(rotation - 90f, armX * Mathf.signs[totalShots % 2], shootY).add(x, y);
-            float
-                dst = Tmp.v1.dst(strikePos),
-                mdst = dst - ((PillarFieldBulletType)(type)).radius;
-            if(mdst > 0){
-                Tmp.v1.lerp(strikePos, mdst / dst);
-                for(int i = 0; i < crackEffects; i++){
-                    crackEffect.at(Tmp.v1.x, Tmp.v1.y, angleTo(Tmp.v1), crackColor, new LightningData(new Vec2(Tmp.v1), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
-                }
-            }
-
-            Tile t = Vars.world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y);
-            if(t != null && t.floor() != null){
-                slamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, rotation, t.floor().mapColor);
-            }
+            handleBullet(type.create(this, team, xOffset, yOffset, 0f), 0f, 0f, angleOffset);
         }
 
         @Override

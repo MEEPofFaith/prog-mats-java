@@ -19,13 +19,14 @@ public class DriftTrail{
     private final Seq<DriftTrailData> points;
     private float lastX = -1, lastY = -1, lastAngle = -1, counter = 0f;
 
-    public DriftTrail(int length, Entityc parent){
+    public DriftTrail(int length, Entityc parent, float offset){
         this(length);
         if(parent instanceof Unit u){
             unit = u;
         }else if(parent instanceof Bullet b){
             bullet = b;
         }
+        this.offset = offset;
     }
 
     public DriftTrail(int length){
@@ -118,9 +119,8 @@ public class DriftTrail{
 
     /** Adds a new point to the trail at intervals. */
     public void update(float x, float y, float width, Vec2 v){
+        drift();
         if((counter += Time.delta) >= 0.99f){
-            drift();
-
             if(points.size > length){
                 points.remove(0);
             }

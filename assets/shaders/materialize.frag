@@ -4,6 +4,7 @@ uniform float u_time;
 uniform float u_progress;
 uniform float u_offset;
 uniform float u_width;
+uniform float u_shadow;
 uniform vec4 u_color;
 uniform vec2 u_uv;
 uniform vec2 u_uv2;
@@ -30,6 +31,10 @@ void main(){
         c.a = 0;
     }else if(y > bottom){
         c.rgb = u_color.rgb;
+    }
+    if(u_shadow == 1.0){
+        c.rgb = vec3(0, 0, 0);
+        c.a *= 0.22;
     }
 
     gl_FragColor = c;

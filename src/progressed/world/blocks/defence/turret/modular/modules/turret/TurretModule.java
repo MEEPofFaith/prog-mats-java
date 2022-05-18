@@ -17,7 +17,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
-import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.mounts.*;
 import progressed.world.blocks.payloads.ModulePayload.*;
@@ -35,7 +34,7 @@ public class TurretModule extends ReloadTurretModule{
     public float shake;
     /** Currently used for artillery only. */
     public float minRange = 0f;
-    public float inaccuracy, velocityRnd;
+    public float inaccuracy, velocityRnd, xRand;
 
     public Effect shootEffect = Fx.none;
     public Effect smokeEffect = Fx.none;
@@ -236,8 +235,9 @@ public class TurretModule extends ReloadTurretModule{
 
         float
             rot = mount.rotation,
-            bulletX = mount.x + Angles.trnsx(rot - 90, shootX + xOffset, shootY + yOffset),
-            bulletY = mount.y + Angles.trnsy(rot - 90, shootX + xOffset, shootY + yOffset),
+            xSpread = Mathf.range(xRand),
+            bulletX = mount.x + Angles.trnsx(rot - 90, shootX + xOffset + xSpread, shootY + yOffset),
+            bulletY = mount.y + Angles.trnsy(rot - 90, shootX + xOffset + xSpread, shootY + yOffset),
             shootAngle = rot + angleOffset + Mathf.range(inaccuracy);
 
         float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.targetPos.x, mount.targetPos.y) / type.range, minRange / type.range, range(mount) / type.range) : 1f;

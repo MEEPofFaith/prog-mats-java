@@ -5,13 +5,13 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.entities.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.explosive.RocketBulletType.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.util.Tmp.*;
+import static mindustry.Vars.*;
 import static progressed.util.PMUtls.*;
 
 public class UtilFx{
@@ -22,7 +22,9 @@ public class UtilFx{
         //lifetime is how many frames it takes to fade out the trail
         e.lifetime = trail.length * 1.4f;
 
-        trail.shorten();
+        if(!state.isPaused()){
+            trail.shorten();
+        }
         trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
     }),
@@ -34,7 +36,9 @@ public class UtilFx{
         //lifetime is how many frames it takes to fade out the trail
         e.lifetime = data.trail.length * 1.4f;
 
-        data.trail.shorten();
+        if(!state.isPaused()){
+            data.trail.shorten();
+        }
         data.trail.drawCap(e.color, e.rotation);
         data.trail.draw(e.color, e.rotation);
     }),
@@ -44,18 +48,12 @@ public class UtilFx{
         //lifetime is how many frames it takes to fade out the trail
         e.lifetime = trail.length * 1.4f;
 
-        trail.shorten();
-        trail.drift();
+        if(!state.isPaused()){
+            trail.shorten();
+            trail.drift();
+        }
         trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
-    }),
-
-    dronePowerKill = new Effect(80f, e -> {
-        color(Color.scarlet);
-        alpha(e.fout(Interp.pow4Out));
-
-        float size = 10f + e.fout(Interp.pow10In) * 25f;
-        Draw.rect(Icon.power.getRegion(), e.x, e.y, size, size);
     }),
 
     groundCrack = new Effect(20f, 500f, e -> {

@@ -20,7 +20,6 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.DelayBulletType.*;
-import progressed.entities.pattern.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
@@ -321,11 +320,9 @@ public class PMModules{
                 rotateSpeed = 3f;
                 shootSound = Sounds.missile;
 
-                shoot = new ShootRand(){{
-                    shots = 7;
-                    xRand = 4f;
-                    shotDelay = 2f;
-                }};
+                shoot.shots = 7;
+                shoot.shotDelay = 2f;
+                xRand = 4f;
 
                 coolant = consumeCoolant(0.2f);
             }};
@@ -721,10 +718,11 @@ public class PMModules{
                 public void drawDeploy(ModularTurretBuild parent, BaseMount mount){
                     Draw.draw(Draw.z(), () -> {
                         float progress = mount.progress / deployTime;
-                        Draw.draw(Draw.z(), () -> PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, 0f, 0.1f, progress));
+                        PMDrawf.materialize(mount.x - elevation, mount.y - elevation, region, parent.team.color, 0f, 0.1f, progress, true);
+                        PMDrawf.materialize(mount.x, mount.y, region, parent.team.color, 0f, 0.1f, progress);
                         for(int i = 0; i < 4; i++){
                             float rot = i * 90 - 45f;
-                            Draw.draw(Draw.z(), () -> PMDrawf.materialize(mount.x, mount.y, fullArm, parent.team.color, rot, 0.1f, progress));
+                            PMDrawf.materialize(mount.x, mount.y, fullArm, parent.team.color, rot, 0.1f, progress);
                         }
                     });
                 }

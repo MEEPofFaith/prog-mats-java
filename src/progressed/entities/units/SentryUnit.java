@@ -1,12 +1,12 @@
-package progressed.entities.units.entity;
+package progressed.entities.units;
 
 import arc.math.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import progressed.content.*;
-import progressed.entities.units.*;
+import progressed.type.unit.*;
 
-public class SentryUnitEntity extends UnitEntity{
+public class SentryUnit extends UnitEntity{
     public float duration;
 
     public float durationf(){
@@ -61,6 +61,6 @@ public class SentryUnitEntity extends UnitEntity{
 
     @Override
     public int classId(){
-        return PMUnitTypes.classID(SentryUnitEntity.class);
+        return PMUnitTypes.classID(SentryUnit.class);
     }
 }
