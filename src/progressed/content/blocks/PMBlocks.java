@@ -298,7 +298,7 @@ public class PMBlocks{
             shoot = new ShootBarrel(){{
                 shots = 4;
                 barrels = new float[]{
-                    -9f, -3f / 4f, 0f
+                    -9f, -3f / 4f, 0f,
                     -3f, 0f, 0f,
                     3f, 0f, 0f,
                     9f, -3f / 4f, 0f
