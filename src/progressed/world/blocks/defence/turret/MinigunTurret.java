@@ -34,7 +34,6 @@ public class MinigunTurret extends ItemTurret{
             @Override
             public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
                 super.getRegionsToOutline(block, out);
-                out.add(region);
                 out.add(barrel);
             }
 
@@ -53,7 +52,7 @@ public class MinigunTurret extends ItemTurret{
                 Vec2 v = Tmp.v1;
 
                 Draw.z(Layer.turret- 0.01f);
-                Draw.rect(outline, build.x, build.y, build.drawrot());
+                Draw.rect(outline, build.x + m.recoilOffset.x, build.y + m.recoilOffset.y, build.drawrot());
                 for(int i = 0; i < 4; i++){
                     Draw.z(Layer.turret - 0.01f);
                     v.trns(m.rotation - 90f, barWidth * Mathf.cosDeg(m.spin - 90 * i), barHeight * Mathf.sinDeg(m.spin - 90 * i)).add(m.recoilOffset);
@@ -65,7 +64,7 @@ public class MinigunTurret extends ItemTurret{
                     }
                 }
 
-                Draw.z((Layer.turret));
+                Draw.z(Layer.turret);
                 super.drawTurret(block, build);
 
                 if(m.speedf() > 0.0001f){
