@@ -237,11 +237,7 @@ public class SandboxWall extends Wall{
         public void damage(float damage){
             reset = 0f;
             total += damage;
-        }
-
-        @Override
-        public void damage(float amount, boolean withEffect){
-            damage(amount);
+            lastDamageTime = Time.time;
         }
 
         @Override

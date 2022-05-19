@@ -192,7 +192,7 @@ public class PMBlocks{
             );
             size = 4;
             range = 255f;
-            health = 140 * size * size;
+            scaledHealth = 140f;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
@@ -230,7 +230,7 @@ public class PMBlocks{
             size = 4;
             range = 255f;
             maxSpeed = 27f;
-            health = 150 * size * size;
+            scaledHealth = 150;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
@@ -277,7 +277,7 @@ public class PMBlocks{
             hideDetails = false;
             range = 255f;
             maxSpeed = 24f;
-            health = 160 * size * size;
+            scaledHealth = 160f;
             shootCone = 35f;
             shootSound = Sounds.shootBig;
             targetAir = targetGround = true;
@@ -343,7 +343,7 @@ public class PMBlocks{
                 new TeslaRing(6f)
             );
             size = 2;
-            health = 200 * size * size;
+            scaledHealth = 200;
             reload = 20f;
             range = 130f;
             maxTargets = 5;
@@ -420,7 +420,7 @@ public class PMBlocks{
                 }}
             );
             size = 3;
-            health = 180 * size * size;
+            scaledHealth = 180;
             reload = 10f;
             range = 315f;
             maxTargets = 16;
@@ -441,7 +441,7 @@ public class PMBlocks{
                 Items.titanium, 60
             ));
             size = 2;
-            health = 310 * size * size;
+            scaledHealth = 310;
             reload = 120f;
             shootSound = Sounds.rockBreak;
             range = 35f * tilesize;
@@ -469,7 +469,7 @@ public class PMBlocks{
                 Items.thorium, 200
             ));
             size = 3;
-            health = 210 * size * size;
+            scaledHealth = 210;
             shootDuration = 90f;
             range = 240f;
             reload = 90f;
@@ -495,7 +495,7 @@ public class PMBlocks{
                 PMItems.tenelium, 200
             ));
             size = 4;
-            health = 190 * size * size;
+            scaledHealth = 190;
             shootDuration = 120f;
             range = 280f;
             reload = 150f;
@@ -521,7 +521,7 @@ public class PMBlocks{
                 Items.titanium, 30
             ));
             size = 2;
-            health = 300 * size * size;
+            scaledHealth = 300;
             reload = 70f;
             rotateSpeed = 10f;
             recoil = 4f;
@@ -547,7 +547,7 @@ public class PMBlocks{
                     PMItems.tenelium, PMBullets.magenetTenelium
                 );
                 size = 3;
-                health = 90 * size * size;
+                scaledHealth = 90;
                 range = 23f * 8f;
                 reload = 200f;
                 inaccuracy = 30f;
@@ -595,7 +595,7 @@ public class PMBlocks{
             );
             size = 3;
             hideDetails = false;
-            health = 120 * size * size;
+            scaledHealth = 120;
             reload = 450f;
             inaccuracy = 0f;
             range = 544f;
@@ -620,7 +620,7 @@ public class PMBlocks{
                 Items.surgeAlloy, PMBullets.largeFlare
             );
             size = 2;
-            health = 250 * size * size;
+            scaledHealth = 250;
             minRange = 5f * tilesize;
             range = 60f * tilesize;
             shootY = 23f / 4f;
@@ -648,7 +648,7 @@ public class PMBlocks{
 
                 size = 2;
                 hideDetails = false;
-                health = 80 * size * size;
+                scaledHealth = 80;
                 range = 17f * 8f;
                 shootY = 21f / 4f;
                 reload = 120f;
@@ -700,7 +700,7 @@ public class PMBlocks{
                     Items.silicon, 60,
                     Items.titanium, 50
                 ));
-                health = 260 * size * size;
+                scaledHealth = 260;
                 size = 2;
                 reload = 1.5f * 60f;
                 shootY = 23f / 4f - recoil;
@@ -765,7 +765,7 @@ public class PMBlocks{
                 Items.silicon, 180,
                 PMItems.tenelium, 150
             ));
-            health = 230 * size * size;
+            scaledHealth = 230;
             size = 3;
             reload = 2f * 60f;
             shootY = 46f / 4f - recoil;
@@ -833,7 +833,7 @@ public class PMBlocks{
             ));
             size = 3;
             hideDetails = false;
-            health = 340 * size * size;
+            scaledHealth = 340;
             range = 180f;
             maxSwords = 3;
 
@@ -853,7 +853,7 @@ public class PMBlocks{
             ));
             size = 5;
             hideDetails = false;
-            health = 230 * size * size;
+            scaledHealth = 230;
             range = 260f;
             swordType = (SwordUnitType)PMUnitTypes.ballSword;
             maxSwords = 5;
@@ -876,7 +876,7 @@ public class PMBlocks{
 
             size = 4;
             hideDetails = false;
-            health = 120 * size * size;
+            scaledHealth = 120;
             
             shootY = 34f / 4f;
             range = 328f;
@@ -918,7 +918,7 @@ public class PMBlocks{
             ));
             size = 4;
             hideDetails = false;
-            health = 230 * size * size;
+            scaledHealth = 230;
             canOverdrive = false;
             reload = 520f;
             range = 256f;
@@ -950,7 +950,7 @@ public class PMBlocks{
             ));
             size = 6;
             hideDetails = false;
-            health = 140 * size * size;
+            scaledHealth = 140;
             reload = 450f;
             range = 740f;
             shootEffect = smokeEffect = Fx.none;
@@ -1083,7 +1083,7 @@ public class PMBlocks{
 
                 size = 3;
                 hideDetails = false;
-                health = 140 * size * size;
+                scaledHealth = 140;
                 minRange = 5f * tilesize;
                 range = 40 * tilesize;
                 velocityRnd = 0.2f;
@@ -1120,7 +1120,7 @@ public class PMBlocks{
             );
             size = 5;
             hideDetails = false;
-            health = 180 * size * size;
+            scaledHealth = 180;
             reload = 1.5f * 60f;
             range = 800f;
             recoil = 4f;
@@ -1151,7 +1151,7 @@ public class PMBlocks{
             );
             size = 4;
             hideDetails = false;
-            health = 160 * size * size;
+            scaledHealth = 160;
             reload = 60f;
             range = 656f;
             shootSound = Sounds.artillery;
@@ -1180,7 +1180,7 @@ public class PMBlocks{
             );
             size = 7;
             hideDetails = false;
-            health = 170 * size * size;
+            scaledHealth = 170;
             range = 2800f;
             shootSound = Sounds.explosionbig;
             cooldown = 0.005f;
@@ -1201,7 +1201,7 @@ public class PMBlocks{
                 PMItems.tenelium, 5400
             ));
             size = 9;
-            health = 480 * size * size;
+            scaledHealth = 480;
             reload = 60f * 15f;
             range = 200f * tilesize;
             damage = 12000f / 12f;
@@ -1235,7 +1235,7 @@ public class PMBlocks{
                 PMItems.tenelium, 2500
             ));
             size = 7;
-            health = 360 * size * size;
+            scaledHealth = 360;
             range = 30f;
             damageBoost = 6000f / 12f;
             boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
@@ -1683,7 +1683,7 @@ public class PMBlocks{
         harbinger = new ChaosTurret("harbinger"){
             {
                 size = 8;
-                health = 999999999;
+                health = 1000000;
                 inaccuracy = 45f;
                 shake = 150f;
                 range = 560f;
@@ -1720,7 +1720,7 @@ public class PMBlocks{
 
         everythingGun = new EverythingTurret("everything-gun"){{
             size = 6;
-            health = 999999999;
+            health = 1000000;
             rotateSpeed = 20f;
             reload = 1f;
             range = 4400f;
@@ -1730,7 +1730,7 @@ public class PMBlocks{
         omegaCharger = new ApotheosisChargeTower("omega-charger"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 1;
-            health = 999999999;
+            health = 1000000;
             range = 60f;
             damageBoost = 500000f / 12f;
             boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
@@ -1748,7 +1748,7 @@ public class PMBlocks{
         testTurret = new PowerTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             size = 2;
-            health = 69420;
+            health = 1000000;
             range = 69 * tilesize;
             reload = 60f;
 
@@ -1804,7 +1804,7 @@ public class PMBlocks{
             hasItems = false;
 
             size = 3;
-            health = 999999999;
+            health = 1000000;
             plans = Seq.with(
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
             );
@@ -1813,7 +1813,7 @@ public class PMBlocks{
         }};
 
         capBlock = new CapBlock("cap-block"){{
-            health = 10000;
+            health = 1000000;
             unitCapModifier = 25;
         }};
 
