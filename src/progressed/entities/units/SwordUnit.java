@@ -27,7 +27,6 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     public void update(){
         super.update();
 
-
         if(sAI().shouldDamage() && lastBaseX != Float.NEGATIVE_INFINITY){
             float
                 tipX = x + Angles.trnsx(rotation, stype().tipY),
@@ -68,16 +67,16 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     public void remove(){
         super.remove();
 
-        for(DriftTrail trail : driftTrails){
-            if(trail.size() > 0) UtilFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
+        if(driftTrails != null){
+            for(DriftTrail trail: driftTrails){
+                if(trail.size() > 0) UtilFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
+            }
         }
     }
 
     @Override
-    public boolean collides(Hitboxc other){
-        return (other instanceof Unit u && u.team() != team)
-            && (u.checkTarget(type.targetAir, type.targetGround))
-            && !(hasCollided(other.id()));
+    public void damage(float amount){
+        //don't flash
     }
 
     public void unitRayCast(float x1, float y1, float x2, float y2){

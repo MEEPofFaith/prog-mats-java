@@ -7,6 +7,7 @@ import arc.util.io.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.consumers.*;
 
 public class AccelerationCrafter extends GenericCrafter{
     public float accelerationSpeed = 0.03f, decelerationSpeed = 0.05f;
@@ -22,10 +23,10 @@ public class AccelerationCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        addBar("speed", (AcceleratingCrafterBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-craft-speed", Mathf.round(entity.getSpeed() * 100f)),
+        addBar("craft-speed", (AcceleratingCrafterBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.pm-craft-speed", Mathf.round(entity.getDisplaySpeed() * 100f)),
             () -> Pal.surge,
-            entity::getSpeed
+            entity::getDisplaySpeed
         ));
     }
 
@@ -35,7 +36,7 @@ public class AccelerationCrafter extends GenericCrafter{
         @Override
         public void updateTile(){
             float s = getSpeed();
-            if(canConsume()){
+            if(hasItems()){
                 progress += getProgressIncrease(craftTime) * s;
                 totalProgress += delta() * s;
             }
@@ -66,6 +67,10 @@ public class AccelerationCrafter extends GenericCrafter{
             dumpOutputs();
         }
 
+        public float getDisplaySpeed(){
+            return hasItems() ? getSpeed() : 0f;
+        }
+
         public float getSpeed(){
             return interp.apply(speed);
         }
@@ -73,6 +78,11 @@ public class AccelerationCrafter extends GenericCrafter{
         @Override
         public float getProgressIncrease(float baseTime){
             return 1f / baseTime * delta();
+        }
+
+        public boolean hasItems(){
+            ConsumeItems cItems = findConsumer(c -> c instanceof ConsumeItems);
+            return cItems == null || cItems.efficiency(this) == 1;
         }
 
         @Override

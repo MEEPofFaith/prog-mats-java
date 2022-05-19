@@ -226,6 +226,16 @@ public class SwordTurret extends BaseTurret{
                 }
             }
 
+            int s = 0;
+            while(s < swords.size){
+                Unit u = swords.get(s);
+                if(u == null || u.dead || !u.isAdded()){
+                    swords.remove(s);
+                }else{
+                    s++;
+                }
+            }
+
             if(shouldConsume() && swordCount() < maxSwords){
                 buildProgress += edelta() / buildTime;
                 totalProgress += edelta();

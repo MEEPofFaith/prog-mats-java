@@ -28,7 +28,6 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -327,8 +326,8 @@ public class PMBlocks{
             damage = 20f;
             status = StatusEffects.shocked;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(3.6f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         spark = new TeslaTurret("spark"){{
@@ -351,8 +350,8 @@ public class PMBlocks{
             damage = 23f;
             status = StatusEffects.shocked;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(4.8f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         storm = new TeslaTurret("storm"){{
@@ -430,8 +429,8 @@ public class PMBlocks{
             damage = 27f;
             status = StatusEffects.shocked;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(8.9f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         concretion = new GeomancyTurret("concretion"){{
@@ -456,8 +455,8 @@ public class PMBlocks{
             armX = 15f / 4f;
             armY = -2f / 4f;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(2f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         flame = new EruptorTurret("flame"){{
@@ -481,8 +480,8 @@ public class PMBlocks{
                 crackEffects = 4;
             }};
 
-            coolant = consumeCoolant(0.2f);
             consumePower(14f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         blaze = new EruptorTurret("blaze"){{
@@ -510,8 +509,8 @@ public class PMBlocks{
                 crackEffects = 6;
             }};
 
-            coolant = consumeCoolant(0.2f);
             consumePower(17f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         bit = new BitTurret("bit"){{
@@ -530,8 +529,8 @@ public class PMBlocks{
             range = 140f;
             shootType = PMBullets.pixel;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(1.35f);
+            coolant = consumeCoolant(0.2f);
         }};
 
         magnet = new ItemTurret("attraction"){
@@ -726,8 +725,8 @@ public class PMBlocks{
                     Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
                 };
 
-                coolant = consumeCoolant(0.2f);
                 consumePower(5f);
+                coolant = consumeCoolant(0.2f);
             }
 
             @Override
@@ -773,8 +772,8 @@ public class PMBlocks{
             shootSound = Sounds.plasmadrop;
             retractDelay = 0.125f;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(8.5f);
+            coolant = consumeCoolant(0.2f);
 
             RiftBulletType rift = new RiftBulletType(550f){{
                 speed = brange;
@@ -903,8 +902,8 @@ public class PMBlocks{
             shootType = PMBullets.sentinelLaser;
             unitSort = UnitSorts.strongest;
 
-            coolant = consumeCoolant(1f);
             consumePower(29f);
+            coolant = consumeCoolant(1f);
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{
@@ -933,6 +932,7 @@ public class PMBlocks{
             shootSound = Sounds.release;
             shootType = PMBullets.blackHole;
 
+            consumePower(35f);
             coolant = consumeCoolant(0.2f);
         }};
 
@@ -965,8 +965,8 @@ public class PMBlocks{
             recoilTime = 300f;
             shootType = PMBullets.excaliburLaser;
 
-            coolant = consumeCoolant(0.2f);
             consumePower(30f);
+            coolant = consumeCoolant(0.2f);
 
             Color transSurge = Pal.surge.cpy().a(0);
             PartProgress[] p = {PartProgress.reload.inv().curve(0f, 0.3f),
@@ -1218,10 +1218,10 @@ public class PMBlocks{
             spinnerWidth = new float[]{49f / 4f, 82f / 4f};
             fireEffect = new MultiEffect(EnergyFx.apotheosisClouds, EnergyFx.apotheosisBlast);
 
+            consumePower(655f);
             float cooleantUse = 8f;
             coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
             coolant = consumeCoolant(cooleantUse);
-            consumePower(655f);
         }};
 
         apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
@@ -1306,6 +1306,7 @@ public class PMBlocks{
             shots = 90;
             delay = 0.75f;
             range = 560f;
+
             consumePower(2.75f);
         }};
         // endregion
@@ -1325,7 +1326,6 @@ public class PMBlocks{
             liquidCapacity = 50f;
             accelerationSpeed = 0.0004f;
             decelerationSpeed = 0.003125f;
-
             drawer = new DrawImpact(){{
                 plasma1 = Items.titanium.color;
                 plasma2 = Items.thorium.color;
@@ -1377,12 +1377,13 @@ public class PMBlocks{
             fuelPerCraft = 12;
             fuelCapacity = 48;
             fuelUseReduction = 0.8f;
+
+            consumePower(9f);
             consumeItems(with(
                 Items.lead, 4,
                 Items.sand, 10,
                 Items.coal, 6
             ));
-            consumePower(9f);
             outputItems = with(
                 Items.silicon, 14,
                 Items.metaglass, 6
@@ -1610,6 +1611,7 @@ public class PMBlocks{
             clouds = 15;
             minCloudSize = 0.5f;
             maxCloudSize = 1.25f;
+
             consumePower(42.5f);
         }};
 
@@ -1671,8 +1673,8 @@ public class PMBlocks{
             phaseShieldCharge = 350f;
             cooldownBrokenBase *= 2f;
 
-            consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
             consumePower(7f);
+            consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
         }};
         // endregion
 
@@ -1769,6 +1771,7 @@ public class PMBlocks{
             shots = 90;
             delay = 0.75f;
             range = 560f;
+
             consumePower(0.1f);
         }};
 

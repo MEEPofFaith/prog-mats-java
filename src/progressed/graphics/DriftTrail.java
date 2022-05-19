@@ -6,7 +6,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 
 /** Due to the amount of differences, I will not extend off of {@link Trail} for this. */

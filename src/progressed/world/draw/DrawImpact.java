@@ -11,7 +11,7 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 import progressed.world.blocks.crafting.AccelerationCrafter.*;
 
-public class DrawImpact extends DrawBlock{
+public class DrawImpact extends DrawDefault{
     public float lightRadius = 60f, lightSinScl = 5f, lightSinMag = 5f;
 
     public float oscMag = 3f, oscMagDec = 0.25f;

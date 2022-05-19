@@ -46,7 +46,7 @@ public class SwordUnitType extends UnitType{
         envDisabled = 0;
         payloadCapacity = 0;
 
-        hittable = killable = targetable = physics = useUnitCap = false;
+        hittable = targetable = physics = useUnitCap = false;
         flying = true;
         engineSize = -1;
         hidden = true;
@@ -101,15 +101,17 @@ public class SwordUnitType extends UnitType{
     public void drawTrail(Unit unit){
         if(!(unit instanceof SwordUnit sword)) return;
 
-        if(sword.driftTrails == null){
-            sword.driftTrails = new DriftTrail[]{
-                new DriftTrail(trailLength),
-                new DriftTrail(trailLength)
-            };
-        }
+        if(trailLength > 0){
+            if(sword.driftTrails == null){
+                sword.driftTrails = new DriftTrail[]{
+                    new DriftTrail(trailLength),
+                    new DriftTrail(trailLength)
+                };
+            }
 
-        for(DriftTrail trail : sword.driftTrails){
-            trail.draw(trailColor == null ? unit.team.color : trailColor, trailScl);
+            for(DriftTrail trail: sword.driftTrails){
+                trail.draw(trailColor == null ? unit.team.color : trailColor, trailScl);
+            }
         }
     }
 
