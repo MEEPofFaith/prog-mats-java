@@ -14,6 +14,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
@@ -69,7 +70,7 @@ public class CoreLink extends Block{
 
     public class LinkBuild extends Building{
         public Building linkedCore;
-        public boolean activated;
+        public boolean activated, usePower;
         public float activationTime;
 
         @Override
@@ -77,20 +78,23 @@ public class CoreLink extends Block{
             super.created();
 
             linkedCore = team.core();
-            items = linkedCore.items;
+            if(linkedCore != null) items = linkedCore.items;
         }
 
         @Override
         public void updateTile(){
-            if(linkedCore == null){
-                linkedCore = team.core();
+            if(linkedCore == null) linkedCore = team.core();
+            if(linkedCore != null) items = linkedCore.items;
+
+            ConsumePower cPower = findConsumer(c -> c instanceof ConsumePower);
+            if(cPower != null){
+                float u = cPower.usage * Time.delta;
+                usePower = power.graph.getBatteryStored() >= u || power.graph.getPowerBalance() >= u;
+            }else{
+                usePower = true;
             }
 
-            if(linkedCore != null){
-                items = linkedCore.items;
-            }
-
-            activationTime += Time.delta * Mathf.sign(canConsume());
+            activationTime += Time.delta * Mathf.sign(shouldConsume());
             activationTime = Mathf.clamp(activationTime, 0f, activationDelay);
 
             if(!activated && isActive()){
@@ -137,8 +141,8 @@ public class CoreLink extends Block{
         }
 
         @Override
-        public boolean canConsume(){
-            return super.canConsume() && (power == null || power.status >= 1);
+        public boolean shouldConsume(){
+            return super.shouldConsume() && usePower;
         }
 
         public boolean isActive(){
@@ -151,7 +155,7 @@ public class CoreLink extends Block{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return canConsume() && isActive() && linkedCore != null && linkedCore.acceptItem(source, item);
+            return isActive() && linkedCore != null && linkedCore.acceptItem(source, item);
         }
 
         @Override
@@ -218,20 +222,6 @@ public class CoreLink extends Block{
                 Point2 p = Geometry.d8edge[i];
                 float offset = -Math.max(block.size - 1, 0) / 2f * tilesize;
                 Draw.rect("block-select", x + offset * p.x, y + offset * p.y, i * 90);
-            }
-        }
-
-        @Override
-        public void overwrote(Seq<Building> previous){
-            //only add prev items when core is not linked
-            if(linkedCore == null){
-                for(Building other : previous){
-                    if(other.items != null && other.items != items){
-                        items.add(other.items);
-                    }
-                }
-
-                items.each((i, a) -> items.set(i, Math.min(a, itemCapacity)));
             }
         }
 
