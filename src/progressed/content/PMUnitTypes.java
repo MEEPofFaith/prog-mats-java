@@ -278,6 +278,7 @@ public class PMUnitTypes{
             {
                 constructor = UnitEntity::create;
                 alwaysUnlocked = true;
+                hidden = !ProgMats.everything();
                 flying = true;
                 lowAltitude = true;
                 mineSpeed = 100f;
@@ -311,11 +312,6 @@ public class PMUnitTypes{
                     Draw.z(Layer.overlayUI);
                     PMDrawf.text(unit.x, unit.y, false, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
                 }
-            }
-
-            @Override
-            public boolean isHidden(){
-                return !ProgMats.everything();
             }
         };
     }

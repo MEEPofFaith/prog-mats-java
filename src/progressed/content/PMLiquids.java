@@ -9,19 +9,13 @@ public class PMLiquids{
     magma;
 
     public static void load() {
-        magma = new Liquid("magma"){
-            {
-                effect = StatusEffects.melting;
-                flammability = temperature = 2f;
-                viscosity = 0.3f;
-                color = lightColor = Color.valueOf("F58859");
-                hideDetails = false;
-            }
-
-            @Override
-            public boolean isHidden(){
-                return true;
-            }
-        };
+        magma = new Liquid("magma"){{
+            effect = StatusEffects.melting;
+            flammability = temperature = 2f;
+            viscosity = 0.3f;
+            color = lightColor = Color.valueOf("F58859");
+            hideDetails = false;
+            hidden = true;
+        }};
     }
 }

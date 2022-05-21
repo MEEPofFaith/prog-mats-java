@@ -34,6 +34,7 @@ public class FlareUnitType extends UnitType{
         this.duration = duration;
         constructor = FlareUnit::new;
         aiController = EmptyAI::new;
+        hidden = true;
 
         drag = 1f;
         speed = accel = 0f;
@@ -175,10 +176,5 @@ public class FlareUnitType extends UnitType{
             ));
             bars.row();
         }).growX();
-    }
-    
-    @Override
-    public boolean isHidden(){
-        return true;
     }
 }
