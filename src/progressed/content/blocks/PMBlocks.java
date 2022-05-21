@@ -836,6 +836,7 @@ public class PMBlocks{
             scaledHealth = 340;
             range = 180f;
             maxSwords = 3;
+            unitSort = UnitSorts.weakest;
 
             buildPowerUse = 4f;
             attackPowerUse = 6.5f;
@@ -855,8 +856,9 @@ public class PMBlocks{
             hideDetails = false;
             scaledHealth = 230;
             range = 260f;
-            swordType = (SwordUnitType)PMUnitTypes.ballSword;
+            swordType = (SwordUnitType)PMUnitTypes.masqueradeSword;
             maxSwords = 5;
+            unitSort = UnitSorts.weakest;
 
             buildPowerUse = 6f;
             attackPowerUse = 13.5f;

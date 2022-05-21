@@ -87,7 +87,7 @@ public class PMUnitTypes{
     flareSmall, flareMedium, flareLarge,
 
     //swords
-    danceSword, ballSword,
+    danceSword, masqueradeSword,
     
     //sandy
     everythingUnit;
@@ -259,15 +259,15 @@ public class PMUnitTypes{
         danceSword = new SwordUnitType("dance-sword"){{
             baseY = -4f;
             tipY = 11f;
-            damage = 50f;
+            damage = 65f;
             hitEffect = OtherFx.swordStab;
             trailLength = 5;
         }};
 
-        ballSword = new SwordUnitType("ball-sword"){{
+        masqueradeSword = new SwordUnitType("ball-sword"){{
             baseY = -33f / 4f;
             tipY = 89f / 4f;
-            damage = 80f;
+            damage = 90f;
             hitEffect = OtherFx.swordStab;
             trailLength = 8;
             trailScl = 4;
