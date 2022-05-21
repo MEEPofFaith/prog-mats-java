@@ -22,6 +22,7 @@ public class SwordAI extends AIController{
     @Override
     public void updateMovement(){
         SwordTurretBuild swordTurret = sturret();
+        if(swordTurret == null) return;
 
         if(swordTurret.isActive()){
             attackTimer += Time.delta;

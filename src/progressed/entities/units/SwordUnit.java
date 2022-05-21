@@ -27,7 +27,7 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     public void update(){
         super.update();
 
-        if(sAI().shouldDamage() && lastBaseX != Float.NEGATIVE_INFINITY){
+        if(sAI() != null && sAI().shouldDamage() && lastBaseX != Float.NEGATIVE_INFINITY){
             float
                 tipX = x + Angles.trnsx(rotation, stype().tipY),
                 tipY = y + Angles.trnsy(rotation, stype().tipY);
@@ -164,7 +164,9 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
 
     @Override
     public float speed(){
-        return sAI().speed();
+        SwordAI sAI = sAI();
+        if(sAI == null) return super.speed();
+        return sAI.speed();
     }
 
     public void orbitPos(int orbitPos){
@@ -180,7 +182,7 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     }
 
     public SwordAI sAI(){
-        return (SwordAI)controller;
+        return controller instanceof SwordAI s ? s : null;
     }
 
     @Override
