@@ -66,13 +66,13 @@ public class SwordAI extends AIController{
 
         if(curving){
             if(vec.len() < circleLength){
-                unit.rotation = Angles.moveToward(unit.rotation, unit.vel().angle() + stype().rotateSpeed * curveScl, 6f);
+                unit.rotation += curveScl;
             }else{
                 rotating = true;
                 unit.lookAt(target);
                 if(Angles.within(unit.rotation, unit.angleTo(target), 15f)){
                     curving = rotating = false;
-                    curveScl = curveRand.range(1f);
+                    curveScl = curveRand.range(stype().curveRnd);
                     sunit().clearCollided();
                 }
             }

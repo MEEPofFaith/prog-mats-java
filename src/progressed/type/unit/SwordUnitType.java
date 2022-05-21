@@ -20,7 +20,7 @@ import static mindustry.Vars.*;
 public class SwordUnitType extends UnitType{
     public float orbitRadius = -1f, orbitSpeed = 1f;
     public float attackRadius = 80f, attackTimeOffset = 20f;
-    public float neutralSpeed = 2f, travelSpeed = -1f;
+    public float neutralSpeed = 2f, travelSpeed = -1f, curveRnd = -1f;
 
     //Hit stuff
     public float baseY, tipY;
@@ -59,6 +59,7 @@ public class SwordUnitType extends UnitType{
         accel = 0.05f;
         drag = 0.03f;
 
+        trailColor = Color.red.cpy().a(0.25f);
         trailLength = 5;
         trailScl = 2;
     }
@@ -76,9 +77,9 @@ public class SwordUnitType extends UnitType{
     public void init(){
         super.init();
 
-        if(travelSpeed == -1f) travelSpeed = speed / 2f;
-        if(trailColor == null) trailColor = Color.red.cpy().a(0.25f);
+        if(travelSpeed <= 0f) travelSpeed = speed / 2f;
         if(trailY == Float.NEGATIVE_INFINITY) trailY = tipY - trailScl;
+        if(curveRnd < 0) curveRnd = rotateSpeed * 6;
     }
 
     @Override
