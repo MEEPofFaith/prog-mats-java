@@ -79,7 +79,7 @@ public class SwordUnitType extends UnitType{
 
         if(travelSpeed <= 0f) travelSpeed = speed / 2f;
         if(trailY == Float.NEGATIVE_INFINITY) trailY = tipY - trailScl;
-        if(curveRnd < 0) curveRnd = rotateSpeed * 6;
+        if(curveRnd < 0) curveRnd = rotateSpeed * 2;
     }
 
     @Override
