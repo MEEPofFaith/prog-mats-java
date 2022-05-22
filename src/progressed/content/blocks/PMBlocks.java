@@ -859,6 +859,7 @@ public class PMBlocks{
             swordType = (SwordUnitType)PMUnitTypes.masqueradeSword;
             maxSwords = 5;
             unitSort = UnitSorts.weakest;
+            targetRad = 6f;
 
             buildPowerUse = 6f;
             attackPowerUse = 13.5f;

@@ -43,7 +43,12 @@ public class SwordTurret extends BaseTurret{
     public float buildY = Float.NEGATIVE_INFINITY, buildWaveOffset = 0.1f;
     /** Visual elevation of turret shadow, -1 to use defaults. */
     public float elevation = -1f;
-    public Color swordColor;
+    /** Lerp speed of attack warmup. */
+    public float attackWarmupSpeed = 0.1f;
+    /** If true, attack warmup is linear instead of a curve. */
+    public boolean linearWarmup = false;
+    public float targetRad = 4f, targetLayer = Layer.bullet, targetY = Float.NEGATIVE_INFINITY;
+    public Color swordColor, targetColor = Pal.remove;
     /** Function for choosing which unit to target. */
     public Sortf unitSort = UnitSorts.closest;
     /** Filter for types of units to attack. */
@@ -108,12 +113,16 @@ public class SwordTurret extends BaseTurret{
 
         if(buildY == Float.NEGATIVE_INFINITY) buildY = size * Vars.tilesize / 2f;
         if(elevation < 0) elevation = size / 2f;
+
+        clipSize = Math.max(clipSize, Math.abs(buildY) + swordType.fullIcon.height / 4f);
+        if(targetColor != null) clipSize = Math.max(clipSize, range + targetRad);
+        if(targetY == Float.NEGATIVE_INFINITY) targetY = size * Vars.tilesize / 2f;
     }
 
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
         public IntSeq readUnitIds = new IntSeq(maxSwords);
         public Seq<Unit> swords = new Seq<>(maxSwords);
-        public float buildProgress, totalProgress;
+        public float buildProgress, totalProgress, attackWarmup;
         public float logicControlTime = -1;
         public boolean logicShooting;
         public Posc target;
@@ -209,6 +218,22 @@ public class SwordTurret extends BaseTurret{
                     drawrot(), buildWaveOffset, buildProgress
                 ));
             }
+
+            if(targetColor != null && targetRad > 0 && attackWarmup > 0.01f){
+                Lines.stroke(attackWarmup, targetColor);
+                Draw.z(targetLayer);
+                float rad = targetRad * (1f + Mathf.absin(4f, 0.5f));
+                Lines.square(targetPos.x, targetPos.y, rad, 45f);
+
+                Tmp.v1.trns(rotation, targetY).add(this);
+                float ang = targetPos.angleTo(Tmp.v1);
+                float calc = 1f + (1f - Mathf.sinDeg(Mathf.mod(ang, 90f) * 2)) * (Mathf.sqrt2 - 1f);
+                Tmp.v2.trns(ang, rad / Mathf.sqrt2 * calc).add(targetPos);
+                Lines.line(
+                    Tmp.v1.x, Tmp.v1.y,
+                    Tmp.v2.x, Tmp.v2.y
+                );
+            }
         }
 
         @Override
@@ -264,6 +289,13 @@ public class SwordTurret extends BaseTurret{
 
             //Turret stuff
             if(!validateTarget()) target = null;
+
+            float warmupTarget = Mathf.num(isAttacking());
+            if(linearWarmup){
+                attackWarmup = Mathf.approachDelta(attackWarmup, warmupTarget, attackWarmupSpeed);
+            }else{
+                attackWarmup = Mathf.lerpDelta(attackWarmup, warmupTarget, attackWarmupSpeed);
+            }
 
             unit.tile(this);
             unit.rotation(rotation);
