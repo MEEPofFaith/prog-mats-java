@@ -77,8 +77,11 @@ public class PMUnitTypes{
 
     public static UnitType
 
-    //TODO A chain of air units with DriftTrail shenanigans.
+    //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Thinking of dark green or cyan pallet.
     echo, presence, ghoul, phantom, apparition,
+
+    //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
+    puncture, penetration, incision, laceration, amputation,
     
     //sentry
     barrage, downpour, rapier,
