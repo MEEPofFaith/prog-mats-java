@@ -229,6 +229,7 @@ public class SwordTurret extends BaseTurret{
                 float ang = targetPos.angleTo(Tmp.v1);
                 float calc = 1f + (1f - Mathf.sinDeg(Mathf.mod(ang, 90f) * 2)) * (Mathf.sqrt2 - 1f);
                 Tmp.v2.trns(ang, rad / Mathf.sqrt2 * calc).add(targetPos);
+                Fill.circle(Tmp.v1.x, Tmp.v1.y, attackWarmup);
                 Lines.line(
                     Tmp.v1.x, Tmp.v1.y,
                     Tmp.v2.x, Tmp.v2.y
