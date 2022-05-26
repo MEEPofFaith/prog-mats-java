@@ -50,9 +50,7 @@ public class SwordAI extends AIController{
 
     @Override
     public void updateVisuals(){
-        if(!shouldAttack()){
-            unit.wobble();
-        }
+        //Don't
     }
 
     public void attack(Position target, float circleLength){

@@ -121,7 +121,7 @@ public class SwordTurret extends BaseTurret{
 
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
         public IntSeq readUnitIds = new IntSeq(maxSwords);
-        public Seq<Unit> swords = new Seq<>(maxSwords);
+        public Seq<SwordUnit> swords = new Seq<>(maxSwords);
         public float buildProgress, totalProgress, attackWarmup;
         public float logicControlTime = -1;
         public boolean logicShooting;
@@ -243,16 +243,14 @@ public class SwordTurret extends BaseTurret{
             for(int i = 0; i < Math.min(readUnitIds.size, maxSwords); i++){
                 int id = readUnitIds.get(i);
                 if(id != -1){
-                    Unit u = Groups.unit.getByID(id);
-                    if(u instanceof SwordUnit st){
-                        st.orbitPos(i);
-                    }
+                    SwordUnit u = (SwordUnit)Groups.unit.getByID(id);
+                    u.orbitPos(i);
                     swords.add(u);
                     readUnitIds.set(i, -1);
                 }
             }
 
-            int s = 0;
+            int s = 0, prev = swords.size;
             while(s < swords.size){
                 Unit u = swords.get(s);
                 if(u == null || u.dead || !u.isAdded()){
@@ -261,19 +259,20 @@ public class SwordTurret extends BaseTurret{
                     s++;
                 }
             }
+            if(swords.size != prev){
+                for(int i = 0; i < swords.size; i++){
+                    swords.get(i).orbitPos(i);
+                }
+            }
 
             if(shouldConsume() && swordCount() < maxSwords){
                 buildProgress += edelta() / buildTime;
                 totalProgress += edelta();
 
                 if(buildProgress >= 1f){
-                    Unit u = swordType.create(team);
-                    if(u instanceof BuildingTetherc bt){
-                        bt.building(this);
-                    }
-                    if(u instanceof SwordUnit st){
-                        st.orbitPos(swordCount());
-                    }
+                    SwordUnit u = (SwordUnit)swordType.create(team);
+                    u.building(this);
+                    u.orbitPos(swordCount());
                     float
                         spawnX = x + Angles.trnsx(rotation, buildY),
                         spawnY = y + Angles.trnsy(rotation, buildY);
