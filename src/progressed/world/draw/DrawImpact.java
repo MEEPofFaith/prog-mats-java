@@ -36,20 +36,14 @@ public class DrawImpact extends DrawDefault{
 
         Draw.rect(bottom, b.x, b.y);
 
-        float warmup = b.getSpeed();
+        float warmup = Interp.pow3In.apply(b.getSpeed());
         Draw.blend(Blending.additive);
         for(int i = 0; i < plasmaRegions.length; i++){ //Haha draw code stolen from Impact Reactor
-            float r = Mathf.absin(b.totalActivity, 2f + i * 1f, oscMag - i * oscMagDec);
+            float r = ((float)plasmaRegions[i].width * Draw.scl - 3f + Mathf.absin(Time.time, 2f + i * 1f, 5f - i * 0.5f));
 
-            Draw.color(plasma1, plasma2, (float)i / (plasmaRegions.length - 1f));
+            Draw.color(plasma1, plasma2, (float)i / plasmaRegions.length);
             Draw.alpha((0.3f + Mathf.absin(Time.time, 2f + i * 2f, 0.3f + i * 0.05f)) * warmup);
-            TextureRegion reg = plasmaRegions[i];
-            Draw.rect(
-                reg,
-                b.x, b.y,
-                reg.width * Draw.scl + r, reg.height * Draw.scl + r,
-                b.totalActivity * (12 + i * 6f)
-            );
+            Draw.rect(plasmaRegions[i], b.x, b.y, r, r, b.totalActivity * (12 + i * 6f));
         }
         Draw.blend();
         Draw.color();
