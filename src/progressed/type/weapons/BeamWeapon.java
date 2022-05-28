@@ -112,9 +112,9 @@ public class BeamWeapon extends Weapon{
             }else{
                 mount.bullet.rotation(weaponRotation + 90);
                 float dst = mount.bullet.fin() * maxBeamDst,
-                    bX = bulletX + Angles.trnsx(weaponRotation + 90f, dst),
-                    bY = bulletY + Angles.trnsy(weaponRotation + 90f, dst);
-                mount.bullet.set(bX, bY);
+                    bx = bulletX + Angles.trnsx(weaponRotation + 90f, dst),
+                    by = bulletY + Angles.trnsy(weaponRotation + 90f, dst);
+                mount.bullet.set(bx, by);
                 mount.reload = reload;
                 mount.recoil = 1f;
                 unit.vel.add(Tmp.v1.trns(unit.rotation + 180f, mount.bullet.type.recoil));
@@ -125,12 +125,12 @@ public class BeamWeapon extends Weapon{
                     }
 
                     BeamMount bMount = (BeamMount)mount;
-                    if((mount.bullet.lifetime - mount.bullet.time) > 10 && (bMount.beam -= Time.delta) < 0){
+                    if((bMount.beam -= Time.delta) < 0){
                         bMount.beam = 2;
 
                         UtilFx.lightning.at(
                             bulletX, bulletY, 10f, beamColor,
-                            new LightningData(mount.bullet, beamStroke, true, beamWidth)
+                            new LightningData(bx, by, beamStroke, true, beamWidth)
                         );
                         beamEffect.at(mount.bullet, weaponRotation + 90f);
                     }

@@ -60,8 +60,8 @@ public class UtilFx{
     groundCrack = new Effect(20f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         e.lifetime = e.rotation;
-        float tx = d.pos.getX(), ty = d.pos.getY(), dst = d.pos.dst(e.x, e.y);
-        v1.set(d.pos).sub(e.x, e.y).nor();
+        float tx = d.getX(), ty = d.getY(), dst = d.pos().dst(e.x, e.y);
+        v1.set(d.pos()).sub(e.x, e.y).nor();
 
         float normx = v1.x, normy = v1.y;
         float range = d.range;
@@ -99,8 +99,8 @@ public class UtilFx{
     lightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         e.lifetime = e.rotation;
-        float tx = d.pos.getX(), ty = d.pos.getY(), dst = d.pos.dst(e.x, e.y);
-        v1.set(d.pos).sub(e.x, e.y).nor();
+        float tx = d.getX(), ty = d.getY(), dst = d.pos().dst(e.x, e.y);
+        v1.set(d.pos()).sub(e.x, e.y).nor();
 
         float normx = v1.x, normy = v1.y;
         float range = d.range;
@@ -136,7 +136,9 @@ public class UtilFx{
     }).followParent(false).layer(Layer.bullet + 0.01f);
 
     public static class LightningData{
+        static Vec2 tmpPos = new Vec2();
         public Position pos;
+        public float x, y;
         public float stroke, range = 6f;
         public boolean shrink;
 
@@ -149,6 +151,30 @@ public class UtilFx{
             this(pos, stroke);
             this.shrink = shrink;
             this.range = range;
+        }
+
+        public LightningData(float x, float y, float stroke){
+            this.x = x;
+            this.y = y;
+            this.stroke = stroke;
+        }
+
+        public LightningData(float x, float y, float stroke, boolean shrink, float range){
+            this(x, y, stroke);
+            this.shrink = shrink;
+            this.range = range;
+        }
+
+        public float getX(){
+            return pos != null ? pos.getX() : x;
+        }
+
+        public float getY(){
+            return pos != null ? pos.getY() : y;
+        }
+
+        public Position pos(){
+            return pos != null ? pos : tmpPos.set(x, y);
         }
     }
 }

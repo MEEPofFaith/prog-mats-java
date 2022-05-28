@@ -9,8 +9,8 @@ public class DriftUnitType extends ErekirUnitType{
         super(name);
         constructor = DriftTrailUnit::new;
 
-        trailLength = 1; //Trick the game into running drawTrail()
-        engineSize = -1; //Don't make center engine by default, Chances are, it's gonna be a drift trail engine.
+        trailLength = 1; //Trick the game into running drawTrail().
+        engineSize = -1; //Don't make center engine by default. Chances are, it's gonna be a drift trail engine instead.
 
         circleTarget = true;
     }
