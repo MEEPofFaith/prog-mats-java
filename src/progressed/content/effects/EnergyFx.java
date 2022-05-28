@@ -31,6 +31,13 @@ public class EnergyFx{
         });
     }),
 
+    cyanBeamSpark = new Effect(30f, e -> {
+        color(PMPal.cyanLaser);
+        randLenVectors(e.id, 5, 32 * e.fin(), e.rotation, 20f, (x, y) -> {
+            Lines.lineAngle(e.x + x, e.y + y, angle(x, y), 3f * e.fout());
+        });
+    }),
+
     bitTrail = new Effect(75f, e -> {
         float offset = Mathf.randomSeed(e.id);
         Color c = Tmp.c1.set(PMPal.pixelFront).lerp(PMPal.pixelBack, Mathf.absin(Time.time * 0.05f + offset, 1f, 1f));

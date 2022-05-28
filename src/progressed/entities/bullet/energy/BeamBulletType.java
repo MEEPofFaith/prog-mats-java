@@ -17,7 +17,7 @@ public class BeamBulletType extends BulletType{
     public float radius, shake;
 
     public int crackEffects = 1;
-    public float crackStroke = 1.5f, crackWidth = 10f, crackRadius = -1;
+    public float crackStroke = 1.5f, crackWidth = 10f, crackRadius = -1, crackLife = 20f;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
     public boolean makePuddles;
@@ -78,7 +78,7 @@ public class BeamBulletType extends BulletType{
 
             for(int i = 0; i < crackEffects; i++){
                 PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
-                crackEffect.at(b.x, b.y, 20f, crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
+                crackEffect.at(b.x, b.y, crackLife, crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
             }
         }
 

@@ -5,7 +5,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.audio.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
@@ -17,9 +16,9 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class BeamWeapon extends Weapon{
-    public Color beamColor = PMPal.magma; //TODO make new default color
-    public float beamStroke = 1f, beamWidth = 3f;
-    public Effect beamEffect = EnergyFx.eruptorBurn; //TODO make new default effect
+    public Color beamColor = PMPal.cyanLaser;
+    public float beamStroke = 3f, beamWidth = 8f, maxBeamDst = 30f;
+    public Effect beamEffect = EnergyFx.cyanBeamSpark;
 
     public BeamWeapon(String name){
         super(name);
@@ -32,6 +31,11 @@ public class BeamWeapon extends Weapon{
 
     public BeamWeapon(){
         this("");
+    }
+
+    @Override
+    public float range(){
+        return maxBeamDst * 2f;
     }
 
     @Override
@@ -107,7 +111,7 @@ public class BeamWeapon extends Weapon{
                 mount.bullet = null;
             }else{
                 mount.bullet.rotation(weaponRotation + 90);
-                float dst = mount.bullet.fin() * range(),
+                float dst = mount.bullet.fin() * maxBeamDst,
                     bX = bulletX + Angles.trnsx(weaponRotation + 90f, dst),
                     bY = bulletY + Angles.trnsy(weaponRotation + 90f, dst);
                 mount.bullet.set(bX, bY);
@@ -122,7 +126,7 @@ public class BeamWeapon extends Weapon{
 
                     BeamMount bMount = (BeamMount)mount;
                     if((mount.bullet.lifetime - mount.bullet.time) > 10 && (bMount.beam -= Time.delta) < 0){
-                        bMount.beam = 5;
+                        bMount.beam = 2;
 
                         UtilFx.lightning.at(
                             bulletX, bulletY, 10f, beamColor,

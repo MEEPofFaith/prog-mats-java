@@ -108,6 +108,7 @@ public class PMUnitTypes{
             accel = 0.08f;
             drag = 0.04f;
             faceTarget = false;
+            targetAir = false;
 
             engines.add(
                 new DriftEngine(0f, -3f, 1.5f, -90f)
@@ -123,14 +124,15 @@ public class PMUnitTypes{
                     reload = 90f;
                     rotationLimit = 10f;
                     ignoreRotation = true;
+                    shootCone = 361f;
                     x = 0f;
                     y = 4f;
                     shootY = 0;
-                    bullet = new BeamBulletType(62f, 14f){{ //Test beam based on Flame
+                    maxBeamDst = 32f;
+                    bullet = new BeamBulletType(13f, 8f){{ //Test beam based on Flame
                         lifetime = 60f;
-                        shake = 1f;
-                        crackEffects = 4;
-                        rangeOverride = 32f;
+                        crackEffects = 2;
+                        crackLife = 10f;
                     }};
                 }}
             );

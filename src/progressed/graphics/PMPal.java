@@ -20,6 +20,7 @@ public class PMPal{
     outline = valueOf("404049"),
 
     magma = valueOf("ff9c5a"),
+    cyanLaser = valueOf("d1efff"),
 
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
