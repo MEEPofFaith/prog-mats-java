@@ -68,31 +68,33 @@ public class BeamTurret extends PowerTurret{
                 curRecoil = 1f;
                 heat = 1f;
 
-                Tmp.v1.trns(rotation, lengthScl * range, 0f);
+                Tmp.v1.trns(rotation, shootY + lengthScl * (range - shootY), 0f);
                 bullet.set(x + Tmp.v1.x, y + Tmp.v1.y);
                 bullet.time(0f);
                 bulletLife -= Time.delta / Math.max(efficiency, 0.00001f);
                 lengthScl += Time.delta / shootDuration;
                 if(timer(beamTimer, beamInterval)){
-                    Tmp.v1.trns(rotation, shootY - curRecoil);
-                    UtilFx.lightning.at(x + Tmp.v1.x, y + Tmp.v1.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
+                    Tmp.v1.trns(rotation, shootY).add(recoilOffset);
+                    UtilFx.lightning.at(
+                        x + Tmp.v1.x, y + Tmp.v1.y, 10f, beamColor,
+                        new LightningData(bullet, beamStroke, true, beamWidth)
+                    );
                     beamEffect.at(bullet, rotation);
                 }
                 if(bulletLife <= 0f){
                     bullet = null;
-                    lengthScl = 0f;
                 }
             }
         }
 
         @Override
         public boolean shouldTurn(){
-            return lengthScl < 0.001f;
+            return bulletLife <= 0f;
         }
 
         @Override
         protected void updateReload(){
-            if(bulletLife > 0 && bullet != null){
+            if(bulletLife > 0 || bullet != null){
                 return;
             }
 
@@ -101,7 +103,7 @@ public class BeamTurret extends PowerTurret{
 
         @Override
         protected void updateCooling(){
-            if(bulletLife > 0 && bullet != null){
+            if(bulletLife > 0 || bullet != null){
                 return;
             }
 
@@ -109,9 +111,8 @@ public class BeamTurret extends PowerTurret{
         }
         @Override
         protected void updateShooting(){
-            if(bulletLife > 0 && bullet != null){
-                return;
-            }
+            if(bulletLife > 0 || bullet != null || efficiency == 0) return;
+
 
             super.updateShooting();
         }
@@ -119,9 +120,9 @@ public class BeamTurret extends PowerTurret{
         @Override
         protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
             if(bullet != null){
-                this.bullet = bullet;
                 lengthScl = 0f;
                 bulletLife = shootDuration;
+                this.bullet = bullet;
             }
         }
 

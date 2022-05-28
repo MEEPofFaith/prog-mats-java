@@ -92,7 +92,7 @@ public class PillarFieldBulletType extends BulletType{
             for(int i = 0; i < crackEffects; i++){
                 PMMathf.randomCirclePoint(Tmp.v1, radius).add(b);
                 PMMathf.randomCirclePoint(Tmp.v2, radius).add(b);
-                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, false, crackWidth));
+                crackEffect.at(Tmp.v1.x, Tmp.v1.y, 20f, crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, false, crackWidth));
             }
 
             if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime)){

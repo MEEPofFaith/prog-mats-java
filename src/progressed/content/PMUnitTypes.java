@@ -122,6 +122,7 @@ public class PMUnitTypes{
                 new BeamWeapon(){{
                     reload = 90f;
                     rotationLimit = 10f;
+                    ignoreRotation = true;
                     x = 0f;
                     y = 4f;
                     shootY = 0;

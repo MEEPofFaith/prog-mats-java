@@ -318,7 +318,7 @@ public class TeslaTurret extends Block{
                             shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
                             shootEffect.at(shootX, shootY, shootAngle, lightningColor);
                             hitEffect.at(other.x(), other.y(), lightningColor);
-                            UtilFx.lightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
+                            UtilFx.lightning.at(shootX, shootY, 10f, lightningColor, new LightningData(other, lightningStroke));
                         }
 
                         Effect.shake(shake, shake, this);

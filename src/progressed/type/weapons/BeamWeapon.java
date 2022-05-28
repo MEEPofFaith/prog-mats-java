@@ -124,7 +124,10 @@ public class BeamWeapon extends Weapon{
                     if((mount.bullet.lifetime - mount.bullet.time) > 10 && (bMount.beam -= Time.delta) < 0){
                         bMount.beam = 5;
 
-                        UtilFx.lightning.at(bulletX, bulletY, -mount.bullet.angleTo(bulletX, bulletY), beamColor, new LightningData(mount.bullet, beamStroke, true, beamWidth));
+                        UtilFx.lightning.at(
+                            bulletX, bulletY, 10f, beamColor,
+                            new LightningData(mount.bullet, beamStroke, true, beamWidth)
+                        );
                         beamEffect.at(mount.bullet, weaponRotation + 90f);
                     }
                 }

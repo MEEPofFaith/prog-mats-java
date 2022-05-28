@@ -20,9 +20,10 @@ public class BeamBulletType extends BulletType{
     public float crackStroke = 1.5f, crackWidth = 10f, crackRadius = -1;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
+    public boolean makePuddles;
     
     public BeamBulletType(float damage, float radius){
-        super(0.001f, damage);
+        super(0f, damage);
         this.radius = radius;
 
         despawnEffect = shootEffect = smokeEffect = Fx.none;
@@ -64,20 +65,20 @@ public class BeamBulletType extends BulletType{
             Tmp.r1.setSize(radius * 2f).setCenter(b.x, b.y);
             Units.nearbyEnemies(b.team, Tmp.r1, u -> {
                 if(u.within(b, radius)){
-                    if(puddleLiquid != null) Puddles.deposit(u.tileOn(), puddleLiquid, puddleAmount);
+                    if(makePuddles && puddleLiquid != null) Puddles.deposit(u.tileOn(), puddleLiquid, puddleAmount);
                     if(makeFire) Fires.create(u.tileOn());
                 }
             });
 
             PMDamage.trueEachBlock(b.x, b.y, radius, build -> {
                 if(build.team == b.team) return;
-                if(puddleLiquid != null) Puddles.deposit(build.tileOn(), puddleLiquid, puddleAmount);
+                if(makePuddles && puddleLiquid != null) Puddles.deposit(build.tileOn(), puddleLiquid, puddleAmount);
                 if(makeFire) Fires.create(build.tileOn());
             });
 
             for(int i = 0; i < crackEffects; i++){
                 PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
-                crackEffect.at(b.x, b.y, Tmp.v1.angle(), crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
+                crackEffect.at(b.x, b.y, 20f, crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
             }
         }
 

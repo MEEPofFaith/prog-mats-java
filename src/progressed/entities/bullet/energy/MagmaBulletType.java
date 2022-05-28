@@ -10,9 +10,9 @@ public class MagmaBulletType extends BeamBulletType{
 
         hitEffect = Fx.fireballsmoke;
         hitColor = PMPal.magma;
-        makeFire = true;
+        makeFire = makePuddles = true;
         puddleLiquid = PMLiquids.magma;
-        puddleAmount = 250f;
+        puddleAmount = 60f;
         status = StatusEffects.melting;
     }
 }

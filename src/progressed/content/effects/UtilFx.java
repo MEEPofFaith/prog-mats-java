@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.explosive.RocketBulletType.*;
@@ -58,7 +59,8 @@ public class UtilFx{
 
     groundCrack = new Effect(20f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
-        float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+        e.lifetime = e.rotation;
+        float tx = d.pos.getX(), ty = d.pos.getY(), dst = d.pos.dst(e.x, e.y);
         v1.set(d.pos).sub(e.x, e.y).nor();
 
         float normx = v1.x, normy = v1.y;
@@ -70,7 +72,6 @@ public class UtilFx{
         Draw.color(e.color);
 
         Lines.beginLine();
-
         Lines.linePoint(e.x, e.y);
 
         rand.setSeed(e.id);
@@ -97,8 +98,8 @@ public class UtilFx{
 
     lightning = new Effect(10f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
-        e.lifetime = d.lifetime;
-        float tx = d.pos.getX(), ty = d.pos.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+        e.lifetime = e.rotation;
+        float tx = d.pos.getX(), ty = d.pos.getY(), dst = d.pos.dst(e.x, e.y);
         v1.set(d.pos).sub(e.x, e.y).nor();
 
         float normx = v1.x, normy = v1.y;
@@ -110,7 +111,6 @@ public class UtilFx{
         Draw.color(Color.white, e.color, e.fin());
 
         Lines.beginLine();
-
         Lines.linePoint(e.x, e.y);
 
         rand.setSeed(e.id);
@@ -123,7 +123,7 @@ public class UtilFx{
             }else{
                 float len = (i + 1) * spacing,
                     r = range / 2f;
-                if(d.shrink) r *= 1f - (float)i / links;
+                if(d.shrink) r *= 1f - (i + 1f) / links;
                 v1.setToRandomDirection(rand).scl(r);
                 nx = e.x + normx * len + v1.x;
                 ny = e.y + normy * len + v1.y;
@@ -137,29 +137,18 @@ public class UtilFx{
 
     public static class LightningData{
         public Position pos;
-        public float stroke, lifetime, range = 6f;
+        public float stroke, range = 6f;
         public boolean shrink;
 
-        public LightningData(Position pos, float stroke, float lifetime){
+        public LightningData(Position pos, float stroke){
             this.pos = pos;
             this.stroke = stroke;
-            this.lifetime = lifetime;
-        }
-
-        public LightningData(Position pos, float stroke, float lifetime, boolean shrink, float range){
-            this(pos, stroke, lifetime);
-            this.shrink = shrink;
-            this.range = range;
         }
 
         public LightningData(Position pos, float stroke, boolean shrink, float range){
-            this(pos, stroke, 10f);
+            this(pos, stroke);
             this.shrink = shrink;
             this.range = range;
-        }
-
-        public LightningData(Position pos, float stroke){
-            this(pos, stroke, 10f);
         }
     }
 }

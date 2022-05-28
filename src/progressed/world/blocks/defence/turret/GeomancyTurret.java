@@ -163,7 +163,7 @@ public class GeomancyTurret extends PowerTurret{
                     if(mdst > 0){
                         Tmp.v2.set(Tmp.v1).lerp(strikePos, mdst / dst);
                         for(int i = 0; i < crackEffects; i++){
-                            crackEffect.at(Tmp.v1.x, Tmp.v1.y, angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
+                            crackEffect.at(Tmp.v1.x, Tmp.v1.y, shoot.firstShotDelay / 2f, crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, true, crackWidth));
                         }
                     }
                 }
