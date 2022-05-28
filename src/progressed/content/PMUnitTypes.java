@@ -16,6 +16,7 @@ import progressed.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
+import progressed.entities.units.DriftTrailUnit.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.type.weapons.*;
@@ -27,7 +28,8 @@ public class PMUnitTypes{
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SentryUnit.class, SentryUnit::new),
         prov(FlareUnit.class, FlareUnit::new),
-        prov(SwordUnit.class, SwordUnit::new)
+        prov(SwordUnit.class, SwordUnit::new),
+        prov(DriftTrailUnit.class, DriftTrailUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -77,7 +79,7 @@ public class PMUnitTypes{
 
     public static UnitType
 
-    //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
+    //TODO A chain of air units with DriftTrail shenanigans.
     echo, presence, ghoul, phantom, apparition,
 
     //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
@@ -97,6 +99,25 @@ public class PMUnitTypes{
 
     public static void load(){
         setupID();
+
+        //Region Drift Trail Shenanigans Units
+        echo = new DriftUnitType("echo"){{
+            flying = true;
+            speed = 2.7f;
+            accel = 0.08f;
+            drag = 0.04f;
+
+            engines.add(
+                new DriftEngine(0f, -3f, 1.5f, -90f)
+                    .setTrail(8, 1.5f, 0.5f)
+            );
+            setEnginesMirror(
+                new DriftEngine(24f / 4f, -13f / 4f, 1.25f, -45f)
+                    .setTrail(8, 0.75f, 0.5f)
+            );
+
+            //TODO beam weapon, steal eruptor code for it
+        }};
 
         //Region Sentry Units
         barrage = new SentryUnitType("barrage"){{
