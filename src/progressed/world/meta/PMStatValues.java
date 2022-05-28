@@ -89,7 +89,7 @@ public class PMStatValues{
                                 sep(bt, bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
                             }else if(type instanceof PillarFieldBulletType stype){
                                 bt.add(bundle.format("bullet.pm-multi-splash", stype.amount, stype.pillar.damage, stype.pillar.radius / tilesize));
-                            }else if(type instanceof MagmaBulletType stype){
+                            }else if(type instanceof BeamBulletType stype){
                                 bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.radius / tilesize));
                             }else if(type.continuousDamage() > 0){
                                 bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());

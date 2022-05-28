@@ -12,7 +12,7 @@ import progressed.content.effects.UtilFx.*;
 import progressed.graphics.*;
 import progressed.world.meta.*;
 
-public class EruptorTurret extends PowerTurret{
+public class BeamTurret extends PowerTurret{
     public final int beamTimer = timers++;
     public float beamInterval = 2f, beamStroke = 3f, beamWidth = 16f;
     public Color beamColor = PMPal.magma;
@@ -20,7 +20,7 @@ public class EruptorTurret extends PowerTurret{
 
     public float shootDuration = 60f;
 
-    public EruptorTurret(String name){
+    public BeamTurret(String name){
         super(name);
 
         targetAir = false;
@@ -38,7 +38,7 @@ public class EruptorTurret extends PowerTurret{
         stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
-    public class EruptorTurretBuild extends PowerTurretBuild{
+    public class BeamTurretBuild extends PowerTurretBuild{
         protected Bullet bullet;
         protected float bulletLife, lengthScl;
 

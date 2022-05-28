@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.entities.units.DriftTrailUnit.*;
@@ -106,6 +107,7 @@ public class PMUnitTypes{
             speed = 2.7f;
             accel = 0.08f;
             drag = 0.04f;
+            faceTarget = false;
 
             engines.add(
                 new DriftEngine(0f, -3f, 1.5f, -90f)
@@ -116,7 +118,21 @@ public class PMUnitTypes{
                     .setTrail(8, 0.75f, 0.5f)
             );
 
-            //TODO beam weapon, steal eruptor code for it
+            weapons.add(
+                new BeamWeapon(){{
+                    reload = 90f;
+                    rotationLimit = 10f;
+                    x = 0f;
+                    y = 4f;
+                    shootY = 0;
+                    bullet = new BeamBulletType(62f, 14f){{ //Test beam based on Flame
+                        lifetime = 60f;
+                        shake = 1f;
+                        crackEffects = 4;
+                        rangeOverride = 32f;
+                    }};
+                }}
+            );
         }};
 
         //Region Sentry Units

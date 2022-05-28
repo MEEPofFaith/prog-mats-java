@@ -459,7 +459,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        flame = new EruptorTurret("flame"){{
+        flame = new BeamTurret("flame"){{
             requirements(Category.turret, with(
                 Items.copper, 200,
                 Items.lead, 300,
@@ -484,7 +484,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        blaze = new EruptorTurret("blaze"){{
+        blaze = new BeamTurret("blaze"){{
             requirements(Category.turret, with(
                 Items.copper, 350,
                 Items.lead, 550,
