@@ -157,6 +157,9 @@ public class PMUnitTypes{
                         flareLength = 16f;
                         pierceCap = 1;
                         pierce = false;
+                        pierceArmor = false;
+                        colors = PMPal.cyanFlameColors;
+                        flareColor = PMPal.cyanFlame;
                     }};
                 }}
             );
