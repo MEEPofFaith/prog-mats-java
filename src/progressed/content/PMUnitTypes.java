@@ -123,13 +123,14 @@ public class PMUnitTypes{
                 new BeamWeapon(){{
                     reload = 90f;
                     ignoreRotation = true;
+                    rotate = false;
                     mirror = false;
                     shootCone = 361f;
                     x = 0f;
                     y = 4f;
                     shootY = 0;
                     maxBeamDst = 32f;
-                    bullet = new BeamBulletType(13f, 8f){{ //Test beam based on Flame
+                    bullet = new BeamBulletType(5.5f, 8f){{ //Test beam based on Flame
                         lifetime = 60f;
                         crackEffects = 2;
                         crackLife = 10f;
