@@ -1,6 +1,7 @@
 package progressed.entities.units;
 
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -29,15 +30,10 @@ public class DriftTrailUnit extends UnitEntity{
 
             for(int i = 0; i < tempEngines.size; i++){
                 DriftEngine e = tempEngines.get(i);
-                Tmp.v1.trns(rotation - 90f + e.rotation, e.trailVel);
-                if(e.trailInherit > 0.01f){
-                    Tmp.v2.set(vel).scl(e.trailInherit);
-                    Tmp.v1.add(Tmp.v2);
-                }
-                Tmp.v2.trns(rotation - 90f, e.x ,e.y);
+                Vec2 vel = e.vel(this);
                 driftTrails.get(i).update(
-                    x + Tmp.v2.x, y + Tmp.v2.y,
-                    e.trailWidth <= 0 ? e.radius + 0.25f : e.trailWidth, Tmp.v1
+                    x + Angles.trnsx(rotation - 90f, e.x, e.y), y + Angles.trnsy(rotation - 90f, e.x, e.y),
+                    e.trailWidth <= 0 ? e.radius + 0.25f : e.trailWidth, vel
                 );
             }
         }
@@ -89,6 +85,19 @@ public class DriftTrailUnit extends UnitEntity{
 
         public DriftEngine setTrail(int length, float vel, float inherit){
             return setTrail(length, -1, vel, inherit);
+        }
+
+        public Vec2 vel(Unit u){
+            Tmp.v1.trns(angle(u), trailVel);
+            if(trailInherit > 0.01f){
+                Tmp.v2.set(u.vel).scl(trailInherit);
+                Tmp.v1.add(Tmp.v2);
+            }
+            return Tmp.v1;
+        }
+
+        public float angle(Unit u){
+            return u.rotation - 90f + rotation; //TODO sine swaying
         }
 
         public DriftEngine copy(){

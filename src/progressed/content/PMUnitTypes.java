@@ -83,7 +83,7 @@ public class PMUnitTypes{
     //TODO A chain of air units with DriftTrail shenanigans.
     echo, presence, ghoul, phantom, apparition,
 
-    //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
+    //TODO A chain of sword-based ground units.
     puncture, penetration, incision, laceration, amputation,
     
     //sentry
@@ -104,7 +104,7 @@ public class PMUnitTypes{
         //Region Drift Trail Shenanigans Units
         echo = new DriftUnitType("echo"){{
             flying = true;
-            speed = 2.7f;
+            speed = 2.7f; //TODO uncopy stats from flare
             accel = 0.08f;
             drag = 0.04f;
             faceTarget = false;
@@ -122,8 +122,8 @@ public class PMUnitTypes{
             weapons.add(
                 new BeamWeapon(){{
                     reload = 90f;
-                    rotationLimit = 10f;
                     ignoreRotation = true;
+                    mirror = false;
                     shootCone = 361f;
                     x = 0f;
                     y = 4f;
@@ -133,6 +133,29 @@ public class PMUnitTypes{
                         lifetime = 60f;
                         crackEffects = 2;
                         crackLife = 10f;
+                    }};
+                }}
+            );
+        }};
+
+        presence = new DriftUnitType("presence"){{
+            flying = true;
+            speed = 2.7f; //TODO uncopy stats from flare
+            accel = 0.08f;
+            drag = 0.04f;
+            lowAltitude = true;
+
+            weapons.add(
+                new ContinuousWeapon(){{
+                    x = 0f;
+                    mirror = false;
+
+                    bullet = new ContinuousFlameBulletType(10f){{
+                        width = 2f;
+                        length = 32f;
+                        flareLength = 16f;
+                        pierceCap = 1;
+                        pierce = false;
                     }};
                 }}
             );
