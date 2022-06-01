@@ -9,8 +9,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 
-import static mindustry.Vars.headless;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class ContinuousWeapon extends Weapon{
     public ContinuousWeapon(String name){
