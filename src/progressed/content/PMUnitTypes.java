@@ -112,11 +112,11 @@ public class PMUnitTypes{
 
             engines.add(
                 new DriftEngine(0f, -3f, 1.5f, -90f)
-                    .setTrail(8, 1.5f, 0.5f, 0.03f)
+                    .setTrail(8, 2.5f, 0.25f, 0.2f)
             );
             setEnginesMirror(
                 new DriftEngine(24f / 4f, -13f / 4f, 1.25f, -45f)
-                    .setTrail(8, 0.75f, 0.5f, 0.03f)
+                    .setTrail(8, 1f, 1f, 0.2f)
             );
 
             weapons.add(
