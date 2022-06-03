@@ -45,6 +45,19 @@ public class UtilFx{
         trail.draw(e.color, e.rotation);
     }),
 
+    driftTrailEngineFade = new Effect(400f, e -> {
+        if(!(e.data instanceof DriftTrail trail)) return;
+        //lifetime is how many frames it takes to fade out the trail
+        e.lifetime = trail.length * 1.4f;
+
+        if(!state.isPaused()){
+            trail.shorten();
+            trail.drift();
+        }
+        trail.drawCap(e.color, e.rotation);
+        trail.draw(e.color, e.rotation);
+    }).layer(Layer.flyingUnitLow),
+
     groundCrack = new Effect(20f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;
         e.lifetime = e.rotation;

@@ -1,5 +1,6 @@
 package progressed.entities.units;
 
+import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -31,9 +32,11 @@ public class DriftTrailUnit extends UnitEntity{
             for(int i = 0; i < tempEngines.size; i++){
                 DriftEngine e = tempEngines.get(i);
                 Vec2 vel = e.vel(this);
+                float scale = type.useEngineElevation ? elevation : 1f;
+                float width = e.trailWidth <= 0 ? (e.radius + Mathf.absin(2f, e.radius / 4f)) * scale : e.trailWidth;
                 driftTrails.get(i).update(
                     x + Angles.trnsx(rotation - 90f, e.x, e.y), y + Angles.trnsy(rotation - 90f, e.x, e.y),
-                    e.trailWidth <= 0 ? e.radius + 0.25f : e.trailWidth, vel, e.trailDrag
+                    width, vel, e.trailDrag
                 );
             }
         }
@@ -42,7 +45,8 @@ public class DriftTrailUnit extends UnitEntity{
     @Override
     public void remove(){
         if(driftTrails != null){
-            driftTrails.each(t -> UtilFx.driftTrailFade.at(x, y, 1f, type.engineColor == null ? team.color : type.engineColor, t));
+            Color tColor = type.engineColor == null ? team.color : type.engineColor;
+            driftTrails.each(t -> t.size() > 0, t -> UtilFx.driftTrailEngineFade.at(x, y, 1f, tColor, t.copy()));
         }
 
         super.remove();

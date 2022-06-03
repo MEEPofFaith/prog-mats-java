@@ -31,7 +31,7 @@ public class DriftTrail extends Trail{
     }
 
     public int size(){
-        return points.size;
+        return points.size / 6;
     }
 
     public void drawCap(Color color, float width){

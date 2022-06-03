@@ -159,7 +159,7 @@ public class PMUnitTypes{
                         pierce = false;
                         pierceArmor = false;
                         colors = PMPal.cyanFlameColors;
-                        flareColor = PMPal.cyanFlame;
+                        hitColor = flareColor = PMPal.cyanFlame;
                     }};
                 }}
             );
