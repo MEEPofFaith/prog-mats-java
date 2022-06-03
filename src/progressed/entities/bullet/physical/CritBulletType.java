@@ -58,34 +58,11 @@ public class CritBulletType extends BasicBulletType{
     }
 
     @Override
-    public void update(Bullet b){
-        if(!headless && trailLength > 0){
-            if(b.trail == null){
-                b.trail = new PMTrail(trailLength);
-            }
-            b.trail.length = trailLength;
-            ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
-        }
+    public void updateTrailEffects(Bullet b){
+        super.updateTrailEffects(b);
 
         if(Mathf.chanceDelta(1) && ((CritBulletData)b.data).crit){
             critEffect.at(b.x, b.y, b.rotation(), b.team.color);
-        }
-
-        if(homingPower > 0.0001f && b.time >= homingDelay){
-            Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.collided.contains(e.id), t -> collidesGround && !b.collided.contains(t.id));
-            if(target != null){
-                b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-            }
-        }
-
-        if(weaveMag > 0){
-            b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
-        }
-
-        if(trailChance > 0){
-            if(Mathf.chanceDelta(trailChance)){
-                trailEffect.at(b.x, b.y, trailParam, trailColor);
-            }
         }
     }
 
@@ -109,13 +86,6 @@ public class CritBulletType extends BasicBulletType{
     public void despawned(Bullet b){
         ((CritBulletData)b.data).despawned = true;
         super.despawned(b);
-    }
-
-    @Override
-    public void removed(Bullet b){
-        if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            UtilFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
-        }
     }
 
     @Override

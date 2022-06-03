@@ -154,7 +154,6 @@ public class PMTechTree{
                             //Rockets
                             nodeFree(basicRocket, arbalest, () -> {
                                 node(incendiaryRocket);
-                                node(bomberRocket);
                             });
                             //Missiles
                             nodeFree(basicMissile, strikedown, () -> {

@@ -18,18 +18,6 @@ import static progressed.util.PMUtls.*;
 public class UtilFx{
     public static Effect
 
-    PMTrailFade = new Effect(400f, e -> {
-        if(!(e.data instanceof PMTrail trail)) return;
-        //lifetime is how many frames it takes to fade out the trail
-        e.lifetime = trail.length * 1.4f;
-
-        if(!state.isPaused()){
-            trail.shorten();
-        }
-        trail.drawCap(e.color, e.rotation);
-        trail.draw(e.color, e.rotation);
-    }),
-
     rocketTrailFade = new Effect(440f, e -> {
         if(!(e.data instanceof RocketTrailData data)) return;
         z(data.layer);

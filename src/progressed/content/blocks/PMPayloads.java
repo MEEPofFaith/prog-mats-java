@@ -15,7 +15,7 @@ public class PMPayloads{
 
     emptyRocket,
 
-    basicRocket, incendiaryRocket, bomberRocket,
+    basicRocket, incendiaryRocket, //TODO third rocket
 
     //Region Missiles
 
@@ -71,22 +71,6 @@ public class PMPayloads{
             outlined = true;
 
             explosion = PayloadBullets.arbalestIncend;
-        }};
-
-        bomberRocket = new Missile("bomber-rocket"){{
-            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.blastCompound, 10);
-
-            prev = emptyRocket;
-            size = 3;
-            powerUse = 1.25f;
-            constructTime = 60f * 6.5f;
-            elevation = 2f / 3f;
-            outlined = true;
-
-            explosionArea = -1f;
-            explosion = PayloadBullets.arbalestBomber.bombBullet;
-            explosions = 50;
-            maxDelay = 25f;
         }};
 
         emptyMissile = new Missile("empty-missile"){{

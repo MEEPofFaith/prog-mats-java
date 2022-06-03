@@ -1120,8 +1120,7 @@ public class PMBlocks{
             ));
             ammo(
                 basicRocket, PayloadBullets.arbalestBasic,
-                incendiaryRocket, PayloadBullets.arbalestIncend,
-                bomberRocket, PayloadBullets.arbalestBomber
+                incendiaryRocket, PayloadBullets.arbalestIncend
             );
             size = 5;
             hideDetails = false;
@@ -1472,7 +1471,7 @@ public class PMBlocks{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                basicRocket, incendiaryRocket, bomberRocket,
+                basicRocket, incendiaryRocket,
                 basicMissile, recursiveMissile,
                 basicNuke, clusterNuke
             );

@@ -28,9 +28,6 @@ public class RocketBulletType extends BasicBulletType{
 
     public float riseStart, riseEnd, targetLayer = -1;
 
-    public BulletType bombBullet;
-    public float bombInterval;
-
     public Sortf unitSort = Unit::dst2;
 
     public RocketBulletType(float speed, float damage, String sprite){
@@ -59,78 +56,35 @@ public class RocketBulletType extends BasicBulletType{
 
     @Override
     public void update(Bullet b){
-        if(b.data instanceof RocketData r){
-            if(b.time < thrustDelay && thrustDelay > 0){
-                b.vel.scl(Math.max(1f - fallDrag * Time.delta, 0));
-            }else{
-                if(!r.thrust){
-                    b.vel.setAngle(r.angle);
-                    b.vel.setLength(speed);
-                    r.thrust = true;
-                }
-                b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
+        RocketData r = (RocketData)b.data;
 
-
-                if(homingPower > 0.0001f && b.time >= homingDelay){
-                    Teamc target;
-                    //home in on allies if possible
-                    if(healPercent > 0){
-                        target = Units.bestTarget(null, b.x, b.y, homingRange,
-                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                            t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id),
-                            unitSort
-                        );
-                    }else{
-                        target = Units.bestTarget(b.team, b.x, b.y, homingRange,
-                            e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
-                            t -> collidesGround && !b.hasCollided(t.id),
-                            unitSort
-                        );
-                    }
-
-                    if(target != null){
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                    }
-                }
-
-                if(weaveMag > 0){
-                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
-                }
-
-                float angle = r.thrust ? b.rotation() : r.angle,
-                    x = b.x + Angles.trnsx(angle + 180, trailOffset),
-                    y = b.y + Angles.trnsy(angle + 180, trailOffset),
-                    scale = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
-
-                if(trailChance > 0){
-                    if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale, getLayer(b)});
-                    }
-                }
-
-                if(trailInterval > 0f){
-                    if(b.timer(0, trailInterval)){
-                        trailEffect.at(x, y, trailRotation ? b.rotation() : trailParam * scale, b.team.color, new float[]{b.rotation(), scale, getLayer(b)});
-                    }
-                }
-
-                if(bombBullet != null){
-                    if(b.time > thrustDelay + thrusterGrowth){
-                        if(b.timer(1, bombInterval * (speed / b.vel.len()))){
-                            bombBullet.create(b, b.x, b.y, b.rotation());
-                        }
-                    }
-                }
-
-                //updateTrail, but with the (x, y) above
-                if(!headless && trailLength > 0 && b.time >= trailDelay){
-                    if(b.trail == null){
-                        b.trail = new Trail(trailLength);
-                    }
-                    b.trail.length = trailLength;
-                    b.trail.update(x, y, trailInterp.apply(b.fin()) * scale);
-                }
+        if(b.time < thrustDelay && thrustDelay > 0){
+            b.vel.scl(Math.max(1f - fallDrag * Time.delta, 0));
+        }else{
+            if(!r.thrust){
+                b.vel.setAngle(r.angle);
+                b.vel.setLength(speed);
+                r.thrust = true;
             }
+            b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
+
+            super.update(b);
+        }
+    }
+
+    @Override
+    public void updateTrail(Bullet b){
+        float angle = ((RocketData)b.data).thrust ? b.rotation() : ((RocketData)b.data).angle,
+            x = b.x + Angles.trnsx(angle + 180, trailOffset),
+            y = b.y + Angles.trnsy(angle + 180, trailOffset),
+            scl = Mathf.curve(b.time, thrustDelay, thrustDelay + thrusterGrowth);
+
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new Trail(trailLength);
+            }
+            b.trail.length = trailLength;
+            b.trail.update(x, y, trailInterp.apply(b.fin()) * scl * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
         }
     }
 

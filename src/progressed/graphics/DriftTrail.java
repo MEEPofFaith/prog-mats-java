@@ -8,16 +8,13 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
 
-/** Due to the amount of differences, I will not extend off of {@link Trail} for this. */
-public class DriftTrail{
-    public int length;
-
-    private final Seq<DriftTrailData> points;
-    private float lastX = -1, lastY = -1, lastAngle = -1, lastW = 0f, counter = 0f;
+public class DriftTrail extends Trail{
+    private final FloatSeq points;
+    private float lastX = -1, lastY = -1, lastAngle = -1, counter = 0f, lastW = 0f;
 
     public DriftTrail(int length){
-        this.length = length;
-        points = new Seq<>(length);
+        super(length);
+        points = new FloatSeq(length * 6); //x, y, w, dx, dy, drag
     }
 
     public DriftTrail copy(){
@@ -40,8 +37,9 @@ public class DriftTrail{
     public void drawCap(Color color, float width){
         if(points.size > 0){
             Draw.color(color);
-            DriftTrailData d = points.peek();
-            float x1 = d.x, y1 = d.y, w1 = d.w, w = w1 * width / points.size * (points.size - 1) * 2f;
+            float[] items = points.items;
+            int i = points.size - 6;
+            float x1 = items[i], y1 = items[i + 1], w1 = items[i + 2], w = w1 * width / (points.size / 6) * i / 6f * 2f;
             if(w1 <= 0.001f) return;
             Draw.rect("hcircle", x1, y1, w, w, -Mathf.radDeg * lastAngle + 180f);
             Draw.reset();
@@ -50,19 +48,19 @@ public class DriftTrail{
 
     public void draw(Color color, float width){
         Draw.color(color);
+        float[] items = points.items;
         float lastAngle = this.lastAngle;
-        float size = width / points.size;
+        float size = width / (points.size / 6);
 
-        for(int i = 0; i < points.size - 1; i++){
-            DriftTrailData d1 = points.get(i), d2 = points.get(i + 1);
-            float x1 = d1.x, y1 = d1.y, w1 = d1.w;
+        for(int i = 0; i < points.size; i += 6){
+            float x1 = items[i], y1 = items[i + 1], w1 = items[i + 2];
             float x2, y2, w2;
 
             //last position is always lastX/Y/W
-            if(i < points.size){
-                x2 = d2.x;
-                y2 = d2.y;
-                w2 = d2.w;
+            if(i < points.size - 6){
+                x2 = items[i + 6];
+                y2 = items[i + 7];
+                w2 = items[i + 8];
             }else{
                 x2 = lastX;
                 y2 = lastY;
@@ -75,10 +73,10 @@ public class DriftTrail{
             if(w1 <= 0.001f || w2 <= 0.001f) continue;
 
             float
-                cx = Mathf.sin(z1) * i * size * w1,
-                cy = Mathf.cos(z1) * i * size * w1,
-                nx = Mathf.sin(z2) * (i + 1) * size * w2,
-                ny = Mathf.cos(z2) * (i + 1) * size * w2;
+                cx = Mathf.sin(z1) * i/6f * size * w1,
+                cy = Mathf.cos(z1) * i/6f * size * w1,
+                nx = Mathf.sin(z2) * (i/6f + 1) * size * w2,
+                ny = Mathf.cos(z2) * (i/6f + 1) * size * w2;
 
             Fill.quad(
                 x1 - cx, y1 - cy,
@@ -95,23 +93,32 @@ public class DriftTrail{
 
     /** Removes the last point from the trail at intervals. */
     public void shorten(){
-        if((counter += Time.delta) >= 0.99f){
-            if(points.size >= 1){
-                points.remove(0);
+        if((counter += Time.delta) >= 1f){
+            if(points.size >= 6){
+                points.removeRange(0, 5);
             }
 
-            counter = 0f;
+            counter %= 1f;
         }
     }
 
-    /** Drifts all points by their individual velocities. */
+    /** Drifts all points by their individual velocities. Factors in Time.delta. */
     public void drift(){
-        points.each(DriftTrailData::drift);
+        float[] items = points.items;
+        for(int i = 0; i < points.size; i += 6){
+            items[i] += items[i + 3] * Time.delta;
+            items[i + 1] += items[i + 4] * Time.delta;
 
-        if(points.size > 2){
+            float scl = Math.max(1f - items[i + 5] * Time.delta, 0);
+            items[i + 3] *= scl;
+            items[i + 4] *= scl;
+        }
+
+        if(points.size > 6){
+            int last = points.size - 6;
             lastAngle = -Angles.angleRad(
-                points.peek().x, points.peek().y,
-                points.get(points.size - 2).x, points.get(points.size - 2).y
+                items[last], items[last + 1],
+                items[last - 6], items[last - 5]
             );
         }
     }
@@ -123,15 +130,20 @@ public class DriftTrail{
 
     /** Adds a new point to the trail at intervals. */
     public void update(float x, float y, float width, Vec2 v){
+        update(x, y, width, v, 0f);
+    }
+
+    /** Adds a new point to the trail at intervals. */
+    public void update(float x, float y, float width, Vec2 v, float drag){
         //drift before so that the new point isn't immediately drifted
         drift();
 
         if((counter += Time.delta) >= 0.99f){
-            if(points.size > length){
-                points.remove(0);
+            if(points.size > length * 6){
+                points.removeRange(0, 5);
             }
 
-            points.add(new DriftTrailData(x, y, width, v));
+            points.addAll(x, y, width, v.x, v.y, drag);
 
             counter = 0f;
         }
@@ -141,23 +153,5 @@ public class DriftTrail{
         lastX = x;
         lastY = y;
         lastW = width;
-    }
-
-    //I don't want to use a giant FloatSeq, just doesn't look as nice
-    public static class DriftTrailData{
-        public float x, y, w, dx, dy;
-
-        public DriftTrailData(float x, float y, float w, Vec2 v){
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            dx = v.x;
-            dy = v.y;
-        }
-
-        public void drift(){
-            x += dx * Time.delta;
-            y += dy * Time.delta;
-        }
     }
 }

@@ -33,7 +33,7 @@ public class DriftTrailUnit extends UnitEntity{
                 Vec2 vel = e.vel(this);
                 driftTrails.get(i).update(
                     x + Angles.trnsx(rotation - 90f, e.x, e.y), y + Angles.trnsy(rotation - 90f, e.x, e.y),
-                    e.trailWidth <= 0 ? e.radius + 0.25f : e.trailWidth, vel
+                    e.trailWidth <= 0 ? e.radius + 0.25f : e.trailWidth, vel, e.trailDrag
                 );
             }
         }
@@ -62,7 +62,7 @@ public class DriftTrailUnit extends UnitEntity{
 
     public static class DriftEngine extends UnitEngine{
         public int trailLength;
-        public float trailWidth, trailVel, trailInherit;
+        public float trailWidth, trailVel, trailInherit, trailDrag;
 
         public DriftEngine(float x, float y, float radius, float rotation){
             this.x = x;
@@ -72,19 +72,23 @@ public class DriftTrailUnit extends UnitEntity{
         }
 
         public DriftEngine(){
-
         }
 
-        public DriftEngine setTrail(int length, float width, float vel, float inherit){
+        public DriftEngine setTrail(int length, float width, float vel, float inherit, float drag){
             trailLength = length;
             trailWidth = width;
             trailVel = vel;
             trailInherit = inherit;
+            trailDrag = drag;
             return this;
         }
 
+        public DriftEngine setTrail(int length, float vel, float inherit, float drag){
+            return setTrail(length, -1, vel, inherit, drag);
+        }
+
         public DriftEngine setTrail(int length, float vel, float inherit){
-            return setTrail(length, -1, vel, inherit);
+            return setTrail(length, vel, inherit, 0f);
         }
 
         public Vec2 vel(Unit u){
