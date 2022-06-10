@@ -60,10 +60,8 @@ public class ProgMats extends Mod{
     @Override
     public void init(){
         if(!headless){
-            if(OS.username.equals("MEEP")){
-                enableConsole = true;
-                experimental = true;
-            }
+            if(OS.username.equals("MEEP")) experimental = true;
+
             renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
             renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
 
