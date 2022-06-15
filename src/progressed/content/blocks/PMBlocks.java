@@ -173,7 +173,7 @@ public class PMBlocks{
     //Effect
     multiSource, multiVoid, multiSourceVoid,
 
-    infiniOverdrive;
+    infiniMender, infiniOverdrive;
 
     // endregion
 
@@ -1847,6 +1847,7 @@ public class PMBlocks{
         multiVoid = new MultiVoid("multi-void");
         multiSourceVoid = new MultiSourceVoid("multi-source-void");
 
+        infiniMender = new InfiniMendProjector("infini-mender");
         infiniOverdrive = new InfiniOverdriveProjector("infini-overdrive");
         // endregion
     }
