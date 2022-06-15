@@ -15,17 +15,19 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
+import progressed.*;
 
 import static mindustry.Vars.*;
 
 public class InfiniMendProjector extends MendProjector{
-    final Vec2 configs = new Vec2();
+    static final Vec2 configs = new Vec2();
 
     public InfiniMendProjector(String name){
         super(name);
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
-        health = 1000000;
         alwaysUnlocked = true;
+
+        health = ProgMats.sandboxBlockHealth;
         configurable = saveConfig = true;
         hasPower = hasItems = false;
         suppressable = false;

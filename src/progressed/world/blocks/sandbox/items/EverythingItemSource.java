@@ -9,6 +9,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.graphics.*;
 
 public class EverythingItemSource extends Block{
@@ -19,8 +20,9 @@ public class EverythingItemSource extends Block{
     public EverythingItemSource(String name){
         super(name);
         requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
+        alwaysUnlocked = true;
 
-        health = 1000000;
+        health = ProgMats.sandboxBlockHealth;
         hasItems = true;
         update = true;
         solid = true;

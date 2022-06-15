@@ -11,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.util.*;
 
 public class StrobeNode extends PowerNode{
@@ -24,7 +25,7 @@ public class StrobeNode extends PowerNode{
         requirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = 1000000;
+        health = ProgMats.sandboxBlockHealth;
         laserRange = 200;
         maxNodes = 65535;
         laserColor1 = Color.valueOf("ffcccc");

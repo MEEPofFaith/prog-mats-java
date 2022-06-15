@@ -1694,7 +1694,6 @@ public class PMBlocks{
         harbinger = new ChaosTurret("harbinger"){
             {
                 size = 8;
-                health = 1000000;
                 inaccuracy = 45f;
                 shake = 150f;
                 range = 560f;
@@ -1731,7 +1730,6 @@ public class PMBlocks{
 
         everythingGun = new EverythingTurret("everything-gun"){{
             size = 6;
-            health = 1000000;
             rotateSpeed = 20f;
             reload = 1f;
             range = 4400f;
@@ -1741,7 +1739,7 @@ public class PMBlocks{
         omegaCharger = new ApotheosisChargeTower("omega-charger"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
             size = 1;
-            health = 1000000;
+            health = ProgMats.sandboxBlockHealth;
             range = 60f;
             damageBoost = 500000f / 12f;
             boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
@@ -1759,7 +1757,7 @@ public class PMBlocks{
         testTurret = new PowerTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             size = 2;
-            health = 1000000;
+            health = ProgMats.sandboxBlockHealth;
             range = 69 * tilesize;
             reload = 60f;
 
@@ -1815,7 +1813,7 @@ public class PMBlocks{
             hasItems = false;
 
             size = 3;
-            health = 1000000;
+            health = ProgMats.sandboxBlockHealth;
             plans = Seq.with(
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
             );
@@ -1824,14 +1822,15 @@ public class PMBlocks{
         }};
 
         capBlock = new CapBlock("cap-block"){{
-            health = 1000000;
             unitCapModifier = 25;
         }};
 
         harmacist = new EffectZone("harmacist"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, empty);
+            alwaysUnlocked = true;
 
             size = 2;
+            health = ProgMats.sandboxBlockHealth;
             range = 32f * tilesize;
             height = 0.125f;
             baseColor = Color.red;

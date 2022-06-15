@@ -4,6 +4,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.*;
 
 public class MultiVoid extends Block{
     public MultiVoid(String name){
@@ -11,7 +12,7 @@ public class MultiVoid extends Block{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = 1000000;
+        health = ProgMats.sandboxBlockHealth;
         update = solid = acceptsItems = hasLiquids = true;
         group = BlockGroup.transportation;
     }

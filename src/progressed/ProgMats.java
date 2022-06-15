@@ -33,6 +33,7 @@ public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static ModuleInfoDialog moduleInfoDialog;
     public static Seq<BulletData> allBullets = new Seq<>();
+    public static int sandboxBlockHealth = 1000000;
 
     public ProgMats(){
         super();

@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.world.blocks.distribution.*;
 
 public class SandDriver extends BurstDriver{
@@ -15,7 +16,8 @@ public class SandDriver extends BurstDriver{
     public SandDriver(String name){
         super(name);
         requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
-        health = 1000000;
+        alwaysUnlocked = true;
+        health = ProgMats.sandboxBlockHealth;
     }
 
     @Override
