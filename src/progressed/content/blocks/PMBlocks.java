@@ -170,9 +170,10 @@ public class PMBlocks{
     //Unit
     godFactory, capBlock, harmacist,
 
-    //Effect
+    //Items
     multiSource, multiVoid, multiSourceVoid,
 
+    //Effect
     infiniMender, infiniOverdrive;
 
     // endregion
@@ -1841,11 +1842,12 @@ public class PMBlocks{
             zoneEffect = tile -> all.each(u -> PMBullets.harmanuke.create(tile, u.x, u.y, 0f));
         }};
 
-        /// Effect
+        /// Items
         multiSource = new MultiSource("multi-source");
         multiVoid = new MultiVoid("multi-void");
         multiSourceVoid = new MultiSourceVoid("multi-source-void");
 
+        /// Effect
         infiniMender = new InfiniMendProjector("infini-mender");
         infiniOverdrive = new InfiniOverdriveProjector("infini-overdrive");
         // endregion

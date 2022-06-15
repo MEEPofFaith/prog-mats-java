@@ -28,7 +28,7 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
 
         health = ProgMats.sandboxBlockHealth;
         configurable = saveConfig = true;
-        hasPower = hasItems = false;
+        hasPower = hasItems = hasBoost = false;
 
         config(Vec2.class, (InfiniOverdriveBuild tile, Vec2 values) -> {
             tile.boost = values.x;
