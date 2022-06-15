@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.items;
 
 import arc.*;
 import arc.graphics.*;
@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.*;
 import progressed.world.blocks.*;
 
 import static mindustry.Vars.*;
@@ -28,6 +29,7 @@ public class MultiSource extends Block{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
+        health = ProgMats.sandboxBlockHealth;
         update = solid = saveConfig = noUpdateDisabled = true;
         hasItems = hasLiquids = true;
         configurable = outputsLiquid = true;

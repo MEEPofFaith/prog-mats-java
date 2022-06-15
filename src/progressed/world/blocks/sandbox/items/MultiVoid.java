@@ -1,30 +1,28 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.items;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.*;
 
-public class MultiSourceVoid extends MultiSource{
-    public TextureRegion rainbow;
-
-    public MultiSourceVoid(String name){
+public class MultiVoid extends Block{
+    public MultiVoid(String name){
         super(name);
+        requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
+        alwaysUnlocked = true;
 
-        acceptsItems = hasLiquids = true;
+        health = ProgMats.sandboxBlockHealth;
+        update = solid = acceptsItems = hasLiquids = true;
+        group = BlockGroup.transportation;
     }
 
     @Override
-    public void load(){
-        super.load();
-
-        rainbow = Core.atlas.find(name + "-rainbow");
+    public void setBars(){
+        super.setBars();
+        removeBar("liquid");
     }
-
+    
     @Override
     public boolean canReplace(Block other){
         if(other.alwaysReplace) return true;
@@ -32,15 +30,7 @@ public class MultiSourceVoid extends MultiSource{
             (size == other.size || (size >= other.size && ((subclass != null && subclass == other.subclass) || group.anyReplace)));
     }
 
-    public class MultiSourceVoidBuild extends MultiSourceBuild{
-        @Override
-        public void draw(){
-            super.draw();
-            Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * Core.settings.getInt("pm-strobespeed") / 2f));
-            Draw.rect(rainbow, x, y);
-            Draw.color();
-        }
-
+    public class MultiVoidBuild extends Building{
         @Override
         public boolean acceptItem(Building source, Item item){
             return enabled;
