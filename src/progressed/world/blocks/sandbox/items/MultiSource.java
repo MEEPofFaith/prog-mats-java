@@ -28,6 +28,7 @@ public class MultiSource extends Block{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
+        health = 1000000;
         update = solid = saveConfig = noUpdateDisabled = true;
         hasItems = hasLiquids = true;
         configurable = outputsLiquid = true;

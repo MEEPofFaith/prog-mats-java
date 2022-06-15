@@ -37,7 +37,6 @@ public class SandboxWall extends Wall{
         requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = 2147483647;
         lightningDamage = 5000f;
         lightningLength = 10;
         flashHit = insulated = absorbLasers = true;

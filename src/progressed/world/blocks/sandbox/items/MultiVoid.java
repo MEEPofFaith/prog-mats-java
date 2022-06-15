@@ -10,7 +10,8 @@ public class MultiVoid extends Block{
         super(name);
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
-        
+
+        health = 1000000;
         update = solid = acceptsItems = hasLiquids = true;
         group = BlockGroup.transportation;
     }

@@ -10,6 +10,7 @@ public class CapBlock extends Wall{
         super(name);
         requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
+        health = 1000000;
     }
 
     public class CapBlockBuild extends WallBuild{

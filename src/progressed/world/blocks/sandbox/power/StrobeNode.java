@@ -23,8 +23,8 @@ public class StrobeNode extends PowerNode{
         super(name);
         requirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
-        
-        health = 999999999;
+
+        health = 1000000;
         laserRange = 200;
         maxNodes = 65535;
         laserColor1 = Color.valueOf("ffcccc");

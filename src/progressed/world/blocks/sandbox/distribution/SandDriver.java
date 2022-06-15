@@ -15,6 +15,7 @@ public class SandDriver extends BurstDriver{
     public SandDriver(String name){
         super(name);
         requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
+        health = 1000000;
     }
 
     @Override

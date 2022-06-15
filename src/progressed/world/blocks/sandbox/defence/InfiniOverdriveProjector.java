@@ -23,6 +23,7 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
     public InfiniOverdriveProjector(String name){
         super(name);
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
+        health = 1000000;
         alwaysUnlocked = true;
         configurable = saveConfig = true;
         hasPower = hasItems = false;
