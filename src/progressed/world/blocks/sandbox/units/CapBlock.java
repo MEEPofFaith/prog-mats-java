@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.units;
 
 import arc.graphics.g2d.*;
 import mindustry.type.*;

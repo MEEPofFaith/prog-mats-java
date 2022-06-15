@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.items;
 
 import arc.*;
 import arc.graphics.*;
@@ -11,24 +11,21 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 
-public class EverythingLiquidSource extends Block{
+public class EverythingItemSource extends Block{
     public float ticksPerItemColor = 90f;
 
     public TextureRegion strobeRegion, centerRegion;
 
-    public EverythingLiquidSource(String name){
+    public EverythingItemSource(String name){
         super(name);
-        requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
+        requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
 
         health = 999999999;
+        hasItems = true;
         update = true;
         solid = true;
-        hasLiquids = true;
-        liquidCapacity = 100f;
-        outputsLiquid = true;
+        group = BlockGroup.transportation;
         noUpdateDisabled = true;
-        displayFlow = false;
-        group = BlockGroup.liquids;
         envEnabled = Env.any;
     }
 
@@ -39,7 +36,7 @@ public class EverythingLiquidSource extends Block{
         centerRegion = Core.atlas.find(name + "-center", "center");
     }
 
-    public class EverythingLiquidSourceBuild extends Building{
+    public class EverythingItemSourceBuild extends Building{
         @Override
         public void draw(){
             super.draw();
@@ -48,20 +45,23 @@ public class EverythingLiquidSource extends Block{
             Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed), 1f);
             Draw.rect(strobeRegion, x, y);
 
-            Draw.color(Tmp.c1.lerp(PMPal.liquidColors, Time.time / (ticksPerItemColor * PMPal.liquidColors.length) % 1f));
+            Draw.color(Tmp.c1.lerp(PMPal.itemColors, Time.time / (ticksPerItemColor * PMPal.itemColors.length) % 1f));
             Draw.rect(centerRegion, x, y);
             Draw.color();
         }
 
         @Override
         public void updateTile(){
-            super.updateTile();
-
-            Vars.content.liquids().each(l -> {
-                liquids.add(l, liquidCapacity);
-                dumpLiquid(l);
-                liquids.clear();
+            Vars.content.items().each(i -> {
+                items.set(i, 1);
+                dump(i);
+                items.set(i, 0);
             });
+        }
+
+        @Override
+        public boolean acceptItem(Building source, Item item){
+            return false;
         }
     }
 }

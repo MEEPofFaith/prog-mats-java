@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.items;
 
 import arc.*;
 import arc.graphics.*;
@@ -11,21 +11,24 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 
-public class EverythingItemSource extends Block{
+public class EverythingLiquidSource extends Block{
     public float ticksPerItemColor = 90f;
 
     public TextureRegion strobeRegion, centerRegion;
 
-    public EverythingItemSource(String name){
+    public EverythingLiquidSource(String name){
         super(name);
-        requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
+        requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
 
         health = 999999999;
-        hasItems = true;
         update = true;
         solid = true;
-        group = BlockGroup.transportation;
+        hasLiquids = true;
+        liquidCapacity = 100f;
+        outputsLiquid = true;
         noUpdateDisabled = true;
+        displayFlow = false;
+        group = BlockGroup.liquids;
         envEnabled = Env.any;
     }
 
@@ -36,7 +39,7 @@ public class EverythingItemSource extends Block{
         centerRegion = Core.atlas.find(name + "-center", "center");
     }
 
-    public class EverythingItemSourceBuild extends Building{
+    public class EverythingLiquidSourceBuild extends Building{
         @Override
         public void draw(){
             super.draw();
@@ -45,23 +48,20 @@ public class EverythingItemSource extends Block{
             Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed), 1f);
             Draw.rect(strobeRegion, x, y);
 
-            Draw.color(Tmp.c1.lerp(PMPal.itemColors, Time.time / (ticksPerItemColor * PMPal.itemColors.length) % 1f));
+            Draw.color(Tmp.c1.lerp(PMPal.liquidColors, Time.time / (ticksPerItemColor * PMPal.liquidColors.length) % 1f));
             Draw.rect(centerRegion, x, y);
             Draw.color();
         }
 
         @Override
         public void updateTile(){
-            Vars.content.items().each(i -> {
-                items.set(i, 1);
-                dump(i);
-                items.set(i, 0);
-            });
-        }
+            super.updateTile();
 
-        @Override
-        public boolean acceptItem(Building source, Item item){
-            return false;
+            Vars.content.liquids().each(l -> {
+                liquids.add(l, liquidCapacity);
+                dumpLiquid(l);
+                liquids.clear();
+            });
         }
     }
 }

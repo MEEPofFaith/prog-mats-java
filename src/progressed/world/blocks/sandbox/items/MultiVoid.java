@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.items;
 
 import mindustry.gen.*;
 import mindustry.type.*;

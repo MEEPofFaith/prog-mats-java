@@ -36,7 +36,7 @@ public class ModuleInfoDialog extends BaseDialog{
 
         table.table(title1 -> {
             title1.image(payload.uiIcon).size(iconXLarge).scaling(Scaling.fit);
-            title1.add("[accent]" + module.localizedName + (enableConsole ? "\n[gray]" + module.name : "")).padLeft(5);
+            title1.add("[accent]" + module.localizedName + (Core.settings.getBool("console") ? "\n[gray]" + module.name : "")).padLeft(5);
         });
 
         table.row();

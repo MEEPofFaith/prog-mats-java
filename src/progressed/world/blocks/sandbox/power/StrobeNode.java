@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.power;
 
 import arc.*;
 import arc.flabel.*;

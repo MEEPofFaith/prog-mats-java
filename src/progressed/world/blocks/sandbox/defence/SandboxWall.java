@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox;
+package progressed.world.blocks.sandbox.defence;
 
 import arc.*;
 import arc.graphics.*;

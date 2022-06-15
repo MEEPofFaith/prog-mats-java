@@ -31,7 +31,7 @@ dependencies{
     //compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    compileOnly "com.github.Anuken.MindustryJitpack:core:68f053f409"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:ad19c380f8"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 

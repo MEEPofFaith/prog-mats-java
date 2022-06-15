@@ -43,7 +43,11 @@ import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
-import progressed.world.blocks.sandbox.*;
+import progressed.world.blocks.sandbox.defence.*;
+import progressed.world.blocks.sandbox.distribution.*;
+import progressed.world.blocks.sandbox.items.*;
+import progressed.world.blocks.sandbox.power.*;
+import progressed.world.blocks.sandbox.units.*;
 import progressed.world.blocks.storage.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
@@ -167,7 +171,9 @@ public class PMBlocks{
     godFactory, capBlock, harmacist,
 
     //Effect
-    multiSource, multiVoid, multiSourceVoid;
+    multiSource, multiVoid, multiSourceVoid,
+
+    infiniOverdrive;
 
     // endregion
 
@@ -1840,6 +1846,8 @@ public class PMBlocks{
         multiSource = new MultiSource("multi-source");
         multiVoid = new MultiVoid("multi-void");
         multiSourceVoid = new MultiSourceVoid("multi-source-void");
+
+        infiniOverdrive = new InfiniOverdriveProjector("infini-overdrive");
         // endregion
     }
 }
