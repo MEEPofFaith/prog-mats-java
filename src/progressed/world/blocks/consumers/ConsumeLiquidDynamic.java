@@ -58,6 +58,6 @@ public class ConsumeLiquidDynamic extends Consume{
     @Override
     public float efficiency(Building build){
         LiquidStack l = liquids.get(build);
-        return Math.min(build.liquids.get(l.liquid) / (l.amount * build.edelta()), 1f);
+        return l != null ? Math.min(build.liquids.get(l.liquid) / (l.amount * build.edelta()), 1f) : 0;
     }
 }
