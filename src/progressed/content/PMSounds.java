@@ -13,47 +13,33 @@ import mindustry.*;
 public class PMSounds{
     public static Sound
 
-    pixelShoot = new Sound(),
-    pixelHit = new Sound(),
-    rockExplode = new Sound(),
-    harbingerCharge = new Sound(),
-    harbingerBlast = new Sound(),
-    riftSplit = new Sound(),
-    rocketLaunch = new Sound(),
-    nuclearExplosion = new Sound(),
-    sentinelWarning = new Sound(),
-    pulseBeam = new Sound(),
-    moonPiss = new Sound(),
-    loudMoonPiss = new Sound(),
-    gigaFard = new Sound();
+    pixelShoot,
+    pixelHit,
+    rockExplode,
+    harbingerCharge,
+    harbingerBlast,
+    riftSplit,
+    rocketLaunch,
+    nuclearExplosion,
+    sentinelWarning,
+    pulseBeam,
+    moonPiss,
+    loudMoonPiss,
+    gigaFard ;
 
     public static void load() {
-        if(Vars.headless) return;
-
-        pixelShoot = loadSound("pixel-shoot");
-        pixelHit = loadSound("pixel-hit");
-        rockExplode = loadSound("rock-explode");
-        harbingerCharge = loadSound("harbinger-charge");
-        harbingerBlast = loadSound("harbinger-blast");
-        riftSplit = loadSound("rift-split");
-        nuclearExplosion = loadSound("nuclear-explosion");
-        rocketLaunch = loadSound("rocket");
-        sentinelWarning = loadSound("sentinel-warning");
-        pulseBeam = loadSound("pulse-beam");
-        moonPiss = loadSound("piss");
-        loudMoonPiss = loadSound("piss-loud");
-        gigaFard = loadSound("giga-fard");
-    }
-
-    protected static Sound loadSound(String soundName){
-        String name = "sounds/" + soundName;
-        String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
-
-        Sound sound = new Sound();
-
-        AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundParameter(sound));
-        desc.errored = Throwable::printStackTrace;
-
-        return sound;
+        pixelShoot = Vars.tree.loadSound("pixel-shoot");
+        pixelHit = Vars.tree.loadSound("pixel-hit");
+        rockExplode = Vars.tree.loadSound("rock-explode");
+        harbingerCharge = Vars.tree.loadSound("harbinger-charge");
+        harbingerBlast = Vars.tree.loadSound("harbinger-blast");
+        riftSplit = Vars.tree.loadSound("rift-split");
+        nuclearExplosion = Vars.tree.loadSound("nuclear-explosion");
+        rocketLaunch = Vars.tree.loadSound("rocket");
+        sentinelWarning = Vars.tree.loadSound("sentinel-warning");
+        pulseBeam = Vars.tree.loadSound("pulse-beam");
+        moonPiss = Vars.tree.loadSound("piss");
+        loudMoonPiss = Vars.tree.loadSound("piss-loud");
+        gigaFard = Vars.tree.loadSound("giga-fard");
     }
 }
