@@ -527,7 +527,7 @@ public class ApotheosisNexus extends ReloadTurret{
                         arcing = true;
                         fireSound.at(x, y, fireSoundPitch, fireSoundVolume);
                         if(isPiss()){
-                            (ProgMats.farting() && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
+                            (ProgMats.funiMode() && piss ? PMSounds.loudMoonPiss : PMSounds.moonPiss).at(x, y, 1f, 2f);
                             Sounds.wind3.at(x, y, 1f, 5f);
                         }
                         fireEffect.at(x, y);
@@ -595,7 +595,7 @@ public class ApotheosisNexus extends ReloadTurret{
         }
 
         public boolean isPiss(){
-            return ProgMats.farting() || piss;
+            return ProgMats.funiMode() || piss;
         }
 
         public float chargef(){

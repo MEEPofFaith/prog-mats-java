@@ -58,7 +58,7 @@ public class BaseModule implements Cloneable{
 
     public final OrderedMap<String, Func2<ModularTurretBuild, BaseMount, Bar>> barMap = new OrderedMap<>();
     public boolean[] liquidFilter = {};
-    /** Array of consumers used by this block. Only populated after init(). */
+    /** Array of consumers used by this module. Only populated after init(). */
     public Consume[] consumers = {}, optionalConsumers = {}, nonOptionalConsumers = {}, updateConsumers = {};
     /** Set to true if this block has any consumers in its array. */
     public boolean hasConsumers;

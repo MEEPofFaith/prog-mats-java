@@ -60,7 +60,7 @@ public class BallisticMissileBulletType extends BasicBulletType{
         if(blockEffect == Fx.none) blockEffect = despawnEffect;
         if(thrusterLightRadius < 0) thrusterLightRadius = thrusterRadius * 6.5f;
 
-        if(ProgMats.farting() && hitSound != Sounds.none){
+        if(ProgMats.funiMode() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }

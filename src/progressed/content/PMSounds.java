@@ -1,10 +1,11 @@
 package progressed.content;
 
 import arc.*;
-import arc.assets.*;
 import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
 import mindustry.*;
+import mindustry.gen.*;
+import progressed.*;
 
 /**
  * @author GlennFolker
@@ -25,9 +26,10 @@ public class PMSounds{
     pulseBeam,
     moonPiss,
     loudMoonPiss,
-    gigaFard ;
+    gigaFard,
+    funiBoom;
 
-    public static void load() {
+    public static void load(){
         pixelShoot = Vars.tree.loadSound("pixel-shoot");
         pixelHit = Vars.tree.loadSound("pixel-hit");
         rockExplode = Vars.tree.loadSound("rock-explode");
@@ -41,5 +43,6 @@ public class PMSounds{
         moonPiss = Vars.tree.loadSound("piss");
         loudMoonPiss = Vars.tree.loadSound("piss-loud");
         gigaFard = Vars.tree.loadSound("giga-fard");
+        funiBoom = Vars.tree.loadSound("funi-boom");
     }
 }

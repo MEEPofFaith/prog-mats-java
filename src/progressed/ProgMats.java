@@ -1,11 +1,13 @@
 package progressed;
 
 import arc.*;
+import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
 import arc.func.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -90,9 +92,8 @@ public class ProgMats extends Mod{
                 swapDialog = new ModuleSwapDialog();
                 moduleInfoDialog = new ModuleInfoDialog();
 
-                if(farting()){
+                if(funiMode()){
                     content.blocks().each(b -> b.destroySound = Sounds.wind3);
-
                     content.units().each(u -> u.deathSound = Sounds.wind3);
 
                     Events.run(Trigger.newGame, () -> {
@@ -105,6 +106,11 @@ public class ProgMats extends Mod{
                             }
                         });
                     });
+
+                    if(!Vars.headless){
+                        Sounds.explosion.load(Vars.tree.get("sounds/funi-boom.ogg"));
+                        Sounds.explosionbig.load(Vars.tree.get("sounds/funi-boom.ogg"));
+                    }
                 }
             });
         }
@@ -129,11 +135,20 @@ public class ProgMats extends Mod{
             t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
             t.checkPref("pm-tesla-range", true);
             t.checkPref("pm-sandbox-everything", false);
-            t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
+            t.checkPref("pm-farting", false, b -> {
+                float hehe = Mathf.random();
+                Sound funi = PMSounds.gigaFard;
+                if(hehe <= 0.45f){
+                    funi = Sounds.wind3;
+                }else if(hehe <= 0.95f){
+                    funi = PMSounds.funiBoom;
+                }
+                funi.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f);
+            });
         });
     }
 
-    public static boolean farting(){
+    public static boolean funiMode(){
         return settings.getBool("pm-farting", false);
     }
 

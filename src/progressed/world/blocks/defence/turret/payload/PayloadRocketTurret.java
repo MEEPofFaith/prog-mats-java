@@ -32,7 +32,7 @@ public class PayloadRocketTurret extends PayloadTurret{
         super(name);
 
         outlinedIcon = 3;
-        shootSound = ProgMats.farting() ? PMSounds.gigaFard : PMSounds.rocketLaunch;
+        shootSound = ProgMats.funiMode() ? PMSounds.gigaFard : PMSounds.rocketLaunch;
     }
 
     @Override

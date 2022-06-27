@@ -15,7 +15,7 @@ public class PMPlanets{
         theGrandPoo = new Planet("the-grand-poo", Planets.serpulo, 0.25f){{
             bloom = true;
             accessible = false;
-            visible = ProgMats.farting();
+            visible = ProgMats.funiMode();
             orbitRadius = 2;
             lightColor = Color.valueOf("6e340a");
             atmosphereColor = Color.valueOf("663712");
