@@ -155,7 +155,7 @@ public class PMUnitTypes{
                         width = 2f;
                         length = 32f;
                         flareLength = 16f;
-                        pierceCap = 1;
+                        collidesAir = false;
                         pierce = false;
                         pierceArmor = false;
                         colors = PMPal.cyanFlameColors;

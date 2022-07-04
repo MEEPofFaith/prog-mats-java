@@ -38,6 +38,7 @@ public class RocketBulletType extends BasicBulletType{
         despawnEffect = hitEffect = Fx.blastExplosion;
         hitSound = Sounds.explosion;
         status = StatusEffects.blasted;
+        trailRotation = true;
     }
 
     @Override
@@ -69,6 +70,25 @@ public class RocketBulletType extends BasicBulletType{
             b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
 
             super.update(b);
+        }
+    }
+
+    @Override
+    public void updateTrailEffects(Bullet b){
+        float angle = ((RocketData)b.data).thrust ? b.rotation() : ((RocketData)b.data).angle,
+            x = b.x + Angles.trnsx(angle + 180, trailOffset),
+            y = b.y + Angles.trnsy(angle + 180, trailOffset);
+
+        if(trailChance > 0){
+            if(Mathf.chanceDelta(trailChance)){
+                trailEffect.at(x, y, trailRotation ? angle : trailParam, trailColor);
+            }
+        }
+
+        if(trailInterval > 0f){
+            if(b.timer(0, trailInterval)){
+                trailEffect.at(x, y, trailRotation ? angle : trailParam, trailColor);
+            }
         }
     }
 

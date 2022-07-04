@@ -23,13 +23,10 @@ public class MissileFx{
     public static Effect
 
     rocketTrail = new Effect(60, e -> {
-        if(e.data instanceof float[] f){
-            z(f[2]);
-            color(e.color, Pal.lightishGray, Pal.darkerGray, e.fin());
-            randLenVectors(e.id, 4, 24f * e.finpow() * f[1], f[0] + 180f, 15f * f[1], (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, (e.rotation - e.fin() * e.rotation) / 2f);
-            });
-        }
+        color(e.color, Pal.lightishGray, Pal.darkerGray, e.fin());
+        randLenVectors(e.id, 8, 48f * e.finpow(), e.rotation - 180f, 30f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 6f * e.fout(Interp.pow3In));
+        });
     }).layer(Layer.turret + 0.014f),
 
     flameRing = new Effect(45f, e -> {
