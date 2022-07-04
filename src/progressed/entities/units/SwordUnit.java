@@ -158,6 +158,12 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
         collided.clear();
     }
 
+    public void reset(){
+        SwordAI sAI = sAI();
+        if(sAI == null) return;
+        sAI.reset();
+    }
+
     public boolean hasCollided(int id){
         return collided.size != 0 && collided.contains(id);
     }

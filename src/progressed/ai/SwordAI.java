@@ -69,9 +69,7 @@ public class SwordAI extends AIController{
                 rotating = true;
                 unit.lookAt(target);
                 if(Angles.within(unit.rotation, unit.angleTo(target), 15f)){
-                    curving = rotating = false;
-                    curveScl = curveRand.range(stype().curveRnd);
-                    sunit().clearCollided();
+                    reset();
                 }
             }
         }else{
@@ -80,6 +78,12 @@ public class SwordAI extends AIController{
 
         vec.trns(unit.rotation, unit.speed());
         unit.moveAt(vec);
+    }
+
+    public void reset(){
+        curving = rotating = false;
+        curveScl = curveRand.range(stype().curveRnd);
+        sunit().clearCollided();
     }
 
     public float speed(){

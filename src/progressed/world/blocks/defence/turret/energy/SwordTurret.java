@@ -290,7 +290,7 @@ public class SwordTurret extends BaseTurret{
             //Turret stuff
             if(!validateTarget()) target = null;
 
-            float warmupTarget = Mathf.num(isAttacking());
+            float warmupTarget = Mathf.num(isActive());
             if(linearWarmup){
                 attackWarmup = Mathf.approachDelta(attackWarmup, warmupTarget, attackWarmupSpeed);
             }else{
@@ -341,10 +341,14 @@ public class SwordTurret extends BaseTurret{
 
         public void findTarget(){
             UnitType u = swordType;
+            Posc preT = target;
             if(u.targetAir && !u.targetGround){
                 target = Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() && unitFilter.get(e), unitSort);
             }else{
                 target = Units.bestTarget(team, x, y, range, e -> !e.dead() && unitFilter.get(e) && (e.isGrounded() || u.targetAir) && (!e.isGrounded() || u.targetGround), b -> u.targetGround && buildingFilter.get(b), unitSort);
+            }
+            if(target != preT){
+                swords.each(SwordUnit::reset);
             }
         }
 
