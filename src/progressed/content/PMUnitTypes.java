@@ -147,10 +147,10 @@ public class PMUnitTypes{
             lowAltitude = true;
 
             weapons.add(
-                new ContinuousWeapon(){{
+                new Weapon(){{
                     x = 0f;
                     mirror = false;
-
+                    alwaysContinuous = true;
                     bullet = new ContinuousFlameBulletType(10f){{
                         width = 2f;
                         length = 32f;
