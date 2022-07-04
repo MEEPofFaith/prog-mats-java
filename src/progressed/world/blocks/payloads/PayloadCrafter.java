@@ -172,14 +172,17 @@ public class PayloadCrafter extends PayloadBlock{
         public void updateTile(){
             super.updateTile();
             Recipe recipe = recipe();
-            produce = recipe != null && canConsume() && (recipe.inputBlock != null ? (payload != null && hasArrived() && payload.block() == recipe.inputBlock) : payload == null);
+            produce = recipe != null && canConsume() &&
+                (recipe.inputBlock != null ? (payload != null && hasArrived() && payload.block() == recipe.inputBlock) : payload == null);
 
-            if(recipe != null){
-                if(payload != null && payload.block() != recipe.inputBlock){
+            if(payload != null){
+                if(recipe != null){
+                    if(payload.block() != recipe.inputBlock){
+                        moveOutPayload();
+                    }
+                }else if(!recipes.contains(r -> r.inputBlock == payload.block())){
                     moveOutPayload();
                 }
-            }else if(payload != null && !recipes.contains(r -> r.inputBlock == payload.block())){
-                moveOutPayload();
             }
 
             if(recipe != null && payload != null && payload.block() == recipe.inputBlock){
