@@ -174,8 +174,8 @@ public class RocketBulletType extends BasicBulletType{
     }
 
     @Override
-    public Bullet create(Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data){
-        Bullet bullet = super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data);
+    public Bullet create(Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, Mover mover, float aimX, float aimY){
+        Bullet bullet = super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY);
         if(backSpeed != 0f){
             bullet.initVel(angle, -backSpeed * velocityScl);
             if(backMove){
