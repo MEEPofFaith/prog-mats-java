@@ -367,7 +367,7 @@ public class PMModules{
             ));
             module = new PowerTurretModule("lotus", ModuleSize.medium){
                 final float delay = 30f;
-                final Effect waveEffect = Fx.none;
+                final Effect waveEffect = ModuleFx.lotusWave;
 
                 {
                     reload = 60f;
@@ -381,6 +381,7 @@ public class PMModules{
 
                     shootType = ModuleBullets.lotusLance;
 
+                    shootY = 0f;
                     shoot = new ShootBarrel(){{
                         shots = 8;
                         shotDelay = 2f;
@@ -389,14 +390,14 @@ public class PMModules{
                             d1 = size() * tilesize / 2f,
                             d2 = Tmp.v1.trns(45f, d1).x;
                         barrels = new float[]{
-                            0f, d1, 90f,
-                            d2, d2, 45f,
-                            d1, 0f, 0f,
-                            d2, -d2, -45f,
-                            0f, -d1, -90f,
-                            -d2, -d2, -135f,
-                            -d1, 0f, 180f,
-                            -d2, d2, 135f
+                            0f, d1, 0f,
+                            d2, d2, -45f,
+                            d1, 0f, -90f,
+                            d2, -d2, -135f,
+                            0f, -d1, 180f,
+                            -d2, -d2, 135f,
+                            -d1, 0f, 90f,
+                            -d2, d2, 45f
                         };
                     }};
 
@@ -407,9 +408,14 @@ public class PMModules{
                 public void shoot(ModularTurretBuild parent, TurretMount mount, BulletType type){
                     super.shoot(parent, mount, type);
 
-                    Time.run(delay, () -> {
+                    Time.run(delay + shoot.firstShotDelay, () -> {
                         if(mount.valid(parent)) waveEffect.at(mount);
                     });
+                }
+
+                @Override
+                protected void handleBullet(ModularTurretBuild parent, TurretMount mount, Bullet bullet, float offsetX, float offsetY, float angleOffset){
+                    bullet.data = new DelayBulletData(mount.targetPos.x, mount.targetPos.y, delay - (shoot.shots - mount.queuedBullets - 1) * shoot.shotDelay);
                 }
             };
         }};

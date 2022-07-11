@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.*;
+import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
@@ -89,6 +90,13 @@ public class ModuleFx{
         randLenVectors(e.id, 5, e.finpow() * 5f, e.rotation, 20f, (x, y) -> {
             lineAngle(e.x + x, e.y + y, angle(x, y), e.fout() * 1.5f);
         });
+    }),
+
+    lotusWave = new Effect(20f, e -> {
+        color(Pal.surge);
+
+        stroke(e.fout());
+        Lines.circle(e.x, e.y, 8f * 3f * e.finpow());
     }),
 
     hitLotus = new Effect(14, e -> {

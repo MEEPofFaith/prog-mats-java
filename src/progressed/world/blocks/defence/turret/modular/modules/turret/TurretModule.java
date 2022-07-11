@@ -213,8 +213,8 @@ public class TurretModule extends ReloadTurretModule{
             type.chargeEffect.at(bulletX, bulletY, rot);
         }
 
+        mount.queuedBullets = shoot.shots;
         shoot.shoot(mount.totalShots, (xOffset, yOffset, angle, delay, mover) -> {
-            mount.queuedBullets++;
             if(delay > 0f){
                 Time.run(delay, () -> bullet(parent, mount, type, xOffset, yOffset, angle, mover));
             }else{
@@ -267,9 +267,7 @@ public class TurretModule extends ReloadTurretModule{
         }
     }
 
-    protected void handleBullet(ModularTurretBuild parent, TurretMount mount, Bullet bullet, float offsetX, float offsetY, float angleOffset){
-        mount.lastBullet = bullet;
-    }
+    protected void handleBullet(ModularTurretBuild parent, TurretMount mount, Bullet bullet, float offsetX, float offsetY, float angleOffset){}
 
     /** Consume ammo and return a type. */
     public BulletType useAmmo(ModularTurretBuild parent, TurretMount mount){
