@@ -153,8 +153,10 @@ public class RocketBulletType extends BasicBulletType{
                 Draw.color();
             }
 
-            Draw.z(z - 0.01f);
-            Draw.rect(backRegion, b.x, b.y, angle - 90f + rotOffset);
+            if(backRegion.found()){
+                Draw.z(z - 0.01f);
+                Draw.rect(backRegion, b.x, b.y, angle - 90f + rotOffset);
+            }
             Draw.z(z);
             Draw.rect(frontRegion, b.x, b.y, angle - 90f + rotOffset);
             Draw.reset();
