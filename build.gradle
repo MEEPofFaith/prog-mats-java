@@ -27,12 +27,12 @@ allprojects{
 }
 
 dependencies{
-    //compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    //compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    compileOnly "com.github.Anuken.MindustryJitpack:core:69f0126eca"
-    compileOnly "com.github.Anuken.Arc:arc-core:b1b88883e2"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+
+    //compileOnly "com.github.Anuken.MindustryJitpack:core:69f0126eca"
+    //compileOnly "com.github.Anuken.Arc:arc-core:b1b88883e2"
 }
 
 task jarAndroid{
