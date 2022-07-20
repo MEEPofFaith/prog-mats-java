@@ -76,9 +76,11 @@ public class BeamBulletType extends BulletType{
                 if(makeFire) Fires.create(build.tileOn());
             });
 
-            for(int i = 0; i < crackEffects; i++){
-                PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
-                crackEffect.at(b.x, b.y, crackLife, crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
+            if(crackEffects > 0 && crackEffect != Fx.none){
+                for(int i = 0; i < crackEffects; i++){
+                    PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
+                    crackEffect.at(b.x, b.y, crackLife, crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
+                }
             }
         }
 

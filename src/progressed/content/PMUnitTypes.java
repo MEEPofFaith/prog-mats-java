@@ -132,8 +132,7 @@ public class PMUnitTypes{
                     maxBeamDst = 32f;
                     bullet = new BeamBulletType(5.5f, 8f){{ //Test beam based on Flame
                         lifetime = 60f;
-                        crackEffects = 2;
-                        crackLife = 10f;
+                        crackEffects = 0;
                     }};
                 }}
             );

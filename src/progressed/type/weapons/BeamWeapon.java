@@ -1,6 +1,8 @@
 package progressed.type.weapons;
 
+import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
@@ -8,6 +10,7 @@ import mindustry.audio.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
@@ -17,8 +20,9 @@ import static mindustry.Vars.*;
 
 public class BeamWeapon extends Weapon{
     public Color beamColor = PMPal.cyanLaser;
-    public float beamStroke = 3f, beamWidth = 8f, maxBeamDst = 30f;
+    public float beamLayer = Layer.bullet, beamScl = 0.25f, maxBeamDst = 30f;
     public Effect beamEffect = EnergyFx.cyanBeamSpark;
+    public TextureRegion beamStart, beamEnd, beam;
 
     public BeamWeapon(String name){
         super(name);
@@ -31,6 +35,14 @@ public class BeamWeapon extends Weapon{
 
     public BeamWeapon(){
         this("");
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        beamStart = Core.atlas.find(name + "-beam-start", "prog-mats-rainbow-laser-end");
+        beamEnd = Core.atlas.find(name + "-beam-end", "prog-mats-rainbow-laser-end");
+        beam = Core.atlas.find(name + "-beam", "prog-mats-rainbow-laser");
     }
 
     @Override
@@ -106,9 +118,11 @@ public class BeamWeapon extends Weapon{
         }
 
         //update continuous state (this is the only part throughout the entirety of this method that is different from original code)
+        BeamMount bMount = (BeamMount)mount;
         if(continuous && mount.bullet != null){
             if(!mount.bullet.isAdded() || mount.bullet.time >= mount.bullet.lifetime || mount.bullet.type != bullet){
                 mount.bullet = null;
+                bMount.stroke = Mathf.approachDelta(bMount.stroke, 0f, 0.15f);
             }else{
                 mount.bullet.rotation(weaponRotation + 90);
                 float dst = mount.bullet.fin() * maxBeamDst,
@@ -117,6 +131,7 @@ public class BeamWeapon extends Weapon{
                 mount.bullet.set(bx, by);
                 mount.reload = reload;
                 mount.recoil = 1f;
+                bMount.dst = dst;
                 unit.vel.add(Tmp.v1.trns(unit.rotation + 180f, mount.bullet.type.recoil));
                 if(!headless){
                     if(shootSound != Sounds.none){
@@ -124,21 +139,17 @@ public class BeamWeapon extends Weapon{
                         mount.sound.update(bulletX, bulletY, true);
                     }
 
-                    BeamMount bMount = (BeamMount)mount;
                     if((bMount.beam -= Time.delta) < 0){
                         bMount.beam = 2;
-
-                        UtilFx.lightning.at(
-                            bulletX, bulletY, 10f, beamColor,
-                            new LightningData(bx, by, beamStroke, true, beamWidth)
-                        );
                         beamEffect.at(mount.bullet, weaponRotation + 90f);
                     }
+                    bMount.stroke = Mathf.approachDelta(bMount.stroke, 1f, 0.15f);
                 }
             }
         }else{
             //heat decreases when not firing
             mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / cooldownTime, 0);
+            bMount.stroke = Mathf.approachDelta(bMount.stroke, 0f, 0.15f);
 
             if(mount.sound != null){
                 mount.sound.update(bulletX, bulletY, false);
@@ -173,8 +184,33 @@ public class BeamWeapon extends Weapon{
         }
     }
 
+    @Override
+    public void draw(Unit unit, WeaponMount mount){
+        super.draw(unit, mount);
+
+        BeamMount bMount = (BeamMount)mount;
+        if(bMount.stroke > 0.001f){
+            float z = Draw.z();
+            Draw.z(beamLayer);
+
+            float
+                weaponRotation = unit.rotation - 90 + (rotate ? mount.rotation : baseRotation),
+                mountX = unit.x + Angles.trnsx(unit.rotation - 90, x, y),
+                mountY = unit.y + Angles.trnsy(unit.rotation - 90, x, y),
+                shootX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
+                shootY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
+                bx = shootX + Angles.trnsx(weaponRotation + 90f, bMount.dst),
+                by = shootY + Angles.trnsy(weaponRotation + 90f, bMount.dst);
+
+            Draw.color(beamColor);
+            Drawf.laser(beam, beamStart, beamEnd, shootX, shootY, bx, by, bMount.stroke * beamScl);
+
+            Draw.z(z);
+        }
+    }
+
     public static class BeamMount extends WeaponMount{
-        float beam;
+        float beam, stroke, dst;
 
         public BeamMount(Weapon weapon){
             super(weapon);
