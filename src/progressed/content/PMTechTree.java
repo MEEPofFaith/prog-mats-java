@@ -1,5 +1,6 @@
 package progressed.content;
 
+import arc.func.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -309,14 +310,23 @@ public class PMTechTree{
         });
     }
 
-    private static ItemStack[] brq(Block content){
-        return content.researchRequirements();
+    //"TODO: replace this with the standard TechTree API, it's public now -Anuke" -Betamindy
+    private static void vanillaNode(UnlockableContent parent, Runnable children){
+        vanillaNode("serpulo", parent, children);
     }
 
-    //"TODO: replace this with the standard TechTree API, it's public now -Anuke" -Betamindy
-    private static void vanillaNode( UnlockableContent parent, Runnable children){
-        context = TechTree.all.find(t -> t.content == parent);
+    private static void vanillaNode(String tree, UnlockableContent parent, Runnable children){
+        context = findNode(TechTree.roots.find(r -> r.name == tree), n -> n.content == parent);
         children.run();
+    }
+
+    private static TechNode findNode(TechNode root, Boolf<TechNode> filter){
+        if(filter.get(root)) return root;
+        for(TechNode node : root.children){
+            TechNode search = findNode(node, filter);
+            if(search != null) return search;
+        }
+        return null;
     }
 
     private static void node(UnlockableContent content, ItemStack[] requirements, Seq<Objective> objectives, Runnable children){
