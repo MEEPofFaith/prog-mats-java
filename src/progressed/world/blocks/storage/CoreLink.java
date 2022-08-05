@@ -40,7 +40,6 @@ public class CoreLink extends Block{
         //Will be false until my dynamic resupply pr is accepted, so units don't take from this when it doesn't have the power to support item transfer.
         //allowResupply = true;
         envEnabled = Env.any;
-        highUnloadPriority = true;
         canOverdrive = false;
     }
 
