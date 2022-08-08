@@ -129,14 +129,7 @@ public class PMTechTree{
             ), () -> {
                 node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
                     new Research(interplanetaryAccelerator)
-                ), () -> {
-                    //Apotheosis
-                    node(apotheosisNexus, Seq.with(
-                        new Research(impactReactor) //I should probably think of power generation ideas for PM
-                    ), () -> {
-                        node(apotheosisCharger);
-                    });
-                });
+                ));
             });
 
             //Tinker

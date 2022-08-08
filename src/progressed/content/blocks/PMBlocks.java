@@ -33,7 +33,6 @@ import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
-import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.modular.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.ModuleGroup.*;
@@ -105,7 +104,7 @@ public class PMBlocks{
     strikedown, trinity,
 
     //Apotheosis
-    apotheosisNexus, apotheosisCharger,
+    nexus,
 
     // endregion
     // region production
@@ -153,7 +152,7 @@ public class PMBlocks{
     // region Sandbox
 
     //Turret
-    harbinger, everythingGun, omegaCharger, testTurret,
+    harbinger, everythingGun, testTurret,
 
     //Distribution
     everythingItemSource, sandDriver,
@@ -1201,69 +1200,6 @@ public class PMBlocks{
 
             coolant = consumeCoolant(0.2f);
         }};
-
-        apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
-            requirements(Category.turret, with(
-                Items.copper, 10200,
-                Items.lead, 11600,
-                Items.silicon, 7200,
-                Items.titanium, 6300,
-                Items.thorium, 3100,
-                Items.surgeAlloy, 3600,
-                PMItems.tenelium, 5400
-            ));
-            size = 9;
-            scaledHealth = 480;
-            reload = 60f * 15f;
-            range = 200f * tilesize;
-            damage = 12000f / 12f;
-            damageRadius = 6f * tilesize;
-            buildingDamageMultiplier = 0.25f;
-            speed = 4f;
-            duration = 4f * 60f;
-            shake = laserShake = 5f;
-            outlineColor = Pal.darkOutline;
-
-            unitSort = UnitSorts.strongest;
-
-            baseDst = new float[]{11f, 19f};
-            spinnerWidth = new float[]{49f / 4f, 82f / 4f};
-            fireEffect = new MultiEffect(EnergyFx.apotheosisClouds, EnergyFx.apotheosisBlast);
-
-            consumePower(655f);
-            float cooleantUse = 8f;
-            coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
-            coolant = consumeCoolant(cooleantUse);
-        }};
-
-        apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
-            requirements(Category.turret, with(
-                Items.copper, 3200,
-                Items.lead, 4100,
-                Items.silicon, 4600,
-                Items.titanium, 2400,
-                Items.thorium, 2300,
-                Items.surgeAlloy, 1000,
-                PMItems.tenelium, 2500
-            ));
-            size = 7;
-            scaledHealth = 360;
-            range = 30f;
-            damageBoost = 6000f / 12f;
-            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
-            radiusBoost = 1f;
-            speedBoost = 1f / 8f;
-            durationBoost = 5f;
-            outlineColor = Pal.darkOutline;
-
-            startLength = size * tilesize / -4f - 5f;
-            endLength = size * tilesize / 2f - 2f;
-            effectLength = endLength - 4f;
-
-            consumePower(163f);
-        }};
-
-        ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
         // endregion
 
         // region Production
@@ -1735,24 +1671,6 @@ public class PMBlocks{
             reload = 1f;
             range = 4400f;
             shootCone = 360f;
-        }};
-
-        omegaCharger = new ApotheosisChargeTower("omega-charger"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            size = 1;
-            health = ProgMats.sandboxBlockHealth;
-            range = 60f;
-            damageBoost = 500000f / 12f;
-            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
-            radiusBoost = 5f * tilesize;
-            speedBoost = 3f;
-            durationBoost = 18f;
-            outlineColor = Pal.darkOutline;
-
-            width = 0.25f;
-            startLength = -6f / 4f;
-            endLength = 4f;
-            effectLength = endLength - 1f;
         }};
 
         testTurret = new PowerTurret("test-turret"){{
