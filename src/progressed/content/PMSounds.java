@@ -7,8 +7,8 @@ import arc.audio.*;
 import mindustry.*;
 
 /**
- * @author GlennFolker
  * For how to make this. Just copy over and adjust the code.
+ * @author GlennFolker
  */
 public class PMSounds{
     public static Sound

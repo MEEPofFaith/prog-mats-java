@@ -257,10 +257,8 @@ public class PMDrawf{
     }
 
     /**
-     * Color flash to entire screen made by
-     * @author sunny
-     * Customization with method made by
-     * @author MEEPofFaith
+     * Color flash over the entire screen
+     * @author sunny, customization by MEEP
      * */
     public static void flash(Color fromColor, Color toColor, float seconds, Interp fade){
         if(!headless){
