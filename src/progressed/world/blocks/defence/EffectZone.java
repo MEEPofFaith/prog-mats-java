@@ -150,7 +150,7 @@ public class EffectZone extends Block{
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);
-                Draw3D.cylinder(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
+                Draw3D.ring(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
             }
 
             Draw.color();

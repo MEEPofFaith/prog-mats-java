@@ -60,8 +60,8 @@ public class MissileFx{
 
     missileSmoke = new Effect(120, e -> {
         if(e.data instanceof float[] data){
-            float x = e.x + cameraXOffset(e.x, data[0]),
-                y = e.y + cameraYOffset(e.y, data[0]);
+            float x = xHeight(e.x, data[0]),
+                y = yHeight(e.y, data[0]);
             color(Color.gray, Mathf.clamp(e.fout() * 1.2f) * data[1]);
             Fill.circle(x, y, (1f + 10f * e.rotation) - e.fin() * 2f);
         }
