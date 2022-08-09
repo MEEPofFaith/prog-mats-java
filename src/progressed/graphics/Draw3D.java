@@ -31,10 +31,10 @@ public class Draw3D{
         wall(x1, y1, x2, y2, 0f, height, baseColor, topColor);
     }
 
-    public static void ring(float x, float y, float rad, float baseHeight, float height, Color baseColor, Color topColor){
+    public static void ring(float x, float y, float rad, float height, Color baseColor, Color topColor){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = startAngle(x, y, rad, baseHeight, height);
+        float angle = startAngle(x, y, rad, height);
 
         float c1f = baseColor.toFloatBits();
         float c2f = topColor.toFloatBits();
@@ -51,37 +51,23 @@ public class Draw3D{
                 y3 = yHeight(y1, height),
                 x4 = xHeight(x2, height),
                 y4 = yHeight(y2, height);
-            if(baseHeight != 0){
-                x1 += xOffset(x1, baseHeight);
-                y1 += yOffset(y1, baseHeight);
-                x2 += xOffset(x2, baseHeight);
-                y2 += yOffset(y2, baseHeight);
-            }
 
             Fill.quad(x1, y1, c1f, x2, y2, c1f, x4, y4, c2f, x3, y3, c2f);
         }
     }
 
-    public static void ring(float x, float y, float rad, float height, Color baseColor, Color topColor){
-        ring(x, y, rad, 0f, height, baseColor, topColor);
-    }
-
-    public static void cylinder(float x, float y, float rad, float baseHeight, float height, Color baseColor, Color topColor){
+    public static void cylinder(float x, float y, float rad, float height, Color baseColor, Color topColor){
         int vert = Lines.circleVertices(rad);
 
         Draw.color(baseColor);
-        Fill.poly(xHeight(x, baseHeight), yHeight(y, baseHeight), vert, rad * (1 + baseHeight));
+        Fill.poly(x, y, vert, rad);
         Draw.color();
 
-        ring(x, y, rad, baseHeight, height, baseColor, topColor);
+        ring(x, y, rad, height, baseColor, topColor);
 
         Draw.color(topColor);
         Fill.poly(xHeight(x, height), yHeight(y, height), vert, rad * (1 + height));
         Draw.color();
-    }
-
-    public static void cylinder(float x, float y, float rad, float height, Color baseColor, Color topColor){
-        cylinder(x, y, rad, 0f, height, baseColor, topColor);
     }
 
     public static float xHeight(float x, float height){
@@ -106,16 +92,14 @@ public class Draw3D{
      * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
      * @author Xelo
      */
-    static float startAngle(float x, float y, float rad, float baseHeight, float height){
-        float x1 = xHeight(x, baseHeight), x2 = xHeight(x, height),
-            y1 = yHeight(y, baseHeight), y2 = yHeight(y, height),
-            size1 = rad * (1f + baseHeight), size2 = rad * (1f + height);
+    static float startAngle(float x, float y, float rad, float height){
+        float x2 = xHeight(x, height), y2 = yHeight(y, height), rad2 = rad * (1f + height);
 
-        float d = dst(x2 - x1,y2 - y1);
-        float f = sqrt(d * d - sqr(size2 - size1));
-        float a = size1 > size2 ? atan2(size1 - size2, f) : (size1 < size2 ? pi - atan2(size2 - size1, f) : halfPi);
-        Tmp.v1.set(x2 - x1, y2 - y1).scl(1f / d); //normal
-        Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-size2).add(x2, y2); //tangent
+        float d = dst(x2 - x,y2 - y);
+        float f = sqrt(d * d - sqr(rad2 - rad));
+        float a = rad > rad2 ? atan2(rad - rad2, f) : (rad < rad2 ? pi - atan2(rad2 - rad, f) : halfPi);
+        Tmp.v1.set(x2 - x, y2 - y).scl(1f / d); //normal
+        Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-rad2).add(x2, y2); //tangent
 
         return Angles.angle(x2, y2, Tmp.v2.x, Tmp.v2.y);
     }
