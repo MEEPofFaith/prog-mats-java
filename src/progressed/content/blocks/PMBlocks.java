@@ -9,7 +9,6 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
 import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
@@ -1274,10 +1273,10 @@ public class PMBlocks{
             liquidCapacity = 50f;
             accelerationSpeed = 0.0004f;
             decelerationSpeed = 0.003125f;
-            drawer = new DrawImpact(){{
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawSpeedPlasma(){{
                 plasma1 = Items.titanium.color;
                 plasma2 = Items.thorium.color;
-            }};
+            }}, new DrawDefault());
             onCraft = tile -> {
                 Tmp.v1.setToRandomDirection().setLength(28f / 4f);
                 CrafterFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
