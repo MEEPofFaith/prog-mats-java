@@ -27,6 +27,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.part.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -102,7 +103,7 @@ public class PMBlocks{
     //Missiles
     strikedown, trinity,
 
-    //Apotheosis
+    //Nexus
     nexus,
 
     // endregion
@@ -1199,6 +1200,28 @@ public class PMBlocks{
 
             coolant = consumeCoolant(0.2f);
         }};
+
+        nexus = new NexusTurret("nexus") {{
+            requirements(Category.turret, with());
+            size = 6;
+
+            drawer = new DrawTurret(){{
+                parts.add(new PillarPart(){{
+                    alphaProg = PartProgress.constant(1f);
+                }});
+            }};
+
+            linearWarmup = true;
+            minWarmup = 1f;
+
+            reload = 30f;
+            range = 100f * 8f;
+
+            shootType = new OribitalStrikeBulletType(){{
+                splashDamage = 2000f;
+                splashDamageRadius = 32f;
+            }};
+        }};
         // endregion
 
         // region Production
@@ -1673,7 +1696,7 @@ public class PMBlocks{
         }};
 
         testTurret = new PowerTurret("test-turret"){{
-            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
+            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             size = 2;
             health = ProgMats.sandboxBlockHealth;
             range = 69 * tilesize;
@@ -1726,14 +1749,14 @@ public class PMBlocks{
 
         /// Unit
         godFactory = new UnitFactory("god-factory"){{
-            requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
+            requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             alwaysUnlocked = true;
             hasItems = false;
 
             size = 3;
             health = ProgMats.sandboxBlockHealth;
             plans = Seq.with(
-                new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
+                new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, with())
             );
 
             consumePower(1f);
@@ -1744,7 +1767,7 @@ public class PMBlocks{
         }};
 
         harmacist = new EffectZone("harmacist"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, empty);
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
             alwaysUnlocked = true;
 
             size = 2;

@@ -8,12 +8,13 @@ import mindustry.graphics.*;
 import progressed.graphics.*;
 
 public class OribitalStrikeBulletType extends BulletType{
-    public float height, radius, growTime;
+    public float height = 1f, radius = 16f, growTime = 0.5f;
     public Color bottomColor = Pal.lancerLaser, topColor;
 
     public OribitalStrikeBulletType(){
         speed = 0f;
-        lifetime = 120f;
+        lifetime = 30f;
+        layer = Layer.flyingUnit + 0.5f;
         collides = false;
         keepVelocity = false;
         backMove = false;
@@ -38,6 +39,6 @@ public class OribitalStrikeBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Draw3D.cylinder(b.x, b.y, radius * Mathf.clamp(b.fin() * 2f, 0f, 1f), height, bottomColor, topColor);
+        Draw3D.cylinder(b.x, b.y, radius * Mathf.curve(b.fin(), 0f, growTime), height, bottomColor, topColor);
     }
 }

@@ -15,7 +15,7 @@ public class PillarPart extends DrawPart{
     public PartProgress radProg = PartProgress.warmup;
     /** Progress function for determining alpha. */
     public PartProgress alphaProg = PartProgress.warmup;
-    public float x, y, rad, height;
+    public float x, y, rad = 16f, height = 1f;
     public float layer = Layer.flyingUnit + 0.5f;
     public Color bottomColor = Pal.lancerLaser, topColor;
 
