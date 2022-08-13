@@ -32,5 +32,15 @@ public class NexusTurret extends PowerTurret{
                 targetPos.set(pos);
             }
         }
+
+        @Override
+        protected void turnToTarget(float targetRot){
+            rotation = targetRot;
+        }
+
+        @Override
+        public float drawrot(){
+            return -90f;
+        }
     }
 }

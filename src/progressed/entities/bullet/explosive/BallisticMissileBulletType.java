@@ -249,8 +249,8 @@ public class BallisticMissileBulletType extends BasicBulletType{
 
             //Missile
             if(fadeOut > 0 && fadeIn == 0){
-                float rX = Draw3D.xHeight(x, rise * elevation),
-                    rY = Draw3D.yHeight(y, rise * elevation),
+                float rX = DrawPsudo3D.xHeight(x, rise * elevation),
+                    rY = DrawPsudo3D.yHeight(y, rise * elevation),
                     scl = 1f + (growScl - 1f) * rise;
                 Draw.scl(scl);
                 //Engine stolen from launchpad
@@ -265,8 +265,8 @@ public class BallisticMissileBulletType extends BasicBulletType{
                 Draw.z(Layer.flyingUnit + 1f);
                 drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, fadeOut);
             }else if(fadeOut == 0f && fadeIn > 0f){
-                float fX = Draw3D.xHeight(b.x, fall * elevation),
-                    fY = Draw3D.yHeight(b.y, fall * elevation),
+                float fX = DrawPsudo3D.xHeight(b.x, fall * elevation),
+                    fY = DrawPsudo3D.yHeight(b.y, fall * elevation),
                     rot2 = rot + (randRot ? Mathf.randomSeed(b.id + 1, 360f) : 0f),
                     scl = growScl - (growScl - 1f) * fadeIn;
                 Draw.scl(scl);

@@ -103,7 +103,7 @@ public class RiftBulletType extends SweepLaserBulletType{
             if(fout < 1){
                 Tmp.c1.set(color).a(color.a * fout);
                 Tmp.c2.set(topColor).a(topColor.a * fout);
-                Draw3D.wall(
+                DrawPsudo3D.wall(
                     Tmp.v1.x, Tmp.v1.y,
                     Tmp.v2.x, Tmp.v2.y,
                     riftHeight,

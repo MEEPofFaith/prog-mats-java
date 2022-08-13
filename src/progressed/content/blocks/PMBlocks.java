@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.Interp.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -101,7 +102,7 @@ public class PMBlocks{
     sergeant, arbalest,
 
     //Missiles
-    strikedown, trinity,
+    strikedown, trinity, //New names: Artemis, Paragon
 
     //Nexus
     nexus,
@@ -1201,20 +1202,33 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        nexus = new NexusTurret("nexus") {{
+        nexus = new NexusTurret("nexus"){{
             requirements(Category.turret, with());
             size = 6;
 
-            drawer = new DrawTurret(){{
-                parts.add(new PillarPart(){{
-                    alphaProg = PartProgress.constant(1f);
-                }});
+            drawer = new DrawTurret(/*"reinforced-"*/){{
+                Interp swing = new SwingOut(4f);
+                parts.addAll(
+                    new PillarPart(){{
+                        radProg = PartProgress.warmup.curve(swing).inv().add(1f);
+                        alphaProg = PartProgress.warmup;
+                        heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    }},
+                    new RingPart(){{
+                        height = 0.5f;
+                        //colorTo = colorFrom.cpy().a(0.5f);
+                        radProg = PartProgress.warmup.delay(0.5f).curve(swing).inv().add(1f);
+                        alphaProg = PartProgress.warmup.delay(0.5f).clamp();
+                        //heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    }}
+                );
             }};
 
             linearWarmup = true;
             minWarmup = 1f;
+            shootWarmupSpeed = 1f / (1.5f * 60f);
 
-            reload = 30f;
+            reload = 15f;
             range = 100f * 8f;
 
             shootType = new OribitalStrikeBulletType(){{

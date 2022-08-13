@@ -8,7 +8,7 @@ import arc.util.*;
 import static arc.Core.*;
 import static arc.math.Mathf.*;
 
-public class Draw3D{
+public class DrawPsudo3D{
     /**
      * @author sunny, modified by MEEP
      * */
@@ -31,10 +31,10 @@ public class Draw3D{
         wall(x1, y1, x2, y2, 0f, height, baseColor, topColor);
     }
 
-    public static void ring(float x, float y, float rad, float height, Color baseColor, Color topColor){
+    public static void tube(float x, float y, float rad, float height, Color baseColor, Color topColor){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = startAngle(x, y, rad, height);
+        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * (1f + height));
 
         float c1f = baseColor.toFloatBits();
         float c2f = topColor.toFloatBits();
@@ -63,11 +63,47 @@ public class Draw3D{
         Fill.poly(x, y, vert, rad);
         Draw.color();
 
-        ring(x, y, rad, height, baseColor, topColor);
+        tube(x, y, rad, height, baseColor, topColor);
 
         Draw.color(topColor);
         Fill.poly(xHeight(x, height), yHeight(y, height), vert, rad * (1 + height));
         Draw.color();
+    }
+
+    public static void ring(float x, float y, float baseRad, float rad, float outRad, float height, Color inColor, Color outColor){
+        if(rad < baseRad) return;
+
+        int vert = Lines.circleVertices(rad);
+        float space = 360f / vert;
+        float angle = 90f * baseRad / rad,
+            angleFrom = Angles.angle(camera.position.x, camera.position.y, x, y);
+
+        float c1f = inColor.toFloatBits();
+        float c2f = outColor.toFloatBits();
+
+        for(int i = 0; i < vert; i++){
+            float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
+
+            float x1 = xHeight(x + rad * cos, height),
+                y1 = yHeight(y + rad * sin, height),
+                x2 = xHeight(x + rad * cos2, height),
+                y2 = yHeight(y + rad * sin2, height),
+                x3 = xHeight(x + outRad * cos, height),
+                y3 = yHeight(y + outRad * sin, height),
+                x4 = xHeight(x + outRad * cos2, height),
+                y4 = yHeight(y + outRad * sin2, height);
+
+            float z = Draw.z();
+            if(Angles.within(angleFrom, a, Angles.angleDist(angleFrom + 180, angle + space))){
+                Draw.z(z - 0.01f);
+            }else{
+                Draw.z(z + 0.01f);
+            }
+
+            Fill.quad(x1, y1, c1f, x2, y2, c1f, x4, y4, c2f, x3, y3, c2f);
+
+            Draw.z(z);
+        }
     }
 
     public static float xHeight(float x, float height){
@@ -92,13 +128,11 @@ public class Draw3D{
      * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
      * @author Xelo
      */
-    static float startAngle(float x, float y, float rad, float height){
-        float x2 = xHeight(x, height), y2 = yHeight(y, height), rad2 = rad * (1f + height);
-
-        float d = dst(x2 - x,y2 - y);
-        float f = sqrt(d * d - sqr(rad2 - rad));
-        float a = rad > rad2 ? atan2(rad - rad2, f) : (rad < rad2 ? pi - atan2(rad2 - rad, f) : halfPi);
-        Tmp.v1.set(x2 - x, y2 - y).scl(1f / d); //normal
+    static float tubeStartAngle(float x1, float y1, float x2, float y2, float rad1, float rad2){
+        float d = dst(x2 - x1,y2 - y1);
+        float f = sqrt(d * d - sqr(rad2 - rad1));
+        float a = rad1 > rad2 ? atan2(rad1 - rad2, f) : (rad1 < rad2 ? pi - atan2(rad2 - rad1, f) : halfPi);
+        Tmp.v1.set(x2 - x1, y2 - y1).scl(1f / d); //normal
         Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-rad2).add(x2, y2); //tangent
 
         return Angles.angle(x2, y2, Tmp.v2.x, Tmp.v2.y);

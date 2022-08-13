@@ -12,7 +12,7 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.DrawPsudo3D.*;
 import static progressed.util.PMUtls.*;
 
 public class MissileFx{
