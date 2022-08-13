@@ -1208,20 +1208,30 @@ public class PMBlocks{
 
             drawer = new DrawTurret(/*"reinforced-"*/){{
                 Interp swing = new SwingOut(4f);
-                parts.addAll(
-                    new PillarPart(){{
-                        radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                        alphaProg = PartProgress.warmup;
-                        heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                    }},
-                    new RingPart(){{
-                        height = 0.5f;
+                parts.add(new PillarPart(){{
+                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
+                    alphaProg = PartProgress.warmup;
+                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                }});
+
+                for(float i = 0; i < 3; i++){
+                    float scl = 2f - i * 0.5f;
+                    float del = i * 0.1f;
+                    float ii = i;
+                    parts.add(new RingPart(){{
+                        height = (ii + 1) * 0.25f;
+                        inRad = 12f * scl;
+                        outRad = 20f * scl;
                         //colorTo = colorFrom.cpy().a(0.5f);
-                        radProg = PartProgress.warmup.delay(0.5f).curve(swing).inv().add(1f);
-                        alphaProg = PartProgress.warmup.delay(0.5f).clamp();
+                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
+                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
+                        //Uncomment this in the next build if my PR is merged.
+                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
+                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
+
                         //heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                    }}
-                );
+                    }});
+                }
             }};
 
             linearWarmup = true;

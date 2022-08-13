@@ -129,6 +129,8 @@ public class DrawPsudo3D{
      * @author Xelo
      */
     static float tubeStartAngle(float x1, float y1, float x2, float y2, float rad1, float rad2){
+        if(x1 == x2 && y1 == y2) return 0f;
+
         float d = dst(x2 - x1,y2 - y1);
         float f = sqrt(d * d - sqr(rad2 - rad1));
         float a = rad1 > rad2 ? atan2(rad1 - rad2, f) : (rad1 < rad2 ? pi - atan2(rad2 - rad1, f) : halfPi);
