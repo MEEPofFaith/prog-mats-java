@@ -1206,6 +1206,11 @@ public class PMBlocks{
             requirements(Category.turret, with());
             size = 6;
 
+            ammo(Items.phaseFabric, new OribitalStrikeBulletType(){{
+                splashDamage = 2000f;
+                splashDamageRadius = 32f;
+            }});
+
             drawer = new DrawTurret(/*"reinforced-"*/){{
                 Interp swing = new SwingOut(4f);
                 parts.add(new PillarPart(){{
@@ -1241,10 +1246,9 @@ public class PMBlocks{
             reload = 15f;
             range = 100f * 8f;
 
-            shootType = new OribitalStrikeBulletType(){{
-                splashDamage = 2000f;
-                splashDamageRadius = 32f;
-            }};
+            heatRequirement = 150f;
+            maxHeatEfficiency = 1f;
+            consumePower(20f);
         }};
         // endregion
 

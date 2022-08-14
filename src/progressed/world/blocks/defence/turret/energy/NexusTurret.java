@@ -6,7 +6,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 
-public class NexusTurret extends PowerTurret{
+public class NexusTurret extends ItemTurret{
     public NexusTurret(String name){
         super(name);
 
@@ -14,7 +14,7 @@ public class NexusTurret extends PowerTurret{
         recoil = 0f;
     }
 
-    public class NexusTurretBuild extends PowerTurretBuild{
+    public class NexusTurretBuild extends ItemTurretBuild{
         @Override
         public void targetPosition(Posc pos){
             if(!hasAmmo() || pos == null) return;
