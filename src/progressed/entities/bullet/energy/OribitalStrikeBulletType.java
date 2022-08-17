@@ -9,7 +9,7 @@ import progressed.graphics.*;
 
 public class OribitalStrikeBulletType extends BulletType{
     public float height = 1f, radius = 8f, growTime = 0.5f;
-    public Color bottomColor = Pal.lancerLaser, topColor;
+    public Color bottomColor = PMPal.nexusLaserDark, topColor = PMPal.nexusLaser.cpy().a(0);
 
     public OribitalStrikeBulletType(){
         speed = 0f;

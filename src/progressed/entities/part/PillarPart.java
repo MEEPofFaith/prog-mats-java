@@ -16,7 +16,7 @@ public class PillarPart extends DrawPart{
     public PartProgress alphaProg = PartProgress.warmup;
     public float rad = 8f, height = 1f;
     public float layer = Layer.flyingUnit + 0.5f;
-    public Color colorFrom = Pal.lancerLaser, colorTo;
+    public Color colorFrom = PMPal.nexusLaserDark, colorTo = PMPal.nexusLaser.cpy().a(0);
 
     @Override
     public void draw(PartParams params){

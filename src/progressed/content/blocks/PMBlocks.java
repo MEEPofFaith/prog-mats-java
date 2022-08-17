@@ -105,7 +105,7 @@ public class PMBlocks{
     strikedown, trinity, //New names: Artemis, Paragon
 
     //Nexus
-    nexus,
+    ravage, onslaught,
 
     // endregion
     // region production
@@ -1202,7 +1202,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        nexus = new NexusTurret("nexus"){{
+        ravage = new NexusTurret("ravage"){{
             requirements(Category.turret, with());
             size = 6;
 
@@ -1233,8 +1233,59 @@ public class PMBlocks{
                         //Uncomment this in the next build if my PR is merged.
                         //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
                         //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
+                    }});
+                }
+            }};
 
-                        //heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (1.5f * 60f);
+
+            reload = 15f;
+            range = 100f * 8f;
+
+            heatRequirement = 150f;
+            maxHeatEfficiency = 1f;
+            consumePower(20f);
+        }};
+
+        onslaught = new NexusTurret("onslaught"){{
+            requirements(Category.turret, with());
+            size = 6;
+
+            //TODO Make OrbitalStrikeRainBulletType
+            ammo(Items.phaseFabric, new OribitalStrikeBulletType(){{
+                bottomColor = Pal.surge;
+                topColor = null;
+                splashDamage = 2000f;
+                splashDamageRadius = 32f;
+            }});
+
+            drawer = new DrawTurret(/*"reinforced-"*/){{
+                Interp swing = new SwingOut(4f);
+                parts.add(new PillarPart(){{
+                    colorFrom = Pal.surge;
+                    colorTo = null;
+                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
+                    alphaProg = PartProgress.warmup;
+                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                }});
+
+                for(float i = 0; i < 3; i++){
+                    float scl = 2f - i * 0.5f;
+                    float del = i * 0.1f;
+                    float ii = i;
+                    parts.add(new RingPart(){{
+                        colorFrom = Pal.surge;
+                        colorTo = null;
+                        height = (ii + 1) * 0.25f;
+                        inRad = 12f * scl;
+                        outRad = 20f * scl;
+                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
+                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
+                        //Uncomment this in the next build if my PR is merged.
+                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
+                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
                     }});
                 }
             }};
