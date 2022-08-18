@@ -23,6 +23,10 @@ public class PayloadBullets{
 
     arbalestBasic, arbalestIncend, arbalestBomber;
 
+    public static NewMissileBulletType
+    artimisBasic;
+
+    //TODO Remove when done with new bullets
     public static BallisticMissileBulletType
     strikedownBasic, strikedownRecursive,
     trinityBasic, trinityCluster,
@@ -158,6 +162,18 @@ public class PayloadBullets{
                 Damage.damage(b.team, b.x, b.y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
             }
         };
+
+        artimisBasic = new NewMissileBulletType(2f, "prog-mats-basic-missile"){{
+            splashDamage = 750f;
+            splashDamageRadius = 64f;
+            homingPower = 0.05f;
+            homingRange = 330f;
+            lifetime = 360f;
+            hitSound = Sounds.explosionbig;
+            hitShake = 5f;
+
+            targetColor = PMPal.missileBasic;
+        }};
 
         float trinitySize = 1f,
             strikedownRnd = 1.5f,

@@ -101,7 +101,10 @@ public class PMBlocks{
     //Payload
     sergeant, arbalest,
 
-    //Missiles
+    //Missile
+    artimis, paragon,
+
+    //Missiles TODO: Remove
     strikedown, trinity, //New names: Artemis, Paragon
 
     //Nexus
@@ -1143,6 +1146,33 @@ public class PMBlocks{
             doorLength = 116f / 4f;
             rotOffset = 90f;
 
+            unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
+        }};
+
+        artimis = new PayloadAmmoTurret("artimis"){{
+            requirements(Category.turret, with(
+                Items.copper, 70,
+                Items.lead, 350,
+                Items.graphite, 300,
+                Items.silicon, 300,
+                Items.titanium, 250,
+                PMItems.tenelium, 120
+            ));
+            ammo(
+                basicMissile, PayloadBullets.artimisBasic
+            );
+            size = 5;
+            hideDetails = false;
+            scaledHealth = 160;
+            maxAmmo = 1;
+            reload = 60f;
+            range = 656f;
+            shootSound = Sounds.artillery;
+            cooldownTime = 8f * 60f;
+            shake = 5f;
+            inaccuracy = 5f;
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);

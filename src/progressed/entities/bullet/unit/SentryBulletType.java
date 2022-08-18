@@ -1,6 +1,7 @@
 package progressed.entities.bullet.unit;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -8,11 +9,10 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class SentryBulletType extends BulletType{
-    public UnitType unit;
-
     public SentryBulletType(UnitType unit){
         super(10f, 0f);
-        this.unit = unit;
+        despawnUnit = unit;
+        despawnUnitRadius = 0f;
 
         lifetime = 35f;
         collidesGround = collidesAir = collidesTiles = collides = false;
@@ -26,15 +26,17 @@ public class SentryBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Draw.rect(unit.fullIcon, b.x, b.y, b.rotation() - 90f);
+        Draw.rect(despawnUnit.fullIcon, b.x, b.y, b.rotation() - 90f);
     }
 
     @Override
-    public void despawned(Bullet b){
-        Unit spawned = unit.spawn(b.team, b);
-        spawned.rotation = b.rotation();
-        spawned.vel.add(b.vel);
-
-        super.despawned(b);
+    public void createUnits(Bullet b, float x, float y){
+        if(despawnUnit != null){
+            for(int i = 0; i < despawnUnitCount; i++){
+                Unit u = despawnUnit.spawn(b.team, x + Mathf.range(despawnUnitRadius), y + Mathf.range(despawnUnitRadius));
+                u.rotation(b.rotation());
+                u.vel.add(b.vel());
+            }
+        }
     }
 }

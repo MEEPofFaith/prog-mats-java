@@ -22,6 +22,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class BallisticProjector extends ForceProjector{
+    public static float maxShieldRange = 0;
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
     public Effect chargeEffect = OtherFx.squareShieldRecharge;
     public Color lerpColor = Color.gray;
@@ -68,6 +69,7 @@ public class BallisticProjector extends ForceProjector{
     @Override
     public void init(){
         clipSize = Math.max(clipSize, PMMathf.cornerDst(radius + phaseRadiusBoost + 3f) * 2f);
+        maxShieldRange = Math.max(maxShieldRange, PMMathf.cornerDst(radius + phaseRadiusBoost + 3f) * 2f);
 
         super.init();
     }

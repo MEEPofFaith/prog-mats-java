@@ -200,13 +200,13 @@ public class PMStatValues{
                             }
                         }
 
-                        if(type instanceof SentryBulletType stype){
+                        if(type instanceof SentryBulletType){
                             bt.row();
                             bt.table(ut -> {
                                 ut.add("@bullet.pm-sentry-spawn");
-                                ut.image(icon(stype.unit)).size(3 * 8);
-                                ut.add("[lightgray]" + stype.unit.localizedName).padLeft(6);
-                                infoButton(ut, stype.unit, 4 * 8).padLeft(6);
+                                ut.image(icon(type.despawnUnit)).size(3 * 8);
+                                ut.add("[lightgray]" + type.despawnUnit.localizedName).padLeft(6);
+                                infoButton(ut, type.despawnUnit, 4 * 8).padLeft(6);
                             });
                         }
 
