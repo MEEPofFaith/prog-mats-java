@@ -31,7 +31,6 @@ import static mindustry.Vars.*;
 
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
-    public static ModuleInfoDialog moduleInfoDialog;
     public static Seq<BulletData> allBullets = new Seq<>();
     public static int sandboxBlockHealth = 1000000;
 
@@ -89,7 +88,6 @@ public class ProgMats extends Mod{
                 }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
-                moduleInfoDialog = new ModuleInfoDialog();
 
                 if(farting()){
                     content.blocks().each(b -> b.destroySound = Sounds.wind3);

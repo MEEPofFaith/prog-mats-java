@@ -1470,48 +1470,34 @@ public class PMBlocks{
             );
         }};
 
-        moduleAssembler = new PayloadCrafter("module-assembler"){{
-            requirements(Category.crafting, with(
-                Items.copper, 220,
-                Items.lead, 250,
-                Items.silicon, 100
-            ));
-            size = 3;
+        if(false){
+            moduleAssembler = new PayloadCrafter("module-assembler"){{
+                requirements(Category.crafting, with(
+                    Items.copper, 220,
+                    Items.lead, 250,
+                    Items.silicon, 100
+                ));
+                size = 3;
 
-            recipes(
-                new Recipe(shrapnel, 3f, 1.5f * 60f),
-                new Recipe(froth, 2.5f, 1.5f * 60f),
-                new Recipe(bifurcation, 3f, 1.5f * 60f),
-                new Recipe(iris, 4f, 2.5f * 60f),
-                new Recipe(bandage, 2f, 60f),
-                new Recipe(overclocker, 3.5f, 2f * 60f),
-                new Recipe(blunderbuss, shrapnel, 7f, 7f * 60f),
-                new Recipe(vulcan, 7.5f, 11.5f * 60f),
-                new Recipe(lotus, iris, 8f, 9f * 60f),
-                new Recipe(ambrosia, 6f, 8f * 60f)
-            );
-        }};
+                recipes(
+                    new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
+                );
+            }};
 
-        moduleFoundry = new PayloadCrafter("module-foundry"){{
-            requirements(Category.crafting, with(
-                Items.lead, 540,
-                Items.silicon, 430,
-                PMItems.tenelium, 300,
-                Items.plastanium, 240
-            ));
-            size = 5;
+            moduleFoundry = new PayloadCrafter("module-foundry"){{
+                requirements(Category.crafting, with(
+                    Items.lead, 540,
+                    Items.silicon, 430,
+                    PMItems.tenelium, 300,
+                    Items.plastanium, 240
+                ));
+                size = 5;
 
-            recipes(
-                new Recipe(pinpoint, 4f, 5f * 60f),
-                new Recipe(airburst, 7.5f, 12.5f * 60f),
-                new Recipe(vigilance, 6.5f, 9f * 60f),
-                new Recipe(gravity, 6.5f, 8.5f * 60f),
-                new Recipe(rebound, 10f, 17f * 60f),
-                new Recipe(trifecta, airburst, 12f, 16f * 60f),
-                new Recipe(jupiter, iris, 14f, 21.5f * 60f),
-                new Recipe(ares, vulcan, 14.5f, 24.5f * 60f)
-            );
-        }};
+                recipes(
+                    new Recipe(Blocks.duo, 4f, 5f * 60f) //Placeholder
+                );
+            }};
+        }
 
         shellPress = new PayloadCrafter("shell-press"){{
             requirements(Category.crafting, with(
