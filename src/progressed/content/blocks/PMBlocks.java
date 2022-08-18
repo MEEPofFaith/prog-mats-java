@@ -1168,6 +1168,7 @@ public class PMBlocks{
             maxAmmo = 1;
             reload = 60f;
             range = 656f;
+            shootY = 0f;
             shootSound = Sounds.artillery;
             cooldownTime = 8f * 60f;
             shake = 5f;

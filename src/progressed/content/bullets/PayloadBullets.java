@@ -163,7 +163,7 @@ public class PayloadBullets{
             }
         };
 
-        artimisBasic = new NewMissileBulletType(2f, "prog-mats-basic-missile"){{
+        artimisBasic = new NewMissileBulletType(3.5f, "prog-mats-basic-missile"){{
             lifetime = 656f; //artimis range
             splashDamage = 750f;
             splashDamageRadius = 64f;

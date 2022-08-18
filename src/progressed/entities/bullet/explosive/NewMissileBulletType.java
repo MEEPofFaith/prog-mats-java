@@ -21,7 +21,7 @@ import progressed.world.blocks.defence.BallisticProjector.*;
 
 //TODO Set to proper name later
 public class NewMissileBulletType extends BulletType{
-    public float height = 0.5f;
+    public float height = 0.15f;
     public float targetRadius = 1f;
     public float shadowOffset = 18f;
     public Color targetColor = Color.red;
