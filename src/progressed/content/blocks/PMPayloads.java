@@ -117,8 +117,6 @@ public class PMPayloads{
             constructTime = 60f * 8f;
 
             explosionArea = -1f;
-            explosion = ((BallisticMissileBulletType)(((PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
-            explosions = 13;
             maxDelay = 20f;
         }};
 
@@ -156,9 +154,6 @@ public class PMPayloads{
             constructTime = 60f * 35f;
 
             explosionArea = -1f;
-            BallisticMissileBulletType b = PayloadBullets.trinityCluster;
-            explosion = b.splitBullet;
-            explosions = b.splitBullets;
             maxDelay = 20f;
         }};
 
@@ -169,9 +164,6 @@ public class PMPayloads{
             size = 3;
 
             explosionArea = -1f;
-            BallisticMissileBulletType b = PayloadBullets.ohno;
-            explosion = b.splitBullet;
-            explosions = b.splitBullets;
             maxDelay = 20f;
         }};
 

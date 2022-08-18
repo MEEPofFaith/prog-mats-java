@@ -4,7 +4,6 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.Interp.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -28,16 +27,12 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.part.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.modular.*;
-import progressed.world.blocks.defence.turret.modular.ModularTurret.ModuleGroup.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
@@ -94,20 +89,8 @@ public class PMBlocks{
     //Misc
     blackhole, excalibur,
 
-    //Modular
-    council, congress, pantheon,
-
     //Payload
-    sergeant, arbalest,
-
-    //Missile
-    artimis, paragon,
-
-    //Missiles TODO: Remove
-    strikedown, trinity, //New names: Artemis, Paragon
-
-    //Nexus
-    ravage, onslaught,
+    sergeant, arbalest, artimis,
 
     // endregion
     // region production
@@ -130,7 +113,7 @@ public class PMBlocks{
     mindronCollider, pyroclastForge,
 
     //Payloads
-    moduleAssembler, moduleFoundry, shellPress, missileFactory, sentryBuilder,
+    shellPress, missileFactory, sentryBuilder,
 
     // endregion
     // region defence
@@ -1026,60 +1009,6 @@ public class PMBlocks{
             }};
         }};
 
-        council = new ModularTurret("council"){{
-            requirements(Category.turret, with(
-                Items.copper, 200,
-                Items.lead, 170,
-                Items.graphite, 150,
-                Items.titanium, 120
-            ));
-            size = 5;
-            hideDetails = false;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 12f, 4f),
-                new ModuleGroup(ModuleSize.medium)
-            };
-        }};
-
-        congress = new ModularTurret("congress"){{
-            requirements(Category.turret, with(
-                Items.copper, 630,
-                Items.lead, 540,
-                Items.plastanium, 360,
-                PMItems.tenelium, 210
-            ));
-            size = 7;
-            hideDetails = false;
-            payloadSpeed = 0.9f;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
-                new ModuleGroup(ModuleSize.large)
-            };
-        }};
-
-        pantheon = new ModularTurret("pantheon"){{
-            requirements(Category.turret, with(
-                Items.copper, 1340,
-                Items.lead, 1270,
-                PMItems.tenelium, 980,
-                Items.surgeAlloy, 630
-            ));
-            size = 9;
-            hideDetails = false;
-            payloadSpeed = 1.2f;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 23f),
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 15f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 19f, 19f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.single, 0f, 0f),
-                new ModuleGroup(ModuleSize.large, ModuleGroupType.quad, 0f, 65f / 4f)
-            };
-        }};
-
         sergeant = new PayloadLaunchTurret("tinker"){
             {
                 requirements(Category.turret, with(
@@ -1174,162 +1103,6 @@ public class PMBlocks{
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
-        }};
-
-        strikedown = new PayloadMissileTurret("strikedown"){{
-            requirements(Category.turret, with(
-                Items.copper, 70,
-                Items.lead, 350,
-                Items.graphite, 300,
-                Items.silicon, 300,
-                Items.titanium, 250,
-                PMItems.tenelium, 120
-            ));
-            ammo(
-                basicMissile, PayloadBullets.strikedownBasic,
-                recursiveMissile, PayloadBullets.strikedownRecursive
-            );
-            size = 4;
-            hideDetails = false;
-            scaledHealth = 160;
-            reload = 60f;
-            range = 656f;
-            shootSound = Sounds.artillery;
-            cooldown = 0.01f;
-            shake = 5f;
-            inaccuracy = 5f;
-            unitSort = UnitSorts.strongest;
-
-            coolant = consumeCoolant(0.2f);
-        }};
-
-        trinity = new PayloadMissileTurret("arbiter"){{
-            requirements(Category.turret, with(
-                Items.copper, 4000,
-                Items.graphite, 2200,
-                Items.silicon, 2000,
-                Items.titanium, 1300,
-                Items.thorium, 650,
-                Items.surgeAlloy, 200,
-                PMItems.tenelium, 800
-            ));
-            ammo(
-                basicNuke, PayloadBullets.trinityBasic,
-                clusterNuke, PayloadBullets.trinityCluster,
-                sandboxNuke, PayloadBullets.ohno
-            );
-            size = 7;
-            hideDetails = false;
-            scaledHealth = 170;
-            range = 2800f;
-            shootSound = Sounds.explosionbig;
-            cooldown = 0.005f;
-            shake = 10f;
-            unitSort = UnitSorts.strongest;
-
-            coolant = consumeCoolant(0.2f);
-        }};
-
-        ravage = new NexusTurret("ravage"){{
-            requirements(Category.turret, with());
-            size = 6;
-
-            float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
-                speed = brange;
-                splashDamage = 2000f;
-                splashDamageRadius = 32f;
-            }});
-
-            drawer = new DrawTurret(/*"reinforced-"*/){{
-                Interp swing = new SwingOut(4f);
-                parts.add(new PillarPart(){{
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                }});
-
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        //colorTo = colorFrom.cpy().a(0.5f);
-                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
-                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
-                        //Uncomment this in the next build if my PR is merged.
-                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
-                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
-                    }});
-                }
-            }};
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
-
-            reload = 15f;
-
-            heatRequirement = 150f;
-            maxHeatEfficiency = 1f;
-            consumePower(20f);
-        }};
-
-        onslaught = new NexusTurret("onslaught"){{
-            requirements(Category.turret, with());
-            size = 6;
-
-            //TODO Make OrbitalStrikeRainBulletType
-            float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
-                speed = brange;
-                bottomColor = Pal.surge;
-                topColor = null;
-                splashDamage = 2000f;
-                splashDamageRadius = 32f;
-            }});
-
-            drawer = new DrawTurret(/*"reinforced-"*/){{
-                Interp swing = new SwingOut(4f);
-                parts.add(new PillarPart(){{
-                    colorFrom = Pal.surge;
-                    colorTo = null;
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                }});
-
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        colorFrom = Pal.surge;
-                        colorTo = null;
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
-                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
-                        //Uncomment this in the next build if my PR is merged.
-                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
-                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
-                    }});
-                }
-            }};
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
-
-            reload = 15f;
-
-            heatRequirement = 150f;
-            maxHeatEfficiency = 1f;
-            consumePower(20f);
         }};
         // endregion
 
@@ -1468,35 +1241,6 @@ public class PMBlocks{
                 Items.metaglass, 6
             );
         }};
-
-        if(false){
-            moduleAssembler = new PayloadCrafter("module-assembler"){{
-                requirements(Category.crafting, with(
-                    Items.copper, 220,
-                    Items.lead, 250,
-                    Items.silicon, 100
-                ));
-                size = 3;
-
-                recipes(
-                    new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
-                );
-            }};
-
-            moduleFoundry = new PayloadCrafter("module-foundry"){{
-                requirements(Category.crafting, with(
-                    Items.lead, 540,
-                    Items.silicon, 430,
-                    PMItems.tenelium, 300,
-                    Items.plastanium, 240
-                ));
-                size = 5;
-
-                recipes(
-                    new Recipe(Blocks.duo, 4f, 5f * 60f) //Placeholder
-                );
-            }};
-        }
 
         shellPress = new PayloadCrafter("shell-press"){{
             requirements(Category.crafting, with(
@@ -1886,6 +1630,8 @@ public class PMBlocks{
         infiniMender = new InfiniMendProjector("infini-mender");
         infiniOverdrive = new InfiniOverdriveProjector("infini-overdrive");
         // endregion
+
+        PMErekirBlocks.load();
     }
 }
 

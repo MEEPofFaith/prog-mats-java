@@ -135,39 +135,7 @@ public class PMUnitTypes{
             health = 300f;
             duration = 32f * 60f;
 
-            weapons.add(new Weapon(){{
-                rotate = mirror = alternate = top = false;
-                x = y = recoil = shootY = 0f;
-                reload = 40f;
-                shootCone = 360f;
-                inaccuracy = 15f;
-                shootSound = Sounds.missile;
-
-                bullet = new BallisticMissileBulletType(2.4f, 23f, "prog-mats-storm-missile"){{
-                    lifetime = 90f;
-
-                    splashDamage = 125f;
-                    splashDamageRadius = 42f;
-                    homingPower = 0.035f;
-                    homingRange = 200f;
-
-                    hitSound = Sounds.bang;
-                    hitShake = 1.5f;
-
-                    targetColor = PMPal.missileBasic;
-
-                    despawnEffect = MissileFx.smallBoom;
-                    blockEffect = MissileFx.missileBlockedSmall;
-
-                    autoDropRadius = 12f;
-                    stopRadius = 8f;
-
-                    thrusterRadius = 5f;
-
-                    trailSize = 0.125f;
-                    targetRadius = 0.5f;
-                }};
-            }}, new RocketWeapon(name + "-rocket"){{
+            weapons.add(new RocketWeapon(name + "-rocket"){{
                 x = 18f / 4f;
                 y = 0f;
                 mirror = true;
@@ -177,10 +145,10 @@ public class PMUnitTypes{
                 shootSound = Sounds.missile;
                 layerOffset = -0.05f;
 
-                bullet = new RocketBulletType(4.5f, 36f, name){{
+                bullet = new RocketBulletType(4.5f, 48f, name){{
                     lifetime = 60f;
                     backSpeed = 0.25f;
-                    splashDamage = 200f;
+                    splashDamage = 260f;
                     splashDamageRadius = 18f;
                     thrusterOffset = 15f / 4f;
                     thrusterSize = 0.75f;

@@ -19,7 +19,7 @@ import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.BallisticProjector.*;
 
 //TODO Set to proper name later
-public class NewMissileBulletType extends BulletType{
+public class BallisticMissleBulletType extends BulletType{
     public float height = 0.15f;
     public float targetRadius = 1f;
     public float shadowOffset = 18f;
@@ -30,7 +30,7 @@ public class NewMissileBulletType extends BulletType{
 
     public TextureRegion region;
 
-    public NewMissileBulletType(float speed, String sprite){
+    public BallisticMissleBulletType(float speed, String sprite){
         super(speed, 0f);
         this.sprite = sprite;
 
@@ -77,7 +77,7 @@ public class NewMissileBulletType extends BulletType{
     public void update(Bullet b){
         super.update(b);
 
-        if(fragBullet instanceof NewMissileBulletType && b.fin() >= 0.5f){
+        if(fragBullet instanceof BallisticMissleBulletType && b.fin() >= 0.5f){
             b.remove();
             b.data = true;
         }
@@ -139,7 +139,7 @@ public class NewMissileBulletType extends BulletType{
 
     @Override
     public void createFrags(Bullet b, float x, float y){
-        if(fragBullet instanceof NewMissileBulletType){
+        if(fragBullet instanceof BallisticMissleBulletType){
             for(int i = 0; i < fragBullets; i++){
                 Tmp.v1.setToRandomDirection().setLength(fragSpread * Mathf.sqrt(Mathf.random())).add(b.aimX, b.aimY);
                 fragBullet.create(b, b.team, x, y, b.rotation(), -1f, 1f, 1f, new float[]{b.x, b.y, 1f}, null, Tmp.v1.x, Tmp.v1.y);

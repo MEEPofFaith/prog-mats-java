@@ -124,7 +124,7 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
-                        if(type.displayAmmoMultiplier && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret) && !(t instanceof PayloadMissileTurret)){
+                        if(type.displayAmmoMultiplier && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
                             sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 
@@ -230,13 +230,6 @@ public class PMStatValues{
                             if(stype.tStatus != StatusEffects.none){
                                 sep(bt, (stype.tStatus.minfo.mod == null ? stype.tStatus.emoji() : "") + "[stat]" + stype.tStatus.localizedName).padLeft(8f);
                             }
-                        }
-
-                        if(type instanceof BallisticMissileBulletType stype && stype.splitBullet != null){
-                            sep(bt, bundle.format("bullet.pm-splits", stype.splitBullets));
-                            bt.row();
-
-                            ammo(ObjectMap.of(t, stype.splitBullet), indent + 1).display(bt);
                         }
 
                         if(type instanceof RocketBulletType stype && stype.bombBullet != null){

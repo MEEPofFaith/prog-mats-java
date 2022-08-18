@@ -65,17 +65,6 @@ public class PMTechTree{
         });
 
         vanillaNode(ripple, () -> {
-            //Missile Launchers
-            node(strikedown, combineCosts(strikedown, emptyMissile, basicMissile), Seq.with(
-                new SectorComplete(SectorPresets.impact0078),
-                new Research(launchPad),
-                new Research(arbalest)
-            ), () -> {
-                node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
-                    new Research(interplanetaryAccelerator)
-                ));
-            });
-
             //Tinker
             node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
                 new Research(payloadPropulsionTower),
@@ -86,21 +75,11 @@ public class PMTechTree{
                 ), () -> {
                     nodeFree(shellPress, arbalest, () -> {
                         nodeFree(emptyRocket, arbalest);
-                        nodeFree(emptyMissile, strikedown);
-                        nodeFree(emptyNuke, trinity);
                         nodeFree(missileFactory, arbalest, () -> {
                             //Rockets
                             nodeFree(basicRocket, arbalest, () -> {
                                 node(incendiaryRocket);
                                 node(bomberRocket);
-                            });
-                            //Missiles
-                            nodeFree(basicMissile, strikedown, () -> {
-                                node(recursiveMissile);
-                            });
-                            //Nukes
-                            nodeFree(basicNuke, trinity, () -> {
-                                node(clusterNuke);
                             });
                         });
                     });
@@ -108,7 +87,7 @@ public class PMTechTree{
 
                 nodeFree(sentryBuilder, sergeant, () -> {
                     nodeFree(basicSentry, sergeant);
-                    node(missileSentry, Seq.with(new Research(strikedown)));
+                    node(missileSentry, Seq.with(new Research(arbalest)));
                     node(dashSentry, Seq.with(
                         new Research(lancer),
                         new Research(quasar)
@@ -237,7 +216,7 @@ public class PMTechTree{
         vanillaNode(forceProjector, () -> {
             //Shield Projector
             node(ballisticProjector, Seq.with(
-                new Research(strikedown)
+                new Research(artimis)
             ));
         });
 

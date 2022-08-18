@@ -1,6 +1,5 @@
 package progressed.content.bullets;
 
-import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -23,15 +22,10 @@ public class PayloadBullets{
 
     arbalestBasic, arbalestIncend, arbalestBomber;
 
-    public static NewMissileBulletType
-    artimisBasic;
-
-    //TODO Remove when done with new bullets
-    public static BallisticMissileBulletType
-    strikedownBasic, strikedownRecursive,
-    trinityBasic, trinityCluster,
-
-    ohno; //Maniacal laughter
+    public static BallisticMissleBulletType
+    artimisBasic, artimisRecursive,
+    paragonBasic, paragonCluster,
+    dearGod;
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
@@ -163,7 +157,7 @@ public class PayloadBullets{
             }
         };
 
-        artimisBasic = new NewMissileBulletType(3.5f, "prog-mats-basic-missile"){{
+        artimisBasic = new BallisticMissleBulletType(3.5f, "prog-mats-basic-missile"){{
             lifetime = 656f; //artimis range
             splashDamage = 750f;
             splashDamageRadius = 64f;
@@ -175,6 +169,7 @@ public class PayloadBullets{
             targetColor = PMPal.missileBasic;
         }};
 
+        /*
         float trinitySize = 1f,
             strikedownRnd = 1.5f,
             trinityRnd = 3f;
@@ -387,5 +382,6 @@ public class PayloadBullets{
         enough.fragBullet = cease;
 
         ohno.splitBullet = enough;
+         */
     }
 }
