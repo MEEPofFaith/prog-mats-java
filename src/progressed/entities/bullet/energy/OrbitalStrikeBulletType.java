@@ -7,34 +7,35 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
-public class OribitalStrikeBulletType extends BulletType{
+public class OrbitalStrikeBulletType extends BulletType{
     public float height = 1f, radius = 8f, growTime = 0.5f;
     public Color bottomColor = PMPal.nexusLaserDark, topColor = PMPal.nexusLaser.cpy().a(0);
 
-    public OribitalStrikeBulletType(){
-        speed = 0f;
+    public OrbitalStrikeBulletType(){
         lifetime = 30f;
         layer = Layer.flyingUnit + 0.5f;
-        collides = false;
-        keepVelocity = false;
-        backMove = false;
-        hittable = false;
-        absorbable = false;
+        scaleLife = true;
+        collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
     }
 
     @Override
     public void init(){
-        super.init();
         if(topColor == null){
             topColor = bottomColor.cpy().a(0f);
         }
+        super.init();
     }
 
     @Override
     public void init(Bullet b){
+        float px = b.x + b.lifetime * b.vel.x,
+            py = b.y + b.lifetime * b.vel.y;
+
+        b.set(px, py);
+        b.lifetime(lifetime);
+        b.vel.setZero();
+
         super.init(b);
-        b.x = b.aimX;
-        b.y = b.aimY;
     }
 
     @Override

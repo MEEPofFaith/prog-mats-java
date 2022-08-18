@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -37,9 +38,11 @@ public class NewMissileBulletType extends BulletType{
         despawnEffect = MissileFx.missileExplosion;
         layer = Layer.effect + 1;
         ammoMultiplier = 1;
-        collides = hittable = absorbable = reflectable = keepVelocity = false;
+        collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
+        scaleLife = true;
         scaledSplashDamage = true;
         status = StatusEffects.blasted;
+        drawSize = 400f * Vars.tilesize; //A ridiculously large draw size. Just in case.
     }
 
     @Override
@@ -62,10 +65,13 @@ public class NewMissileBulletType extends BulletType{
     public void init(Bullet b){
         super.init(b);
 
+        float px = b.x + b.lifetime * b.vel.x,
+            py = b.y + b.lifetime * b.vel.y;
+
         if(b.data == null) b.data = new float[]{b.x, b.y, 0f};
         b.lifetime(b.dst(b.aimX, b.aimY) / speed);
-        b.set(b.aimX, b.aimY);
-        b.vel().setZero();
+        b.set(px, py);
+        b.vel.setZero();
     }
 
     @Override

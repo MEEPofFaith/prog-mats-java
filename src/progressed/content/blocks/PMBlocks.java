@@ -607,7 +607,6 @@ public class PMBlocks{
             hideDetails = false;
             scaledHealth = 120;
             reload = 450f;
-            inaccuracy = 0f;
             range = 544f;
             rotateSpeed = 2.5f;
             recoil = 5f;
@@ -1172,7 +1171,6 @@ public class PMBlocks{
             shootSound = Sounds.artillery;
             cooldownTime = 8f * 60f;
             shake = 5f;
-            inaccuracy = 5f;
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
@@ -1236,7 +1234,9 @@ public class PMBlocks{
             requirements(Category.turret, with());
             size = 6;
 
-            ammo(Items.phaseFabric, new OribitalStrikeBulletType(){{
+            float brange = range = 100f * 8f;
+            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
+                speed = brange;
                 splashDamage = 2000f;
                 splashDamageRadius = 32f;
             }});
@@ -1272,7 +1272,6 @@ public class PMBlocks{
             shootWarmupSpeed = 1f / (1.5f * 60f);
 
             reload = 15f;
-            range = 100f * 8f;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
@@ -1284,7 +1283,9 @@ public class PMBlocks{
             size = 6;
 
             //TODO Make OrbitalStrikeRainBulletType
-            ammo(Items.phaseFabric, new OribitalStrikeBulletType(){{
+            float brange = range = 100f * 8f;
+            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
+                speed = brange;
                 bottomColor = Pal.surge;
                 topColor = null;
                 splashDamage = 2000f;
@@ -1325,7 +1326,6 @@ public class PMBlocks{
             shootWarmupSpeed = 1f / (1.5f * 60f);
 
             reload = 15f;
-            range = 100f * 8f;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;

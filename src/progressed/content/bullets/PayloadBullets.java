@@ -164,11 +164,11 @@ public class PayloadBullets{
         };
 
         artimisBasic = new NewMissileBulletType(2f, "prog-mats-basic-missile"){{
+            lifetime = 656f; //artimis range
             splashDamage = 750f;
             splashDamageRadius = 64f;
             homingPower = 0.05f;
             homingRange = 330f;
-            lifetime = 360f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
 
