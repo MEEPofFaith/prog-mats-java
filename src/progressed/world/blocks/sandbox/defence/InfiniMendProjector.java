@@ -78,17 +78,13 @@ public class InfiniMendProjector extends MendProjector{
         indexer.eachBlock(player.team(), plan.drawx(), plan.drawy(), realRange, other -> other.block.canOverdrive, other -> Drawf.selected(other, Tmp.c1.set(baseColor).a(Mathf.absin(4f, 1f))));
     }
 
-    float getBaseRepairTime(){
-        return 100f / healPercent * reload / 60f;
-    }
-
     float extractHealPercent(float repairTime){
         if(repairTime == 0) return 1f; //No dividing by 0 on my watch.
         return 1f / (repairTime * 60f / reload);
     }
 
     public class InfiniMendBuild extends MendBuild{
-        public float repairTime = getBaseRepairTime(), setRange = range;
+        public float repairTime = 100f / healPercent * reload / 60f, setRange = range;
 
         @Override
         public void updateTile(){
@@ -162,7 +158,7 @@ public class InfiniMendProjector extends MendProjector{
         public void write(Writes write){
             super.write(write);
 
-            write.f(healPercent);
+            write.f(repairTime);
             write.f(setRange);
         }
 
@@ -170,7 +166,7 @@ public class InfiniMendProjector extends MendProjector{
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            healPercent = read.f();
+            repairTime = read.f();
             setRange = read.f();
         }
     }
