@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.*;
-import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 

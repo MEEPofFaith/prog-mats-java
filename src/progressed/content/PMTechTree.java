@@ -6,7 +6,6 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
-import mindustry.world.*;
 import progressed.util.*;
 
 import static mindustry.content.Blocks.*;
@@ -15,7 +14,6 @@ import static mindustry.content.TechTree.*;
 import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
 import static progressed.content.blocks.PMBlocks.*;
-import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
 
 @SuppressWarnings("CodeBlock2Expr")
@@ -53,60 +51,6 @@ public class PMTechTree{
                     new SectorComplete(SectorPresets.overgrowth)
                 ), () -> {
                     node(mivnigun);
-                });
-            });
-
-            //Module Turret
-            node(council, combineCosts(council, moduleAssembler, shrapnel, froth, bifurcation), Seq.with(
-                new Research(wave),
-                new Research(arc)
-            ), () -> {
-                node(congress, () -> {
-                    node(pantheon);
-                });
-
-                nodeFree(moduleAssembler, council, () -> {
-                    node(moduleFoundry);
-                });
-
-                nodeFree(shrapnel, council, () -> {
-                    node(blunderbuss, () -> {
-                        node(airburst, Seq.with(
-                            new Research(moduleFoundry),
-                            new Research(swarmer)
-                        ), () -> {
-                            node(trifecta, Seq.with(new Research(congress)));
-                        });
-                        node(rebound, Seq.with(
-                            new Research(moduleFoundry),
-                            new Research(congress)
-                        ));
-                    });
-                });
-                nodeFree(froth, council);
-                nodeFree(bifurcation, council, () -> {
-                    node(vulcan, Seq.with(new Research(lancer)), () -> {
-                        node(ares, Seq.with(
-                            new Research(moduleFoundry),
-                            new Research(congress)
-                        ));
-                    });
-                    node(bandage, Seq.with(new Research(mender)), () -> {
-                        node(ambrosia, Seq.with(new Research(repairTurret)), () -> {
-                            node(vigilance, Seq.with(new Research(moduleFoundry)));
-                            node(gravity, Seq.with(new Research(moduleFoundry)));
-                        });
-                        node(overclocker, Seq.with(new Research(overdriveProjector)));
-                        node(pinpoint, Seq.with(new Research(moduleFoundry)));
-                    });
-                });
-                node(iris, () -> {
-                    node(lotus, () -> {
-                        node(jupiter, Seq.with(
-                            new Research(moduleFoundry),
-                            new Research(congress)
-                        ));
-                    });
                 });
             });
         });

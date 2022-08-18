@@ -54,7 +54,6 @@ import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
-import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
 
 public class PMBlocks{

@@ -2,7 +2,6 @@ package progressed.entities.part;
 
 import arc.graphics.g2d.*;
 import arc.util.*;
-import mindustry.entities.part.DrawPart.*;
 import progressed.graphics.*;
 
 public class RingPart extends PillarPart{

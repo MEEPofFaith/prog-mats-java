@@ -60,7 +60,7 @@ public class PMStatValues{
 
                 BulletType type = map.get(t);
                 //no point in displaying unit icon twice
-                if(!compact && !(t instanceof PowerTurret || t instanceof ModulePayload)){
+                if(!compact && !(t instanceof PowerTurret)){
                     if(payload){
                         if(t.unlockedNow()){
                             table.image(icon(t)).padRight(4).right().top();
@@ -555,12 +555,6 @@ public class PMStatValues{
     public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
         return table.button("?", Styles.flatBordert, () -> {
             ui.content.show(content);
-        }).size(size).left().name("contentinfo");
-    }
-
-    public static Cell<TextButton> moduleInfoButton(Table table, BaseModule content, float size){
-        return table.button("?", () -> {
-            ProgMats.moduleInfoDialog.show(content);
         }).size(size).left().name("contentinfo");
     }
 

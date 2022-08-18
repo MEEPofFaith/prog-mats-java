@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -42,7 +41,7 @@ public class NewMissileBulletType extends BulletType{
         scaleLife = true;
         scaledSplashDamage = true;
         status = StatusEffects.blasted;
-        drawSize = 400f * Vars.tilesize; //A ridiculously large draw size. Just in case.
+        drawSize = Float.MAX_VALUE;
     }
 
     @Override

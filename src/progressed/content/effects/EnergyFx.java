@@ -17,9 +17,7 @@ import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
-import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.util.PMUtls.*;
 
 public class EnergyFx{
     public static Effect

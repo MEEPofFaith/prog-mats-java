@@ -12,7 +12,6 @@ import progressed.ui.*;
 import progressed.world.blocks.defence.turret.modular.*;
 import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.modular.mounts.*;
 
 public class ModuleSwapDialog extends BaseDialog{
     public int selFirst = -1;
@@ -77,16 +76,16 @@ public class ModuleSwapDialog extends BaseDialog{
                     pos.setStackPos(p.x * 4f, p.y * 4f);
                     pos.add(new Image(base.block.fullIcon));
 
-                    BaseMount mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
+                    BaseModuleBuild mount = base.allMounts.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
                     String num = " (" + (i + 1) + ")";
 
                     if(mount != null){
-                        pos.add(new Image(mount.module.getPayload().fullIcon));
+                        pos.add(new Image(mount.block.fullIcon));
 
-                        button.get().getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
+                        button.get().getStyle().imageUp = new TextureRegionDrawable(mount.block.region);
                         button.tooltip(t -> {
                             t.background(Styles.black6).margin(4f);
-                            t.label(() -> mount.module.localizedName + num);
+                            t.label(() -> mount.block.localizedName + num);
                             t.row();
                             t.add(pos);
                         });
@@ -118,7 +117,7 @@ public class ModuleSwapDialog extends BaseDialog{
         if(selFirst < 0){
             selFirst = sel;
         }else{
-            BaseMount m1 = base.allMounts.find(m -> m.checkSize(selSize) && m.checkSwap(selFirst)),
+            BaseModuleBuild m1 = base.allMounts.find(m -> m.checkSize(selSize) && m.checkSwap(selFirst)),
                 m2 = base.allMounts.find(m -> m.checkSize(selSize) && m.checkSwap(sel));
 
             if(m1 != null) m1.swap(sel);

@@ -11,8 +11,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
@@ -21,15 +19,13 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.world.blocks.defence.turret.modular.modules.*;
 import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.modular.mounts.*;
-import progressed.world.blocks.payloads.*;
+import progressed.world.blocks.defence.turret.modular.modules.BaseTurretModule.*;
 import progressed.world.meta.*;
 
 public class ModularTurret extends PayloadBlock{
@@ -171,18 +167,11 @@ public class ModularTurret extends PayloadBlock{
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
-        public Seq<BaseMount> allMounts = new Seq<>();
-        public Seq<BaseTurretMount> turretMounts = new Seq<>();
+        public Seq<BaseModuleBuild> allMounts = new Seq<>();
+        public Seq<BaseTurretModuleBuild> turretMounts = new Seq<>();
         public float logicControlTime;
         public boolean logicShooting = false;
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
-
-        @Override
-        public void onProximityAdded(){
-            super.onProximityAdded();
-
-            allMounts.each(m -> m.onProximityAdded(this));
-        }
 
         @Override
         public Unit unit(){
@@ -224,8 +213,8 @@ public class ModularTurret extends PayloadBlock{
         @Override
         public void updateTile(){
             if(moveInPayload()){
-                if(payload.block() instanceof ModulePayload module && acceptModule(module.module.size)){
-                    addModule(module.module);
+                if(payload.build instanceof BaseModuleBuild module){
+                    addModule(module);
                 }
                 payload = null;
             }
@@ -238,14 +227,14 @@ public class ModularTurret extends PayloadBlock{
             }
 
             if(timer(timerTargetFast, targetIntervalFast)){
-                turretMounts.each(m -> m.module.fastRetarget, m -> m.findTarget(this));
+                turretMounts.each(BaseTurretModuleBuild::fastRetarget, BaseTurretModuleBuild::findTarget);
             }
 
             if(timer(timerTarget, targetInterval)){
-                turretMounts.each(m -> !m.module.fastRetarget, m -> m.findTarget(this));
+                turretMounts.each(m -> !m.fastRetarget(), BaseTurretModuleBuild::findTarget);
             }
 
-            allMounts.each(m -> m.update(this));
+            allMounts.each(BaseModuleBuild::moduleUpdate);
         }
 
         @Override
@@ -254,18 +243,18 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void retarget(float x, float y){
-            turretMounts.each(m -> m.module.logicControl, m -> m.targetPos.set(x, y));
+            turretMounts.each(BaseTurretModuleBuild::logicControl, m -> m.targetPos.set(x, y));
         }
 
         public void retarget(Posc p){
-            turretMounts.each(m -> m.module.logicControl, m -> m.module.targetPosition(m, p));
+            turretMounts.each(BaseTurretModuleBuild::logicControl, m -> m.targetPosition(p));
         }
 
         @Override
         public void remove(){
             super.remove();
 
-            allMounts.each(m -> m.module.remove(this, m));
+            allMounts.each(BaseModuleBuild::moduleRemoved);
         }
 
         @Override
@@ -296,7 +285,7 @@ public class ModularTurret extends PayloadBlock{
 
             if(isPayload()) updatePos();
 
-            allMounts.each(m -> m.draw(this));
+            allMounts.each(BaseModuleBuild::moduleDraw);
         }
 
         public void unHighlight(){
@@ -313,38 +302,34 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void resetSwap(){
-            allMounts.each(BaseMount::unSwap);
+            allMounts.each(BaseModuleBuild::unSwap);
         }
 
         /** @return the module it adds. */
-        public BaseMount addModule(BaseModule module){
-            return addModule(module, nextMount(module.size));
+        public BaseModuleBuild addModule(BaseModuleBuild module){
+            return addModule(module, nextMount(module.moduleSize()));
         }
 
         /** @return the module it adds. */
-        public BaseMount addModule(BaseModule module, int pos){
-            BaseMount mount = module.mountType.get(
-                this,
-                module,
-                pos
-            );
-            if(mount instanceof BaseTurretMount t) turretMounts.add(t);
-            allMounts.add(mount);
-            mount.updatePos(this);
+        public BaseModuleBuild addModule(BaseModuleBuild module, int pos){
+            if(module instanceof BaseTurretModuleBuild t) turretMounts.add(t);
+            allMounts.add(module);
+            module.mountNumber = pos;
+            module.updatePos(this);
             sort();
 
-            return mount;
+            return module;
         }
 
-        public void removeMount(BaseMount mount){
-            mount.module.remove(this, mount);
+        public void removeMount(BaseModuleBuild mount){
+            mount.moduleRemoved();
             allMounts.remove(mount);
-            if(mount instanceof BaseTurretMount t) turretMounts.remove(t);
+            if(mount instanceof BaseTurretModuleBuild t) turretMounts.remove(t);
         }
 
         public short nextMount(ModuleSize size){
             short mount = 0;
-            for(BaseMount m : allMounts){
+            for(BaseModuleBuild m : allMounts){
                 if(m.checkSize(size) && m.mountNumber == mount){
                     mount = (short)(m.mountNumber + 1);
                 }
@@ -381,7 +366,7 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void sort(){
-            allMounts.sort(m -> m.module.size.ordinal() * 100 + m.mountNumber);
+            allMounts.sort(m -> m.moduleSize().ordinal() * 100 + m.mountNumber);
         }
 
         @Override
@@ -436,7 +421,7 @@ public class ModularTurret extends PayloadBlock{
                         }).update(b -> {
                             b.setChecked(selNum == allMounts.indexOf(mount));
                         }).size(40f).get();
-                        button.getStyle().imageUp = new TextureRegionDrawable(mount.module.region);
+                        button.getStyle().imageUp = new TextureRegionDrawable(mount.block.region);
                         if(rowCount++ % 8 == 7){
                             m.row();
                         }
@@ -452,7 +437,7 @@ public class ModularTurret extends PayloadBlock{
                 t.row();
 
                 if(selNum >= 0){
-                    BaseMount mount = allMounts.get(selNum);
+                    BaseModuleBuild mount = allMounts.get(selNum);
                     t.table(d -> {
                         if(slideDisplay){
                             d.setTransform(true);
@@ -462,7 +447,7 @@ public class ModularTurret extends PayloadBlock{
                             });
                         }
                         d.top().left();
-                        mount.module.displayAll(this, d, table, mount);
+                        mount.moduleDisplay(d, table);
                     }).top().left().grow();
                 }
             }).top().grow();
@@ -470,7 +455,7 @@ public class ModularTurret extends PayloadBlock{
 
         public void resetSelection(){
             selNum = 0;
-            selSize = allMounts.any() ? allMounts.first().module.size : ModuleSize.small;
+            selSize = allMounts.any() ? allMounts.first().moduleSize() : ModuleSize.small;
         }
 
         public void setSelection(ModuleSize size){
@@ -484,9 +469,9 @@ public class ModularTurret extends PayloadBlock{
         /** @return if a module can be added. */
         public boolean acceptModule(ModuleSize size){
             return switch(size){
-                case small -> smallMountPos != null && allMounts.count(BaseMount::isSmall) + 1 <= smallMountPos.length;
-                case medium -> mediumMountPos != null && allMounts.count(BaseMount::isMedium) + 1 <= mediumMountPos.length;
-                case large -> largeMountPos != null && allMounts.count(BaseMount::isLarge) + 1 <= largeMountPos.length;
+                case small -> smallMountPos != null && allMounts.count(BaseModuleBuild::isSmall) + 1 <= smallMountPos.length;
+                case medium -> mediumMountPos != null && allMounts.count(BaseModuleBuild::isMedium) + 1 <= mediumMountPos.length;
+                case large -> largeMountPos != null && allMounts.count(BaseModuleBuild::isLarge) + 1 <= largeMountPos.length;
             };
         }
 
@@ -494,35 +479,35 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return allMounts.contains(m -> m.module.acceptItem(item, m));
+            return allMounts.contains(m -> m.acceptItem(this, item));
         }
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            BaseMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
+            BaseModuleBuild mount = allMounts.find(m -> m.acceptStack(item, amount, this) > 0);
 
             if(mount == null) return 0;
-            return mount.module.acceptStack(item, amount, mount);
+            return mount.acceptStack(item, amount, this);
         }
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid){
-            return allMounts.contains(m -> m.module.acceptLiquid(liquid, m));
+            return allMounts.contains(m -> m.acceptLiquid(this, liquid));
         }
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
             return super.acceptPayload(source, payload) &&
                 payload instanceof BuildPayload p &&
-                p.block() instanceof ModulePayload module &&
-                acceptModule(module.module.size) &&
-                !allMounts.contains(m -> !m.module.acceptModule(module.module));
+                p.block() instanceof BaseModule module &&
+                acceptModule(module.moduleSize) &&
+                !allMounts.contains(m -> !m.acceptModule(module));
         }
 
         @Override
         public void handleItem(Building source, Item item){
-            BaseMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
-            mount.module.handleItem(item, mount);
+            BaseModuleBuild mount = allMounts.find(m -> m.acceptItem(this, item));
+            mount.handleItem(this, item);
         }
 
         @Override
@@ -533,18 +518,18 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void handleStack(Item item, int amount, Teamc source){
-            BaseMount mount = allMounts.find(m -> m.module.acceptItem(item, m));
+            BaseModuleBuild mount = allMounts.find(m -> m.acceptStack(item, amount, this) > 0);
 
-            if(mount != null) mount.module.handleItem(item, mount);
+            if(mount != null) mount.handleStack(item, amount, this);
         }
 
         @Override
         public void handleLiquid(Building source, Liquid liquid, float amount){
             float a = amount;
-            while(a > 0 && allMounts.contains(m -> m.module.acceptLiquid(liquid, m))){ //Distribute overflow from one mount to the next
-                BaseMount mount = allMounts.find(m -> m.module.acceptLiquid(liquid, m));
+            while(a > 0 && allMounts.contains(m -> m.acceptLiquid(this, liquid))){ //Distribute overflow from one mount to the next
+                BaseModuleBuild mount = allMounts.find(m -> m.acceptLiquid(this, liquid));
                 if(mount == null) continue;
-                a -= mount.module.handleLiquid(liquid, a, mount);
+                a -= mount.moduleHandleLiquid(this, liquid, amount);
             }
         }
 
@@ -555,8 +540,8 @@ public class ModularTurret extends PayloadBlock{
 
         public float mountPower(){
             float use = 0f;
-            for(BaseMount mount : allMounts){
-                use += mount.module.powerUse(this, mount);
+            for(BaseModuleBuild mount : allMounts){
+                use += mount.powerUse();
             }
             return use;
         }
@@ -567,37 +552,12 @@ public class ModularTurret extends PayloadBlock{
 
             float[] range = {Float.MIN_VALUE};
             turretMounts.each(m -> {
-                if(m.module.range > range[0]) range[0] = m.module.range;
+                range[0] = Math.max(range[0], m.range());
             });
             return range[0];
         }
 
-        @Override
-        public void write(Writes write){
-            super.write(write);
-
-            write.i(allMounts.size);
-            allMounts.each(m -> m.module.writeAll(write, m));
-        }
-
-        @Override
-        public void read(Reads read, byte revision){
-            super.read(read, revision);
-
-            int len = read.i();
-            for(int i = 0; i < len; i++){
-                short id = read.s();
-                short moduleNumber = read.s();
-                Block module = Vars.content.block(id);
-                //Note: Installing or uninstalling other mods can change id and break saves.
-                if(module instanceof ModulePayload p){
-                    BaseMount mount = addModule(p.module, moduleNumber);
-                    mount.module.readAll(read, mount);
-                }
-            }
-
-            allMounts.each(m -> m.updatePos(this));
-        }
+        //TODO Figure out saving & loading
     }
 
     public static class ModuleGroup{
