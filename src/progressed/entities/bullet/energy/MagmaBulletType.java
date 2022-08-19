@@ -1,11 +1,14 @@
 package progressed.entities.bullet.energy;
 
 import arc.graphics.*;
+import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.content.effects.UtilFx.*;
@@ -18,6 +21,7 @@ public class MagmaBulletType extends BulletType{
 
     public int crackEffects = 1;
     public float crackStroke = 1.5f, crackWidth = 10f, crackRadius = -1;
+    public float groundRise = 4f;
     public Color crackColor = PMPal.darkBrown;
     public Effect crackEffect = UtilFx.groundCrack;
     
@@ -61,9 +65,16 @@ public class MagmaBulletType extends BulletType{
     }
 
     @Override
+    public void init(Bullet b){
+        super.init(b);
+
+        b.data = new IntSeq();
+    }
+
+    @Override
     public void update(Bullet b){
         //damage every 5 ticks
-        if(b.timer(1, 5f)){
+        if(b.timer(1, 5f) && b.data instanceof IntSeq tiles){
             Damage.damage(b.team, b.x, b.y, radius * b.fout(), damage * b.damageMultiplier(), true, collidesAir, collidesGround);
             if(status != StatusEffects.none) Damage.status(b.team, b.x, b.y, radius * b.fout(), status, statusDuration, collidesAir, collidesGround);
 
@@ -72,6 +83,7 @@ public class MagmaBulletType extends BulletType{
                 if(u.within(b, radius * b.fout())){
                     if(puddleLiquid != null) Puddles.deposit(u.tileOn(), puddleLiquid, puddleAmount);
                     if(makeFire) Fires.create(u.tileOn());
+                    tiles.add(u.tileOn().pos());
                 }
             });
 
@@ -86,6 +98,14 @@ public class MagmaBulletType extends BulletType{
                     PMMathf.randomCirclePoint(Tmp.v1, crackRadius).add(b);
                     crackEffect.at(b.x, b.y, Tmp.v1.angle(), crackColor, new LightningData(Tmp.v1.cpy(), crackStroke, true, crackWidth));
                 }
+            }
+
+            if(groundRise > 0){
+                PMDamage.trueEachTile(b.x, b.y, radius * b.fout(), tile -> {
+                    if(tile != null && tiles.addUnique(tile.pos()) && tile.block() == Blocks.air && tile.overlay() == Blocks.air){
+                        OtherFx.groundRise.at(tile, groundRise);
+                    }
+                });
             }
         }
 

@@ -50,9 +50,6 @@ public class ProgMats extends Mod{
         if(!headless){
             Events.on(ContentInitEvent.class, e -> {
                 float clip = PMModules.maxClip;
-                ((ModularTurret)(PMBlocks.council)).setClip(clip);
-                ((ModularTurret)(PMBlocks.congress)).setClip(clip);
-                ((ModularTurret)(PMBlocks.pantheon)).setClip(clip);
             });
         }
     }

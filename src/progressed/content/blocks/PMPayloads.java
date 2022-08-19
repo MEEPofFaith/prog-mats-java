@@ -105,7 +105,7 @@ public class PMPayloads{
             powerUse = 1.5f;
             constructTime = 60f * 6f;
 
-            explosion = PayloadBullets.strikedownBasic;
+            explosion = PayloadBullets.artimisBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
@@ -135,8 +135,6 @@ public class PMPayloads{
             size = 3;
             powerUse = 6f;
             constructTime = 60f * 25f;
-
-            explosion = PayloadBullets.trinityBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{

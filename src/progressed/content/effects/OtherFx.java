@@ -1,11 +1,14 @@
 package progressed.content.effects;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
+import mindustry.world.*;
+import mindustry.world.blocks.environment.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
@@ -21,12 +24,35 @@ import static progressed.util.PMUtls.*;
 public class OtherFx{
     public static final Effect
 
+    groundRise = new Effect(30, e -> {
+        Tile t = world.tileWorld(e.x, e.y);
+        if(t == null) return;
+
+        Floor f = t.floor();
+        TextureRegion region = f.variantRegions[Mathf.randomSeed(t.pos(), 0, Math.max(0, f.variantRegions.length - 1))];
+        float x = t.drawx(), y = t.drawy() + e.rotation * e.fout();
+
+        Draw.z(Draw.z() - ((float)t.y / world.height()) / 1000f);;
+        for(int i = 0; i < region.width; i++){
+            PixmapRegion image = Core.atlas.getPixmap(region);
+            float c1 = Tmp.c1.set(image.get(i, 0)).toFloatBits();
+            float c2 = Tmp.c2.set(Tmp.c1).lerp(Color.black, e.fout() / 4f).toFloatBits();
+
+            float px = x - region.width / 4f / 2f + i / 4f, py = y - region.height / 4f / 2f, by = py - e.rotation * e.fout();
+            float p = 1f / 8f;
+
+            Fill.quad(px - p, by, c2, px - p, py, c1, px + p, py, c1, px + p, by, c2);
+        }
+
+        rect(region, x, y);
+    }).layer(Layer.floor + 0.01f),
+
     concretionSlam = new Effect(23, e -> {
         color(Tmp.c1.set(e.color).mul(1.1f));
         randLenVectors(e.id, 6, 10f * e.finpow(), e.rotation, 15f, (x, y) -> {
             Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.4f);
         });
-    }).layer(Layer.debris),
+    }).layer(Layer.floor),
 
     earthquke = new Effect(10f, 100f, e -> {
         float rad = e.rotation;
@@ -39,7 +65,7 @@ public class OtherFx{
             tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout() / 4f, angle);
             tri(e.x + Angles.trnsx(angle, rad), e.y + Angles.trnsy(angle, rad), 6f, length * e.fout(), angle + 180);
         }
-    }).layer(Layer.debris),
+    }).layer(Layer.floor),
 
     pillarPlace = new Effect(15f, e -> {
         Draw.color(PMPal.darkBrown);
