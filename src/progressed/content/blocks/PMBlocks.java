@@ -138,7 +138,7 @@ public class PMBlocks{
     // region Sandbox
 
     //Turret
-    harbinger, everythingGun, testTurret,
+    eviscerator, everythingGun, testTurret,
 
     //Distribution
     everythingItemSource, sandDriver,
@@ -1088,7 +1088,8 @@ public class PMBlocks{
                 PMItems.tenelium, 120
             ));
             ammo(
-                basicMissile, PayloadBullets.artimisBasic
+                basicMissile, PayloadBullets.artimisBasic,
+                recursiveMissile, PayloadBullets.artimisRecursive
             );
             size = 5;
             hideDetails = false;
@@ -1096,6 +1097,7 @@ public class PMBlocks{
             maxAmmo = 1;
             reload = 60f;
             range = 656f;
+            minRange = 16f * 8f;
             shootY = 0f;
             shootSound = Sounds.artillery;
             cooldownTime = 8f * 60f;
@@ -1489,10 +1491,9 @@ public class PMBlocks{
 
         // region Sandbox
         /// Turret
-        harbinger = new ChaosTurret("harbinger"){
+        eviscerator = new ChaosTurret("harbinger"){
             {
                 size = 8;
-                inaccuracy = 45f;
                 shake = 150f;
                 range = 560f;
                 recoil = 8f;
@@ -1501,12 +1502,15 @@ public class PMBlocks{
                 cooldownTime = 600f;
                 recoilTime = 600f;
                 reload = 450f;
-                shoot.firstShotDelay = EnergyFx.harbingerCharge.lifetime;
                 chargeSound = PMSounds.harbingerCharge;
                 shootSound = PMSounds.harbingerBlast;
                 shootType = PMBullets.harbingerLaser;
 
-                shoot.shots = 100;
+                shoot = new ShootSpread(){{
+                    shots = 100;
+                    spread = 45f / shots;
+                    firstShotDelay = EnergyFx.harbingerCharge.lifetime;
+                }};
 
                 consumePower(300f);
             }

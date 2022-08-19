@@ -20,9 +20,12 @@ import progressed.world.blocks.defence.BallisticProjector.*;
 
 //TODO Set to proper name later
 public class BallisticMissleBulletType extends BulletType{
+    public boolean drawZone = true;
     public float height = 0.15f;
-    public float targetRadius = 1f;
+    public float zoneLayer = Layer.bullet - 1f;
+    public float targetRadius = 1f, zoneRadius = -1f;
     public float shadowOffset = 18f;
+    public float splitTime = 0.5f;
     public Color targetColor = Color.red;
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
@@ -35,7 +38,7 @@ public class BallisticMissleBulletType extends BulletType{
         this.sprite = sprite;
 
         despawnEffect = MissileFx.missileExplosion;
-        layer = Layer.effect + 1;
+        layer = Layer.flyingUnit + 1;
         ammoMultiplier = 1;
         collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
         scaleLife = true;
@@ -51,6 +54,7 @@ public class BallisticMissleBulletType extends BulletType{
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }
+        if(zoneRadius < 0) zoneRadius = splashDamageRadius;
 
         super.init();
     }
@@ -67,8 +71,8 @@ public class BallisticMissleBulletType extends BulletType{
         float px = b.x + b.lifetime * b.vel.x,
             py = b.y + b.lifetime * b.vel.y;
 
-        if(b.data == null) b.data = new float[]{b.x, b.y, 0f};
-        b.lifetime(b.dst(b.aimX, b.aimY) / speed);
+        b.data = new float[]{b.x, b.y, 0f};
+        b.lifetime(b.dst(px, py) / speed);
         b.set(px, py);
         b.vel.setZero();
     }
@@ -77,34 +81,38 @@ public class BallisticMissleBulletType extends BulletType{
     public void update(Bullet b){
         super.update(b);
 
-        if(fragBullet instanceof BallisticMissleBulletType && b.fin() >= 0.5f){
+        if(fragBullet instanceof BallisticMissleBulletType && b.fin() >= splitTime){
             b.remove();
-            b.data = true;
+            ((float[])b.data)[2] = 1f;
         }
     }
 
     @Override
     public void draw(Bullet b){
         //Target
-        Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
-        Fill.circle(b.x, b.y, splashDamageRadius);
+        Draw.z(zoneLayer - 0.01f);
+        if(drawZone && zoneRadius > 0f){
+            Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
+            Fill.circle(b.x, b.y, zoneRadius);
+        }
+        Draw.z(zoneLayer);
         PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
         //Missile
-        if(b.data instanceof float[] startPos){
-            float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
-                x = Mathf.lerp(startPos[0], b.x, b.fin()),
-                y = Mathf.lerp(startPos[1], b.y, b.fin()),
-                hScl = Interp.sineOut.apply(startPos[2] == 1f ? b.fin() : b.fslope());
+        Draw.z(layer);
+        float[] startPos = (float[])b.data;;
+        float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
+            x = Mathf.lerp(startPos[0], b.x, b.fin()),
+            y = Mathf.lerp(startPos[1], b.y, b.fin()),
+            hScl = Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
 
-            Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset - hScl, rot);
-            Draw.rect(region, DrawPsudo3D.xHeight(x, hScl * height), DrawPsudo3D.yHeight(y, hScl * height), rot);
-        }
+        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset - hScl, rot);
+        Draw.rect(region, DrawPsudo3D.xHeight(x, hScl * height), DrawPsudo3D.yHeight(y, hScl * height), rot);
     }
 
     @Override
     public void despawned(Bullet b){
-        if(!(b.data instanceof Boolean)){
+        if(((float[])b.data)[2] != 1f){
             ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, BallisticProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
             if(shield != null){ //Ballistic Shield blocks the missile
                 blockEffect.at(b.x, b.y, b.rotation(), hitColor);
@@ -119,30 +127,34 @@ public class BallisticMissleBulletType extends BulletType{
             }
         }
 
-        if(!fragOnHit){
+        if(!fragOnHit || fragBullet instanceof BallisticMissleBulletType){
             createFrags(b, b.x, b.y);
+            return;
         }
-
-        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
-        despawnSound.at(b);
-
-        Effect.shake(despawnShake, despawnShake, b);
-
-        if(b.data instanceof Boolean) return;
 
         if(despawnHit){
             hit(b);
         }else{
             createUnits(b, b.x, b.y);
         }
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
+
+        Effect.shake(despawnShake, despawnShake, b);
     }
 
     @Override
     public void createFrags(Bullet b, float x, float y){
         if(fragBullet instanceof BallisticMissleBulletType){
+            float[] startPos = (float[])b.data;
+            float sx = Mathf.lerp(startPos[0], b.x, b.fin()), sy = Mathf.lerp(startPos[1], b.y, b.fin());
+            float offset = (1f + b.fdata) * splitTime;
             for(int i = 0; i < fragBullets; i++){
-                Tmp.v1.setToRandomDirection().setLength(fragSpread * Mathf.sqrt(Mathf.random())).add(b.aimX, b.aimY);
-                fragBullet.create(b, b.team, x, y, b.rotation(), -1f, 1f, 1f, new float[]{b.x, b.y, 1f}, null, Tmp.v1.x, Tmp.v1.y);
+                Tmp.v1.setToRandomDirection().setLength(fragSpread * Mathf.sqrt(Mathf.random())).add(b.x, b.y);
+                float lifeScl = Mathf.dst(sx, sy, Tmp.v1.x, Tmp.v1.y) / fragBullet.range;
+                Bullet frag = fragBullet.create(b, b.team, sx, sy, Tmp.v1.angleTo(sx, sy) + 180f, 1f, lifeScl);
+                frag.fdata = offset;
             }
         }else{
             super.createFrags(b, x, y);

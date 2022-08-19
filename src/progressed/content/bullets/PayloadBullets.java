@@ -161,43 +161,51 @@ public class PayloadBullets{
             lifetime = 656f; //artimis range
             splashDamage = 750f;
             splashDamageRadius = 64f;
-            homingPower = 0.05f;
-            homingRange = 330f;
             hitSound = Sounds.explosionbig;
             hitShake = 5f;
 
             targetColor = PMPal.missileBasic;
+        }};
+
+        artimisRecursive = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
+            lifetime = 656f; //artimis range
+            status = StatusEffects.none;
+
+            height = 0.25f;
+            zoneRadius = 96f;
+            targetColor = PMPal.missileFrag;
+
+            splitTime = 1f / 3f;
+            fragSpread = 80f;
+            fragBullets = 3;
+            fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
+                lifetime = 656f; //artimis range
+                status = StatusEffects.none;
+
+                height = 0.25f;
+                drawZone = false;
+                targetColor = PMPal.missileFrag;
+
+                fragSpread = 64f;
+                fragBullets = 3;
+                fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
+                    lifetime = 656f; //artimis range
+                    splashDamage = 260f;
+                    splashDamageRadius = 48f;
+                    hitSound = Sounds.explosionbig;
+                    hitShake = 5f;
+
+                    height = 0.25f;
+                    drawZone = false;
+                    targetColor = PMPal.missileFrag;
+                }};
+            }};
         }};
 
         /*
         float trinitySize = 1f,
             strikedownRnd = 1.5f,
             trinityRnd = 3f;
-
-        strikedownBasic = new BallisticMissileBulletType(2f, 80f, "prog-mats-basic-missile"){{
-            splashDamage = 750f;
-            splashDamageRadius = 64f;
-            homingPower = 0.05f;
-            homingRange = 330f;
-            lifetime = 360f;
-            hitSound = Sounds.explosionbig;
-            hitShake = 5f;
-            despawnEffect = MissileFx.missileExplosion;
-            blockEffect = MissileFx.missileBlocked;
-
-            targetColor = PMPal.missileBasic;
-
-            autoDropRadius = 15f;
-            stopRadius = 10f;
-            thrusterRadius = 16f;
-            elevation = 2f;
-            shadowOffset = 300f;
-            riseTime = 45f;
-            fallTime = 30f;
-            trailRnd = strikedownRnd;
-
-            unitSort = UnitSorts.strongest;
-        }};
 
         strikedownRecursive = new BallisticMissileBulletType(2f, 80f, "prog-mats-recursive-missile"){{
             splashDamage = 200f;
