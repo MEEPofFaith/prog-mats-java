@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -21,8 +22,8 @@ import progressed.world.blocks.defence.BallisticProjector.*;
 //TODO Set to proper name later
 public class BallisticMissleBulletType extends BulletType{
     public boolean drawZone = true;
-    public float height = 0.15f;
-    public float zoneLayer = Layer.bullet - 1f;
+    public float height = 0.15f, growScl = -1f;
+    public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = -1f;
     public float shadowOffset = 18f;
     public float splitTime = 0.5f;
@@ -38,7 +39,7 @@ public class BallisticMissleBulletType extends BulletType{
         this.sprite = sprite;
 
         despawnEffect = MissileFx.missileExplosion;
-        layer = Layer.flyingUnit + 1;
+        layer = Layer.flyingUnit + 2;
         ammoMultiplier = 1;
         collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
         scaleLife = true;
@@ -55,6 +56,7 @@ public class BallisticMissleBulletType extends BulletType{
             hitSoundVolume = fartVolume;
         }
         if(zoneRadius < 0) zoneRadius = splashDamageRadius;
+        if(growScl < 0) growScl = height * 2f;
 
         super.init();
     }
@@ -99,15 +101,18 @@ public class BallisticMissleBulletType extends BulletType{
         PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
         //Missile
-        Draw.z(layer);
         float[] startPos = (float[])b.data;;
         float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
             x = Mathf.lerp(startPos[0], b.x, b.fin()),
             y = Mathf.lerp(startPos[1], b.y, b.fin()),
             hScl = Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
 
+        Draw.z(shadowLayer);
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset - hScl, rot);
+        Draw.z(layer + hScl / 100f);
+        Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
         Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
+        Draw.scl();
     }
 
     @Override
