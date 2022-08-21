@@ -4,11 +4,12 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
 
 import static arc.Core.*;
 import static arc.math.Mathf.*;
 
-public class DrawPsudo3D{
+public class DrawPseudo3D{
     /**
      * @author sunny, modified by MEEP
      * */
@@ -34,7 +35,7 @@ public class DrawPsudo3D{
     public static void tube(float x, float y, float rad, float height, Color baseColor, Color topColor){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * (1f + height));
+        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * (1f + height) * Vars.renderer.getDisplayScale());
 
         float c1f = baseColor.toFloatBits();
         float c2f = topColor.toFloatBits();
@@ -117,11 +118,11 @@ public class DrawPsudo3D{
     }
 
     public static float xOffset(float x, float height){
-        return (x - camera.position.x) * height;
+        return (x - camera.position.x) * height * Vars.renderer.getDisplayScale();
     }
 
     public static float yOffset(float y, float height){
-        return (y - camera.position.y) * height;
+        return (y - camera.position.y) * height * Vars.renderer.getDisplayScale();
     }
 
     /**

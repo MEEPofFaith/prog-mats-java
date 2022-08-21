@@ -107,7 +107,7 @@ public class BallisticMissleBulletType extends BulletType{
             hScl = Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
 
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset - hScl, rot);
-        Draw.rect(region, DrawPsudo3D.xHeight(x, hScl * height), DrawPsudo3D.yHeight(y, hScl * height), rot);
+        Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
     }
 
     @Override
