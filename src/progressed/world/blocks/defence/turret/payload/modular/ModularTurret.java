@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.modular;
+package progressed.world.blocks.defence.turret.payload.modular;
 
 import arc.*;
 import arc.graphics.*;
@@ -23,9 +23,9 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 import progressed.*;
-import progressed.world.blocks.defence.turret.modular.modules.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseTurretModule.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.BaseTurretModule.*;
 import progressed.world.meta.*;
 
 public class ModularTurret extends PayloadBlock{

@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.modular.modules;
+package progressed.world.blocks.defence.turret.payload.modular.modules;
 
 import arc.*;
 import arc.math.geom.*;
@@ -6,7 +6,7 @@ import arc.scene.ui.layout.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
 
 import java.util.*;
 

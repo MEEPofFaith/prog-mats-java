@@ -24,7 +24,6 @@ import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.turret.modular.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;

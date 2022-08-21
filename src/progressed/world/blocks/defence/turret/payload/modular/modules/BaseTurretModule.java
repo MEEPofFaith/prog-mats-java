@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.modular.modules;
+package progressed.world.blocks.defence.turret.payload.modular.modules;
 
 import arc.math.geom.*;
 import mindustry.gen.*;

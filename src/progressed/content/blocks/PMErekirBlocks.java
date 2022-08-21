@@ -12,7 +12,7 @@ import progressed.content.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.modular.*;
+import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.type.ItemStack.with;

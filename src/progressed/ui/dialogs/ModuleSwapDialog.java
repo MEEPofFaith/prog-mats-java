@@ -9,9 +9,9 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import progressed.ui.*;
-import progressed.world.blocks.defence.turret.modular.*;
-import progressed.world.blocks.defence.turret.modular.ModularTurret.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
+import progressed.world.blocks.defence.turret.payload.modular.*;
+import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 
 public class ModuleSwapDialog extends BaseDialog{
     public int selFirst = -1;

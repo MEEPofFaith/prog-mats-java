@@ -1078,7 +1078,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        artimis = new PayloadAmmoTurret("artimis"){{
+        artimis = new SinglePayloadAmmoTurret("artimis"){{
             requirements(Category.turret, with(
                 Items.copper, 70,
                 Items.lead, 350,
