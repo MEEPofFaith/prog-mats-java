@@ -25,7 +25,7 @@ public class BallisticMissleBulletType extends BulletType{
     public float height = 0.15f, growScl = -1f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = -1f;
-    public float shadowOffset = 18f;
+    public float shadowOffset = 24f;
     public float splitTime = 0.5f;
     public Color targetColor = Color.red;
     public String sprite;
@@ -108,7 +108,7 @@ public class BallisticMissleBulletType extends BulletType{
             hScl = Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
 
         Draw.z(shadowLayer);
-        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset - hScl, rot);
+        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);
         Draw.z(layer + hScl / 100f);
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
         Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
