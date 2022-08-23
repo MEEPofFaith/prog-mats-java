@@ -161,7 +161,6 @@ public class PayloadBullets{
             lifetime = 656f; //artimis range
             splashDamage = 750f;
             splashDamageRadius = 64f;
-            hitSound = Sounds.explosionbig;
             hitShake = 5f;
 
             targetColor = PMPal.missileBasic;
@@ -192,7 +191,6 @@ public class PayloadBullets{
                     lifetime = 656f; //artimis range
                     splashDamage = 260f;
                     splashDamageRadius = 48f;
-                    hitSound = Sounds.explosionbig;
                     hitShake = 5f;
 
                     height = 0.25f;

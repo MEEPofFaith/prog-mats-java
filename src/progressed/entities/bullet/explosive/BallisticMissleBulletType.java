@@ -39,6 +39,7 @@ public class BallisticMissleBulletType extends BulletType{
         this.sprite = sprite;
 
         despawnEffect = MissileFx.missileExplosion;
+        hitSound = Sounds.largeExplosion;
         layer = Layer.flyingUnit + 2;
         ammoMultiplier = 1;
         collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
@@ -85,7 +86,6 @@ public class BallisticMissleBulletType extends BulletType{
 
         if(fragBullet instanceof BallisticMissleBulletType && b.fin() >= splitTime){
             b.remove();
-            ((float[])b.data)[2] = 1f;
         }
     }
 
@@ -117,24 +117,26 @@ public class BallisticMissleBulletType extends BulletType{
 
     @Override
     public void despawned(Bullet b){
-        if(((float[])b.data)[2] != 1f){
-            ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, BallisticProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
-            if(shield != null){ //Ballistic Shield blocks the missile
-                blockEffect.at(b.x, b.y, b.rotation(), hitColor);
-                despawnSound.at(b);
-
-                Effect.shake(despawnShake, despawnShake, b);
-
-                shield.hit = 1f;
-                shield.buildup += (b.damage() + splashDamage * shield.realStrikeBlastResistance() * b.damageMultiplier()) * shield.warmup;
-
-                return;
-            }
-        }
-
-        if(!fragOnHit || fragBullet instanceof BallisticMissleBulletType){
+        if(fragBullet instanceof BallisticMissleBulletType){
             createFrags(b, b.x, b.y);
             return;
+        }
+
+        ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, BallisticProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
+        if(shield != null){ //Ballistic Shield blocks the missile
+            blockEffect.at(b.x, b.y, b.rotation(), hitColor);
+            despawnSound.at(b);
+
+            Effect.shake(despawnShake, despawnShake, b);
+
+            shield.hit = 1f;
+            shield.buildup += (b.damage() + splashDamage * shield.realStrikeBlastResistance() * b.damageMultiplier()) * shield.warmup;
+
+            return;
+        }
+
+        if(!fragOnHit){
+            createFrags(b, b.x, b.y);
         }
 
         if(despawnHit){

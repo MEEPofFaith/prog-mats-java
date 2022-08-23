@@ -60,6 +60,17 @@ public class EruptorTurret extends PowerTurret{
         }
 
         @Override
+        public boolean shouldConsume(){
+            //still consumes power when bullet is around
+            return bullet != null || isActive() || isShooting();
+        }
+
+        @Override
+        public boolean isShooting(){
+            return super.isShooting() || bullet != null;
+        }
+
+        @Override
         public void updateTile(){
             super.updateTile();
 
@@ -127,7 +138,7 @@ public class EruptorTurret extends PowerTurret{
 
         @Override
         public boolean shouldActiveSound(){
-            return bulletLife > 0 && bullet != null;
+            return bullet != null;
         }
     }
 }

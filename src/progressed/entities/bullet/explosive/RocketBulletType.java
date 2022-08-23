@@ -38,7 +38,7 @@ public class RocketBulletType extends BasicBulletType{
         keepVelocity = false;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = hitEffect = Fx.blastExplosion;
-        hitSound = Sounds.explosion;
+        hitSound = Sounds.largeExplosion;
         status = StatusEffects.blasted;
     }
 

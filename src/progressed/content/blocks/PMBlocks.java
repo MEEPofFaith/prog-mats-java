@@ -593,7 +593,7 @@ public class PMBlocks{
             rotateSpeed = 2.5f;
             recoil = 5f;
             cooldownTime = 300f;
-            shootSound = Sounds.railgun;
+            shootSound = Sounds.cannon;
 
             coolant = consumeCoolant(0.2f);
         }};
@@ -955,7 +955,7 @@ public class PMBlocks{
             shootWarmupSpeed = 0.05f;
             minWarmup = 0.9f;
             heatColor = Pal.surge;
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.malignShoot;
             rotateSpeed = 2f;
             recoil = 8f;
             recoilTime = 300f;
@@ -1100,7 +1100,7 @@ public class PMBlocks{
             rotateSpeed = 360f;
             minRange = 16f * 8f;
             shootY = 0f;
-            shootSound = Sounds.artillery;
+            shootSound = Sounds.missileLaunch;
             cooldownTime = 8f * 60f;
             shake = 5f;
             unitSort = UnitSorts.strongest;
