@@ -14,7 +14,7 @@ import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 
 public class ModuleSwapDialog extends BaseDialog{
-    public int selFirst = -1;
+    public short selFirst = -1;
     public ModuleSize selSize;
     protected ModularTurretBuild base;
 
@@ -63,7 +63,7 @@ public class ModuleSwapDialog extends BaseDialog{
                         if(selSize != mSize) deselect();
                         selSize = mSize;
                         if(selFirst != ii){
-                            select(ii);
+                            select((short)ii);
                         }else{
                             deselect();
                         }
@@ -113,7 +113,7 @@ public class ModuleSwapDialog extends BaseDialog{
         }
     }
 
-    private void select(int sel){
+    private void select(short sel){
         if(selFirst < 0){
             selFirst = sel;
         }else{

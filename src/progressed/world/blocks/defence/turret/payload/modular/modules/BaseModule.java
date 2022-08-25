@@ -1,11 +1,15 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
 import arc.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import progressed.content.blocks.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
 
 import java.util.*;
@@ -14,33 +18,58 @@ public class BaseModule extends Block{
     public ModuleSize moduleSize = ModuleSize.small;
     public int limit = -1;
 
-    public BaseModule(String name){
+    public BaseModule(String name, ModuleSize size){
         super(name);
+        moduleSize = size;
         update = true;
         destructible = false;
     }
 
+    public BaseModule(String name){
+        this(name, ModuleSize.small);
+    }
+
+    public void init(){
+        PMModules.setClip(clipSize);
+    }
+
     public class BaseModuleBuild extends Building{
         public ModularTurretBuild parent;
-        public float progress = 0;
-        public int mountNumber, swapNumber;
+        public float progress = 0, hAlpha;
+        public short mountNumber, swapNumber;
         public boolean highlight;
 
+        public void moduleAdded(ModularTurretBuild parent, short pos){
+            this.parent = parent;
+            mountNumber = swapNumber = pos;
+        }
+
         public void moduleDraw(){
+            highlight();
             draw();
         }
 
+        public void highlight(){
+            if(hAlpha > 0.001f) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f) * hAlpha);
+        }
+
         public void moduleUpdate(){
-            //overriden by subclasses!
+            hAlpha = Mathf.approachDelta(hAlpha, Mathf.num(highlight), 0.15f);
         }
 
         public void moduleRemoved(){
-            //overriden by subclasses!
+            parent = null;
+            highlight = false;
+            hAlpha = 0f;
         }
 
         public float moduleHandleLiquid(Building source, Liquid liquid, float amount){
             liquids.add(liquid, amount);
             return amount;
+        }
+
+        public boolean isModule(){
+            return parent != null;
         }
 
         public float powerUse(){
@@ -75,7 +104,7 @@ public class BaseModule extends Block{
             swapNumber = mountNumber;
         }
 
-        public void swap(int number){
+        public void swap(short number){
             swapNumber = number;
         }
 
@@ -106,6 +135,20 @@ public class BaseModule extends Block{
 
         public boolean checkSwap(int number){
             return swapNumber == number;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.s(mountNumber);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            mountNumber = swapNumber = read.s();
         }
     }
 

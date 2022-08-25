@@ -13,6 +13,8 @@ import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
+import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.type.ItemStack.with;
@@ -36,13 +38,17 @@ public class PMErekirBlocks{
 
 
     public static void load(){
-        // region Turret
-        if(false){
-            matrix = new ModularTurret("matrix"){{
-                requirements(Category.turret, with());
-                size = 7;
-            }};
-        }
+        // region Turrets
+        matrix = new ModularTurret("matrix"){{
+            requirements(Category.turret, with());
+            size = 7;
+
+            moduleGroups = new ModuleGroup[]{
+                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
+                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
+                new ModuleGroup(ModuleSize.large)
+            };
+        }};
 
         if(false){
             paragon = new PayloadAmmoTurret("paragon"){{

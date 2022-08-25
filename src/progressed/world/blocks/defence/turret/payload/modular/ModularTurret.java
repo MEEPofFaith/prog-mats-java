@@ -11,14 +11,17 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
@@ -27,6 +30,9 @@ import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.BaseTurretModule.*;
 import progressed.world.meta.*;
+
+import static mindustry.Vars.content;
+import static mindustry.Vars.emptyTile;
 
 public class ModularTurret extends PayloadBlock{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
@@ -235,6 +241,10 @@ public class ModularTurret extends PayloadBlock{
             }
 
             allMounts.each(BaseModuleBuild::moduleUpdate);
+
+            if(isPayload()){
+                updatePos();
+            }
         }
 
         @Override
@@ -311,20 +321,20 @@ public class ModularTurret extends PayloadBlock{
         }
 
         /** @return the module it adds. */
-        public BaseModuleBuild addModule(BaseModuleBuild module, int pos){
+        public BaseModuleBuild addModule(BaseModuleBuild module, short pos){
+            module.moduleAdded(this, pos);
+            module.updatePos(this);
             if(module instanceof BaseTurretModuleBuild t) turretMounts.add(t);
             allMounts.add(module);
-            module.mountNumber = pos;
-            module.updatePos(this);
             sort();
 
             return module;
         }
 
-        public void removeMount(BaseModuleBuild mount){
-            mount.moduleRemoved();
-            allMounts.remove(mount);
-            if(mount instanceof BaseTurretModuleBuild t) turretMounts.remove(t);
+        public void removeMount(BaseModuleBuild module){
+            module.moduleRemoved();
+            allMounts.remove(module);
+            if(module instanceof BaseTurretModuleBuild t) turretMounts.remove(t);
         }
 
         public short nextMount(ModuleSize size){
@@ -558,6 +568,43 @@ public class ModularTurret extends PayloadBlock{
         }
 
         //TODO Figure out saving & loading
+
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.i(allMounts.size);
+            allMounts.each(m -> {
+                write.s(m.block.id);
+                write.b(m.version());
+                m.writeAll(write);
+            });
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision >= 1){
+                int amount = read.i();
+                for(int i = 0; i < amount; i++){
+                    Block module = content.block(read.s());
+                    BaseModuleBuild moduleBuild = (BaseModuleBuild)module.newBuilding().create(module, Team.derelict);
+                    byte version = read.b();
+                    moduleBuild.readAll(read, version);
+                    moduleBuild.tile = emptyTile;
+                    moduleBuild.parent = this;
+
+                    addModule(moduleBuild, moduleBuild.mountNumber);
+                }
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 1;
+        }
     }
 
     public static class ModuleGroup{
