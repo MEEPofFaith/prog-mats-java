@@ -76,8 +76,6 @@ public class ModularTurret extends PayloadBlock{
 
     @Override
     public void init(){
-        consumePowerDynamic(b -> ((ModularTurretBuild)b).mountPower());
-
         super.init();
 
         if(moduleGroups == null) return;
@@ -546,14 +544,6 @@ public class ModularTurret extends PayloadBlock{
         @Override
         public void dropped(){
             allMounts.each(m -> m.updatePos(this));
-        }
-
-        public float mountPower(){
-            float use = 0f;
-            for(BaseModuleBuild mount : allMounts){
-                use += mount.powerUse();
-            }
-            return use;
         }
 
         @Override

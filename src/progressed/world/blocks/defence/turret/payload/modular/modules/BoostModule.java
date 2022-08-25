@@ -12,8 +12,8 @@ public class BoostModule extends BaseModule{
     public class BoostModuleBuild extends BaseModuleBuild{
         @Override
         public void moduleUpdate(){
-            if(parent.damaged()){
-                parent.heal(healPercent * Time.delta * parent.maxHealth());
+            if(efficiency > 0 && parent.damaged()){
+                parent.heal(healPercent * edelta() * parent.maxHealth());
                 parent.recentlyHealed();
             }
         }

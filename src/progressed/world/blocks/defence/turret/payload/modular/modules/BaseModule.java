@@ -42,6 +42,8 @@ public class BaseModule extends Block{
         public void moduleAdded(ModularTurretBuild parent, short pos){
             this.parent = parent;
             mountNumber = swapNumber = pos;
+
+            parent.power.graph.add(this);
         }
 
         public void moduleDraw(){
@@ -54,6 +56,10 @@ public class BaseModule extends Block{
         }
 
         public void moduleUpdate(){
+            if(power.graph != parent.power.graph){ //Switch power graphs if the modular turret switches graphs
+                power.graph.remove(this);
+                parent.power.graph.add(this);
+            }
             hAlpha = Mathf.approachDelta(hAlpha, Mathf.num(highlight), 0.15f);
         }
 
@@ -61,6 +67,7 @@ public class BaseModule extends Block{
             parent = null;
             highlight = false;
             hAlpha = 0f;
+            power.graph.remove(this);
         }
 
         public float moduleHandleLiquid(Building source, Liquid liquid, float amount){
@@ -72,8 +79,9 @@ public class BaseModule extends Block{
             return parent != null;
         }
 
-        public float powerUse(){
-            return 0f;
+        @Override
+        public float efficiencyScale(){
+            return Mathf.num(isModule());
         }
 
         public boolean acceptModule(BaseModule module){
