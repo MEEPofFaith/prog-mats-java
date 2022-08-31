@@ -42,6 +42,7 @@ public class PMErekirBlocks{
         matrix = new ModularTurret("matrix"){{
             requirements(Category.turret, with());
             size = 7;
+            scaledHealth = 370;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),

@@ -56,6 +56,7 @@ public class ModularTurret extends PayloadBlock{
         acceptsPayload = true;
         outputsPayload = false;
         hasLiquids = true;
+        hasPower = true;
         outputsLiquid = false;
         rotate = false;
         configurable = true;
