@@ -28,7 +28,7 @@ import mindustry.world.meta.*;
 import progressed.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.payload.modular.modules.BaseTurretModule.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.TargetingModule.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.content;
@@ -173,7 +173,7 @@ public class ModularTurret extends PayloadBlock{
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock, Ranged{
         public Seq<BaseModuleBuild> allMounts = new Seq<>();
-        public Seq<BaseTurretModuleBuild> turretMounts = new Seq<>();
+        public Seq<TargetingModuleBuild> targetingMounts = new Seq<>();
         public float logicControlTime;
         public boolean logicShooting = false;
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
@@ -232,11 +232,11 @@ public class ModularTurret extends PayloadBlock{
             }
 
             if(timer(timerTargetFast, targetIntervalFast)){
-                turretMounts.each(BaseTurretModuleBuild::fastRetarget, BaseTurretModuleBuild::findTarget);
+                targetingMounts.each(TargetingModuleBuild::fastRetarget, TargetingModuleBuild::findTarget);
             }
 
             if(timer(timerTarget, targetInterval)){
-                turretMounts.each(m -> !m.fastRetarget(), BaseTurretModuleBuild::findTarget);
+                targetingMounts.each(m -> !m.fastRetarget(), TargetingModuleBuild::findTarget);
             }
 
             allMounts.each(BaseModuleBuild::moduleUpdate);
@@ -252,11 +252,11 @@ public class ModularTurret extends PayloadBlock{
         }
 
         public void retarget(float x, float y){
-            turretMounts.each(BaseTurretModuleBuild::logicControl, m -> m.targetPos.set(x, y));
+            targetingMounts.each(TargetingModuleBuild::logicControl, m -> m.targetPos.set(x, y));
         }
 
         public void retarget(Posc p){
-            turretMounts.each(BaseTurretModuleBuild::logicControl, m -> m.targetPosition(p));
+            targetingMounts.each(TargetingModuleBuild::logicControl, m -> m.targetPosition(p));
         }
 
         @Override
@@ -323,7 +323,7 @@ public class ModularTurret extends PayloadBlock{
         public BaseModuleBuild addModule(BaseModuleBuild module, short pos){
             module.moduleAdded(this, pos);
             module.updatePos(this);
-            if(module instanceof BaseTurretModuleBuild t) turretMounts.add(t);
+            if(module instanceof TargetingModuleBuild t) targetingMounts.add(t);
             allMounts.add(module);
             sort();
 
@@ -333,7 +333,7 @@ public class ModularTurret extends PayloadBlock{
         public void removeMount(BaseModuleBuild module){
             module.moduleRemoved();
             allMounts.remove(module);
-            if(module instanceof BaseTurretModuleBuild t) turretMounts.remove(t);
+            if(module instanceof TargetingModuleBuild t) targetingMounts.remove(t);
         }
 
         public short nextMount(ModuleSize size){
@@ -549,10 +549,10 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public float range(){
-            if(turretMounts.isEmpty()) return 0;
+            if(targetingMounts.isEmpty()) return 0;
 
             float[] range = {Float.MIN_VALUE};
-            turretMounts.each(m -> {
+            targetingMounts.each(m -> {
                 range[0] = Math.max(range[0], m.range());
             });
             return range[0];
