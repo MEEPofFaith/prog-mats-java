@@ -5,7 +5,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.game.*;
 import progressed.content.*;
 import progressed.type.unit.*;
 import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
@@ -69,19 +69,8 @@ public class FlareUnit extends SentryUnit{
     }
 
     @Override
-    public boolean checkTarget(boolean air, boolean ground){
-        try{
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-            StackTraceElement load = traces[2];
-            if(TractorBeamTurret.TractorBeamBuild.class.isAssignableFrom(Class.forName(load.getClassName(), false, loader))){
-              return false;
-            }
-        }catch(ClassNotFoundException e){ //Ignored
-            return true;
-        }
-        
-        return true;
+    public boolean targetable(Team targeter){
+        return team != targeter;
     }
 
     @Override
