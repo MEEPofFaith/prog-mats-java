@@ -11,11 +11,15 @@ public class PMModules{
 
     public static BaseModule
 
-    test;
+    augment;
 
     public static void load(){
-        test = new BoostModule("aaaaaa"){{
+        augment = new BoostModule("augment"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            limit = 1;
+            hasPower = true;
+
+            consumePower(2f);
         }};
     }
 

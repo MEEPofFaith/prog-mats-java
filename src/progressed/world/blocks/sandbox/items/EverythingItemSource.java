@@ -38,6 +38,13 @@ public class EverythingItemSource extends Block{
         centerRegion = Core.atlas.find(name + "-center", "center");
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        removeBar("items");
+    }
+
     public class EverythingItemSourceBuild extends Building{
         @Override
         public void draw(){

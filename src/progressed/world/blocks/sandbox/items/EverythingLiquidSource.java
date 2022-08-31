@@ -41,6 +41,13 @@ public class EverythingLiquidSource extends Block{
         centerRegion = Core.atlas.find(name + "-center", "center");
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        removeBar("liquid");
+    }
+
     public class EverythingLiquidSourceBuild extends Building{
         @Override
         public void draw(){
