@@ -13,10 +13,10 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v137'
+    mindustryVersion = 'v138'
     mindustryHash = '385af57d1b'
     arcHash = 'd3b6ab563b'
-    jabelVersion = "93fde537c7"
+    jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
@@ -29,12 +29,12 @@ allprojects{
 
 dependencies{
     //Release
-    //compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    //compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     //BE
-    compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
-    compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
+    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
+    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }

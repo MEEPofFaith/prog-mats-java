@@ -32,6 +32,7 @@ public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static Seq<BulletData> allBullets = new Seq<>();
     public static int sandboxBlockHealth = 1000000;
+    boolean hasProc;
 
     public ProgMats(){
         super();
@@ -59,8 +60,6 @@ public class ProgMats extends Mod{
             if(OS.username.equals("MEEP")){
                 experimental = true;
             }
-            renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
-            renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
 
             LoadedMod progM = mods.locateMod("prog-mats");
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);
@@ -102,6 +101,33 @@ public class ProgMats extends Mod{
                     });
                 }
             });
+
+
+            if(!TUEnabled()){ //TU already does this, don't double up
+                renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
+                renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
+
+                Events.on(WorldLoadEvent.class, e -> {
+                    //reset
+                    hasProc = Groups.build.contains(b -> b.block.privileged);
+                    renderer.minZoom = 0.667f;
+                    renderer.maxZoom = 24f;
+                });
+
+                Events.run(Trigger.update, () -> {
+                    if(state.isGame()){ //Zoom range
+                        if(hasProc){
+                            if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                                renderer.minZoom = 1.5f;
+                                renderer.maxZoom = 6f;
+                            }else{
+                                renderer.minZoom = 0.667f;
+                                renderer.maxZoom = 24f;
+                            }
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -134,6 +160,11 @@ public class ProgMats extends Mod{
 
     public static boolean everything(){
         return settings.getBool("pm-sandbox-everything", false);
+    }
+
+    static boolean TUEnabled(){
+        LoadedMod testUtils = mods.getMod("test-utils");
+        return testUtils != null && testUtils.isSupported() && testUtils.enabled();
     }
 
     public static void godHood(UnitType ascending){
