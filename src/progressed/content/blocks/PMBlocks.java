@@ -83,9 +83,6 @@ public class PMBlocks{
     //Swords
     dance, masquerade,
 
-    //Why do I hear anxiety piano
-    sentinel,
-
     //Misc
     blackhole, excalibur,
 
@@ -858,48 +855,6 @@ public class PMBlocks{
             attackPowerUse = 13.5f;
             buildY = 31f / 4f;
             buildWaveOffset = 0.05f;
-        }};
-
-        sentinel = new AimLaserTurret("sentinel"){{
-            requirements(Category.turret, with(
-                Items.copper, 900,
-                Items.lead, 375,
-                Items.graphite, 350,
-                Items.surgeAlloy, 450,
-                Items.silicon, 450,
-                PMItems.tenelium, 250
-            ));
-
-            size = 4;
-            hideDetails = false;
-            scaledHealth = 120;
-            
-            shootY = 34f / 4f;
-            range = 328f;
-            reload = 600f;
-
-            shoot.firstShotDelay = EnergyFx.aimChargeBegin.lifetime;
-
-            heatColor = Pal.lancerLaser;
-            chargingSound = Sounds.techloop;
-            shootSound = Sounds.laserblast;
-            chargeVolume = 2f;
-            minPitch = 0.75f;
-            maxPitch = 1.5f;
-            shootSoundVolume = 1f;
-            warningDelay = 33f;
-            warningVolume = 3f;
-            warningSound = PMSounds.sentinelWarning;
-
-            recoil = 3f;
-            aimRnd = 12f;
-            shootWarmupSpeed = 0.03f;
-
-            shootType = PMBullets.sentinelLaser;
-            unitSort = UnitSorts.strongest;
-
-            consumePower(29f);
-            coolant = consumeCoolant(1f);
         }};
 
         blackhole = new BlackHoleTurret("blackhole"){{

@@ -193,8 +193,9 @@ public class PMBullets{
 
         sentinelLaser = new LaserBlastBulletType(12f, 150f){{
             lifetime = 36f;
-            splashDamage = 1870f;
+            splashDamage = 950f;
             splashDamageRadius = 6f * 8f;
+            buildingDamageMultiplier = 0.3f;
             length = 8f;
             width = 3f;
             trailLength = 12;
@@ -202,7 +203,7 @@ public class PMBullets{
             hittable = false;
             trailColor = hitColor = Pal.lancerLaser;
             hitEffect = EnergyFx.sentinelBlast;
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.largeExplosion;
             hitSoundVolume = 4f;
             chargeEffect = EnergyFx.aimChargeBegin;
 

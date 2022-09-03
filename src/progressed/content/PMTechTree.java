@@ -112,12 +112,6 @@ public class PMTechTree{
             });
         });
 
-        vanillaNode(lancer, () -> {
-            node(sentinel, Seq.with(
-                new SectorComplete(SectorPresets.impact0078)
-            ));
-        });
-
         vanillaNode(cyclone, () -> {
             //Sniper
             node(caliber);
