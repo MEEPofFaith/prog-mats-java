@@ -171,7 +171,7 @@ public class PayloadBullets{
             status = StatusEffects.none;
 
             height = 0.25f;
-            zoneRadius = 96f;
+            zoneRadius = 5f * 8f;
             targetColor = PMPal.missileFrag;
 
             splitTime = 1f / 3f;
@@ -182,7 +182,7 @@ public class PayloadBullets{
                 status = StatusEffects.none;
 
                 height = 0.25f;
-                drawZone = false;
+                zoneRadius = 3.5f * 8f;
                 targetColor = PMPal.missileFrag;
 
                 fragSpread = 64f;
@@ -194,7 +194,7 @@ public class PayloadBullets{
                     hitShake = 5f;
 
                     height = 0.25f;
-                    drawZone = false;
+                    zoneRadius = 2.5f * 8f;
                     targetColor = PMPal.missileFrag;
                 }};
             }};

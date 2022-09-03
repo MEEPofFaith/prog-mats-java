@@ -24,7 +24,7 @@ public class BallisticMissleBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 0.15f, growScl = -1f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
-    public float targetRadius = 1f, zoneRadius = -1f;
+    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
     public float shadowOffset = 24f;
     public float splitTime = 0.5f;
     public Color targetColor = Color.red;
@@ -56,7 +56,6 @@ public class BallisticMissleBulletType extends BulletType{
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }
-        if(zoneRadius < 0) zoneRadius = splashDamageRadius;
         if(growScl < 0) growScl = height * 2f;
 
         super.init();
@@ -91,21 +90,29 @@ public class BallisticMissleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
+        float[] startPos = (float[])b.data;
+
+        float lerp = Mathf.lerp(b.fdata, 1f, b.fin());
         //Target
         Draw.z(zoneLayer - 0.01f);
         if(drawZone && zoneRadius > 0f){
             Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
             Fill.circle(b.x, b.y, zoneRadius);
+            Draw.color(Color.red, 0.5f);
+            float subRad = lerp * (zoneRadius + shrinkRad),
+                inRad = Math.max(0, zoneRadius - subRad),
+                outRad = Math.min(zoneRadius, zoneRadius + shrinkRad - subRad);
+
+            PMDrawf.ring(b.x, b.y, inRad, outRad);
         }
         Draw.z(zoneLayer);
         PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
         //Missile
-        float[] startPos = (float[])b.data;;
         float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
             x = Mathf.lerp(startPos[0], b.x, b.fin()),
             y = Mathf.lerp(startPos[1], b.y, b.fin()),
-            hScl = Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
+            hScl = Interp.sineOut.apply(Mathf.slope(lerp));
 
         Draw.z(shadowLayer);
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);

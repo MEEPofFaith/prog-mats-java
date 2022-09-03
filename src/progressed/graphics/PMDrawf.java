@@ -55,16 +55,6 @@ public class PMDrawf{
         cross(x, y, size, size, angle);
     }
 
-    public static void stretch(TextureRegion region, float x, float y, float x2, float y2){
-        Lines.line(region, x, y, x2, y2, false);
-    }
-
-    public static void shadowAlpha(TextureRegion region, float x, float y, float rotation, float alpha){
-        color(Tmp.c1.set(Pal.shadow).mul(1f, 1f, 1f, alpha));
-        rect(region, x, y, rotation);
-        color();
-    }
-
     public static void vecLine(float x, float y, Vec2 v1, Vec2 v2, boolean cap){
         line(v1.x + x, v1.y + y, v2.x + x, v2.y + y, cap);
     }
@@ -114,29 +104,21 @@ public class PMDrawf{
         target(x, y, angle, radius, color, color, alpha);
     }
 
-    //Too much duplicated code, how to condense down laser drawing?
-    /** Meltdown laser drawing */
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
-        for(int s = 0; s < colors.length; s++){
-            color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + absin(Time.time, 1f, 0.1f)));
-            for(int i = 0; i < tscales.length; i++){
-                vec1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
-                stroke((width + absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
-                lineAngle(x + vec1.x, y + vec1.y, angle, length * lenscales[i], false);
+    public static void ring(float x, float y, float rad1, float rad2){
+        if(Math.abs(rad1 - rad2) > 0.01f){
+            int sides = circleVertices(Math.max(rad1, rad2));
+            float space = 360f / sides;
+
+            for(int i = 0; i < sides; i++){
+                float a = space * i, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+                Fill.quad(
+                    x + rad1 * cos, y + rad1 * sin,
+                    x + rad1 * cos2, y + rad1 * sin2,
+                    x + rad2 * cos2, y + rad2 * sin2,
+                    x + rad2 * cos, y + rad2 *  sin
+                );
             }
         }
-
-        vec1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
-        vec2.trns(angle, length * lenscales[lenscales.length - 1]);
-        Drawf.light(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y, width * 2f, lightColor, 0.7f * alpha);
-    }
-
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
-        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, alpha);
-    }
-
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
-        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
     }
 
     public static void blockBuild(float x, float y, TextureRegion region, float rotation, float progress){
