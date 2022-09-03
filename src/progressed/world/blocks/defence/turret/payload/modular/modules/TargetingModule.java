@@ -17,10 +17,6 @@ public class TargetingModule extends BaseModule{
         public Vec2 targetPos = new Vec2();
         public BlockUnitc unit;
 
-        public void targetPosition(Posc p){
-            targetPos.set(p);
-        }
-
         public void findTarget(){
             //overriden by subclasses!
         }

@@ -1,22 +1,35 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 import progressed.content.blocks.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
+import progressed.world.meta.*;
 
 import java.util.*;
 
+import static mindustry.Vars.*;
+
 public class BaseModule extends Block{
-    public ModuleSize moduleSize = ModuleSize.small;
+    public ModuleSize moduleSize;
     public int limit = -1;
+    /** Map of bars by name. Only displayed in Modular Turret config ui. */
+    protected OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
 
     public BaseModule(String name, ModuleSize size){
         super(name);
@@ -34,6 +47,18 @@ public class BaseModule extends Block{
         super.init();
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        moduleBarMap.putAll(barMap);
+        moduleBarMap.remove("health");
+    }
+
+    public Iterable<Func<Building, Bar>> listModuleBars(){
+        return moduleBarMap.values();
+    }
+
     public class BaseModuleBuild extends Building{
         public ModularTurretBuild parent;
         public float progress = 0, hAlpha;
@@ -49,6 +74,7 @@ public class BaseModule extends Block{
         public void moduleDraw(){
             highlight();
             draw();
+            Draw.reset();
         }
 
         public void highlight(){
@@ -93,8 +119,70 @@ public class BaseModule extends Block{
             return true;
         }
 
-        public void moduleDisplay(Table table, Table parentTable){
+        public void moduleDisplay(Table table){
+            table.table(t -> {
+                t.left();
+                t.image(region).scaling(Scaling.fit).size(5f * 8f);
+                t.label(() -> localizedName + " (" + (mountNumber + 1) + ")").left().growX().padLeft(5);
+                PMStatValues.infoButton(t, block, 5f * 8f).left().padLeft(5f);
+                t.button(new TextureRegionDrawable(Icon.upload),2.5f * 8f, () -> {
+                    tryPickUp(parent);
+                }).size(5f * 8f).left().padLeft(5f).tooltip("@pm-pickup.label");
+            }).growX().top();
 
+            table.row();
+
+            table.table(bars -> {
+                bars.defaults().growX().height(18f).pad(4f);
+
+                displayModuleBars(bars);
+            }).growX().top();
+        }
+
+        public void displayModuleBars(Table table){
+            for(Func<Building, Bar> bar : listModuleBars()){
+                var result = bar.get(self());
+                if(result == null) continue;
+                table.add(result).growX();
+                table.row();
+            }
+        }
+
+        public void tryPickUp(ModularTurretBuild parent){
+            if(canPickUp()){ //jeez this is a mess
+                Payloadc p = (Payloadc)player.unit();
+                BuildPayload module = new BuildPayload(self());
+                p.addPayload(module);
+                Fx.unitPickup.at(x, y);
+                Events.fire(new PickupEvent(player.unit(), module.build));
+                boolean has = parent.allMounts.contains(m -> m.checkSize(moduleSize));
+                parent.removeMount(self());
+                parent.setSelection(moduleSize);
+                parent.rebuild(true, !has, has);
+            }else{
+                showPickupFail();
+            }
+        }
+
+        public boolean canPickUp(){
+            Unit u = player.unit();
+            if(!(u instanceof Payloadc p)) return false;
+
+            return p.payloadUsed() + size * size * tilePayload <= u.type.payloadCapacity + 0.01f
+                && u.within(x, y, tilesize * size * 1.2f);
+        }
+
+        public void showPickupFail(){
+            Unit u = player.unit();
+            if(!(u instanceof Payloadc p)){
+                ui.showInfoToast("@pm-pickup.invalid", 2f);
+            }else{
+                if(!player.unit().within(x, y, size * tilesize * 1.2f)){
+                    ui.showInfoToast("@pm-pickup.toofar", 2f);
+                }else if(p.payloadUsed() + size * size * tilePayload > u.type.payloadCapacity + 0.01f){
+                    ui.showInfoToast("@pm-pickup.full", 2f);
+                }
+            }
         }
 
         public void updatePos(ModularTurretBuild parent){

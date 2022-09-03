@@ -13,7 +13,6 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
-import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -46,6 +45,7 @@ public class ModularTurret extends PayloadBlock{
 
     private static ModuleSize selSize;
     private static int selNum, rowCount;
+    private static Table moduleDisplayTable = new Table();
 
     public ModularTurret(String name){
         super(name);
@@ -299,6 +299,9 @@ public class ModularTurret extends PayloadBlock{
             allMounts.add(module);
             sort();
 
+            boolean has = allMounts.contains(m -> m.checkSize(module.moduleSize()));;
+            rebuild(false, !has, has);
+
             return module;
         }
 
@@ -354,21 +357,22 @@ public class ModularTurret extends PayloadBlock{
         public void buildConfiguration(Table table){
             resetSelection();
 
-            table.table(t -> rebuild(t, false, false)).top().expandY();
+            rebuild(true, false, false);
+            table.table(t -> t.add(moduleDisplayTable)).top().expandY();
         }
 
-        public void rebuild(Table table, boolean dropMenu, boolean slideDisplay){
-            highlightModule();
-            table.clearChildren();
-            table.top();
-            table.table(t -> {
+        public void rebuild(boolean highlight, boolean dropMenu, boolean slideDisplay){
+            if(highlight) highlightModule();
+            moduleDisplayTable.clearChildren();
+            moduleDisplayTable.top();
+            moduleDisplayTable.table(t -> {
                 t.top();
                 for(ModuleSize mSize : ModuleSize.values()){
                     t.button(mSize.title(), Styles.flatTogglet, () -> {
                         if(selSize != mSize){
                             selSize = mSize;
                             selNum = allMounts.indexOf(m -> m.checkSize(mSize));
-                            rebuild(table, true, false);
+                            rebuild(true, true, false);
                         }
                     }).update(b -> {
                         b.setChecked(selSize == mSize);
@@ -379,15 +383,13 @@ public class ModularTurret extends PayloadBlock{
                 }).size(80f, 40f);
             }).top();
             if(!allMounts.contains(m -> m.checkSize(selSize))) return;
-            table.row();
-            table.table(Styles.black6, t -> {
+            moduleDisplayTable.row();
+            moduleDisplayTable.table(Styles.black6, t -> {
                 t.top().left();
                 if(dropMenu){
                     t.setTransform(true);
                     t.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
-                    t.update(() -> {
-                        t.setOrigin(Align.top);
-                    });
+                    t.update(() -> t.setOrigin(Align.top));
                 }
                 t.table(m -> {
                     m.left().top();
@@ -397,7 +399,7 @@ public class ModularTurret extends PayloadBlock{
                             int index = allMounts.indexOf(mount);
                             if(selNum != index){
                                 selNum = index;
-                                rebuild(table, false, true);
+                                rebuild(true, false, true);
                             }
                         }).update(b -> {
                             b.setChecked(selNum == allMounts.indexOf(mount));
@@ -423,12 +425,10 @@ public class ModularTurret extends PayloadBlock{
                         if(slideDisplay){
                             d.setTransform(true);
                             d.actions(Actions.scaleTo(1f, 0f), Actions.scaleTo(1f, 1f, 0.15f, Interp.pow3Out));
-                            d.update(() -> {
-                                d.setOrigin(Align.top);
-                            });
+                            d.update(() -> d.setOrigin(Align.top));
                         }
                         d.top().left();
-                        mount.moduleDisplay(d, table);
+                        mount.moduleDisplay(d);
                     }).top().left().grow();
                 }
             }).top().grow();
