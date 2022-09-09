@@ -28,6 +28,8 @@ _Anuke Template > Sonnicon Template_
 2. Run `gradlew jar` [1].
 3. Your mod jar will be in the `build/libs` directory. **Only use this version for testing on desktop. It will not work with Android.**
 To build an Android-compatible version, you need the Android SDK. You can either let Github Actions handle this, or set it up yourself. See steps below.
+4. Running `gradlew moveDesktop` can move the file to the mods folder for you. (Note: It is not properly set up for Mac. If you use a Mac, PR in the proper command for it.)
+    - Run `gradlew jarMove` to build and move.
 
 ## Building through Github Actions
 
