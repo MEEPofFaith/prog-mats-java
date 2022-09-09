@@ -75,7 +75,10 @@ public class PMErekirBlocks{
                     //heatColor = Color.valueOf("ff6214");
                     mirror = true;
                     moveX = 3f;
-                }}); //TODO aim laser part
+                }}, new AimLaserPart(){{
+                    alpha = PartProgress.warmup.mul(0.5f).add(0.5f);
+                    y = -17f / 4f;
+                }});
             }};
 
             size = 4;
@@ -101,7 +104,7 @@ public class PMErekirBlocks{
 
             consumePower(29f);
             coolant = consumeLiquid(Liquids.water, 1f);
-            coolantMultiplier = 1.25f;
+            coolantMultiplier = 0.5f;
         }};
 
         matrix = new ModularTurret("matrix"){{
