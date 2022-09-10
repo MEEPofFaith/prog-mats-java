@@ -61,10 +61,15 @@ public class ProgMats extends Mod{
 
     @Override
     public void init(){
+        //Sandbox utilities: Make sandbox blocks have a ton of health.
+        Blocks.itemSource.health = Blocks.itemVoid.health =
+            Blocks.liquidSource.health = Blocks.liquidVoid.health =
+            Blocks.powerSource.health = Blocks.powerVoid.health =
+            Blocks.payloadSource.health = Blocks.payloadVoid.health =
+            Blocks.heatSource.health = sandboxBlockHealth;
+
         if(!headless){
-            if(OS.username.equals("MEEP")){
-                experimental = true;
-            }
+            if(OS.username.equals("MEEP")) experimental = true;
 
             LoadedMod progM = mods.locateMod("prog-mats");
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);
