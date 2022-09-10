@@ -12,7 +12,6 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -22,15 +21,17 @@ import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.ui.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
 public class SandboxWall extends Wall{
+    public final int DPSUpdateTime = timers++;
     public float rotateSpeed = 6f, rotateRadius = 2.5f, iconSize = 3f;
     public float resetTime = 120f;
 
-    protected String[] buttonLabels = {"Sparking", "Reflecting", "Insulation", "DPS Testing"};
-    public TextureRegion colorRegion;
-    public TextureRegion[] colorVariantRegions, icons = new TextureRegion[4];
+    protected String[] buttonLabels = {"@pm-sandbox-wall-mode.sparking", "@pm-sandbox-wall-mode.reflecting", "@pm-sandbox-wall-mode.insulating", "@pm-sandbox-wall-mode.DPS-testing"};
+    public TextureRegion colorRegion, sparkRegion, reflectRegion, insulatingRegion;
 
     public SandboxWall(String name){
         super(name);
@@ -43,15 +44,15 @@ public class SandboxWall extends Wall{
         schematicPriority = 10;
         configurable = saveConfig = update = noUpdateDisabled = true;
 
-        config(byte[].class, (SandboxWallBuild tile, byte[] b) -> tile.modes.set(b));
+        config(byte[].class, (SandboxWallBuild tile, byte[] b) -> tile.modes = b.clone());
         config(Integer.class, (SandboxWallBuild tile, Integer i) -> {
-            tile.modes.toggle(i);
-            if(i == 1 && tile.modes.active(i)){
+            tile.toggle(i);
+            if(i == 1 && tile.reflecting()){
                 tile.hit = 0f;
             }
         });
 
-        configClear((SandboxWallBuild tile) -> tile.modes.reset());
+        configClear(SandboxWallBuild::resetModes);
     }
 
     @Override
@@ -59,22 +60,10 @@ public class SandboxWall extends Wall{
         super.load();
 
         colorRegion = Core.atlas.find(name + "-color");
-        
-        if(variants != 0){
-            colorVariantRegions = new TextureRegion[variants];
 
-            for(int i = 0; i < variants; i++){
-                colorVariantRegions[i] = Core.atlas.find(name + "-color-" + i);
-            }
-            colorRegion = colorVariantRegions[0];
-        }
-
-        icons[0] = Items.surgeAlloy.fullIcon;
-        icons[1] = Items.phaseFabric.fullIcon;
-        icons[2] = Items.plastanium.fullIcon;
-        icons[3] = Core.atlas.white();
-        //Icons are null at this point, load it later.
-        Events.on(ClientLoadEvent.class, e -> icons[3] = Icon.modePvp.getRegion());
+        sparkRegion = Core.atlas.find(name + "-sparking");
+        reflectRegion = Core.atlas.find(name + "-reflecting");
+        insulatingRegion = Core.atlas.find(name + "-insulating");
     }
 
     @Override
@@ -95,38 +84,37 @@ public class SandboxWall extends Wall{
     public void drawPlanConfig(BuildPlan req, Eachable<BuildPlan> list){
         if(req.config instanceof byte[] b){
             //draw floating items to represent active mode
-            int num = 0;
-            int amount = b[0] + b[1] + b[2] + b[3];
-
-            for(int i = 0; i < 4; i++){
-                if(b[i] == 1){
-                    float rot = 90f + 360f / amount * num;
-                    Draw.rect(
-                        icons[i],
-                        req.drawx() + Angles.trnsx(rot, rotateRadius),
-                        req.drawy() + Angles.trnsy(rot, rotateRadius),
-                        iconSize, iconSize, 0f
-                    );
-                    num++;
-                }
+            if(b[0] == 1){
+                Draw.rect(sparkRegion, req.drawx(), req.drawy());
+            }
+            if(b[1] == 1){
+                Draw.rect(reflectRegion, req.drawx(), req.drawy());
+            }
+            if(b[2] == 1){
+                Draw.rect(insulatingRegion, req.drawx(), req.drawy());
             }
         }
     }
 
     public class SandboxWallBuild extends WallBuild{
-        public float total, reset = resetTime, time;
-        WallData modes = new WallData();
+        public float total, reset = resetTime, time, DPS;
+        byte[] modes = new byte[4];
 
         @Override
         public void updateTile(){
             super.updateTile();
 
-            time += Time.delta;
-            reset += Time.delta;
+            if(DPSTesting()){
+                time += Time.delta;
+                reset += Time.delta;
 
-            if(reset >= resetTime){
-                total = 0f;
-                time = 0f;
+                if(timer(DPSUpdateTime, 20)) DPS = total / time * 60f;
+
+                if(reset >= resetTime){
+                    total = 0f;
+                    time = 0f;
+                    DPS = 0f;
+                }
             }
         }
 
@@ -138,16 +126,11 @@ public class SandboxWall extends Wall{
                 Draw.rect(region, x, y);
                 Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed), 1f);
                 Draw.rect(colorRegion, x, y);
-            }else{
-                int variant = Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1));
-                Draw.rect(variantRegions[variant], x, y);
-                Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed), 1f);
-                Draw.rect(colorVariantRegions[variant], x, y);
             }
             Draw.reset();
 
             //draw flashing white overlay if enabled
-            if(flashHit && modes.phase && hit >= 0.0001f){
+            if(flashHit && reflecting() && hit >= 0.0001f){
                 Draw.color(flashColor);
                 Draw.alpha(hit * 0.5f);
                 Draw.blend(Blending.additive);
@@ -158,24 +141,18 @@ public class SandboxWall extends Wall{
                 hit = Mathf.clamp(hit - Time.delta / 10f);
             }
 
-            //draw floating items to represent active mode
-            int num = 0;
-            int amount = modes.amount();
-            for(int i = 0; i < 4; i++){
-                if(modes.active(i)){
-                    float rot = Time.time * rotateSpeed % 360f + 360f / amount * num;
-                    Draw.rect(
-                        icons[i],
-                        x + Angles.trnsx(rot, rotateRadius),
-                        y + Angles.trnsy(rot, rotateRadius),
-                        iconSize, iconSize, 0f);
-                    num++;
-                }
+            if(sparking()){
+                Draw.rect(sparkRegion, x, y);
             }
-
-            if(modes.dpsTesting && time > 0){
+            if(reflecting()){
+                Draw.rect(reflectRegion, x, y);
+            }
+            if(insulating()){
+                Draw.rect(insulatingRegion, x, y);
+            }
+            if(DPSTesting()){
                 Draw.z(Layer.overlayUI);
-                String text = Strings.autoFixed((total / time) * 60f, 2) + " DPS";
+                String text = (time > 0 ? Strings.autoFixed(DPS, 2) : "---") + " DPS";
                 PMDrawf.text(x, y + size * tilesize / 2f + 3f, team.color, text);
             }
         }
@@ -187,13 +164,13 @@ public class SandboxWall extends Wall{
             hit = 1f;
 
             //create lightning if necessary
-            if(modes.surge){
+            if(sparking()){
                 Lightning.create(team, lightningColor, lightningDamage, x, y, bullet.rotation() + 180f, lightningLength);
                 lightningSound.at(tile, Mathf.random(0.9f, 1.1f));
             }
 
             //deflect bullets if necessary
-            if(modes.phase){
+            if(reflecting()){
                 //slow bullets are not deflected
                 if(bullet.vel().len() <= 0.1f || !bullet.type.reflectable) return true;
 
@@ -224,19 +201,20 @@ public class SandboxWall extends Wall{
 
         @Override
         public boolean absorbLasers(){
-            return modes.plast;
+            return insulating();
         }
 
         @Override
         public boolean isInsulated(){
-            return modes.plast;
+            return insulating();
         }
 
         @Override
         public void damage(float damage){
+            lastDamageTime = Time.time;
+            if(!DPSTesting()) return;
             reset = 0f;
             total += damage;
-            lastDamageTime = Time.time;
         }
 
         @Override
@@ -246,34 +224,32 @@ public class SandboxWall extends Wall{
 
         @Override
         public void buildConfiguration(Table table){
-            ButtonGroup<ImageButton> group = new ButtonGroup<>();
-            group.setMinCheckCount(0);
-            group.setMaxCheckCount(4);
             Table cont = new Table();
             cont.defaults().size(40);
 
-            for(int i = 0; i < 4; i++){
-                addButton(cont, group, icons[i], i);
-            }
+            addButton(cont, Items.surgeAlloy.fullIcon, 0);
+            addButton(cont, Items.phaseFabric.fullIcon, 1);
+            addButton(cont, Items.plastanium.fullIcon, 2);
+            addButton(cont, Icon.modePvp.getRegion(), 3);
 
             table.add(cont);
         }
 
-        public void addButton(Table t, ButtonGroup<ImageButton> group, TextureRegion icon, int index){
+        public void addButton(Table t, TextureRegion icon, int index){
             ImageButton button = t.button(
                 new TextureRegionDrawable(icon),
                 Styles.clearTogglei,
                 32f, () -> {}
-            ).group(group).tooltip(buttonLabels[index]).get();
+            ).tooltip(buttonLabels[index]).get();
             button.changed(() -> configure(index));
-            button.update(() -> button.setChecked(modes.active(index)));
+            button.update(() -> button.setChecked(activeMode(index)));
         }
 
         @Override
         public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 deselect();
-                modes.reset();
+                resetModes();
                 return false;
             }
 
@@ -282,14 +258,50 @@ public class SandboxWall extends Wall{
 
         @Override
         public byte[] config(){
-            return modes.toByteArray();
+            return modes;
+        }
+
+        public void toggle(int i){
+            modes[i] = (byte)(1 - modes[i]);
+
+            //Reset DPS testing
+            if(i == 3 && DPSTesting()){
+                total = 0f;
+                time = 0f;
+                DPS = 0f;
+                reset = resetTime;
+            }
+        }
+
+        public boolean activeMode(int i){
+            return modes[i] == 1;
+        }
+
+        public boolean sparking(){
+            return modes[0] == 1;
+        }
+
+        public boolean reflecting(){
+            return modes[1] == 1;
+        }
+
+        public boolean insulating(){
+            return modes[2] == 1;
+        }
+
+        public boolean DPSTesting(){
+            return modes[3] == 1;
+        }
+
+        public void resetModes(){
+            Arrays.fill(modes, (byte)0);
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             
-            write.b(modes.toByteArray());
+            write.b(modes);
         }
 
         @Override
@@ -297,83 +309,16 @@ public class SandboxWall extends Wall{
             super.read(read, revision);
 
             if(revision == 1){
-                modes.set(read.b(), read.b(), read.b(), (byte)0);
+                read.b(modes, 0, 3);
             }
             if(revision >= 2){
-                modes.set(read.b(), read.b(), read.b(), read.b());
+                read.b(modes);
             }
         }
 
         @Override
         public byte version(){
             return 2;
-        }
-    }
-
-    public static class WallData{
-        public boolean surge, phase, plast, dpsTesting;
-
-        public WallData(){}
-
-        public void set(boolean surge, boolean phase, boolean plast, boolean dpsTesting){
-            this.surge = surge;
-            this.phase = phase;
-            this.plast = plast;
-            this.dpsTesting = dpsTesting;
-        }
-
-        public void set(byte surge, byte phase, byte plast, byte dpsTesting){
-            set(surge == 1, phase == 1, plast == 1, dpsTesting == 1);
-        }
-
-        public void set(byte[] data){
-            set(data[0], data[1], data[2], data[3]);
-        }
-
-        public void toggle(int i){
-            if(i == 0){
-                surge = !surge;
-            }else if(i == 1){
-                phase = !phase;
-            }else if(i == 2){
-                plast = !plast;
-            }else if(i == 3){
-                dpsTesting = !dpsTesting;
-            }
-        }
-
-        public void reset(){
-            surge = false;
-            phase = false;
-            plast = false;
-            dpsTesting = false;
-        }
-
-        public boolean active(int i){
-            if(i == 0){
-                return surge;
-            }else if(i == 1){
-                return phase;
-            }else if(i == 2){
-                return plast;
-            }else if(i == 3){
-                return dpsTesting;
-            }
-
-            return false;
-        }
-
-        public int amount(){
-            return (surge ? 1 : 0) + (phase ? 1 : 0) + (plast ? 1 : 0) + (dpsTesting ? 1 : 0);
-        }
-
-        public byte[] toByteArray(){
-            return new byte[]{
-                (byte)(surge ? 1 : 0),
-                (byte)(phase ? 1 : 0),
-                (byte)(plast ? 1 : 0),
-                (byte)(dpsTesting ? 1 : 0)
-            };
         }
     }
 }
