@@ -29,6 +29,7 @@ public class OtherFx{
         if(t == null) return;
 
         Floor f = t.floor();
+        if(f instanceof SteamVent) return;
         TextureRegion region = f.variantRegions[Mathf.randomSeed(t.pos(), 0, Math.max(0, f.variantRegions.length - 1))];
         float x = t.drawx(), y = t.drawy() + e.rotation * e.fout();
 

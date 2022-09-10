@@ -11,7 +11,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.consumers.*;
+import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
@@ -45,7 +45,7 @@ public class PMErekirBlocks{
     // endregion
     // region Crafting
 
-    //TODO way to obtain tenelium. 3x3, Slag + Heat?
+    teneliumFuser,
     moduleAssembler, moduleFoundry; //TODO paragon is gonna need it's own missile crafters
 
 
@@ -61,6 +61,9 @@ public class PMErekirBlocks{
                 Items.silicon, 450,
                 PMItems.tenelium, 250
             ));
+
+            float aimLength = 48f;
+            clipSize = aimLength * 2f;
 
             drawer = new DrawTurret("reinforced-"){{
                 parts.add(new RegionPart("-blade"){{
@@ -82,7 +85,7 @@ public class PMErekirBlocks{
                 }}, new AimLaserPart(){{
                     alpha = PartProgress.warmup.mul(0.5f).add(0.5f);
                     blending = Blending.additive;
-                    length = 48f;
+                    length = aimLength;
                     y = -4f;
                 }}, new RegionPart("-top"){{
                     progress = PartProgress.warmup;
@@ -244,6 +247,40 @@ public class PMErekirBlocks{
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
             consumePower(20f);
+        }};
+
+        // endregion
+        // region Crafting
+
+        teneliumFuser = new HeatCrafter("tenelium-fuser"){{
+            requirements(Category.crafting, with());
+
+            size = 3;
+
+            itemCapacity = 20;
+            heatRequirement = 15f;
+            craftTime = 60f * 2f;
+            liquidCapacity = 60f * 5;
+            hasLiquids = true;
+
+            outputItem = new ItemStack(PMItems.tenelium, 1);
+
+            craftEffect = CrafterFx.teneliumFuse;
+
+            drawer = new DrawMulti(
+                new DrawRegion("-bottom"),
+                new DrawLiquidTile(Liquids.slag),
+                new DrawDefault(),
+                new DrawHeatInput(),
+                new DrawGlowRegion("-glow"){{
+                    color = Color.valueOf("70170b");
+                }},
+                new DrawBlurSpin("-rotator", 12f)
+            );
+
+            consumeItem(Items.thorium, 1);
+            consumeLiquid(Liquids.slag, 30f / 60f);
+            //consumePower(4f);
         }};
 
         if(false){
