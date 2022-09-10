@@ -771,8 +771,8 @@ public class PMBlocks{
                 extendTime += startDelay;
                 sweepTime += startDelay;
                 angleRnd = 25f;
-                hitSound = PMSounds.riftSplit;
-                hitSoundVolume = 0.2f; //IT'S REALLY LOUD
+                hitSound = Sounds.largeExplosion;
+                hitSoundVolume = 3f;
                 layer = Layer.effect + 1f;
             }};
             shootType = rift;

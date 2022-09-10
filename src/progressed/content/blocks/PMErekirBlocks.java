@@ -65,21 +65,40 @@ public class PMErekirBlocks{
             drawer = new DrawTurret("reinforced-"){{
                 parts.add(new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
-                    //heatColor = Color.valueOf("ff6214");
+                    heatColor = Pal.techBlue;
                     mirror = true;
                     under = true;
-                    moveX = 9f / 4f;
-                }}, new RegionPart("-shell"){{
-                    progress = PartProgress.warmup;
-                    moves.add(new PartMove(PartProgress.warmup.compress(0.25f, 1f).curve(Interp.smooth), 0f, -4f, 0f));
-                    //heatColor = Color.valueOf("ff6214");
-                    mirror = true;
-                    moveX = 3f;
+                    moveX = 4.75f;
+                    children.add(new RegionPart("-blade-glow"){{
+                        heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                        heatColor = Pal.techBlue;
+                        drawRegion = false;
+                    }});;
+                }}, new RegionPart("-glow"){{
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.techBlue;
+                    drawRegion = false;
+                    mirror = false;
                 }}, new AimLaserPart(){{
                     alpha = PartProgress.warmup.mul(0.5f).add(0.5f);
-                    y = -17f / 4f;
+                    blending = Blending.additive;
+                    length = 48f;
+                    y = -4f;
+                }}, new RegionPart("-top"){{
+                    progress = PartProgress.warmup;
+                    moves.add(new PartMove(PartProgress.warmup.curve(Interp.smooth), 0f, -4f, 0f));
+                    heatColor = Pal.techBlue;
+                    mirror = true;
+                    moveX = 3.25f;
+                    children.add(new RegionPart("-top-glow"){{
+                        heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                        heatColor = Pal.techBlue;
+                        drawRegion = false;
+                    }});;
                 }});
             }};
+            heatColor = Pal.techBlue;
+            cooldownTime = 75f;
 
             size = 4;
             hideDetails = false;
@@ -91,7 +110,6 @@ public class PMErekirBlocks{
 
             recoil = 3f;
             outlineColor = Pal.darkOutline;
-            size = 4;
             linearWarmup = true;
             shootWarmupSpeed = 0.03f;
             minWarmup = 1f;

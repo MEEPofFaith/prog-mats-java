@@ -12,14 +12,15 @@ public class AimLaserPart extends DrawPart{
     /** Progress function for determining alpha. */
     public PartProgress alpha = PartProgress.constant(1f);
     public Blending blending = Blending.normal;
-    public float layerOffset;
+    public float layer = -1f, layerOffset;
     public float x, y;
-    public float width = 0.5f, length = 4f * 8f;
+    public float width = 1f, length = 4f * 8f;
     public Color colorFrom = Color.red, colorTo;
 
     @Override
     public void draw(PartParams params){
         float z = Draw.z();
+        if(layer > 0) Draw.z(layer);
         Draw.z(Draw.z() + layerOffset);
 
         Draw.blend(blending);
@@ -29,7 +30,7 @@ public class AimLaserPart extends DrawPart{
         Tmp.v1.trns(rot, x, y);
         float rx = params.x + Tmp.v1.x,
             ry = params.y + Tmp.v1.y;
-        float cos = Mathf.cosDeg(rot) * width, sin = Mathf.sinDeg(rot) * width;
+        float cos = Mathf.cosDeg(rot) * width / 2f, sin = Mathf.sinDeg(rot) * width / 2f;
         Tmp.v1.trns(params.rotation, length * progress.getClamp(params)).add(rx, ry);
         Fill.quad(
             rx + cos, ry + sin, c1,

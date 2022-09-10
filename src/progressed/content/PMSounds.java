@@ -18,12 +18,8 @@ public class PMSounds{
     rockExplode = new Sound(),
     harbingerCharge = new Sound(),
     harbingerBlast = new Sound(),
-    riftSplit = new Sound(),
     nuclearExplosion = new Sound(),
-    sentinelWarning = new Sound(),
     pulseBeam = new Sound(),
-    moonPiss = new Sound(),
-    loudMoonPiss = new Sound(),
     gigaFard = new Sound();
 
     public static void load() {
@@ -34,12 +30,8 @@ public class PMSounds{
         rockExplode = loadSound("rock-explode");
         harbingerCharge = loadSound("harbinger-charge");
         harbingerBlast = loadSound("harbinger-blast");
-        riftSplit = loadSound("rift-split");
         nuclearExplosion = loadSound("nuclear-explosion");
-        sentinelWarning = loadSound("sentinel-warning");
         pulseBeam = loadSound("pulse-beam");
-        moonPiss = loadSound("piss");
-        loudMoonPiss = loadSound("piss-loud");
         gigaFard = loadSound("giga-fard");
     }
 
