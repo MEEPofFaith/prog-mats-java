@@ -102,7 +102,7 @@ public class PMErekirBlocks{
 
             size = 4;
             hideDetails = false;
-            scaledHealth = 120;
+            scaledHealth = 210;
 
             shootY = 6f / 4f;
             range = 328f;
