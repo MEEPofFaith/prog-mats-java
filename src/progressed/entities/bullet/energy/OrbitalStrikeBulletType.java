@@ -13,7 +13,7 @@ public class OrbitalStrikeBulletType extends BulletType{
 
     public OrbitalStrikeBulletType(){
         lifetime = 30f;
-        layer = Layer.flyingUnit + 0.5f;
+        layer = Layer.weather + 0.5f;
         scaleLife = true;
         collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
     }
@@ -23,6 +23,7 @@ public class OrbitalStrikeBulletType extends BulletType{
         if(topColor == null){
             topColor = bottomColor.cpy().a(0f);
         }
+        drawSize = Math.max(drawSize, radius * 2f);
         super.init();
     }
 

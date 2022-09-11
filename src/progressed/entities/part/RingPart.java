@@ -19,8 +19,8 @@ public class RingPart extends PillarPart{
         float rx = params.x, ry = params.y;
 
         float alpha = alphaProg.get(params);
-        Tmp.c1.set(colorFrom).a(colorFrom.a * alpha);
-        Tmp.c2.set(colorTo).a(colorTo.a * alpha);
+        Tmp.c1.set(colorFrom).mulA(alpha);
+        Tmp.c2.set(colorTo).mulA(alpha);
 
         float radScl = radProg.get(params);
         DrawPseudo3D.ring(rx, ry, rad, inRad * radScl, outRad * radScl, height * heightProg.get(params), Tmp.c1, Tmp.c2);

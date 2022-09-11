@@ -30,8 +30,8 @@ public class PillarPart extends DrawPart{
         float rx = params.x, ry = params.y;
 
         float alpha = alphaProg.get(params);
-        Tmp.c1.set(colorFrom).a(colorFrom.a * alpha);
-        Tmp.c2.set(colorTo).a(colorTo.a * alpha);
+        Tmp.c1.set(colorFrom).mulA(alpha);
+        Tmp.c2.set(colorTo).mulA(alpha);
 
         DrawPseudo3D.cylinder(rx, ry, rad * radProg.get(params), height * heightProg.get(params), Tmp.c1, Tmp.c2);
 

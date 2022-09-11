@@ -25,7 +25,7 @@ public class AimLaserPart extends DrawPart{
 
         Draw.blend(blending);
         float a = alpha.getClamp(params);
-        float c1 = Tmp.c1.set(colorFrom).a(colorFrom.a * a).toFloatBits(), c2 = Tmp.c2.set(colorTo).a(colorTo.a * a).toFloatBits();
+        float c1 = Tmp.c1.set(colorFrom).mulA(a).toFloatBits(), c2 = Tmp.c2.set(colorTo).mulA(a).toFloatBits();
         float rot = params.rotation - 90f;
         Tmp.v1.trns(rot, x, y);
         float rx = params.x + Tmp.v1.x,

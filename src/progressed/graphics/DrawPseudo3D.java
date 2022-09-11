@@ -107,6 +107,40 @@ public class DrawPseudo3D{
         }
     }
 
+    public static void slantCylinder(float x1, float y1, float x2, float y2, float rad, float height, Color baseColor, Color topColor){
+        int vert = Lines.circleVertices(rad);
+
+        Draw.color(baseColor);
+        Fill.poly(x1, y1, vert, rad);
+        Draw.color();
+
+        float space = 360f / vert;
+        float angle = tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * (1f + height) * Vars.renderer.getDisplayScale());
+
+        float c1f = baseColor.toFloatBits();
+        float c2f = topColor.toFloatBits();
+
+        for(int i = 0; i < vert; i++){
+            float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
+
+            float dx1 = x1 + rad * cos,
+                dy1 = y1 + rad * sin,
+                dx2 = x1 + rad * cos2,
+                dy2 = y1 + rad * sin2;
+
+            float dx3 = xHeight(x2 + rad * cos, height),
+                dy3 = yHeight(y2 + rad * sin, height),
+                dx4 = xHeight(x2 + rad * cos2, height),
+                dy4 = yHeight(y2 + rad * sin2, height);
+
+            Fill.quad(dx1, dy1, c1f, dx2, dy2, c1f, dx4, dy4, c2f, dx3, dy3, c2f);
+        }
+
+        Draw.color(topColor);
+        Fill.poly(xHeight(x2, height), yHeight(y2, height), vert, rad * (1 + height));
+        Draw.color();
+    }
+
     public static float xHeight(float x, float height){
         if(height == 0) return x;
         return x + xOffset(x, height);

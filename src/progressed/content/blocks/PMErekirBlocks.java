@@ -76,7 +76,7 @@ public class PMErekirBlocks{
                         heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                         heatColor = Pal.techBlue;
                         drawRegion = false;
-                    }});;
+                    }});
                 }}, new RegionPart("-glow"){{
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.techBlue;
@@ -97,7 +97,7 @@ public class PMErekirBlocks{
                         heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                         heatColor = Pal.techBlue;
                         drawRegion = false;
-                    }});;
+                    }});
                 }});
             }};
             heatColor = Pal.techBlue;
@@ -175,11 +175,8 @@ public class PMErekirBlocks{
                         inRad = 12f * scl;
                         outRad = 20f * scl;
                         //colorTo = colorFrom.cpy().a(0.5f);
-                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
-                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
-                        //Uncomment this in the next build if my PR is merged.
-                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
-                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
+                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
+                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
                     }});
                 }
             }};
@@ -187,6 +184,7 @@ public class PMErekirBlocks{
             linearWarmup = true;
             minWarmup = 1f;
             shootWarmupSpeed = 1f / (1.5f * 60f);
+            warmupMaintainTime = 30f;
 
             reload = 15f;
 
@@ -199,9 +197,8 @@ public class PMErekirBlocks{
             requirements(Category.turret, with());
             size = 6;
 
-            //TODO Make OrbitalStrikeRainBulletType
             float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
+            ammo(Items.phaseFabric, new OrbitalRainBulletType(){{
                 speed = brange;
                 bottomColor = Pal.surge;
                 topColor = null;
@@ -229,11 +226,8 @@ public class PMErekirBlocks{
                         height = (ii + 1) * 0.25f;
                         inRad = 12f * scl;
                         outRad = 20f * scl;
-                        radProg = p -> 2f - Interp.swingOut.apply(Mathf.curve(p.warmup, 0.25f + del, 0.8f + del));
-                        alphaProg = p -> Mathf.curve(p.warmup, 0.5f + del, 0.8f + del);
-                        //Uncomment this in the next build if my PR is merged.
-                        //radProg = PartProgress.warmup.compress(0.25f + del, 0.7f + del).curve(Interp.swingOut).inv().add(1f);
-                        //alphaProg = PartProgress.warmup.compress(0.5f + del, 0.7f + del);
+                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
+                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
                     }});
                 }
             }};
@@ -241,8 +235,9 @@ public class PMErekirBlocks{
             linearWarmup = true;
             minWarmup = 1f;
             shootWarmupSpeed = 1f / (1.5f * 60f);
+            warmupMaintainTime = 30f;
 
-            reload = 15f;
+            reload = 140f;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;

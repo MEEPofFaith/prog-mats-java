@@ -133,8 +133,8 @@ public class EffectZone extends Block{
             if(activeHeat > 0.01f){
                 Draw.z(zoneLayer);
                 float a = activeHeat * smoothEfficiency * opacity;
-                Tmp.c1.set(baseColor).a(baseColor.a * scl * a);
-                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * a);
+                Tmp.c1.set(baseColor).mulA(scl * a);
+                Tmp.c2.set(baseColor).mulA((0.25f + scl) * a);
                 Fill.light(
                     x, y,
                     Lines.circleVertices(range),
@@ -145,8 +145,8 @@ public class EffectZone extends Block{
             if(smoothEfficiency > 0.01f){
                 Draw.z(ringLayer);
                 float a = smoothEfficiency * opacity;
-                Tmp.c1.set(baseColor).a(baseColor.a * a);
-                Tmp.c2.set(topColor).a(topColor.a * a);
+                Tmp.c1.set(baseColor).mulA(a);
+                Tmp.c2.set(topColor).mulA(a);
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);
