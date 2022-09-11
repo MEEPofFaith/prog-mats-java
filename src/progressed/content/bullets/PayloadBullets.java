@@ -179,6 +179,7 @@ public class PayloadBullets{
             fragBullets = 3;
             fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
                 lifetime = 656f; //artimis range
+                minLifetime = 30f;
                 status = StatusEffects.none;
 
                 height = 0.25f;
@@ -189,6 +190,7 @@ public class PayloadBullets{
                 fragBullets = 3;
                 fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
                     lifetime = 656f; //artimis range
+                    minLifetime = 20f;
                     splashDamage = 260f;
                     splashDamageRadius = 48f;
                     hitShake = 5f;

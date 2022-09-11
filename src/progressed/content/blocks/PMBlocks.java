@@ -1033,7 +1033,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        artimis = new SinglePayloadAmmoTurret("artimis"){{
+        artimis = new BallisticMissileTurret("artimis"){{
             requirements(Category.turret, with(
                 Items.copper, 70,
                 Items.lead, 350,
@@ -1053,7 +1053,6 @@ public class PMBlocks{
             reload = 60f;
             range = 656f;
             rotateSpeed = 360f;
-            minRange = 16f * 8f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
             cooldownTime = 8f * 60f;

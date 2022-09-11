@@ -9,8 +9,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
-import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.line;
@@ -129,19 +127,6 @@ public class EnergyFx{
         stroke(2f * e.fout(Interp.pow3In));
         Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
     }).layer(Layer.max - 0.04f),
-
-    aimChargeBegin = new Effect(300f, e -> {
-        if(e.data instanceof AimLaserTurretBuild d){
-            color(Pal.lancerLaser);
-
-            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
-            Fill.circle(d.x + v1.x, d.y + v1.y, 3f * e.fin());
-
-            randLenVectors(e.id, 12, 28f * e.fout(), (x, y) -> {
-                Fill.circle(d.x + v1.x + x, d.y + v1.y + y, 2f * e.fin());
-            });
-        }
-    }).layer(Layer.bullet - 0.01f),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);

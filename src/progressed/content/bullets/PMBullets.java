@@ -205,7 +205,6 @@ public class PMBullets{
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.largeExplosion;
             hitSoundVolume = 4f;
-            chargeEffect = EnergyFx.aimChargeBegin;
 
             //Calculate ahead of time for Sentinel's init() checking the bullet's range.
             range = calculateRange();

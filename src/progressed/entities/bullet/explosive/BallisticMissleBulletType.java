@@ -27,6 +27,7 @@ public class BallisticMissleBulletType extends BulletType{
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
     public float shadowOffset = 24f;
     public float splitTime = 0.5f;
+    public float minLifetime = 60f;
     public Color targetColor = Color.red;
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
@@ -74,7 +75,7 @@ public class BallisticMissleBulletType extends BulletType{
             py = b.y + b.lifetime * b.vel.y;
 
         b.data = new float[]{b.x, b.y, 0f};
-        b.lifetime(b.dst(px, py) / speed);
+        b.lifetime(Math.max(b.dst(px, py) / speed, minLifetime));
         b.set(px, py);
         b.vel.setZero();
     }
