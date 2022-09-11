@@ -164,6 +164,7 @@ public class PMErekirBlocks{
                     radProg = PartProgress.warmup.curve(swing).inv().add(1f);
                     alphaProg = PartProgress.warmup;
                     heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    blending = Blending.additive;
                 }});
 
                 for(float i = 0; i < 3; i++){
@@ -174,9 +175,9 @@ public class PMErekirBlocks{
                         height = (ii + 1) * 0.25f;
                         inRad = 12f * scl;
                         outRad = 20f * scl;
-                        //colorTo = colorFrom.cpy().a(0.5f);
                         radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
                         alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
+                        blending = Blending.additive;
                     }});
                 }
             }};
@@ -214,6 +215,7 @@ public class PMErekirBlocks{
                     radProg = PartProgress.warmup.curve(swing).inv().add(1f);
                     alphaProg = PartProgress.warmup;
                     heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    blending = Blending.additive;
                 }});
 
                 for(float i = 0; i < 3; i++){
@@ -228,6 +230,7 @@ public class PMErekirBlocks{
                         outRad = 20f * scl;
                         radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
                         alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
+                        blending = Blending.additive;
                     }});
                 }
             }};

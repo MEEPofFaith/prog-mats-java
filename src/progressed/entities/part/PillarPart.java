@@ -16,6 +16,7 @@ public class PillarPart extends DrawPart{
     public PartProgress alphaProg = PartProgress.warmup;
     public float rad = 8f, height = 1f;
     public float layer = Layer.flyingUnit + 0.5f;
+    public Blending blending = Blending.normal;
     public Color colorFrom = PMPal.nexusLaserDark, colorTo = PMPal.nexusLaser.cpy().a(0);
 
     @Override
@@ -33,7 +34,9 @@ public class PillarPart extends DrawPart{
         Tmp.c1.set(colorFrom).mulA(alpha);
         Tmp.c2.set(colorTo).mulA(alpha);
 
+        Draw.blend(blending);
         DrawPseudo3D.cylinder(rx, ry, rad * radProg.get(params), height * heightProg.get(params), Tmp.c1, Tmp.c2);
+        Draw.blend();
 
         Draw.z(z);
     }

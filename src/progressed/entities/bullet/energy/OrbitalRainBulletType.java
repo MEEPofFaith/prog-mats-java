@@ -45,6 +45,7 @@ public class OrbitalRainBulletType extends OrbitalStrikeBulletType{
 
     @Override
     public void draw(Bullet b){
+        Draw.blend(Blending.additive);
         if(b.data instanceof float[] pos){
             float x = Mathf.lerp(b.x, pos[0], tiltScl),
              y = Mathf.lerp(b.y, pos[1], tiltScl);
@@ -63,6 +64,7 @@ public class OrbitalRainBulletType extends OrbitalStrikeBulletType{
                 Drawf.tri(b.x + Angles.trnsx(rot, rad), b.y + Angles.trnsy(rot, rad), w, oL, rot);
             }
         }
+        Draw.blend();
     }
 
     @Override

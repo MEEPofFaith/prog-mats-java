@@ -1,6 +1,7 @@
 package progressed.entities.bullet.energy;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -41,6 +42,8 @@ public class OrbitalStrikeBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
+        Draw.blend(Blending.additive);
         DrawPseudo3D.cylinder(b.x, b.y, radius * Mathf.curve(b.fin(), 0f, growTime), height, bottomColor, topColor);
+        Draw.blend();
     }
 }
