@@ -585,7 +585,7 @@ public class PMBlocks{
             size = 3;
             hideDetails = false;
             scaledHealth = 120;
-            reload = 450f;
+            reload = 150f;
             range = 544f;
             rotateSpeed = 2.5f;
             recoil = 5f;
