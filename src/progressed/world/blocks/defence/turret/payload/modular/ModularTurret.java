@@ -27,7 +27,7 @@ import mindustry.world.meta.*;
 import progressed.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
-import progressed.world.blocks.defence.turret.payload.modular.modules.turret.TargetingModule.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.TargetingModule.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.content;
@@ -45,7 +45,7 @@ public class ModularTurret extends PayloadBlock{
 
     private static ModuleSize selSize;
     private static int selNum, rowCount;
-    private static final Table moduleDisplayTable = new Table();
+    private static Table moduleDisplayTable = new Table();
 
     public ModularTurret(String name){
         super(name);
@@ -266,7 +266,7 @@ public class ModularTurret extends PayloadBlock{
 
             if(isPayload()) updatePos();
 
-            allMounts.each(BaseModuleBuild::baseModuleDraw);
+            allMounts.each(BaseModuleBuild::moduleDraw);
         }
 
         public void unHighlight(){

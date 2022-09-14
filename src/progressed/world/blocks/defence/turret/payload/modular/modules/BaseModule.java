@@ -13,7 +13,6 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -26,7 +25,6 @@ import java.util.*;
 
 import static mindustry.Vars.*;
 
-@SuppressWarnings("unchecked")
 public class BaseModule extends Block{
     public ModuleSize moduleSize;
     public int limit = -1;
@@ -54,19 +52,11 @@ public class BaseModule extends Block{
         super.setBars();
 
         moduleBarMap.putAll(barMap);
-        removeModuleBar("health");
+        moduleBarMap.remove("health");
     }
 
     public Iterable<Func<Building, Bar>> listModuleBars(){
         return moduleBarMap.values();
-    }
-
-    public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
-        moduleBarMap.put(name, (Func<Building, Bar>)sup);
-    }
-
-    public void removeModuleBar(String name){
-        moduleBarMap.remove(name);
     }
 
     public class BaseModuleBuild extends Building{
@@ -81,24 +71,10 @@ public class BaseModule extends Block{
             if(hasPower) parent.power.graph.add(this);
         }
 
-        public void baseModuleDraw(){
-            highlight();
-            moduleDraw();
-            Draw.reset();
-            Draw.blend();
-            if(highlight){
-                float z = Draw.z();
-                Draw.z(Layer.overlayUI);
-                drawModuleSelect();
-                Draw.z(z);
-            }
-        }
-
         public void moduleDraw(){
+            highlight();
             draw();
-        }
-
-        public void drawModuleSelect(){
+            Draw.reset();
         }
 
         public void highlight(){
