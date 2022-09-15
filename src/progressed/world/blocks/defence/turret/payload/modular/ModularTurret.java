@@ -28,8 +28,7 @@ import progressed.*;
 import progressed.world.meta.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.emptyTile;
+import static mindustry.Vars.*;
 
 public class ModularTurret extends PayloadBlock{
     public ModuleGroup[] moduleGroups;

@@ -4,9 +4,11 @@ import arc.func.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -47,7 +49,14 @@ public class BoostModule extends Block{
     }
 
     public class BoostModuleBuild extends Building implements TurretModule{
-        public ModuleModule module = new ModuleModule(self(), hasPower);
+        public ModuleModule module;
+
+        @Override
+        public Building create(Block block, Team team){
+            super.create(block, team);
+            module = new ModuleModule(self(), hasPower);
+            return self();
+        }
 
         public void moduleUpdate(){
             module.moduleUpdate();
@@ -95,6 +104,20 @@ public class BoostModule extends Block{
         @Override
         public Iterable<Func<Building, Bar>> listModuleBars(){
             return moduleBarMap.values();
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            module.write(write);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            (module == null ? new ModuleModule(self(), hasPower) : module).read(read);
         }
     }
 }

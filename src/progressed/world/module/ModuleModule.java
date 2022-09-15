@@ -22,7 +22,6 @@ import progressed.world.meta.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.ui;
 
 public class ModuleModule extends BlockModule{
     public TurretModule module;
@@ -149,13 +148,13 @@ public class ModuleModule extends BlockModule{
     @Override
     public void write(Writes write){
         write.s(mountNumber);
+        write.f(progress);
     }
 
     @Override
-    public void read(Reads read, boolean legacy){
-        super.read(read, legacy);
-
+    public void read(Reads read){
         mountNumber = swapNumber = read.s();
+        progress = read.f();
     }
 
     /** Modular Turrets have mounts of 3 sizes. */
