@@ -24,6 +24,7 @@ import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.util.*;
+import progressed.world.blocks.defence.turret.payload.modular.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -48,9 +49,7 @@ public class ProgMats extends Mod{
         }));
 
         if(!headless){
-            Events.on(ContentInitEvent.class, e -> {
-                float clip = PMModules.maxClip;
-            });
+            Events.on(ContentInitEvent.class, e -> content.blocks().each(b -> b instanceof ModularTurret, (ModularTurret b) -> b.setClip(PMModules.maxClip)));
         }
     }
 

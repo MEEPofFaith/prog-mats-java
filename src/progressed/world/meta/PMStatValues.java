@@ -31,8 +31,8 @@ import progressed.ui.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
-import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.module.ModuleModule.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -267,83 +267,81 @@ public class PMStatValues{
     }
 
     public static StatValue fuel(FuelCrafter crafter){
-        return table -> {
-            table.table(t -> {
-                t.table(ct -> {
-                    for(ItemStack stack : ((ConsumeItems)(crafter.findConsumer(c -> c instanceof ConsumeItems))).items){
-                        ct.add(new ItemDisplay(stack.item, stack.amount, crafter.craftTime, true)).padRight(5);
-                    }
-                }).left().get().background(Tex.underline);
+        return table -> table.table(t -> {
+            t.table(ct -> {
+                for(ItemStack stack : ((ConsumeItems)(crafter.findConsumer(c -> c instanceof ConsumeItems))).items){
+                    ct.add(new ItemDisplay(stack.item, stack.amount, crafter.craftTime, true)).padRight(5);
+                }
+            }).left().get().background(Tex.underline);
 
-                t.row();
+            t.row();
 
-                t.table(tt -> {
-                    tt.add("@stat.pm-fuel").top();
-                    tt.table(ft -> {
-                        ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
-                        ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
+            t.table(tt -> {
+                tt.add("@stat.pm-fuel").top();
+                tt.table(ft -> {
+                    ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
+                    ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
 
-                        ft.table(st -> {
-                            st.clearChildren();
-                            st.left().defaults().padRight(3).left();
+                    ft.table(st -> {
+                        st.clearChildren();
+                        st.left().defaults().padRight(3).left();
 
-                            st.add(bundle.format("stat.pm-fuel.input", crafter.fuelPerItem));
+                        st.add(bundle.format("stat.pm-fuel.input", crafter.fuelPerItem));
 
-                            sep(st, bundle.format("stat.pm-fuel.use", crafter.fuelPerCraft));
+                        sep(st, bundle.format("stat.pm-fuel.use", crafter.fuelPerCraft));
 
-                            sep(st, bundle.format("stat.pm-fuel.capacity", crafter.fuelCapacity));
+                        sep(st, bundle.format("stat.pm-fuel.capacity", crafter.fuelCapacity));
 
-                            if(crafter.attribute != null){
-                                st.row();
-                                st.table(at -> {
-                                    Runnable[] rebuild = {null};
-                                    Map[] lastMap = {null};
+                        if(crafter.attribute != null){
+                            st.row();
+                            st.table(at -> {
+                                Runnable[] rebuild = {null};
+                                Map[] lastMap = {null};
 
-                                    rebuild[0] = () -> {
-                                        at.clearChildren();
-                                        at.left();
+                                rebuild[0] = () -> {
+                                    at.clearChildren();
+                                    at.left();
 
-                                        at.add("@stat.pm-fuel.affinity");
+                                    at.add("@stat.pm-fuel.affinity");
 
-                                        if(state.isGame()){
-                                            var blocks = Vars.content.blocks()
-                                                .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
-                                                .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
+                                    if(state.isGame()){
+                                        var blocks = Vars.content.blocks()
+                                            .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
+                                            .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
 
-                                            if(blocks.any()){
-                                                int i = 0;
-                                                for(var block: blocks){
-                                                    fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
-                                                    if(++i % 5 == 0){
-                                                        at.row();
-                                                    }
+                                        if(blocks.any()){
+                                            int i = 0;
+                                            for(var block: blocks){
+                                                fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
+                                                if(++i % 5 == 0){
+                                                    at.row();
                                                 }
-                                            }else{
-                                                at.add("@none.inmap");
                                             }
                                         }else{
-                                            at.add("@stat.showinmap");
+                                            at.add("@none.inmap");
                                         }
-                                    };
+                                    }else{
+                                        at.add("@stat.showinmap");
+                                    }
+                                };
 
-                                    rebuild[0].run();
+                                rebuild[0].run();
 
-                                    //rebuild when map changes.
-                                    at.update(() -> {
-                                        Map current = state.isGame() ? state.map : null;
+                                //rebuild when map changes.
+                                at.update(() -> {
+                                    Map current = state.isGame() ? state.map : null;
 
-                                        if(current != lastMap[0]){
-                                            rebuild[0].run();
-                                            lastMap[0] = current;
-                                        }
-                                    });
+                                    if(current != lastMap[0]){
+                                        rebuild[0].run();
+                                        lastMap[0] = current;
+                                    }
                                 });
-                            }
-                        }).padTop(-9).left().get().background(Tex.underline);
-                    }).left();
+                            });
+                        }
+                    }).padTop(-9).left().get().background(Tex.underline);
                 }).left();
-            });
-        };
+            }).left();
+        });
     }
 
     public static StatValue payloadProducts(Seq<Recipe> products){
@@ -432,56 +430,29 @@ public class PMStatValues{
     }
 
     public static StatValue signalFlareHealth(float health, float attraction, float duration){
-        return table -> {
-            table.table(ht -> {
-                ht.left().defaults().padRight(3).left();
+        return table -> table.table(ht -> {
+            ht.left().defaults().padRight(3).left();
 
-                ht.add(bundle.format("bullet.pm-flare-health", health));
-                ht.row();
-                ht.add(bundle.format("bullet.pm-flare-attraction", attraction));
-                ht.row();
-                ht.add(bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
-            }).padTop(-9f).left().get().background(Tex.underline);
-        };
+            ht.add(bundle.format("bullet.pm-flare-health", health));
+            ht.row();
+            ht.add(bundle.format("bullet.pm-flare-attraction", attraction));
+            ht.row();
+            ht.add(bundle.format("bullet.pm-flare-lifetime", (int)(duration / 60f)));
+        }).padTop(-9f).left().get().background(Tex.underline);
     }
 
     public static StatValue staticDamage(float damage, float reload, StatusEffect status){
-        return table -> {
-            table.table(t -> {
-                t.left().defaults().padRight(3).left();
+        return table -> table.table(t -> {
+            t.left().defaults().padRight(3).left();
 
-                t.add(bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
+            t.add(bundle.format("bullet.damage", damage * 60f / reload) + StatUnit.perSecond.localized());
+            t.row();
+
+            if(status != StatusEffects.none){
+                t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
                 t.row();
-
-                if(status != StatusEffects.none){
-                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
-                    t.row();
-                }
-            }).padTop(-9).left().get().background(Tex.underline);
-        };
-    }
-
-    public static StatValue swordDamage(float damage, float damageRadius, float buildingDamageMultiplier, float speed, StatusEffect status){
-        return table -> {
-            table.table(t -> {
-                t.left().defaults().padRight(3).left();
-
-                t.add(bundle.format("bullet.splashdamage", damage, Strings.fixed(damageRadius / tilesize, 1)));
-                t.row();
-
-                if(buildingDamageMultiplier != 1f){
-                    t.add(bundle.format("bullet.buildingdamage", PMUtls.stringsFixed(buildingDamageMultiplier * 100f)));
-                    t.row();
-                }
-
-                if(status != StatusEffects.none){
-                    t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
-                    t.row();
-                }
-
-                t.add(bundle.format("bullet.pm-sword-speed", speed));
-            }).padTop(-9).left().get().background(Tex.underline);
-        };
+            }
+        }).padTop(-9).left().get().background(Tex.underline);
     }
 
     public static StatValue teslaZapping(float damage, float maxTargets, StatusEffect status){
@@ -497,29 +468,6 @@ public class PMStatValues{
                     t.add((status.minfo.mod == null ? status.emoji() : "") + "[stat]" + status.localizedName);
                 }
             }).padTop(-9).left().get().background(Tex.underline);
-        };
-    }
-
-    public static StatValue dronePower(float buildUse, float chargeUse){
-        return table -> {
-            table.row();
-            table.table(t -> {
-                t.add("@pm-drone-use-construct").growX().left().padRight(10);
-                t.add((buildUse * 60f) + " " + StatUnit.powerSecond.localized()).growX().left();
-                t.row();
-                t.add("@pm-drone-use-recharge").growX().left().padRight(10);
-                t.add((chargeUse * 60f) + " " + StatUnit.powerSecond.localized()).growX().left();
-            }).padTop(-9).left().get().background(Tex.underline);
-        };
-    }
-
-    public static StatValue unitOutput(UnitType u){
-        return table -> {
-            table.table(t -> {
-                t.image(icon(u)).size(3 * 8);
-                t.add(u.localizedName).padLeft(8);
-                infoButton(t, u, 5 * 8).padLeft(6);
-            });
         };
     }
 
@@ -543,9 +491,7 @@ public class PMStatValues{
     }
 
     public static Cell<TextButton> infoButton(Table table, UnlockableContent content, float size){
-        return table.button("?", Styles.flatBordert, () -> {
-            ui.content.show(content);
-        }).size(size).left().name("contentinfo");
+        return table.button("?", Styles.flatBordert, () -> ui.content.show(content)).size(size).left().name("contentinfo");
     }
 
     private static Cell<Label> sep(Table table, String text){

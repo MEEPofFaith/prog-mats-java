@@ -21,8 +21,8 @@ import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
-import progressed.world.blocks.defence.turret.payload.modular.modules.BaseModule.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.module.ModuleModule.*;
 
 import static mindustry.type.ItemStack.*;
 
