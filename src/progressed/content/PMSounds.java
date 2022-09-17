@@ -4,7 +4,10 @@ import arc.*;
 import arc.assets.*;
 import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
+import arc.files.*;
 import mindustry.*;
+import mindustry.gen.*;
+import progressed.*;
 
 /**
  * For how to make this. Just copy over and adjust the code.
@@ -35,9 +38,14 @@ public class PMSounds{
         gigaFard = loadSound("giga-fard");
     }
 
+    public static void overrideSounds(){
+        if(Vars.headless) return;
+
+        Sounds.press.load(soundFile("funi-boom"));
+    }
+
     protected static Sound loadSound(String soundName){
-        String name = "sounds/" + soundName;
-        String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
+        String path = soundPath(soundName);
 
         Sound sound = new Sound();
 
@@ -45,5 +53,13 @@ public class PMSounds{
         desc.errored = Throwable::printStackTrace;
 
         return sound;
+    }
+    protected static String soundPath(String soundName){
+        String name = "sounds/" + soundName;
+        return Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
+    }
+
+    protected static Fi soundFile(String soundName){
+        return Vars.tree.get(soundPath(soundName));
     }
 }

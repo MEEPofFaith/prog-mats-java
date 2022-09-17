@@ -103,6 +103,8 @@ public class ProgMats extends Mod{
                             }
                         });
                     });
+
+                    PMSounds.overrideSounds();
                 }
             });
 
