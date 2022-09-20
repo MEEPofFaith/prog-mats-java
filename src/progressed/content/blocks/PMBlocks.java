@@ -40,6 +40,7 @@ import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
 import progressed.world.blocks.sandbox.defence.*;
 import progressed.world.blocks.sandbox.distribution.*;
+import progressed.world.blocks.sandbox.heat.*;
 import progressed.world.blocks.sandbox.items.*;
 import progressed.world.blocks.sandbox.power.*;
 import progressed.world.blocks.sandbox.units.*;
@@ -148,6 +149,9 @@ public class PMBlocks{
 
     //Defense
     sandboxWall, sandboxWallLarge,
+
+    //Heat
+    infiniHeatSource,
 
     //Unit
     godFactory, capBlock, harmacist,
@@ -1544,6 +1548,9 @@ public class PMBlocks{
             iconSize = 6f;
             rotateRadius = 5f;
         }};
+
+        /// Heat
+        infiniHeatSource = new InfiniHeatSource("infini-heater");
 
         /// Unit
         godFactory = new UnitFactory("god-factory"){{
