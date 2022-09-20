@@ -7,7 +7,9 @@ import arc.audio.*;
 import arc.files.*;
 import mindustry.*;
 import mindustry.gen.*;
-import progressed.*;
+import mindustry.world.blocks.power.*;
+
+import static mindustry.Vars.*;
 
 /**
  * For how to make this. Just copy over and adjust the code.
@@ -23,6 +25,7 @@ public class PMSounds{
     harbingerBlast = new Sound(),
     nuclearExplosion = new Sound(),
     pulseBeam = new Sound(),
+    funiBoom = new Sound(),
     gigaFard = new Sound();
 
     public static void load() {
@@ -35,13 +38,18 @@ public class PMSounds{
         harbingerBlast = loadSound("harbinger-blast");
         nuclearExplosion = loadSound("nuclear-explosion");
         pulseBeam = loadSound("pulse-beam");
+        funiBoom = loadSound("funi-boom");
         gigaFard = loadSound("giga-fard");
     }
 
     public static void overrideSounds(){
         if(Vars.headless) return;
 
-        Sounds.press.load(soundFile("funi-boom"));
+        content.blocks().each(b -> b.destroySound = Sounds.wind3);
+        content.blocks().each(b -> b instanceof PowerGenerator, (PowerGenerator b) -> b.explodeSound = funiBoom);
+        content.units().each(u -> u.deathSound = Sounds.wind3);
+
+        Sounds.press.load(soundFile("press-boom"));
     }
 
     protected static Sound loadSound(String soundName){

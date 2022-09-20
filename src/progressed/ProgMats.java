@@ -89,9 +89,7 @@ public class ProgMats extends Mod{
                 swapDialog = new ModuleSwapDialog();
 
                 if(farting()){
-                    content.blocks().each(b -> b.destroySound = Sounds.wind3);
-
-                    content.units().each(u -> u.deathSound = Sounds.wind3);
+                    PMSounds.overrideSounds();
 
                     Events.run(Trigger.newGame, () -> {
                         if(settings.getBool("skipcoreanimation")) return;
@@ -103,8 +101,6 @@ public class ProgMats extends Mod{
                             }
                         });
                     });
-
-                    PMSounds.overrideSounds();
                 }
             });
 
