@@ -85,13 +85,13 @@ task deploy(type: Jar){
     }
 }
 
-task moveDesktop doFirst{
-    exec{
+task moveDesktop {
+    exec {
         workingDir "$rootDir"
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
+        if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
             println "Yeeting PM to the shadow realm."
-            commandLine("cmd", "/C", "move", "/Y", "build\\libs\\ProgMatsDesktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
-        }else{
+            commandLine("cmd", "/C", "move", "/Y", "build\\libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
+        } else {
             println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet PM into the mods folder."
         }
     }
