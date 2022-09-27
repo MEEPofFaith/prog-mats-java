@@ -97,7 +97,7 @@ task moveDesktop doFirst{
         workingDir "$buildDir"
         if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
             println "Yeeting PM to the shadow realm..."
-            commandLine("cmd", "/C", "move", "/Y", "libs\\ProgMatsDesktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
+            commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
         }else{
             println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet PM into the mods folder."
         }
