@@ -2,7 +2,6 @@ package progressed.world.blocks.sandbox.heat;
 
 import arc.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -20,7 +19,6 @@ import progressed.*;
 
 public class InfiniHeatSource extends Block{
     public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
-    public float heatLerpTime = 60f;
 
     public InfiniHeatSource(String name){
         super(name);
@@ -40,10 +38,7 @@ public class InfiniHeatSource extends Block{
         canOverdrive = false;
         drawArrow = true;
 
-        config(Float.class, (InfinitHeatSourceBuild build, Float f) -> {
-            build.targetHeat = f;
-            build.oldHeat = build.smoothHeat;
-        });
+        config(Float.class, (InfinitHeatSourceBuild build, Float f) -> build.heat = f);
     }
 
     @Override
@@ -69,14 +64,7 @@ public class InfiniHeatSource extends Block{
     }
 
     public class InfinitHeatSourceBuild extends Building implements HeatBlock{
-        public float targetHeat = 20, smoothHeat, oldHeat;
-
-        @Override
-        public void updateTile(){
-            super.updateTile();
-
-            smoothHeat = Mathf.approachDelta(smoothHeat, targetHeat, Math.abs(targetHeat - oldHeat) * delta() / heatLerpTime);
-        }
+        public float heat = 20;
 
         @Override
         public void draw(){
@@ -93,20 +81,16 @@ public class InfiniHeatSource extends Block{
         public void buildConfiguration(Table table){
             table.table(Styles.black5, t -> {
                 t.marginLeft(6f).marginRight(6f).right();
-                t.field(String.valueOf(targetHeat), text -> {
-                    float newHeat = targetHeat;
-                    if(Strings.canParsePositiveFloat(text)){
-                        newHeat = Strings.parseFloat(text);
-                    }
-                    configure(newHeat);
-                }).width(120).get().setFilter(TextFieldFilter.floatsOnly);
+                t.field(String.valueOf(heat), text -> {
+                    configure(Strings.parseFloat(text));
+                }).width(120).valid(Strings::canParsePositiveFloat).get().setFilter(TextFieldFilter.floatsOnly);
                 t.add(Core.bundle.get("unit.heatunits")).left();
             });
         }
 
         @Override
         public Object config(){
-            return targetHeat;
+            return heat;
         }
 
         @Override
@@ -116,30 +100,26 @@ public class InfiniHeatSource extends Block{
 
         @Override
         public float heatFrac(){
-            return smoothHeat / targetHeat;
+            return 1f;
         }
 
         @Override
         public float heat(){
-            return smoothHeat;
+            return heat;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
 
-            write.f(smoothHeat);
-            write.f(targetHeat);
-            write.f(oldHeat);
+            write.f(heat);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            smoothHeat = read.f();
-            targetHeat = read.f();
-            oldHeat = read.f();
+            heat = read.f();
         }
     }
 }
