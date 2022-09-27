@@ -14,6 +14,8 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.type.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
@@ -111,7 +113,7 @@ public class ProgMats extends Mod{
 
                 Events.on(WorldLoadEvent.class, e -> {
                     //reset
-                    hasProc = Groups.build.contains(b -> b.block.privileged);
+                    hasProc = Groups.build.contains(b -> b.block.privileged); //Check for world procs
                     renderer.minZoom = 0.667f;
                     renderer.maxZoom = 24f;
                 });
@@ -147,11 +149,14 @@ public class ProgMats extends Mod{
 
     void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.pm-title"), "prog-mats-settings-icon", t -> {
+            t.pref(new Separator("pm-graphics-settings"));
             t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
             t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
-            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
             t.checkPref("pm-tesla-range", true);
+            t.pref(new Separator("pm-sandbox-settings"));
+            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
             t.checkPref("pm-sandbox-everything", false);
+            t.pref(new Separator("pm-other-settings"));
             t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
         });
     }
@@ -264,6 +269,31 @@ public class ProgMats extends Mod{
 
         public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
             this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
+        }
+    }
+
+    static class Separator extends Setting{
+        float height;
+
+        public Separator(String name){
+            super(name);
+        }
+
+        public Separator(float height){
+            this("");
+            this.height = height;
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            if(name.isEmpty()){
+                table.image(Tex.clear).height(height).padTop(3f);
+            }else{
+                table.table(t -> {
+                    t.add(title).padTop(3f);
+                }).get().background(Tex.underline);
+            }
+            table.row();
         }
     }
 }
