@@ -32,7 +32,6 @@ public class UtilFx{
     rocketTrailFade = new Effect(440f, e -> {
         if(!(e.data instanceof RocketTrailData data)) return;
         z(data.layer);
-
         //lifetime is how many frames it takes to fade out the trail
         e.lifetime = data.trail.length * 1.4f;
 
@@ -55,6 +54,18 @@ public class UtilFx{
         trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
     }),
+
+    heightTrailFade = new Effect(400f, e -> {
+        if(!(e.data instanceof HeightTrail trail)) return;
+        //lifetime is how many frames it takes to fade out the trail
+        e.lifetime = trail.length * 1.4f;
+
+        if(!state.isPaused()){
+            trail.shorten();
+        }
+        trail.drawCap(e.color, e.rotation);
+        trail.draw(e.color, e.rotation);
+    }).layer(Layer.flyingUnit + 1.9f),
 
     groundCrack = new Effect(20f, 500f, e -> {
         if(!(e.data instanceof LightningData d)) return;

@@ -162,7 +162,9 @@ public class PayloadBullets{
             splashDamageRadius = 64f;
             hitShake = 5f;
 
-            targetColor = PMPal.missileBasic;
+            trailColor = targetColor = PMPal.missileBasic;
+
+            trailLength = 25;
         }};
 
         artimisRecursive = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
@@ -170,7 +172,9 @@ public class PayloadBullets{
 
             height *= 1.5;
             zoneRadius = 5f * 8f;
-            targetColor = PMPal.missileFrag;
+            trailColor = targetColor = PMPal.missileFrag;
+
+            trailLength = 25;
 
             splitTime = 1f / 3f;
             fragRandomSpread = 80f;
@@ -180,7 +184,9 @@ public class PayloadBullets{
 
                 height *= 1.5;
                 zoneRadius = 3.5f * 8f;
-                targetColor = PMPal.missileFrag;
+                trailColor = targetColor = PMPal.missileFrag;
+
+                trailLength = 20;
 
                 fragRandomSpread = 64f;
                 fragBullets = 3;
@@ -191,7 +197,9 @@ public class PayloadBullets{
 
                     height *= 1.5;
                     zoneRadius = 2.5f * 8f;
-                    targetColor = PMPal.missileFrag;
+                    trailColor = targetColor = PMPal.missileFrag;
+
+                    trailLength = 15;
                 }};
             }};
         }};

@@ -19,6 +19,8 @@ import progressed.util.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.BallisticProjector.*;
 
+import static mindustry.Vars.headless;
+
 //TODO Set to proper name later
 public class BallisticMissleBulletType extends BulletType{
     public boolean drawZone = true;
@@ -91,6 +93,18 @@ public class BallisticMissleBulletType extends BulletType{
     }
 
     @Override
+    public void updateTrail(Bullet b){
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new HeightTrail(trailLength);
+            }
+            HeightTrail trail = (HeightTrail)b.trail;
+            trail.length = trailLength;
+            trail.update(tX(b), tY(b), trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), hScl(b) * height);
+        }
+    }
+
+    @Override
     public void draw(Bullet b){
         float[] startPos = (float[])b.data;
 
@@ -114,11 +128,14 @@ public class BallisticMissleBulletType extends BulletType{
         float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
             x = tX(b),
             y = tY(b),
-            hScl = Interp.sineOut.apply(Mathf.slope(lerp));
+            hScl = hScl(b);
 
         Draw.z(shadowLayer);
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);
-        Draw.z(layer + hScl / 100f);
+        float z = layer + hScl / 100f;
+        Draw.z(z - 0.01f);
+        drawTrail(b);
+        Draw.z(z);
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
         Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
         Draw.scl();
@@ -130,6 +147,10 @@ public class BallisticMissleBulletType extends BulletType{
 
     public float tY(Bullet b){
         return Mathf.lerp(((float[])b.data)[1], b.y, b.fin());
+    }
+
+    public float hScl(Bullet b){
+        return Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
     }
 
     @Override
@@ -169,6 +190,13 @@ public class BallisticMissleBulletType extends BulletType{
     }
 
     @Override
+    public void removed(Bullet b){
+        if(trailLength > 0 && b.trail instanceof HeightTrail trail && trail.size() > 0){
+            UtilFx.heightTrailFade.at(tX(b), tY(b), trailWidth, trailColor, trail.copy());
+        }
+    }
+
+    @Override
     public void createFrags(Bullet b, float x, float y){
         if(fragBullet instanceof BallisticMissleBulletType){
             float sx = tX(b), sy = tY(b);
@@ -184,6 +212,9 @@ public class BallisticMissleBulletType extends BulletType{
                 if(splitLifeMaxOffset != 0){ //Closer = shorter lifetime, farther = longer lifetime
                     float scl = (frag.dst(sx, sy) - dst) / fragRandomSpread;
                     frag.lifetime += scl * splitLifeMaxOffset;
+                }
+                if(fragBullet.trailLength > 0 && b.trail != null){
+                    frag.trail = b.trail.copy();
                 }
             }
         }else{
