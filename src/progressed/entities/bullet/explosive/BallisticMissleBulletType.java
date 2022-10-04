@@ -19,7 +19,8 @@ import progressed.util.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.BallisticProjector.*;
 
-import static mindustry.Vars.headless;
+import static mindustry.Vars.*;
+import static progressed.graphics.DrawPseudo3D.*;
 
 //TODO Set to proper name later
 public class BallisticMissleBulletType extends BulletType{
@@ -135,21 +136,28 @@ public class BallisticMissleBulletType extends BulletType{
             x = tX(b),
             y = tY(b),
             hScl = hScl(b),
-            lasthX = DrawPseudo3D.xHeight(data[2], data[4]),
-            lasthY = DrawPseudo3D.yHeight(data[3], data[4]),
-            hX = DrawPseudo3D.xHeight(x, hScl * height),
-            hY = DrawPseudo3D.yHeight(y, hScl * height),
+            lasthX = xHeight(data[2], data[4]),
+            lasthY = yHeight(data[3], data[4]),
+            hX = xHeight(x, hScl * height),
+            hY = yHeight(y, hScl * height),
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);
         float z = layer + hScl / 100f;
-        Draw.z(z - 0.01f);
+        Draw.z(z - 0.01f); //While drawTrail does offset z already, this is to make sure the trails draw below the missiles no matter the height.
         drawTrail(b);
         Draw.z(z);
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
-        Draw.rect(region, hX, hY, hRot); //TODO: PMDrawf rotation draw. Fade between side-shaded vs center-shaded
+        Draw.rect(region, hX, hY, hRot); //TODO: PMDrawf rotation draw. Fade between side-shaded and center-shaded
         Draw.scl();
+    }
+
+    @Override
+    public void drawLight(Bullet b){
+        if(lightOpacity <= 0f || lightRadius <= 0f) return;
+        float h = hScl(b) * height;
+        Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius, lightColor, lightOpacity);
     }
 
     public float tX(Bullet b){
