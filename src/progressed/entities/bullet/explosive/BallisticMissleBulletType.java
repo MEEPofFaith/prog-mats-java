@@ -77,7 +77,7 @@ public class BallisticMissleBulletType extends BulletType{
         float px = b.x + b.lifetime * b.vel.x,
             py = b.y + b.lifetime * b.vel.y;
 
-        b.data = new float[]{b.x, b.y, 0f};
+        b.data = new float[]{b.x, b.y, b.x, b.y, 0f};
         b.lifetime(lifetime);
         b.set(px, py);
         b.vel.setZero();
@@ -94,19 +94,25 @@ public class BallisticMissleBulletType extends BulletType{
 
     @Override
     public void updateTrail(Bullet b){
+        float x = tX(b), y = tY(b), h = hScl(b) * height;
         if(!headless && trailLength > 0){
             if(b.trail == null){
                 b.trail = new HeightTrail(trailLength);
             }
             HeightTrail trail = (HeightTrail)b.trail;
             trail.length = trailLength;
-            trail.update(tX(b), tY(b), trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), hScl(b) * height);
+            trail.update(x, y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), h);
         }
+
+        float[] data = (float[])b.data;
+        data[2] = x;
+        data[3] = y;
+        data[4] = h;
     }
 
     @Override
     public void draw(Bullet b){
-        float[] startPos = (float[])b.data;
+        float[] data = (float[])b.data;
 
         float lerp = Mathf.lerp(b.fdata, 1f, b.fin());
         //Target
@@ -125,10 +131,15 @@ public class BallisticMissleBulletType extends BulletType{
         PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
         //Missile
-        float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
+        float rot = b.angleTo(data[0], data[1]) + 180f,
             x = tX(b),
             y = tY(b),
-            hScl = hScl(b);
+            hScl = hScl(b),
+            lasthX = DrawPseudo3D.xHeight(data[2], data[4]),
+            lasthY = DrawPseudo3D.yHeight(data[3], data[4]),
+            hX = DrawPseudo3D.xHeight(x, hScl * height),
+            hY = DrawPseudo3D.yHeight(y, hScl * height),
+            hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
         Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);
@@ -137,7 +148,7 @@ public class BallisticMissleBulletType extends BulletType{
         drawTrail(b);
         Draw.z(z);
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
-        Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
+        Draw.rect(region, hX, hY, hRot); //TODO: PMDrawf rotation draw. Fade between side-shaded vs center-shaded
         Draw.scl();
     }
 
