@@ -12,6 +12,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -19,6 +20,8 @@ import static mindustry.Vars.*;
 public class Missile extends Block{
     public BulletType explosion;
     public int explosions = 1;
+    /** Should the explosion use the frags of the explosion bullet? */
+    public boolean fragExplosion = true;
     public float explosionArea = 0f;
     public float maxDelay;
 
@@ -116,15 +119,21 @@ public class Missile extends Block{
 
         public void explode(){
             if(explosion != null){
+                BulletType spawnB = getExplosion(explosion);
                 for(int i = 0; i < explosions; i++){
                     Time.run(Mathf.random(maxDelay), () -> {
                         float dst = explosionArea * Mathf.sqrt(Mathf.random());
                         Tmp.v1.setToRandomDirection().setLength(dst);
-                        Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f);
+                        Bullet b = spawnB.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f);
                         b.time = b.lifetime;
                     });
                 }
             }
+        }
+
+        public BulletType getExplosion(BulletType b){
+            if(fragExplosion && b.fragBullet != null) return getExplosion(b.fragBullet);
+            return b;
         }
     }
 }

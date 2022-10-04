@@ -116,6 +116,7 @@ public class PMPayloads{
             powerUse = 2f;
             constructTime = 60f * 8f;
 
+            explosion = PayloadBullets.artimisRecursive;
             explosionArea = -1f;
             maxDelay = 20f;
         }};

@@ -32,7 +32,7 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
         super.drawPlace(x, y, rotation, valid);
 
         if(drawMinRange){
-            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.placing);
+            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.accentBack);
         }
     }
 

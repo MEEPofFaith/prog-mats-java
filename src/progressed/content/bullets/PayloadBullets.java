@@ -179,7 +179,7 @@ public class PayloadBullets{
             splitTime = 1f / 3f;
             fragRandomSpread = 80f;
             fragBullets = 3;
-            fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
+            fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
 
                 height *= 1.5;
@@ -190,7 +190,7 @@ public class PayloadBullets{
 
                 fragRandomSpread = 64f;
                 fragBullets = 3;
-                fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
+                fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 260f;
                     splashDamageRadius = 48f;
                     hitShake = 5f;

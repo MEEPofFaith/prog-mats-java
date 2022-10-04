@@ -196,13 +196,38 @@ public class PMDrawf{
         reset();
     }
 
-    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape */
+    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape. */
     public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
         float mr = mod(r, 360f);
         alpha(1f);
         rect(dark, x, y, r);
         alpha(0.5f * (Mathf.cosDeg(mr) + 1f));
         rect(light, x, y, r);
+        alpha(1f);
+    }
+
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
+    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
+        float ar = mod(r - 45f, 360f);
+        float a = mod(ar, 90f) / 90f;
+        alpha(1f);
+        if(ar >= 270){ //Bottom Right
+            rect(bottomLeft, x, y, r);
+            alpha(a);
+            rect(base, x, y, r);
+        }else if(ar >= 180){ //Bottom Left
+            rect(base, x, y, base.width * scl * xscl, -base.height * scl * yscl, r);
+            alpha(a);
+            rect(bottomLeft, x, y, r);
+        }else if(ar >= 90){ //Top Left
+            rect(topRight, x, y, r);
+            alpha(a);
+            rect(base, x, y, base.width * scl * xscl, -base.height * scl * yscl, r);
+        }else{ //Top Right
+            rect(base, x, y, r);
+            alpha(a);
+            rect(topRight, x, y, r);
+        }
         alpha(1f);
     }
 

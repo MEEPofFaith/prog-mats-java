@@ -35,8 +35,9 @@ public class BallisticMissleBulletType extends BulletType{
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
+    public boolean spinShade = true;
 
-    public TextureRegion region;
+    public TextureRegion region, blRegion, trRegion;
 
     public BallisticMissleBulletType(String sprite){
         super(0f, 0f);
@@ -69,6 +70,11 @@ public class BallisticMissleBulletType extends BulletType{
     @Override
     public void load(){
         region = Core.atlas.find(sprite);
+
+        if(spinShade){
+            blRegion = Core.atlas.find(sprite + "-bl");
+            trRegion = Core.atlas.find(sprite + "-tr");
+        }
     }
 
     @Override
@@ -149,7 +155,11 @@ public class BallisticMissleBulletType extends BulletType{
         drawTrail(b);
         Draw.z(z);
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
-        Draw.rect(region, hX, hY, hRot); //TODO: PMDrawf rotation draw. Fade between side-shaded and center-shaded
+        if(spinShade){
+            PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
+        }else{
+            Draw.rect(region, hX, hY, hRot);
+        }
         Draw.scl();
     }
 
