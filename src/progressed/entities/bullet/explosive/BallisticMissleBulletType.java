@@ -22,12 +22,12 @@ import progressed.world.blocks.defence.BallisticProjector.*;
 //TODO Set to proper name later
 public class BallisticMissleBulletType extends BulletType{
     public boolean drawZone = true;
-    public float height = 0.15f, growScl = -1f;
+    public float height = 0.5f, growScl = Float.MIN_VALUE;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
     public float shadowOffset = 24f;
     public float splitTime = 0.5f;
-    public float minLifetime = 60f;
+    public float splitLifeMaxOffset = 10f;
     public Color targetColor = Color.red;
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
@@ -35,14 +35,15 @@ public class BallisticMissleBulletType extends BulletType{
 
     public TextureRegion region;
 
-    public BallisticMissleBulletType(float speed, String sprite){
-        super(speed, 0f);
+    public BallisticMissleBulletType(String sprite){
+        super(0f, 0f);
         this.sprite = sprite;
 
         despawnEffect = MissileFx.missileExplosion;
         hitSound = Sounds.largeExplosion;
         layer = Layer.flyingUnit + 2;
         ammoMultiplier = 1;
+        lifetime = 120f;
         collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
         scaleLife = true;
         scaledSplashDamage = true;
@@ -57,7 +58,7 @@ public class BallisticMissleBulletType extends BulletType{
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }
-        if(growScl < 0) growScl = height * 2f;
+        if(growScl == Float.MIN_VALUE) growScl = height;
 
         super.init();
     }
@@ -75,7 +76,7 @@ public class BallisticMissleBulletType extends BulletType{
             py = b.y + b.lifetime * b.vel.y;
 
         b.data = new float[]{b.x, b.y, 0f};
-        b.lifetime(Math.max(b.dst(px, py) / speed, minLifetime));
+        b.lifetime(lifetime);
         b.set(px, py);
         b.vel.setZero();
     }
@@ -111,8 +112,8 @@ public class BallisticMissleBulletType extends BulletType{
 
         //Missile
         float rot = b.angleTo(startPos[0], startPos[1]) + 180f,
-            x = Mathf.lerp(startPos[0], b.x, b.fin()),
-            y = Mathf.lerp(startPos[1], b.y, b.fin()),
+            x = tX(b),
+            y = tY(b),
             hScl = Interp.sineOut.apply(Mathf.slope(lerp));
 
         Draw.z(shadowLayer);
@@ -121,6 +122,14 @@ public class BallisticMissleBulletType extends BulletType{
         Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
         Draw.rect(region, DrawPseudo3D.xHeight(x, hScl * height), DrawPseudo3D.yHeight(y, hScl * height), rot);
         Draw.scl();
+    }
+
+    public float tX(Bullet b){
+        return Mathf.lerp(((float[])b.data)[0], b.x, b.fin());
+    }
+
+    public float tY(Bullet b){
+        return Mathf.lerp(((float[])b.data)[1], b.y, b.fin());
     }
 
     @Override
@@ -162,14 +171,20 @@ public class BallisticMissleBulletType extends BulletType{
     @Override
     public void createFrags(Bullet b, float x, float y){
         if(fragBullet instanceof BallisticMissleBulletType){
-            float[] startPos = (float[])b.data;
-            float sx = Mathf.lerp(startPos[0], b.x, b.fin()), sy = Mathf.lerp(startPos[1], b.y, b.fin());
+            float sx = tX(b), sy = tY(b);
+            float dst = b.dst(sx, sy);
+
             float offset = (1f + b.fdata) * splitTime;
             for(int i = 0; i < fragBullets; i++){
-                Tmp.v1.setToRandomDirection().setLength(fragSpread * Mathf.sqrt(Mathf.random())).add(b.x, b.y);
+                Tmp.v1.setToRandomDirection().setLength(fragRandomSpread * Mathf.sqrt(Mathf.random())).add(b.x, b.y);
                 float lifeScl = Mathf.dst(sx, sy, Tmp.v1.x, Tmp.v1.y) / fragBullet.range;
                 Bullet frag = fragBullet.create(b, b.team, sx, sy, Tmp.v1.angleTo(sx, sy) + 180f, 1f, lifeScl);
                 frag.fdata = offset;
+                frag.lifetime *= 1 - offset;
+                if(splitLifeMaxOffset != 0){ //Closer = shorter lifetime, farther = longer lifetime
+                    float scl = (frag.dst(sx, sy) - dst) / fragRandomSpread;
+                    frag.lifetime += scl * splitLifeMaxOffset;
+                }
             }
         }else{
             super.createFrags(b, x, y);

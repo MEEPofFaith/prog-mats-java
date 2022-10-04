@@ -40,6 +40,7 @@ public class RocketBulletType extends BasicBulletType{
         despawnEffect = hitEffect = Fx.blastExplosion;
         hitSound = Sounds.largeExplosion;
         status = StatusEffects.blasted;
+        scaledSplashDamage = true;
     }
 
     @Override

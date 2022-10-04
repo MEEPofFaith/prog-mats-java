@@ -157,8 +157,7 @@ public class PayloadBullets{
             }
         };
 
-        artimisBasic = new BallisticMissleBulletType(3.5f, "prog-mats-basic-missile"){{
-            lifetime = 656f; //artimis range
+        artimisBasic = new BallisticMissleBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
             splashDamageRadius = 64f;
             hitShake = 5f;
@@ -166,36 +165,31 @@ public class PayloadBullets{
             targetColor = PMPal.missileBasic;
         }};
 
-        artimisRecursive = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
-            lifetime = 656f; //artimis range
+        artimisRecursive = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
             status = StatusEffects.none;
 
-            height = 0.25f;
+            height *= 1.5;
             zoneRadius = 5f * 8f;
             targetColor = PMPal.missileFrag;
 
             splitTime = 1f / 3f;
-            fragSpread = 80f;
+            fragRandomSpread = 80f;
             fragBullets = 3;
-            fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
-                lifetime = 656f; //artimis range
-                minLifetime = 30f;
+            fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
                 status = StatusEffects.none;
 
-                height = 0.25f;
+                height *= 1.5;
                 zoneRadius = 3.5f * 8f;
                 targetColor = PMPal.missileFrag;
 
-                fragSpread = 64f;
+                fragRandomSpread = 64f;
                 fragBullets = 3;
-                fragBullet = new BallisticMissleBulletType(2.75f, "prog-mats-recursive-missile"){{
-                    lifetime = 656f; //artimis range
-                    minLifetime = 20f;
+                fragBullet = new BallisticMissleBulletType("prog-mats-recursive-missile"){{
                     splashDamage = 260f;
                     splashDamageRadius = 48f;
                     hitShake = 5f;
 
-                    height = 0.25f;
+                    height *= 1.5;
                     zoneRadius = 2.5f * 8f;
                     targetColor = PMPal.missileFrag;
                 }};

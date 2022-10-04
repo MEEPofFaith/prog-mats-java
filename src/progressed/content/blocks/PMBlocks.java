@@ -1056,6 +1056,7 @@ public class PMBlocks{
             maxAmmo = 1;
             reload = 60f;
             range = 656f;
+            minRange = range / 3f;
             rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
@@ -1064,6 +1065,7 @@ public class PMBlocks{
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            limitRange();
         }};
         // endregion
 
