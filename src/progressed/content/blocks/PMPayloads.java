@@ -3,7 +3,6 @@ package progressed.content.blocks;
 import mindustry.content.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.type.ItemStack.*;
@@ -105,7 +104,7 @@ public class PMPayloads{
             powerUse = 1.5f;
             constructTime = 60f * 6f;
 
-            explosion = PayloadBullets.artimisBasic;
+            explosion = PayloadBullets.artemisBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
@@ -116,7 +115,7 @@ public class PMPayloads{
             powerUse = 2f;
             constructTime = 60f * 8f;
 
-            explosion = PayloadBullets.artimisRecursive;
+            explosion = PayloadBullets.artemisRecursive;
             explosionArea = -1f;
             maxDelay = 20f;
         }};
@@ -136,6 +135,8 @@ public class PMPayloads{
             size = 3;
             powerUse = 6f;
             constructTime = 60f * 25f;
+
+            explosion = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{

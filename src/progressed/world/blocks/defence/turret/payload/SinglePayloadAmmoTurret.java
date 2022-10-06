@@ -19,9 +19,6 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
         maxAmmo = 1;
         linearWarmup = true;
 
-        //PayloadAmmoTurret doesn't hav this. (TODO: Remove this line after my PR, as it'll become redundant.)
-        acceptsPayload = true;
-
         drawer = new DrawPayloadTurret();
     }
 
@@ -41,7 +38,7 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
-            return shootWarmup <= minLoadWarmup && super.acceptPayload(source, payload);
+            return this.payload == null && shootWarmup <= minLoadWarmup && super.acceptPayload(source, payload);
         }
 
         @Override

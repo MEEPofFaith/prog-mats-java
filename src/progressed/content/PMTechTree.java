@@ -210,7 +210,7 @@ public class PMTechTree{
         vanillaNode(forceProjector, () -> {
             //Shield Projector
             node(ballisticProjector, Seq.with(
-                new Research(artimis)
+                new Research(artemis)
             ));
         });
 

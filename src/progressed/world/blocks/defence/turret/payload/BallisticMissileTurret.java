@@ -46,7 +46,6 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
     @Override
     public void limitRange(BulletType bullet, float margin){
         bullet.speed = range + bullet.rangeChange + margin;
-        if(bullet.fragBullet != null) limitRange(bullet.fragBullet, margin);
     }
 
     public class BallisticMissileTurretBuild extends SinglePayloadAmmoTurretBuild{
@@ -62,7 +61,7 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
                 offset.set(h.deltaX(), h.deltaY()).scl(shoot.firstShotDelay / Time.delta);
             }
 
-            if(bullet instanceof BallisticMissleBulletType){
+            if(bullet instanceof BallisticMissileBulletType){
                 targetPos.set(pos).add(offset);
                 if(pos instanceof Hitboxc h){
                     offset.set(h.deltaX(), h.deltaY()).scl(bullet.lifetime);

@@ -36,6 +36,7 @@ public class RocketBulletType extends BasicBulletType{
         super(speed, damage, sprite); //Speed means nothing
         layer = Layer.bullet - 1; //Don't bloom
         keepVelocity = false;
+        reflectable = false;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = hitEffect = Fx.blastExplosion;
         hitSound = Sounds.largeExplosion;

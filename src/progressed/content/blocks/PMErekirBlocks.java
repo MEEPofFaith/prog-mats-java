@@ -19,12 +19,15 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
+import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
 import static mindustry.type.ItemStack.*;
+import static progressed.content.blocks.PMPayloads.*;
 
 public class PMErekirBlocks{
     public static Block
@@ -140,12 +143,28 @@ public class PMErekirBlocks{
             };
         }};
 
-        if(false){
-            paragon = new PayloadAmmoTurret("paragon"){{
-                requirements(Category.turret, with());
-                size = 7;
-            }};
-        }
+        paragon = new BallisticMissileTurret("paragon"){{
+            requirements(Category.turret, with());
+            ammo(
+                basicNuke, PayloadBullets.paragonBasic,
+                clusterNuke, PayloadBullets.paragonCluster,
+                sandboxNuke, PayloadBullets.ohno
+            );
+            size = 7;
+            scaledHealth = 170;
+            reload = 12f * 60f;
+            range = 350f * 8f;
+            minRange = 50f * 8f;
+            rotateSpeed = 360f;
+            shootY = 0f;
+            shootSound = Sounds.missileLaunch;
+            shake = 10f;
+            unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
+            ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
+            limitRange();
+        }};
 
         ravage = new NexusTurret("ravage"){{
             requirements(Category.turret, with());

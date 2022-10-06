@@ -88,7 +88,7 @@ public class PMBlocks{
     blackhole, excalibur,
 
     //Payload
-    sergeant, arbalest, artimis,
+    sergeant, arbalest, artemis,
 
     // endregion
     // region production
@@ -1037,7 +1037,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
         }};
 
-        artimis = new BallisticMissileTurret("artimis"){{
+        artemis = new BallisticMissileTurret("artemis"){{
             requirements(Category.turret, with(
                 Items.copper, 70,
                 Items.lead, 350,
@@ -1047,16 +1047,14 @@ public class PMBlocks{
                 PMItems.tenelium, 120
             ));
             ammo(
-                basicMissile, PayloadBullets.artimisBasic,
-                recursiveMissile, PayloadBullets.artimisRecursive
+                basicMissile, PayloadBullets.artemisBasic,
+                recursiveMissile, PayloadBullets.artemisRecursive
             );
             size = 5;
-            hideDetails = false;
             scaledHealth = 160;
-            maxAmmo = 1;
             reload = 60f;
-            range = 656f;
-            minRange = range / 3f;
+            range = 85f * 8f;
+            minRange = 25f * 8f;
             rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
@@ -1429,7 +1427,7 @@ public class PMBlocks{
             powerPerBlock = 0.08f;
         }};
 
-        ballisticProjector = new BallisticProjector("shield-projector"){{
+        ballisticProjector = new ShieldProjector("shield-projector"){{
             requirements(Category.effect, with(
                 Items.lead, 325,
                 Items.titanium, 225,
@@ -1446,7 +1444,7 @@ public class PMBlocks{
             cooldownBrokenBase *= 2f;
 
             consumePower(7f);
-            consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
+            itemConsumer = consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
         }};
         // endregion
 

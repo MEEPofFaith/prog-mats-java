@@ -216,13 +216,17 @@ public class PMDrawf{
             alpha(a);
             rect(base, x, y, r);
         }else if(ar >= 180){ //Bottom Left
-            rect(base, x, y, base.width * scl * xscl, -base.height * scl * yscl, r);
+            yscl *= -1;
+            rect(base, x, y, r);
+            yscl *= -1;
             alpha(a);
             rect(bottomLeft, x, y, r);
         }else if(ar >= 90){ //Top Left
             rect(topRight, x, y, r);
             alpha(a);
-            rect(base, x, y, base.width * scl * xscl, -base.height * scl * yscl, r);
+            yscl *= -1;
+            rect(base, x, y, r);
+            yscl *= -1;
         }else{ //Top Right
             rect(base, x, y, r);
             alpha(a);

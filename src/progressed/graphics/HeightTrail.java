@@ -7,6 +7,8 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
 
+import static progressed.graphics.DrawPseudo3D.*;
+
 public class HeightTrail extends Trail{
     private final FloatSeq points;
     private float lastX = -1, lastY = -1, lastAngle = -1, counter = 0f, lastW = 0f, lastH = 0f;
@@ -73,8 +75,8 @@ public class HeightTrail extends Trail{
                 y2 = y(i + 4);
                 w2 = items[i + 6];
             }else{
-                x2 = DrawPseudo3D.xHeight(lastX, lastH);
-                y2 = DrawPseudo3D.yHeight(lastY, lastH);
+                x2 = xHeight(lastX, lastH);
+                y2 = yHeight(lastY, lastH);
                 w2 = lastW;
             }
 
@@ -125,7 +127,7 @@ public class HeightTrail extends Trail{
                 points.removeRange(0, 3);
             }
 
-            points.add(x, y, width, height);
+            points.add(x, y, width * hScale(height), height);
 
             counter %= 1f;
         }
@@ -134,17 +136,17 @@ public class HeightTrail extends Trail{
         lastAngle = -Angles.angleRad(x, y, lastX, lastY);
         lastX = x;
         lastY = y;
-        lastW = width;
+        lastW = width * hScale(height);
         lastH = height;
     }
 
     public float x(int index){
         float[] items = points.items;
-        return DrawPseudo3D.xHeight(items[index], items[index + 3]);
+        return xHeight(items[index], items[index + 3]);
     }
 
     public float y(int index){
         float[] items = points.items;
-        return DrawPseudo3D.yHeight(items[index + 1], items[index + 3]);
+        return yHeight(items[index + 1], items[index + 3]);
     }
 }

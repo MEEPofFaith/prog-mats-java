@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -17,15 +16,15 @@ import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.*;
-import progressed.world.blocks.defence.BallisticProjector.*;
+import progressed.world.blocks.defence.ShieldProjector.*;
 
 import static mindustry.Vars.*;
 import static progressed.graphics.DrawPseudo3D.*;
 
 //TODO Set to proper name later
-public class BallisticMissleBulletType extends BulletType{
+public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
-    public float height = 0.5f, growScl = Float.MIN_VALUE;
+    public float height = 0.5f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
     public float shadowOffset = 24f;
@@ -39,8 +38,8 @@ public class BallisticMissleBulletType extends BulletType{
 
     public TextureRegion region, blRegion, trRegion;
 
-    public BallisticMissleBulletType(String sprite){
-        super(0f, 0f);
+    public BallisticMissileBulletType(String sprite){
+        super(1f, 0f);
         this.sprite = sprite;
 
         despawnEffect = MissileFx.missileExplosion;
@@ -62,7 +61,6 @@ public class BallisticMissleBulletType extends BulletType{
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
         }
-        if(growScl == Float.MIN_VALUE) growScl = height;
 
         super.init();
     }
@@ -94,7 +92,7 @@ public class BallisticMissleBulletType extends BulletType{
     public void update(Bullet b){
         super.update(b);
 
-        if(fragBullet instanceof BallisticMissleBulletType && b.fin() >= splitTime){
+        if(fragBullet instanceof BallisticMissileBulletType && b.fin() >= splitTime){
             b.remove();
         }
     }
@@ -154,7 +152,7 @@ public class BallisticMissleBulletType extends BulletType{
         Draw.z(z - 0.01f); //While drawTrail does offset z already, this is to make sure the trails draw below the missiles no matter the height.
         drawTrail(b);
         Draw.z(z);
-        Draw.scl(1f + hScl * growScl * Vars.renderer.getDisplayScale());
+        Draw.scl(hScale(hScl));
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
         }else{
@@ -184,12 +182,12 @@ public class BallisticMissleBulletType extends BulletType{
 
     @Override
     public void despawned(Bullet b){
-        if(fragBullet instanceof BallisticMissleBulletType){
+        if(fragBullet instanceof BallisticMissileBulletType){
             createFrags(b, b.x, b.y);
             return;
         }
 
-        ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, BallisticProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
+        ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, ShieldProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
         if(shield != null){ //Ballistic Shield blocks the missile
             blockEffect.at(b.x, b.y, b.rotation(), hitColor);
             despawnSound.at(b);
@@ -227,7 +225,7 @@ public class BallisticMissleBulletType extends BulletType{
 
     @Override
     public void createFrags(Bullet b, float x, float y){
-        if(fragBullet instanceof BallisticMissleBulletType){
+        if(fragBullet instanceof BallisticMissileBulletType){
             float sx = tX(b), sy = tY(b);
             float dst = b.dst(sx, sy);
 

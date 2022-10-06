@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -19,26 +20,23 @@ import progressed.util.*;
 
 import static mindustry.Vars.*;
 
-public class BallisticProjector extends ForceProjector{
+public class ShieldProjector extends ForceProjector{
     public static float maxShieldRange = 0;
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
     public Effect chargeEffect = OtherFx.squareShieldRecharge;
     public Color lerpColor = Color.gray;
     public float lerpPercent = 0.75f;
 
-    static ShieldBuild paramEntity;
-    static final Cons<Bullet> shieldConsumer = trait -> {
-        if(trait.team != paramEntity.team){
-            if(trait.type.absorbable){
-                trait.absorb();
-                Fx.absorb.at(trait);
-                paramEntity.hit = 1f;
-                paramEntity.buildup += trait.damage() * paramEntity.warmup;
-            }
+    protected static final Cons<Bullet> shieldConsumer = bullet -> {
+        if(bullet.team != paramEntity.team && bullet.type.absorbable){
+            bullet.absorb();
+            paramEffect.at(bullet);
+            paramEntity.hit = 1f;
+            paramEntity.buildup += bullet.damage;
         }
     };
 
-    public BallisticProjector(String name){
+    public ShieldProjector(String name){
         super(name);
 
         radius = 80f; //Make it square based because I'm too lazy to do math
@@ -154,10 +152,16 @@ public class BallisticProjector extends ForceProjector{
                 hit -= 1f / 5f * Time.delta;
             }
 
+            deflectBullets();
+        }
+
+        @Override
+        public void deflectBullets(){
             float realRadius = realRadius();
 
             if(realRadius > 0 && !broken){
                 paramEntity = this;
+                paramEffect = absorbEffect;
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
             }
         }

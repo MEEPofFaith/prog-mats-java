@@ -35,7 +35,7 @@ public class DrawPseudo3D{
     public static void tube(float x, float y, float rad, float height, Color baseColor, Color topColor){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * (1f + height) * Vars.renderer.getDisplayScale());
+        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * hScale(height));
 
         float c1f = baseColor.toFloatBits();
         float c2f = topColor.toFloatBits();
@@ -115,7 +115,7 @@ public class DrawPseudo3D{
         Draw.color();
 
         float space = 360f / vert;
-        float angle = tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * (1f + height) * Vars.renderer.getDisplayScale());
+        float angle = tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * hScale(height));
 
         float c1f = baseColor.toFloatBits();
         float c2f = topColor.toFloatBits();
@@ -157,6 +157,10 @@ public class DrawPseudo3D{
 
     public static float yOffset(float y, float height){
         return (y - camera.position.y) * height * Vars.renderer.getDisplayScale();
+    }
+
+    public static float hScale(float height){
+        return 1f + height * Vars.renderer.getDisplayScale();
     }
 
     /**
