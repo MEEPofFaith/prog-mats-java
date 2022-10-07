@@ -5,7 +5,9 @@ import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.meta.*;
 import progressed.world.draw.*;
+import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -20,6 +22,14 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
         linearWarmup = true;
 
         drawer = new DrawPayloadTurret();
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.ammo);
+        stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes, true));
     }
 
     public class SinglePayloadAmmoTurretBuild extends PayloadTurretBuild{

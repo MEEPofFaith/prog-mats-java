@@ -1,5 +1,6 @@
 package progressed.world.meta;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -39,10 +40,14 @@ import static mindustry.Vars.*;
 
 public class PMStatValues{
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map){
-        return ammo(map, 0);
+        return ammo(map, 0, false);
     }
 
-    public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, int indent){
+    public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, boolean showUnit){
+        return ammo(map, 0, showUnit);
+    }
+
+    public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, int indent, boolean showUnit){
         return table -> {
             table.row();
 
@@ -50,10 +55,10 @@ public class PMStatValues{
             orderedKeys.sort();
 
             for(T t : orderedKeys){
-                boolean compact = t instanceof UnitType || indent > 0;
-                boolean payload = t instanceof Missile;
+                boolean compact = t instanceof UnitType && !showUnit || indent > 0;
+                boolean payload = t instanceof Block || (t instanceof UnitType && !showUnit);
 
-                if(payload && !((Missile)t).displayCampaign && state.isCampaign()) continue;
+                if(payload && t instanceof Missile m && !m.displayCampaign && state.isCampaign()) continue;
 
                 BulletType type = map.get(t);
                 //no point in displaying unit icon twice
@@ -146,7 +151,7 @@ public class PMStatValues{
                         }
 
                         if(type.status != StatusEffects.none){
-                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
                         }
 
                         if(type instanceof PillarFieldBulletType stype && stype.pillar.status != StatusEffects.none){
@@ -238,14 +243,14 @@ public class PMStatValues{
                             }
                             bt.row();
 
-                            ammo(ObjectMap.of(t, stype.bombBullet), indent + 1).display(bt);
+                            ammo(ObjectMap.of(t, stype.bombBullet), indent + 1, false).display(bt);
                         }
 
                         if(type.fragBullet != null){
                             sep(bt, bundle.format("bullet.frags", type.fragBullets));
                             bt.row();
 
-                            ammo(ObjectMap.of(t, type.fragBullet), indent + 1).display(bt);
+                            ammo(ObjectMap.of(t, type.fragBullet), indent + 1, false).display(bt);
                         }
                     }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
                 }

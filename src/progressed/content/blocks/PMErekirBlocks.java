@@ -153,7 +153,7 @@ public class PMErekirBlocks{
             size = 7;
             scaledHealth = 170;
             reload = 12f * 60f;
-            range = 350f * 8f;
+            range = 180f * 8f;
             minRange = 50f * 8f;
             rotateSpeed = 360f;
             shootY = 0f;

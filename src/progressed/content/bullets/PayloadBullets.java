@@ -1,6 +1,7 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -164,6 +165,7 @@ public class PayloadBullets{
             hitShake = 5f;
 
             trailLength = 25;
+            trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
         }};
 
@@ -173,10 +175,11 @@ public class PayloadBullets{
             height *= 1.5;
             zoneRadius = 5f * 8f;
             trailLength = 25;
+            trailWidth = 1f;
             trailColor = targetColor = PMPal.missileFrag;
 
-            splitTime = 1f / 3f;
-            fragRandomSpread = 80f;
+            splitLifeMaxOffset = 20f;
+            fragRandomSpread = 64f;
             fragBullets = 3;
             fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
@@ -184,6 +187,7 @@ public class PayloadBullets{
                 height *= 1.5;
                 zoneRadius = 3.5f * 8f;
                 trailLength = 20;
+                trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
 
                 fragRandomSpread = 64f;
@@ -196,6 +200,7 @@ public class PayloadBullets{
                     height *= 1.5;
                     zoneRadius = 2.5f * 8f;
                     trailLength = 15;
+                    trailWidth = 1f;
                     trailColor = targetColor = PMPal.missileFrag;
 
                     blockEffect = MissileFx.missileBlockedSmall;
@@ -206,6 +211,7 @@ public class PayloadBullets{
         paragonBasic = new BallisticMissileBulletType("prog-mats-basic-nuke"){{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
+            buildingDamageMultiplier = 0.3f;
             lifetime = 5f * 60f;
 
             hitSound = PMSounds.nuclearExplosion;
@@ -214,10 +220,10 @@ public class PayloadBullets{
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            height *= 5;
+            height *= 4;
             zoneRadius = 8f * 8f;
             trailLength = 35;
-            trailWidth = 4f;
+            trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileBasic;
         }};
 
@@ -226,36 +232,37 @@ public class PayloadBullets{
 
             lifetime = 5f * 60f;
 
-            height *= 5;
+            height *= 6;
             zoneRadius = 8f * 8f;
             trailLength = 35;
-            trailWidth = 4f;
+            trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileFrag;
 
-            splitTime = 1f / 2f;
+            splitTime = 0.65f;
             splitLifeMaxOffset = 45f;
             fragRandomSpread = 20f * 8f;
             fragBullets = 20;
 
-            fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
+            fragBullet = new BallisticMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3000f;
                 splashDamageRadius = 40f;
+                buildingDamageMultiplier = 0.3f;
                 lifetime = 5f * 60f;
 
-                hitSound = Sounds.explosionbig;
                 hitShake = 5f;
                 despawnEffect = MissileFx.missileExplosion;
                 blockEffect = MissileFx.missileBlocked;
 
-                height *= 5;
+                height *= 6;
                 zoneRadius = 4f * 8f;
                 trailLength = 35;
+                trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
             }};
         }};
 
         ohno = (BallisticMissileBulletType)paragonCluster.copy();
-        ohno.sprite = "prog-mats-send-help";
+        ohno.sprite = "prog-mats-sandbox-nuke";
         ohno.targetColor = ohno.trailColor = Color.red;
 
         BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
@@ -270,8 +277,10 @@ public class PayloadBullets{
         cease.fragBullet = stop;
 
         BallisticMissileBulletType enough = (BallisticMissileBulletType)paragonBasic.copy();
+        enough.buildingDamageMultiplier = 1f;
         enough.fragBullets = 10;
         enough.fragBullet = cease;
+        enough.height = ohno.height;
 
         ohno.fragBullet = enough;
         ohno.fragRandomSpread = 40f * 8f;

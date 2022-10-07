@@ -10,8 +10,7 @@ import mindustry.graphics.*;
 import static progressed.graphics.DrawPseudo3D.*;
 
 public class HeightTrail extends Trail{
-    private final FloatSeq points;
-    private float lastX = -1, lastY = -1, lastAngle = -1, counter = 0f, lastW = 0f, lastH = 0f;
+    protected float lastH = 0f;
 
     public HeightTrail(int length){
         super(length);
@@ -24,7 +23,6 @@ public class HeightTrail extends Trail{
         out.points.addAll(points);
         out.lastX = lastX;
         out.lastY = lastY;
-        out.lastAngle = lastAngle;
         out.lastW = lastW;
         out.lastH = lastH;
         return out;
@@ -49,11 +47,10 @@ public class HeightTrail extends Trail{
     public void drawCap(Color color, float width){
         if(points.size > 0){
             Draw.color(color);
-            float[] items = points.items;
             int i = points.size - 4;
-            float x1 = x(i), y1 = y(i), w1 = items[i + 2], w = w1 * width / (points.size/4) * i / 4f * 2f;
+            float x1 = x(i), y1 = y(i), w1 = w(i), w = w1 * width / (points.size/4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
-            Draw.rect("hcircle", x1, y1, w, w, -Mathf.radDeg * lastAngle + 180f);
+            Draw.rect("hcircle", x1, y1, w, w, Mathf.radDeg * lastAngle + 180f);
             Draw.reset();
         }
     }
@@ -61,23 +58,21 @@ public class HeightTrail extends Trail{
     @Override
     public void draw(Color color, float width){
         Draw.color(color);
-        float[] items = points.items;
-        float lastAngle = this.lastAngle;
         float size = width / (points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
-            float x1 = x(i), y1 = y(i), w1 = items[i + 2];
+            float x1 = x(i), y1 = y(i), w1 = w(i);
             float x2, y2, w2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
                 x2 = x(i + 4);
                 y2 = y(i + 4);
-                w2 = items[i + 6];
+                w2 = w(i + 4);
             }else{
                 x2 = xHeight(lastX, lastH);
                 y2 = yHeight(lastY, lastH);
-                w2 = lastW;
+                w2 = lastW * hScale(lastH);
             }
 
             float z2 = -Angles.angleRad(x1, y1, x2, y2);
@@ -127,16 +122,15 @@ public class HeightTrail extends Trail{
                 points.removeRange(0, 3);
             }
 
-            points.add(x, y, width * hScale(height), height);
+            points.add(x, y, width, height);
 
             counter %= 1f;
         }
 
         //update last position regardless, so it joins
-        lastAngle = -Angles.angleRad(x, y, lastX, lastY);
         lastX = x;
         lastY = y;
-        lastW = width * hScale(height);
+        lastW = width;
         lastH = height;
     }
 
@@ -148,5 +142,10 @@ public class HeightTrail extends Trail{
     public float y(int index){
         float[] items = points.items;
         return yHeight(items[index + 1], items[index + 3]);
+    }
+
+    public float w(int index){
+        float[] items = points.items;
+        return items[index + 2] * hScale(items[index + 3]);
     }
 }

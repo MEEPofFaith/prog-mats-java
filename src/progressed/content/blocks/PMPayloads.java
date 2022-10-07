@@ -88,7 +88,7 @@ public class PMPayloads{
             maxDelay = 25f;
         }};
 
-        emptyMissile = new Missile("empty-missile"){{
+        emptyMissile = new Missile("empty-missile-payload"){{
             requirements = with(Items.copper, 4, Items.lead, 4, Items.titanium, 6);
 
             size = 2;
@@ -96,7 +96,7 @@ public class PMPayloads{
             constructTime = 60f * 2.5f;
         }};
 
-        basicMissile = new Missile("basic-missile"){{
+        basicMissile = new Missile("basic-missile-payload"){{
             requirements = with(Items.titanium, 4, Items.blastCompound, 6);
 
             prev = emptyMissile;
@@ -107,7 +107,7 @@ public class PMPayloads{
             explosion = PayloadBullets.artemisBasic;
         }};
 
-        recursiveMissile = new Missile("recursive-missile"){{
+        recursiveMissile = new Missile("recursive-missile-payload"){{
             requirements = with(Items.titanium, 3, Items.plastanium, 4, Items.silicon, 4, Items.blastCompound, 7);
 
             prev = emptyMissile;
@@ -115,12 +115,13 @@ public class PMPayloads{
             powerUse = 2f;
             constructTime = 60f * 8f;
 
-            explosion = PayloadBullets.artemisRecursive;
+            explosion = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
+            explosions = PayloadBullets.artemisRecursive.fragBullets * PayloadBullets.artemisRecursive.fragBullet.fragBullets;
             explosionArea = -1f;
             maxDelay = 20f;
         }};
 
-        emptyNuke = new Missile("empty-nuke"){{
+        emptyNuke = new Missile("empty-nuke-payload"){{
             requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.tenelium, 20);
 
             size = 3;
@@ -128,7 +129,7 @@ public class PMPayloads{
             constructTime = 60f * 8f;
         }};
 
-        basicNuke = new Missile("basic-nuke"){{
+        basicNuke = new Missile("basic-nuke-payload"){{
             requirements = with(Items.lead, 40,Items.titanium, 30, Items.thorium, 35);
 
             prev = emptyNuke;
@@ -139,7 +140,7 @@ public class PMPayloads{
             explosion = PayloadBullets.paragonBasic;
         }};
 
-        clusterNuke = new Missile("cluster-nuke"){{
+        clusterNuke = new Missile("cluster-nuke-payload"){{
             requirements = with(
                 Items.titanium, 35,
                 Items.plastanium, 25,
@@ -154,16 +155,20 @@ public class PMPayloads{
             constructTime = 60f * 35f;
 
             explosionArea = -1f;
+            explosion = PayloadBullets.paragonCluster.fragBullet;
+            explosions = explosion.fragBullets;
             maxDelay = 20f;
         }};
 
-        sandboxNuke = new Missile("send-help"){{
+        sandboxNuke = new Missile("sandbox-nuke-payload"){{
             requirements = empty;
             displayCampaign = false;
 
             size = 3;
 
             explosionArea = -1f;
+            explosion = PayloadBullets.ohno.fragBullet;
+            explosions = explosion.fragBullets;
             maxDelay = 20f;
         }};
 

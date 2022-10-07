@@ -4,8 +4,7 @@ import arc.math.*;
 import arc.math.geom.*;
 
 public class PMMathf{
-    private static final Rand rand = new Rand();
-    private static final Vec2 rv = new Vec2();
+    public static final Interp arc = a -> Interp.sineOut.apply(Interp.slope.apply(a));
 
     /** @return whether x,y is inside the square with radius d centered at cx, cy. */
     public static boolean isInSquare(float cx, float cy, float d, float x, float y){

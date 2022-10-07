@@ -21,13 +21,12 @@ import progressed.world.blocks.defence.ShieldProjector.*;
 import static mindustry.Vars.*;
 import static progressed.graphics.DrawPseudo3D.*;
 
-//TODO Set to proper name later
 public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 0.5f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
-    public float shadowOffset = 24f;
+    public float shadowOffset = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
     public Color targetColor = Color.red;
@@ -35,6 +34,7 @@ public class BallisticMissileBulletType extends BulletType{
     public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
     public boolean spinShade = true;
+    public Interp hInterp = PMMathf.arc, posInterp = Interp.pow2In;
 
     public TextureRegion region, blRegion, trRegion;
 
@@ -56,7 +56,7 @@ public class BallisticMissileBulletType extends BulletType{
 
     @Override
     public void init(){
-        if(blockEffect == Fx.none) blockEffect = despawnEffect;
+        if(shadowOffset < 0) shadowOffset = height * 48f;
         if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
@@ -147,11 +147,10 @@ public class BallisticMissileBulletType extends BulletType{
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, rot);
-        float z = layer + hScl / 100f;
-        Draw.z(z - 0.01f); //While drawTrail does offset z already, this is to make sure the trails draw below the missiles no matter the height.
+        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, hRot - 90f);
+        Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
-        Draw.z(z);
+        Draw.z(layer + hScl / 100f);
         Draw.scl(hScale(hScl));
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
@@ -169,15 +168,22 @@ public class BallisticMissileBulletType extends BulletType{
     }
 
     public float tX(Bullet b){
-        return Mathf.lerp(((float[])b.data)[0], b.x, b.fin());
+        return Mathf.lerp(((float[])b.data)[0], b.x, posInterp(b));
     }
 
     public float tY(Bullet b){
-        return Mathf.lerp(((float[])b.data)[1], b.y, b.fin());
+        return Mathf.lerp(((float[])b.data)[1], b.y, posInterp(b));
     }
 
     public float hScl(Bullet b){
-        return Interp.sineOut.apply(Mathf.slope(Mathf.lerp(b.fdata, 1f, b.fin())));
+        if(b.fdata == 0) return hInterp.apply(b.fin());
+        return hInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
+    }
+
+    public float posInterp(Bullet b){
+        if(posInterp == Interp.linear) b.fin();
+        if(b.fdata == 0) return b.fin(posInterp);
+        return posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) * b.fin();
     }
 
     @Override

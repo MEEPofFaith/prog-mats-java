@@ -119,21 +119,14 @@ public class Missile extends Block{
 
         public void explode(){
             if(explosion != null){
-                BulletType spawnB = getExplosion(explosion);
                 for(int i = 0; i < explosions; i++){
                     Time.run(Mathf.random(maxDelay), () -> {
-                        float dst = explosionArea * Mathf.sqrt(Mathf.random());
-                        Tmp.v1.setToRandomDirection().setLength(dst);
-                        Bullet b = spawnB.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f);
-                        b.time = b.lifetime;
+                        Tmp.v1.setToRandomDirection().setLength(explosionArea * Mathf.sqrt(Mathf.random()));
+                        Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f, 0f, 0f);
+                        b.remove(); //Instantly explode
                     });
                 }
             }
-        }
-
-        public BulletType getExplosion(BulletType b){
-            if(fragExplosion && b.fragBullet != null) return getExplosion(b.fragBullet);
-            return b;
         }
     }
 }

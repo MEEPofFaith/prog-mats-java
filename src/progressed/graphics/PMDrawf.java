@@ -208,25 +208,26 @@ public class PMDrawf{
 
     /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
     public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
-        float ar = mod(r - 45f, 360f);
+        float ar = mod(r - 135f, 360f);
         float a = mod(ar, 90f) / 90f;
+        r -= 90f;
         alpha(1f);
         if(ar >= 270){ //Bottom Right
             rect(bottomLeft, x, y, r);
             alpha(a);
             rect(base, x, y, r);
         }else if(ar >= 180){ //Bottom Left
-            yscl *= -1;
+            xscl *= -1;
             rect(base, x, y, r);
-            yscl *= -1;
+            xscl *= -1;
             alpha(a);
             rect(bottomLeft, x, y, r);
         }else if(ar >= 90){ //Top Left
             rect(topRight, x, y, r);
             alpha(a);
-            yscl *= -1;
+            xscl *= -1;
             rect(base, x, y, r);
-            yscl *= -1;
+            xscl *= -1;
         }else{ //Top Right
             rect(base, x, y, r);
             alpha(a);

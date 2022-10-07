@@ -63,8 +63,8 @@ public class UtilFx{
         if(!state.isPaused()){
             trail.shorten();
         }
-        trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
+        trail.drawCap(e.color, e.rotation);
     }).layer(Layer.flyingUnit + 1.9f),
 
     groundCrack = new Effect(20f, 500f, e -> {
