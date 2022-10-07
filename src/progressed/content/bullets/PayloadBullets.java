@@ -198,7 +198,7 @@ public class PayloadBullets{
                     hitShake = 5f;
 
                     height *= 1.5;
-                    zoneRadius = 2.5f * 8f;
+                    zoneRadius = 2f * 8f;
                     trailLength = 15;
                     trailWidth = 1f;
                     trailColor = targetColor = PMPal.missileFrag;
@@ -233,7 +233,7 @@ public class PayloadBullets{
             lifetime = 5f * 60f;
 
             height *= 6;
-            zoneRadius = 8f * 8f;
+            zoneRadius = 12f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileFrag;
@@ -254,7 +254,6 @@ public class PayloadBullets{
                 blockEffect = MissileFx.missileBlocked;
 
                 height *= 6;
-                zoneRadius = 4f * 8f;
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;

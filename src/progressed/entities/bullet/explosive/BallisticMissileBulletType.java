@@ -25,7 +25,7 @@ public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 0.5f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
-    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = 4f;
+    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float shadowOffset = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
@@ -57,6 +57,7 @@ public class BallisticMissileBulletType extends BulletType{
     @Override
     public void init(){
         if(shadowOffset < 0) shadowOffset = height * 48f;
+        if(shrinkRad < 0) shrinkRad = zoneRadius / 6f;
         if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
@@ -183,7 +184,8 @@ public class BallisticMissileBulletType extends BulletType{
     public float posInterp(Bullet b){
         if(posInterp == Interp.linear) b.fin();
         if(b.fdata == 0) return b.fin(posInterp);
-        return posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) * b.fin();
+        float a = posInterp.apply(b.fdata);
+        return (posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) - a) / (1 - a);
     }
 
     @Override
