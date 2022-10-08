@@ -42,6 +42,7 @@ public class BallisticMissileBulletType extends BulletType{
         super(1f, 0f);
         this.sprite = sprite;
 
+        shootEffect = smokeEffect = Fx.none;
         despawnEffect = MissileFx.missileExplosion;
         hitSound = Sounds.largeExplosion;
         layer = Layer.flyingUnit + 2;
@@ -100,14 +101,14 @@ public class BallisticMissileBulletType extends BulletType{
 
     @Override
     public void updateTrail(Bullet b){
-        float x = tX(b), y = tY(b), h = hScl(b) * height;
+        float x = tX(b), y = tY(b), h = hScl(b);
         if(!headless && trailLength > 0){
             if(b.trail == null){
                 b.trail = new HeightTrail(trailLength);
             }
             HeightTrail trail = (HeightTrail)b.trail;
             trail.length = trailLength;
-            trail.update(x, y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), h);
+            trail.update(x, y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), h * height);
         }
 
         float[] data = (float[])b.data;
@@ -137,18 +138,17 @@ public class BallisticMissileBulletType extends BulletType{
         PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
         //Missile
-        float rot = b.angleTo(data[0], data[1]) + 180f,
-            x = tX(b),
+        float x = tX(b),
             y = tY(b),
             hScl = hScl(b),
-            lasthX = xHeight(data[2], data[4]),
-            lasthY = yHeight(data[3], data[4]),
+            lasthX = xHeight(data[2], data[4] * height),
+            lasthY = yHeight(data[3], data[4] * height),
             hX = xHeight(x, hScl * height),
             hY = yHeight(y, hScl * height),
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, hRot);
+        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, shadowRot(b, hScl));
         Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
         Draw.z(layer + hScl / 100f);
@@ -186,6 +186,17 @@ public class BallisticMissileBulletType extends BulletType{
         if(b.fdata == 0) return b.fin(posInterp);
         float a = posInterp.apply(b.fdata);
         return (posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) - a) / (1 - a);
+    }
+
+    public float shadowRot(Bullet b, float hScl){
+        float[] data = (float[])b.data;
+        boolean inc = hScl - data[4] > 0;
+        float ang = b.angleTo(data[0], data[1]) + 180f;
+        if(inc){
+            return Angles.moveToward(90f, ang, hScl * Angles.angleDist(90f, ang));
+        }else{
+            return ang;
+        }
     }
 
     @Override

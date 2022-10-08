@@ -2,10 +2,13 @@ package progressed.world.draw;
 
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.util.*;
 import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
 import progressed.world.blocks.defence.turret.payload.*;
@@ -13,14 +16,15 @@ import progressed.world.blocks.defence.turret.payload.SinglePayloadAmmoTurret.*;
 
 public class DrawPayloadTurret extends DrawTurret{
     public String regionSuffix = "";
+    public boolean drawTurret;
     public TextureRegion inRegion, topRegion;
 
     public DrawPayloadTurret(String basePrefix){
         this.basePrefix = basePrefix;
     }
 
-    public DrawPayloadTurret(){
-
+    public DrawPayloadTurret(boolean drawTurret){
+        this.drawTurret = drawTurret;
     }
 
     @Override
@@ -36,18 +40,26 @@ public class DrawPayloadTurret extends DrawTurret{
         }
         drawPayload(tb);
         Draw.z(Layer.blockOver + 0.1f);
-        Draw.rect(topRegion, build.x, build.y);
+        if(drawTurret){
+            Draw.rect(topRegion, build.x, build.y);
 
-        Draw.color();
+            Draw.color();
 
-        Draw.z(Layer.turret - 0.5f);
+            Draw.z(Layer.turret - 0.5f);
 
-        Drawf.shadow(preview, build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
+            Drawf.shadow(preview, build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
 
-        Draw.z(Layer.turret);
+            Draw.z(Layer.turret);
 
-        drawTurret(turret, tb);
-        drawHeat(turret, tb);
+            drawTurret(turret, tb);
+            drawHeat(turret, tb);
+        }else{
+            if(topRegion.found()) Draw.rect(topRegion, build.x, build.y);
+            Draw.rect(turret.region, build.x, build.y);
+            drawHeat(turret, tb);
+
+            Draw.z(Layer.turret);
+        }
 
         if(parts.size > 0){
             if(outline.found()){
@@ -78,12 +90,23 @@ public class DrawPayloadTurret extends DrawTurret{
     }
 
     @Override
+    public void drawHeat(Turret block, TurretBuild build){
+        if(build.heat <= 0.00001f || !heat.found()) return;
+
+        if(drawTurret){
+            Drawf.additive(heat, block.heatColor.write(Tmp.c1).a(build.heat), build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot(), Layer.turretHeat);
+        }else{
+            Drawf.additive(heat, block.heatColor.write(Tmp.c1).a(build.heat), build.x, build.y, 0f, Layer.turretHeat);
+        }
+    }
+
+    @Override
     public void load(Block block){
         if(!(block instanceof SinglePayloadAmmoTurret)) throw new ClassCastException("This drawer can only be used on single payload ammo turrets.");
 
         super.load(block);
 
         inRegion = Core.atlas.find(block.name + "-in", "factory-in-" + block.size + regionSuffix);
-        topRegion = Core.atlas.find(block.name + "-top", "factory-top-" + block.size + regionSuffix);
+        topRegion = Core.atlas.find(block.name + "-top", drawTurret ? "factory-top-" + block.size + regionSuffix : "error");
     }
 }

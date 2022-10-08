@@ -1052,13 +1052,13 @@ public class PMBlocks{
             );
             size = 5;
             scaledHealth = 160;
-            reload = 60f;
+            reload = 90f;
             range = 85f * 8f;
             minRange = 25f * 8f;
             rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
-            cooldownTime = 8f * 60f;
+            cooldownTime = 3.5f * 60f;
             shake = 5f;
             unitSort = UnitSorts.strongest;
 

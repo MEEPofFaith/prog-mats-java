@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.payload;
 
 import arc.math.geom.*;
 import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
@@ -20,8 +21,10 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
 
         maxAmmo = 1;
         linearWarmup = true;
+        shootEffect = smokeEffect = Fx.none;
+        outlineIcon = false;
 
-        drawer = new DrawPayloadTurret();
+        drawer = new DrawPayloadTurret(false);
     }
 
     @Override
