@@ -148,7 +148,7 @@ public class BallisticMissileBulletType extends BulletType{
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, hRot - 90f);
+        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, hRot);
         Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
         Draw.z(layer + hScl / 100f);

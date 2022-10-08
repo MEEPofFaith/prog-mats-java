@@ -88,7 +88,7 @@ public class PMPayloads{
             maxDelay = 25f;
         }};
 
-        emptyMissile = new Missile("empty-missile-payload"){{
+        emptyMissile = new Missile("empty-missile"){{
             requirements = with(Items.copper, 4, Items.lead, 4, Items.titanium, 6);
 
             size = 2;
@@ -96,7 +96,7 @@ public class PMPayloads{
             constructTime = 60f * 2.5f;
         }};
 
-        basicMissile = new Missile("basic-missile-payload"){{
+        basicMissile = new Missile("basic-missile"){{
             requirements = with(Items.titanium, 4, Items.blastCompound, 6);
 
             prev = emptyMissile;
@@ -107,7 +107,7 @@ public class PMPayloads{
             explosion = PayloadBullets.artemisBasic;
         }};
 
-        recursiveMissile = new Missile("recursive-missile-payload"){{
+        recursiveMissile = new Missile("recursive-missile"){{
             requirements = with(Items.titanium, 3, Items.plastanium, 4, Items.silicon, 4, Items.blastCompound, 7);
 
             prev = emptyMissile;
@@ -121,7 +121,7 @@ public class PMPayloads{
             maxDelay = 20f;
         }};
 
-        emptyNuke = new Missile("empty-nuke-payload"){{
+        emptyNuke = new Missile("empty-nuke"){{
             requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.tenelium, 20);
 
             size = 3;
@@ -129,7 +129,7 @@ public class PMPayloads{
             constructTime = 60f * 8f;
         }};
 
-        basicNuke = new Missile("basic-nuke-payload"){{
+        basicNuke = new Missile("basic-nuke"){{
             requirements = with(Items.lead, 40,Items.titanium, 30, Items.thorium, 35);
 
             prev = emptyNuke;
@@ -140,7 +140,7 @@ public class PMPayloads{
             explosion = PayloadBullets.paragonBasic;
         }};
 
-        clusterNuke = new Missile("cluster-nuke-payload"){{
+        clusterNuke = new Missile("cluster-nuke"){{
             requirements = with(
                 Items.titanium, 35,
                 Items.plastanium, 25,
@@ -160,7 +160,7 @@ public class PMPayloads{
             maxDelay = 20f;
         }};
 
-        sandboxNuke = new Missile("sandbox-nuke-payload"){{
+        sandboxNuke = new Missile("sandbox-nuke"){{
             requirements = empty;
             displayCampaign = false;
 

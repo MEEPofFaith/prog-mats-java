@@ -178,8 +178,8 @@ public class PayloadBullets{
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileFrag;
 
-            splitLifeMaxOffset = 20f;
-            fragRandomSpread = 64f;
+            splitLifeMaxOffset = 30f;
+            fragRandomSpread = 80f;
             fragBullets = 3;
             fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
