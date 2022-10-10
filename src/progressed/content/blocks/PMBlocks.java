@@ -88,7 +88,7 @@ public class PMBlocks{
     blackhole, excalibur,
 
     //Payload
-    sergeant, arbalest, artemis,
+    sergeant, arbalest, artemis, paragon,
 
     // endregion
     // region production
@@ -1063,6 +1063,29 @@ public class PMBlocks{
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            limitRange();
+        }};
+
+        paragon = new BallisticMissileTurret("paragon"){{
+            requirements(Category.turret, with());
+            ammo(
+                basicNuke, PayloadBullets.paragonBasic,
+                clusterNuke, PayloadBullets.paragonCluster,
+                sandboxNuke, PayloadBullets.ohno
+            );
+            size = 7;
+            scaledHealth = 170;
+            reload = 12f * 60f;
+            range = 180f * 8f;
+            minRange = 50f * 8f;
+            rotateSpeed = 360f;
+            shootY = 0f;
+            shootSound = Sounds.missileLaunch;
+            shake = 10f;
+            unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
+            ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
             limitRange();
         }};
         // endregion

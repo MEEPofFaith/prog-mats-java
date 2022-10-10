@@ -13,21 +13,19 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.payloads.*;
-import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
 import static mindustry.type.ItemStack.*;
-import static progressed.content.blocks.PMPayloads.*;
 
 public class PMErekirBlocks{
     public static Block
@@ -38,9 +36,6 @@ public class PMErekirBlocks{
 
     //Modular
     matrix,
-
-    //Missile
-    paragon,
 
     //Nexus
     ravage, onslaught,
@@ -107,7 +102,7 @@ public class PMErekirBlocks{
             cooldownTime = 75f;
 
             size = 4;
-            hideDetails = false;
+            envEnabled |= Env.space;
             scaledHealth = 210;
 
             shootY = 6f / 4f;
@@ -135,35 +130,13 @@ public class PMErekirBlocks{
             requirements(Category.turret, with());
             size = 7;
             scaledHealth = 370;
+            envEnabled |= Env.space;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
                 new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
                 new ModuleGroup(ModuleSize.large)
             };
-        }};
-
-        paragon = new BallisticMissileTurret("paragon"){{
-            requirements(Category.turret, with());
-            ammo(
-                basicNuke, PayloadBullets.paragonBasic,
-                clusterNuke, PayloadBullets.paragonCluster,
-                sandboxNuke, PayloadBullets.ohno
-            );
-            size = 7;
-            scaledHealth = 170;
-            reload = 12f * 60f;
-            range = 180f * 8f;
-            minRange = 50f * 8f;
-            rotateSpeed = 360f;
-            shootY = 0f;
-            shootSound = Sounds.missileLaunch;
-            shake = 10f;
-            unitSort = UnitSorts.strongest;
-
-            coolant = consumeCoolant(0.2f);
-            ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
-            limitRange();
         }};
 
         ravage = new NexusTurret("ravage"){{
@@ -207,6 +180,7 @@ public class PMErekirBlocks{
             warmupMaintainTime = 30f;
 
             reload = 15f;
+            envEnabled |= Env.space;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
@@ -260,6 +234,7 @@ public class PMErekirBlocks{
             warmupMaintainTime = 30f;
 
             reload = 140f;
+            envEnabled |= Env.space;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
@@ -273,6 +248,7 @@ public class PMErekirBlocks{
             requirements(Category.crafting, with());
 
             size = 3;
+            envEnabled |= Env.space;
 
             itemCapacity = 20;
             heatRequirement = 15f;
@@ -308,6 +284,7 @@ public class PMErekirBlocks{
                     Items.silicon, 100
                 ));
                 size = 3;
+                envEnabled |= Env.space;
 
                 recipes(
                     new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
@@ -324,6 +301,7 @@ public class PMErekirBlocks{
                     Items.plastanium, 240
                 ));
                 size = 5;
+                envEnabled |= Env.space;
 
                 recipes(
                     new Recipe(Blocks.duo, 4f, 5f * 60f) //Placeholder
