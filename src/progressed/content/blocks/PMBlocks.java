@@ -88,7 +88,7 @@ public class PMBlocks{
     blackhole, excalibur,
 
     //Payload
-    sergeant, arbalest, artemis, renegade,
+    sergeant, arbalest, artemis, paragon,
 
     // endregion
     // region production
@@ -1066,7 +1066,7 @@ public class PMBlocks{
             limitRange();
         }};
 
-        renegade = new BallisticMissileTurret("renegade"){{
+        paragon = new BallisticMissileTurret("paragon"){{
             requirements(Category.turret, with());
             ammo(
                 basicNuke, PayloadBullets.paragonBasic,
