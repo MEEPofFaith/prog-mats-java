@@ -162,6 +162,7 @@ public class PayloadBullets{
         artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
             splashDamageRadius = 64f;
+            buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
             trailLength = 25;
@@ -195,6 +196,7 @@ public class PayloadBullets{
                 fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 260f;
                     splashDamageRadius = 48f;
+                    buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
 
                     height *= 1.5;
@@ -211,7 +213,7 @@ public class PayloadBullets{
         paragonBasic = new BallisticMissileBulletType("prog-mats-basic-nuke"){{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
-            buildingDamageMultiplier = 0.3f;
+            buildingDamageMultiplier = 0.5f;
             lifetime = 5f * 60f;
 
             hitSound = PMSounds.nuclearExplosion;
@@ -246,7 +248,7 @@ public class PayloadBullets{
             fragBullet = new BallisticMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3000f;
                 splashDamageRadius = 40f;
-                buildingDamageMultiplier = 0.3f;
+                buildingDamageMultiplier = 0.5f;
                 lifetime = 5f * 60f;
 
                 hitShake = 5f;

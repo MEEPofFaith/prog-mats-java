@@ -44,7 +44,7 @@ public class PMErekirBlocks{
     // region Crafting
 
     teneliumFuser,
-    moduleAssembler, moduleFoundry; //TODO paragon is gonna need it's own missile crafters
+    moduleAssembler, moduleFoundry;
 
 
     public static void load(){
