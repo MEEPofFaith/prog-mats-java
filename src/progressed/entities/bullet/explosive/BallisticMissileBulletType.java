@@ -141,6 +141,8 @@ public class BallisticMissileBulletType extends BulletType{
         float x = tX(b),
             y = tY(b),
             hScl = hScl(b),
+            shX = x - shadowOffset * hScl,
+            shY = y - shadowOffset * hScl,
             lasthX = xHeight(data[2], data[4] * height),
             lasthY = yHeight(data[3], data[4] * height),
             hX = xHeight(x, hScl * height),
@@ -148,11 +150,11 @@ public class BallisticMissileBulletType extends BulletType{
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Drawf.shadow(region, x - shadowOffset * hScl, y - shadowOffset * hScl, shadowRot(b, hScl));
+        Draw.scl(hScale(hScl));
+        Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
         Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
         Draw.z(layer + hScl / 100f);
-        Draw.scl(hScale(hScl));
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
         }else{
@@ -166,6 +168,14 @@ public class BallisticMissileBulletType extends BulletType{
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
         float h = hScl(b) * height;
         Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius, lightColor, lightOpacity);
+    }
+
+    @Override
+    public void drawTrail(Bullet b){
+        float scl = Draw.xscl;
+        Draw.scl();
+        super.drawTrail(b);
+        Draw.scl(scl);
     }
 
     public float tX(Bullet b){
@@ -188,14 +198,15 @@ public class BallisticMissileBulletType extends BulletType{
         return (posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) - a) / (1 - a);
     }
 
-    public float shadowRot(Bullet b, float hScl){
+    public float shadowRot(Bullet b, float shX, float shY, float hScl){
         float[] data = (float[])b.data;
         boolean inc = hScl - data[4] > 0;
         float ang = b.angleTo(data[0], data[1]) + 180f;
         if(inc){
             return Angles.moveToward(90f, ang, hScl * Angles.angleDist(90f, ang));
         }else{
-            return ang;
+            float to = b.angleTo(shX, shY) + 180f;
+            return Angles.moveToward(to, ang, hScl * Angles.angleDist(to, ang));
         }
     }
 

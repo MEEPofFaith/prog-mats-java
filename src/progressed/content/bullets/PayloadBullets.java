@@ -22,11 +22,11 @@ public class PayloadBullets{
 
     public static RocketBulletType
 
-    arbalestBasic, arbalestIncend, arbalestBomber;
+    arbalestBasic, arbalestIncend, arbalestBomber; //TODO replace bomber with something different
 
     public static BallisticMissileBulletType
-        artemisBasic, artemisRecursive,
-    paragonBasic, paragonCluster,
+    artemisBasic, artemisRecursive, //TODO 3rd missile
+    paragonBasic, paragonCluster, //TODO 3rd nuke
     ohno;
 
     public static void load(){

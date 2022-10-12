@@ -1081,6 +1081,7 @@ public class PMBlocks{
             rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
+            cooldownTime = 6f * 60f;
             shake = 10f;
             unitSort = UnitSorts.strongest;
 

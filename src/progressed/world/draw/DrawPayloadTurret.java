@@ -17,7 +17,7 @@ import progressed.world.blocks.defence.turret.payload.SinglePayloadAmmoTurret.*;
 public class DrawPayloadTurret extends DrawTurret{
     public String regionSuffix = "";
     public boolean drawTurret;
-    public TextureRegion inRegion, topRegion;
+    public TextureRegion in;
 
     public DrawPayloadTurret(String basePrefix){
         this.basePrefix = basePrefix;
@@ -35,13 +35,13 @@ public class DrawPayloadTurret extends DrawTurret{
         Draw.rect(base, build.x, build.y);
         for(int i = 0; i < 4; i++){
             if(PayloadBlock.blends(tb, i)){
-                Draw.rect(inRegion, tb.x, tb.y, (i * 90) - 180);
+                Draw.rect(in, tb.x, tb.y, (i * 90) - 180);
             }
         }
         drawPayload(tb);
         Draw.z(Layer.blockOver + 0.1f);
         if(drawTurret){
-            Draw.rect(topRegion, build.x, build.y);
+            Draw.rect(top, build.x, build.y);
 
             Draw.color();
 
@@ -54,7 +54,7 @@ public class DrawPayloadTurret extends DrawTurret{
             drawTurret(turret, tb);
             drawHeat(turret, tb);
         }else{
-            if(topRegion.found()) Draw.rect(topRegion, build.x, build.y);
+            if(top.found()) Draw.rect(top, build.x, build.y);
             Draw.rect(turret.region, build.x, build.y);
             drawHeat(turret, tb);
 
@@ -106,7 +106,12 @@ public class DrawPayloadTurret extends DrawTurret{
 
         super.load(block);
 
-        inRegion = Core.atlas.find(block.name + "-in", "factory-in-" + block.size + regionSuffix);
-        topRegion = Core.atlas.find(block.name + "-top", drawTurret ? "factory-top-" + block.size + regionSuffix : "error");
+        in = Core.atlas.find(block.name + "-in", "factory-in-" + block.size + regionSuffix);
+        top = Core.atlas.find(block.name + "-top", drawTurret ? "factory-top-" + block.size + regionSuffix : "");
+    }
+
+    @Override
+    public TextureRegion[] icons(Block block){
+        return top.found() ? new TextureRegion[]{base, in, top, preview} : new TextureRegion[]{base, in, preview};
     }
 }
