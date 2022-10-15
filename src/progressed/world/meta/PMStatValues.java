@@ -126,6 +126,10 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
+                        if(type.rangeChange != 0 && !compact){
+                            sep(bt, Core.bundle.format("bullet.range", (type.rangeChange > 0 ? "+" : "-") + Strings.autoFixed(type.rangeChange / tilesize, 1)));
+                        }
+
                         if(type.displayAmmoMultiplier && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
                             sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }

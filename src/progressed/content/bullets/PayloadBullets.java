@@ -265,6 +265,7 @@ public class PayloadBullets{
         ohno = (BallisticMissileBulletType)paragonCluster.copy();
         ohno.sprite = "prog-mats-sandbox-nuke";
         ohno.targetColor = ohno.trailColor = Color.red;
+        ohno.rangeChange = 500 * 8;
 
         BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
         stop.speed = 1;
