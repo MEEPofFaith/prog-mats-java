@@ -1,6 +1,5 @@
 package progressed.world.meta;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -19,7 +18,6 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
@@ -54,7 +52,7 @@ public class PMStatValues{
             var orderedKeys = map.keys().toSeq();
             orderedKeys.sort();
 
-            for(T t : orderedKeys){
+            for(T t: orderedKeys){
                 boolean compact = t instanceof UnitType && !showUnit || indent > 0;
                 boolean payload = t instanceof Block || (t instanceof UnitType && !showUnit);
 
@@ -290,79 +288,66 @@ public class PMStatValues{
 
     public static StatValue fuel(FuelCrafter crafter){
         return table -> table.table(t -> {
-            t.table(ct -> {
-                for(ItemStack stack : ((ConsumeItems)(crafter.findConsumer(c -> c instanceof ConsumeItems))).items){
-                    ct.add(new ItemDisplay(stack.item, stack.amount, crafter.craftTime, true)).padRight(5);
+            t.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
+            t.add(crafter.fuelItem.localizedName).padRight(10).left().top();
+
+            t.table(ft -> {
+                ft.clearChildren();
+                ft.left().defaults().padRight(3).left();
+
+                ft.add(bundle.format("stat.pm-fuel.input", crafter.fuelPerItem));
+
+                sep(ft, bundle.format("stat.pm-fuel.use", crafter.fuelPerCraft));
+
+                sep(ft, bundle.format("stat.pm-fuel.capacity", crafter.fuelCapacity));
+
+                if(crafter.attribute != null){
+                    ft.row();
+                    ft.table(at -> {
+                        Runnable[] rebuild = {null};
+                        Map[] lastMap = {null};
+
+                        rebuild[0] = () -> {
+                            at.clearChildren();
+                            at.left();
+
+                            at.add("@stat.pm-fuel.affinity");
+
+                            if(state.isGame()){
+                                var blocks = Vars.content.blocks()
+                                    .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
+                                    .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
+
+                                if(blocks.any()){
+                                    int i = 0;
+                                    for(var block: blocks){
+                                        fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
+                                        if(++i % 5 == 0){
+                                            at.row();
+                                        }
+                                    }
+                                }else{
+                                    at.add("@none.inmap");
+                                }
+                            }else{
+                                at.add("@stat.showinmap");
+                            }
+                        };
+
+                        rebuild[0].run();
+
+                        //rebuild when map changes.
+                        at.update(() -> {
+                            Map current = state.isGame() ? state.map : null;
+
+                            if(current != lastMap[0]){
+                                rebuild[0].run();
+                                lastMap[0] = current;
+                            }
+                        });
+                    });
                 }
             }).left().get().background(Tex.underline);
-
-            t.row();
-
-            t.table(tt -> {
-                tt.add("@stat.pm-fuel").top();
-                tt.table(ft -> {
-                    ft.image(icon(crafter.fuelItem)).size(3 * 8).padRight(4).right().top();
-                    ft.add(crafter.fuelItem.localizedName).padRight(10).left().top();
-
-                    ft.table(st -> {
-                        st.clearChildren();
-                        st.left().defaults().padRight(3).left();
-
-                        st.add(bundle.format("stat.pm-fuel.input", crafter.fuelPerItem));
-
-                        sep(st, bundle.format("stat.pm-fuel.use", crafter.fuelPerCraft));
-
-                        sep(st, bundle.format("stat.pm-fuel.capacity", crafter.fuelCapacity));
-
-                        if(crafter.attribute != null){
-                            st.row();
-                            st.table(at -> {
-                                Runnable[] rebuild = {null};
-                                Map[] lastMap = {null};
-
-                                rebuild[0] = () -> {
-                                    at.clearChildren();
-                                    at.left();
-
-                                    at.add("@stat.pm-fuel.affinity");
-
-                                    if(state.isGame()){
-                                        var blocks = Vars.content.blocks()
-                                            .select(block -> block instanceof Floor f && indexer.isBlockPresent(block) && f.attributes.get(crafter.attribute) != 0 && !(f.isLiquid && !crafter.floating))
-                                            .<Floor>as().with(s -> s.sort(f -> f.attributes.get(crafter.attribute)));
-
-                                        if(blocks.any()){
-                                            int i = 0;
-                                            for(var block: blocks){
-                                                fuelEfficiency(block, block.attributes.get(crafter.attribute) * crafter.fuelUseReduction / -100f).display(at);
-                                                if(++i % 5 == 0){
-                                                    at.row();
-                                                }
-                                            }
-                                        }else{
-                                            at.add("@none.inmap");
-                                        }
-                                    }else{
-                                        at.add("@stat.showinmap");
-                                    }
-                                };
-
-                                rebuild[0].run();
-
-                                //rebuild when map changes.
-                                at.update(() -> {
-                                    Map current = state.isGame() ? state.map : null;
-
-                                    if(current != lastMap[0]){
-                                        rebuild[0].run();
-                                        lastMap[0] = current;
-                                    }
-                                });
-                            });
-                        }
-                    }).padTop(-9).left().get().background(Tex.underline);
-                }).left();
-            }).left();
         });
     }
 
@@ -412,7 +397,7 @@ public class PMStatValues{
                                             t.add(Strings.autoFixed(r.liquidCost.amount, 2)).style(Styles.outlineLabel);
                                             add(t);
                                         }
-                                    }}).size(iconMed).padRight(3  + (r.liquidCost.amount != 0 && Strings.autoFixed(r.liquidCost.amount, 2).length() > 2 ? 8 : 0));
+                                    }}).size(iconMed).padRight(3 + (r.liquidCost.amount != 0 && Strings.autoFixed(r.liquidCost.amount, 2).length() > 2 ? 8 : 0));
                                     it.add(Strings.autoFixed(r.liquidCost.amount / (r.craftTime / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
                                 }
                             });
@@ -496,7 +481,7 @@ public class PMStatValues{
     public static StatValue moduleCounts(ModuleGroup[] groups){
         return table -> {
             int[] mounts = {0, 0, 0};
-            for(ModuleGroup group : groups){
+            for(ModuleGroup group: groups){
                 mounts[group.size.ordinal()] += group.amount();
             }
 

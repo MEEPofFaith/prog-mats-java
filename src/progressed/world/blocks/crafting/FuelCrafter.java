@@ -55,9 +55,8 @@ public class FuelCrafter extends GenericCrafter{
     @Override
     public void setStats(){
         super.setStats();
-        stats.remove(Stat.input);
 
-        stats.add(Stat.input, PMStatValues.fuel(this));
+        stats.add(PMStat.fuel, PMStatValues.fuel(this));
     }
 
     public class FuelCrafterBuild extends GenericCrafterBuild{

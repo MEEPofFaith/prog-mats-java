@@ -152,7 +152,7 @@ public class ModularTurret extends PayloadBlock{
         stats.remove(Stat.powerUse);
         stats.remove(Stat.liquidCapacity);
 
-        stats.add(Stat.itemCapacity, PMStatValues.moduleCounts(moduleGroups));
+        stats.add(PMStat.mounts, PMStatValues.moduleCounts(moduleGroups));
     }
 
     @Override
