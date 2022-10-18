@@ -122,19 +122,19 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
                         }
 
+                        if(type.rangeChange != 0 && !compact){
+                            sep(bt, bundle.format("bullet.range", (type.rangeChange > 0 ? "+" : "-") + Strings.autoFixed(type.rangeChange / tilesize, 1)));
+                        }
+
                         if(type.splashDamage > 0){
                             sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
-                        if(type.rangeChange != 0 && !compact){
-                            sep(bt, Core.bundle.format("bullet.range", (type.rangeChange > 0 ? "+" : "-") + Strings.autoFixed(type.rangeChange / tilesize, 1)));
-                        }
-
-                        if(type.displayAmmoMultiplier && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && !(type instanceof LiquidBulletType) && !(t instanceof PowerTurret)){
+                        if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)){
                             sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 
-                        if(!Mathf.equal(type.reloadMultiplier, 1f)){
+                        if(!compact && !Mathf.equal(type.reloadMultiplier, 1f)){
                             sep(bt, bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
                         }
 
@@ -154,15 +154,28 @@ public class PMStatValues{
                             sep(bt, "@bullet.incendiary");
                         }
 
+                        if(type.homingPower > 0.01f){
+                            sep(bt, "@bullet.homing");
+                        }
+
+                        if(type.lightning > 0){
+                            sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+                        }
+
+                        if(type.pierceArmor){
+                            sep(bt, "@bullet.armorpierce");
+                        }
+
+
                         if(type.status != StatusEffects.none){
-                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
+                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + bundle.get("unit.seconds")));
                         }
 
                         if(type instanceof PillarFieldBulletType stype && stype.pillar.status != StatusEffects.none){
                             sep(bt, (stype.pillar.status.minfo.mod == null ? stype.pillar.status.emoji() : "") + "[stat]" + stype.pillar.status.localizedName);
                         }
 
-                        if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but stat display is only run once so whatever
+                        if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but whatever
                             Vaccine[] v = stype.vaccines;
                             StringBuilder str = new StringBuilder();
                             str.append("[lightgray]");
