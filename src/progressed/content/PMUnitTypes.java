@@ -84,7 +84,7 @@ public class PMUnitTypes{
     puncture, penetration, incision, laceration, amputation,
     
     //sentry
-    barrage, downpour, rapier,
+    barrage, downpour,
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
@@ -163,46 +163,6 @@ public class PMUnitTypes{
                 new UnitEngine(4f, -4f, 2f, 315f)
             );
         }};
-
-        rapier = new SentryUnitType("rapier"){
-            final float len = 56f, rangeMul = 16f;
-
-            {
-                health = 800f;
-                hideDetails = false;
-                duration = 25f * 60f;
-
-                rotateSpeed = 30f;
-                range = len * rangeMul;
-                itemCapacity = 15;
-
-                weapons.add(new Weapon(name + "-laser"){{
-                    top = true;
-                    rotate = true;
-                    mirror = false;
-                    rotateSpeed = 60f;
-                    reload = 20f;
-                    x = 0f;
-                    y = -2f;
-                    shootY = 4.25f;
-                    shootCone = 2;
-                    shootSound = Sounds.laser;
-                    bullet = new LaserBulletType(90f){
-                        {
-                            length = len;
-                            maxRange = length * rangeMul;
-                            recoil = -10f;
-                            colors = new Color[]{Pal.surge.cpy().a(0.4f), Pal.surge, Color.white};
-                        }
-                    };
-                }});
-
-                setEnginesMirror(
-                    new UnitEngine(4f, 4f, 2f, 45f),
-                    new UnitEngine(4f, -4f, 2f, 315f)
-                );
-            }
-        };
 
         flareSmall = new FlareUnitType("small-flare"){{
             health = 300f;

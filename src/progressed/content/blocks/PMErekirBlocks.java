@@ -20,12 +20,15 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.energy.*;
+import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.module.ModuleModule.*;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.*;
+import static progressed.content.blocks.PMPayloads.*;
 
 public class PMErekirBlocks{
     public static Block
@@ -33,6 +36,9 @@ public class PMErekirBlocks{
 
     //Why do I hear anxiety piano
     sentinel,
+
+    //Sentries
+    sergeant,
 
     //Modular
     matrix,
@@ -44,7 +50,8 @@ public class PMErekirBlocks{
     // region Crafting
 
     teneliumFuser,
-    moduleAssembler, moduleFoundry;
+    moduleAssembler, moduleFoundry,
+    sentryBuilder;
 
 
     public static void load(){
@@ -124,6 +131,34 @@ public class PMErekirBlocks{
             consumePower(29f);
             coolant = consumeLiquid(Liquids.water, 1f);
             coolantMultiplier = 0.5f;
+        }};
+
+        sergeant = new SinglePayloadAmmoTurret("sergeant"){{
+            requirements(Category.turret, with(
+                Items.copper, 125,
+                Items.lead, 75,
+                Items.silicon, 30,
+                Items.titanium, 50
+            ));
+            ammo(
+                basicSentry, PayloadBullets.barrageLaunch,
+                missileSentry, PayloadBullets.downpourLaunch
+            );
+
+            size = 3;
+            envEnabled |= Env.space;
+            hideDetails = false;
+            scaledHealth = 140;
+            minRange = 5f * tilesize;
+            range = 40 * tilesize;
+            velocityRnd = 0.2f;
+            cooldownTime = 30f;
+            recoil = 6f;
+            recoilTime = 60f;
+            shake = 2f;
+            shootY = -4f;
+
+            coolant = consumeLiquid(Liquids.water, 0.4f);
         }};
 
         matrix = new ModularTurret("matrix"){{
@@ -308,5 +343,22 @@ public class PMErekirBlocks{
                 );
             }};
         }
+
+        sentryBuilder = new PayloadCrafter("sentry-builder"){{
+            requirements(Category.crafting, with(
+                Items.copper, 90,
+                Items.lead, 80,
+                Items.titanium, 60,
+                Items.silicon, 150
+            ));
+
+            size = 3;
+            recipes(
+                basicSentry,
+                missileSentry
+            );
+
+            recipes.each(r -> r.blockBuild = false);
+        }};
     }
 }

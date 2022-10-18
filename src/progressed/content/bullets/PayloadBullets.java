@@ -18,11 +18,11 @@ import static mindustry.Vars.*;
 public class PayloadBullets{
     public static SentryBulletType
 
-    barrageLaunch, downpourLaunch, rapierLaunch;
+    barrageLaunch, downpourLaunch;
 
     public static RocketBulletType
 
-    arbalestBasic, arbalestIncend, arbalestBomber; //TODO replace bomber with something different
+    arbalestBasic, arbalestIncend; //TODO 3rd rocket
 
     public static BallisticMissileBulletType
     artemisBasic, artemisRecursive, //TODO 3rd missile
@@ -32,7 +32,6 @@ public class PayloadBullets{
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
         downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
-        rapierLaunch = new SentryBulletType(PMUnitTypes.rapier);
 
         arbalestBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
             lifetime = 70f;
@@ -96,66 +95,6 @@ public class PayloadBullets{
             public void hit(Bullet b, float x, float y){
                 if(!b.absorbed) MissileFx.flameRing.at(x, y, b.rotation(), hitColor);
                 super.hit(b, x, y);
-            }
-        };
-
-        arbalestBomber = new RocketBulletType(4f, 12f, "prog-mats-bomber-rocket"){
-            {
-                lifetime = 70f;
-                acceleration = 0.03f;
-                backSpeed = thrustDelay = 0f;
-                trailWidth = thrusterSize = 6f / 4f;
-                trailParam = thrusterSize * 2f * 1.5f;
-                trailOffset = thrusterOffset = 43f / 4f;
-                rotOffset = 90f;
-                despawnEffect = MissileFx.missileExplosion;
-                trailInterval = 1f;
-                trailEffect = MissileFx.rocketTrail;
-                trailLength = 6;
-                drawSize = 60f * 80f;
-                layer = Layer.turret + 0.015f;
-                riseStart = thrusterGrowth;
-                riseEnd = thrusterGrowth + 10f;
-                targetLayer = Layer.bullet - 1;
-
-                collidesTiles = false;
-                pierce = true;
-                splashDamage = 135f;
-                splashDamageRadius = 6.5f * tilesize;
-                homingPower = 0.25f;
-                homingDelay = 5f;
-                homingRange = 100f * tilesize;
-
-                bombBullet = new BombBulletType(74f, 4.5f * tilesize){{
-                    lifetime = 15f;
-                    width =  8f;
-                    height = 10f;
-                    hitEffect = Fx.flakExplosion;
-                    status = StatusEffects.blasted;
-                    statusDuration = 60f;
-                    collidesAir = true;
-                    frontColor = Pal.sapBullet;
-                    backColor = Pal.sapBulletBack;
-                    layer = Layer.turret + 0.014f;
-                }};
-                bombInterval = 2f;
-
-                unitSort = UnitSorts.weakest; //Target, bomb, and destroy low health units :)))
-            }
-
-            @Override
-            public void hit(Bullet b, float x, float y){
-                //no
-            }
-
-            @Override
-            public void despawned(Bullet b){
-                hitEffect.at(b.x, b.y, b.rotation(), hitColor);
-                hitSound.at(b.x, b.y, hitSoundPitch, hitSoundVolume);
-
-                Effect.shake(hitShake, hitShake, b);
-
-                Damage.damage(b.team, b.x, b.y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
             }
         };
 

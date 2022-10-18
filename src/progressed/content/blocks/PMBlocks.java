@@ -85,10 +85,10 @@ public class PMBlocks{
     dance, masquerade,
 
     //Misc
-    blackhole, excalibur,
+    kugelblitz, excalibur,
 
     //Payload
-    sergeant, arbalest, artemis, paragon,
+    arbalest, artemis, paragon,
 
     // endregion
     // region production
@@ -111,7 +111,7 @@ public class PMBlocks{
     mindronCollider, pyroclastForge,
 
     //Payloads
-    shellPress, missileFactory, sentryBuilder,
+    shellPress, missileFactory,
 
     // endregion
     // region defence
@@ -861,7 +861,7 @@ public class PMBlocks{
             buildWaveOffset = 0.05f;
         }};
 
-        blackhole = new BlackHoleTurret("blackhole"){{
+        kugelblitz = new BlackHoleTurret("blackhole"){{
             requirements(Category.turret, with(
                 Items.titanium, 100,
                 Items.thorium, 150,
@@ -968,44 +968,6 @@ public class PMBlocks{
             }};
         }};
 
-        sergeant = new PayloadLaunchTurret("tinker"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 125,
-                    Items.lead, 75,
-                    Items.silicon, 30,
-                    Items.titanium, 50
-                ));
-                ammo(
-                    basicSentry, PayloadBullets.barrageLaunch,
-                    missileSentry, PayloadBullets.downpourLaunch,
-                    dashSentry, PayloadBullets.rapierLaunch
-                );
-
-                size = 3;
-                hideDetails = false;
-                scaledHealth = 140;
-                minRange = 5f * tilesize;
-                range = 40 * tilesize;
-                velocityRnd = 0.2f;
-                cooldown = 0.03f;
-                recoil = 6f;
-                restitution = 0.02f;
-                shake = 2f;
-
-                chargeTime = 60f;
-                lineSpacing = 3.5f;
-
-                coolant = consumeCoolant(0.2f);
-            }
-
-            @Override
-            public void init(){
-                super.init();
-                shootY = -4f;
-            }
-        };
-
         arbalest = new PayloadRocketTurret("arbalest"){{
             requirements(Category.turret, with(
                 Items.copper, 150,
@@ -1016,8 +978,7 @@ public class PMBlocks{
             ));
             ammo(
                 basicRocket, PayloadBullets.arbalestBasic,
-                incendiaryRocket, PayloadBullets.arbalestIncend,
-                bomberRocket, PayloadBullets.arbalestBomber
+                incendiaryRocket, PayloadBullets.arbalestIncend
             );
             size = 5;
             hideDetails = false;
@@ -1261,29 +1222,11 @@ public class PMBlocks{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                basicRocket, incendiaryRocket, bomberRocket,
+                basicRocket, incendiaryRocket,
                 basicMissile, recursiveMissile,
                 basicNuke, clusterNuke
             );
             recipes.get(1).liquidCost = new LiquidStack(Liquids.slag, 40f);
-        }};
-
-        sentryBuilder = new PayloadCrafter("sentry-builder"){{
-            requirements(Category.crafting, with(
-                Items.copper, 90,
-                Items.lead, 80,
-                Items.titanium, 60,
-                Items.silicon, 150
-            ));
-
-            size = 3;
-            recipes(
-                basicSentry,
-                missileSentry,
-                dashSentry
-            );
-
-            recipes.each(r -> r.blockBuild = false);
         }};
         // endregion
 

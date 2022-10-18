@@ -14,7 +14,7 @@ public class PMPayloads{
 
     emptyRocket,
 
-    basicRocket, incendiaryRocket, bomberRocket,
+    basicRocket, incendiaryRocket, //TODO third rocket
 
     //Region Missiles
 
@@ -32,7 +32,7 @@ public class PMPayloads{
 
     //Region Sentries
 
-    basicSentry, missileSentry, dashSentry;
+    basicSentry, missileSentry;
 
     public static void load(){
         emptyRocket = new Missile("empty-rocket"){{
@@ -70,22 +70,6 @@ public class PMPayloads{
             outlined = true;
 
             explosion = PayloadBullets.arbalestIncend;
-        }};
-
-        bomberRocket = new Missile("bomber-rocket"){{
-            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.blastCompound, 10);
-
-            prev = emptyRocket;
-            size = 3;
-            powerUse = 1.25f;
-            constructTime = 60f * 6.5f;
-            elevation = 2f / 3f;
-            outlined = true;
-
-            explosionArea = -1f;
-            explosion = PayloadBullets.arbalestBomber.bombBullet;
-            explosions = 50;
-            maxDelay = 25f;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
@@ -189,15 +173,6 @@ public class PMPayloads{
             powerUse = 4.5f;
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
-        }};
-
-        dashSentry = new Sentry("dash-sentry"){{
-            requirements = with(Items.copper, 20, Items.lead, 20, Items.titanium, 25, Items.graphite, 20, Items.silicon, 25);
-
-            size = 2;
-            powerUse = 5.25f;
-            constructTime = 60f * 23f;
-            unit = PMUnitTypes.rapier;
         }};
     }
 }

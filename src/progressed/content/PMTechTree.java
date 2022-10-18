@@ -11,7 +11,6 @@ import progressed.util.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
-import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
 import static progressed.content.blocks.PMBlocks.*;
 import static progressed.content.blocks.PMPayloads.*;
@@ -57,7 +56,7 @@ public class PMTechTree{
 
         vanillaNode(fuse, () -> {
             //Kugelblitz
-            node(blackhole, Seq.with(
+            node(kugelblitz, Seq.with(
                 new SectorComplete(SectorPresets.nuclearComplex),
                 new Research(meltdown),
                 new Research(fissure)
@@ -65,33 +64,18 @@ public class PMTechTree{
         });
 
         vanillaNode(ripple, () -> {
-            //Tinker
-            node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
-                new Research(payloadPropulsionTower),
-                new SectorComplete(SectorPresets.windsweptIslands)
+            //Rockets
+            node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
+                new SectorComplete(SectorPresets.nuclearComplex)
             ), () -> {
-                node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
-                    new SectorComplete(SectorPresets.nuclearComplex)
-                ), () -> {
-                    nodeFree(shellPress, arbalest, () -> {
-                        nodeFree(emptyRocket, arbalest);
-                        nodeFree(missileFactory, arbalest, () -> {
-                            //Rockets
-                            nodeFree(basicRocket, arbalest, () -> {
-                                node(incendiaryRocket);
-                                node(bomberRocket);
-                            });
+                nodeFree(shellPress, arbalest, () -> {
+                    nodeFree(emptyRocket, arbalest);
+                    nodeFree(missileFactory, arbalest, () -> {
+                        //Rockets
+                        nodeFree(basicRocket, arbalest, () -> {
+                            node(incendiaryRocket);
                         });
                     });
-                });
-
-                nodeFree(sentryBuilder, sergeant, () -> {
-                    nodeFree(basicSentry, sergeant);
-                    node(missileSentry, Seq.with(new Research(arbalest)));
-                    node(dashSentry, Seq.with(
-                        new Research(lancer),
-                        new Research(quasar)
-                    ));
                 });
             });
         });
