@@ -165,7 +165,7 @@ public class PMPayloads{
             unit = PMUnitTypes.barrage;
         }};
 
-        missileSentry = new Sentry("strike-sentry"){{
+        missileSentry = new Sentry("missile-sentry"){{
             requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 15, Items.silicon, 25, Items.blastCompound, 15);
 
             size = 2;

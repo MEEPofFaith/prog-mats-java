@@ -12,14 +12,15 @@ import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
+import mindustry.type.unit.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.entities.units.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
-public class SentryUnitType extends UnitType{
+public class SentryUnitType extends ErekirUnitType{
     public float duration = 600f, riseSpeed = 0.125f;
 
     public SentryUnitType(String name){
@@ -29,12 +30,11 @@ public class SentryUnitType extends UnitType{
         
         speed = accel = 0f;
         drag = 0.12f;
-        flying = lowAltitude = true;
+        flying = true;
         isEnemy = false;
         useUnitCap = false;
         itemCapacity = 10;
         health = 200;
-        engineSize = -1f;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class SentryUnitType extends UnitType{
     public void setStats(){
         super.setStats();
         
-        stats.add(Stat.health, Core.bundle.format("stat.pm-sentry-lifetime", (int)(duration / 60f)));
+        stats.add(PMStat.sentryLifetime, (int)(duration / 60f), StatUnit.seconds);
 
         stats.remove(Stat.speed);
         stats.remove(Stat.itemCapacity);

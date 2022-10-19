@@ -150,10 +150,11 @@ public class BallisticMissileBulletType extends BulletType{
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Draw.scl(hScale(hScl));
+        Draw.scl(1f + hScl);
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
         Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
+        Draw.scl(hScale(hScl));
         Draw.z(layer + hScl / 100f);
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);

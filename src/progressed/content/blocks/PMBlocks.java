@@ -1028,7 +1028,15 @@ public class PMBlocks{
         }};
 
         paragon = new BallisticMissileTurret("paragon"){{
-            requirements(Category.turret, with());
+            requirements(Category.turret, with(
+                Items.copper, 4000,
+                Items.graphite, 2200,
+                Items.silicon, 2000,
+                Items.titanium, 1300,
+                Items.thorium, 650,
+                Items.surgeAlloy, 200,
+                PMItems.tenelium, 800
+            ));
             ammo(
                 basicNuke, PayloadBullets.paragonBasic,
                 clusterNuke, PayloadBullets.paragonCluster,

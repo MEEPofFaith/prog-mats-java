@@ -2,7 +2,6 @@ package progressed.content;
 
 import arc.*;
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
@@ -31,9 +30,29 @@ public class PMUnitTypes{
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
+    public static UnitType
+
+        //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
+        echo, presence, ghoul, phantom, apparition,
+
+    //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
+    puncture, penetration, incision, laceration, amputation,
+
+    //sentry
+    barrage, downpour,
+
+    //signal flare
+    flareSmall, flareMedium, flareLarge,
+
+    //swords
+    danceSword, masqueradeSword,
+
+    //sandy
+    everythingUnit;
 
     /**
      * Internal function to flatmap {@code Class -> Prov} into an {@link Entry}.
+     *
      * @author GlennFolker
      */
     private static <T extends Entityc> Entry<Class<T>, Prov<T>> prov(Class<T> type, Prov<T> prov){
@@ -45,6 +64,7 @@ public class PMUnitTypes{
 
     /**
      * Setups all entity IDs and maps them into {@link EntityMapping}.
+     *
      * @author GlennFolker
      */
 
@@ -69,31 +89,12 @@ public class PMUnitTypes{
 
     /**
      * Retrieves the class ID for a certain entity type.
+     *
      * @author GlennFolker
      */
     public static <T extends Entityc> int classID(Class<T> type){
         return idMap.get(type, -1);
     }
-
-    public static UnitType
-
-    //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
-    echo, presence, ghoul, phantom, apparition,
-
-    //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
-    puncture, penetration, incision, laceration, amputation,
-    
-    //sentry
-    barrage, downpour,
-
-    //signal flare
-    flareSmall, flareMedium, flareLarge,
-
-    //swords
-    danceSword, masqueradeSword,
-    
-    //sandy
-    everythingUnit;
 
     public static void load(){
         setupID();
@@ -103,32 +104,33 @@ public class PMUnitTypes{
             health = 500f;
             duration = 39f * 60f;
 
-            weapons.add(new Weapon("large-weapon"){{
+            weapons.add(new Weapon(name + "-gun"){{
                 top = false;
                 rotate = false;
                 alternate = true;
 
-                x = 4f;
-                y = 2.25f;
-                shootX = -0.625f;
+                x = 11f / 4f;
+                y = 18f / 4f;
+                shootX = -2.5f / 4f;
+                shootY = 3f;
+                layerOffset = -0.01f;
 
                 reload = 6f;
-                recoil = 1.75f;
+                recoil = 3f / 4f;
                 ejectEffect = Fx.casing1;
-
                 bullet = new BasicBulletType(3f, 20f){{
+                    lifetime = 80f;
+                    buildingDamageMultiplier = 0.3f;
                     width = 7f;
                     height = 9f;
                     homingPower = 0.03f;
                     homingRange = 120f;
-                    lifetime = 80f;
                 }};
             }});
 
-            setEnginesMirror(
-                new UnitEngine(4f, 4f, 2f, 45f),
-                new UnitEngine(4f, -4f, 2f, 315f)
-            );
+            engineSize = 3f;
+            engineOffset = 5f;
+            setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
         }};
 
         downpour = new SentryUnitType("downpour"){{
@@ -136,32 +138,33 @@ public class PMUnitTypes{
             duration = 32f * 60f;
 
             weapons.add(new RocketWeapon(name + "-rocket"){{
-                x = 18f / 4f;
-                y = 0f;
+                x = 19f / 4f;
+                y = -5f / 4f;
                 mirror = true;
                 alternate = false;
                 reload = 60f;
                 shootCone = 5f;
                 shootSound = Sounds.missile;
-                layerOffset = -0.05f;
+                layerOffset = -0.01f;
 
                 bullet = new RocketBulletType(4.5f, 48f, name){{
                     lifetime = 60f;
                     backSpeed = 0.25f;
                     splashDamage = 260f;
                     splashDamageRadius = 18f;
-                    thrusterOffset = 15f / 4f;
-                    thrusterSize = 0.75f;
+                    buildingDamageMultiplier = 0.3f;
+                    thrusterOffset = 5f;
+                    thrusterSize = 1f;
                     homingPower = 0.25f;
                     homingRange = 48f * 8f;
-                    layer = Layer.flyingUnitLow - 1f;
+                    trailLength = 3;
+                    layer = Layer.flyingUnit - 1f;
                 }};
             }});
 
-            setEnginesMirror(
-                new UnitEngine(4f, 4f, 2f, 45f),
-                new UnitEngine(4f, -4f, 2f, 315f)
-            );
+            engineSize = 3f;
+            engineOffset = 5f;
+            setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
         }};
 
         flareSmall = new FlareUnitType("small-flare"){{

@@ -40,7 +40,8 @@ public class Sentry extends Missile{
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.output, s -> {
+        stats.add(PMStat.sentry, s -> {
+            s.add(unit.localizedName).top();
             PMStatValues.infoButton(s, unit, 4f * 8f);
         });
     }
