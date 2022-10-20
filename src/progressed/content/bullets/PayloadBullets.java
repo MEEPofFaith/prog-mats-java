@@ -185,10 +185,13 @@ public class PayloadBullets{
             fragBullets = 20;
 
             fragBullet = new BallisticMissileBulletType("prog-mats-cluster-nuke-split"){{
-                splashDamage = 3000f;
+                splashDamage = 3500f;
                 splashDamageRadius = 40f;
                 buildingDamageMultiplier = 0.5f;
                 lifetime = 5f * 60f;
+
+                homingPower = 0.5f;
+                homingRange = 30f * 8f;
 
                 hitShake = 5f;
                 despawnEffect = MissileFx.missileExplosion;

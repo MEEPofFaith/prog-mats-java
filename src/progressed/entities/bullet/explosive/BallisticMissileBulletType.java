@@ -100,6 +100,40 @@ public class BallisticMissileBulletType extends BulletType{
     }
 
     @Override
+    public void updateHoming(Bullet b){
+        if(homingPower > 0.0001f && b.time >= homingDelay){
+            float realAimX = b.aimX < 0 ? b.x : b.aimX;
+            float realAimY = b.aimY < 0 ? b.y : b.aimY;
+
+            Teamc target;
+            //home in on allies if possible
+            if(heals()){
+                target = Units.closestTarget(null, realAimX, realAimY, homingRange,
+                    e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                    t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
+                );
+            }else{
+                if(b.aimTile != null && b.aimTile.build != null && b.aimTile.build.team != b.team && collidesGround && !b.hasCollided(b.aimTile.build.id)){
+                    target = b.aimTile.build;
+                }else{
+                    target = Units.closestTarget(b.team, realAimX, realAimY, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                }
+            }
+
+            if(target != null){ //Instead of rotating the bullet, shift towards the homing target.
+                Tmp.v1.setZero();
+                if(target instanceof Hitboxc h){
+                    Tmp.v1.set(h.deltaX(), h.deltaY()).scl(b.lifetime - b.time);
+                }
+                Tmp.v1.add(target);
+
+                Tmp.v2.trns(b.angleTo(Tmp.v1), b.dst(Tmp.v1)).limit(homingPower);
+                b.move(Tmp.v2);
+            }
+        }
+    }
+
+    @Override
     public void updateTrail(Bullet b){
         float x = tX(b), y = tY(b), h = hScl(b);
         if(!headless && trailLength > 0){
