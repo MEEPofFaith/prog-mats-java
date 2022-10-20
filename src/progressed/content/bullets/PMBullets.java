@@ -176,7 +176,7 @@ public class PMBullets{
             }
         };
 
-        excaliburLaser = new CrossLaserBulletType(5000f){{
+        excaliburLaser = new CrossLaserBulletType(1500f){{
             length = 800f;
             width = 26f;
             growTime = 10f;

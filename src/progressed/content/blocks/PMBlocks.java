@@ -1029,13 +1029,13 @@ public class PMBlocks{
 
         paragon = new BallisticMissileTurret("paragon"){{
             requirements(Category.turret, with(
-                Items.copper, 4000,
-                Items.graphite, 2200,
-                Items.silicon, 2000,
-                Items.titanium, 1300,
-                Items.thorium, 650,
-                Items.surgeAlloy, 200,
-                PMItems.tenelium, 800
+                Items.copper, 6000,
+                Items.graphite, 5200,
+                Items.silicon, 3500,
+                Items.titanium, 2500,
+                Items.thorium, 1250,
+                Items.surgeAlloy, 1000,
+                PMItems.tenelium, 1800
             ));
             ammo(
                 basicNuke, PayloadBullets.paragonBasic,
@@ -1217,12 +1217,11 @@ public class PMBlocks{
 
         missileFactory = new PayloadCrafter("missile-factory"){{
             requirements(Category.crafting, with(
-                Items.copper, 300,
-                Items.lead, 200,
-                Items.silicon, 200,
-                Items.plastanium, 150,
-                Items.thorium, 100,
-                Items.surgeAlloy, 110
+                Items.copper, 350,
+                Items.lead, 250,
+                Items.silicon, 220,
+                Items.plastanium, 160,
+                Items.thorium, 110
             ));
 
             size = 5;

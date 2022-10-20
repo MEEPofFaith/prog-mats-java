@@ -73,7 +73,11 @@ public class PMPayloads{
         }};
 
         emptyMissile = new Missile("empty-missile"){{
-            requirements = with(Items.copper, 4, Items.lead, 4, Items.titanium, 6);
+            requirements = with(
+                Items.copper, 4,
+                Items.lead, 4,
+                Items.titanium, 6
+            );
 
             size = 2;
             powerUse = 0.75f;
@@ -81,7 +85,10 @@ public class PMPayloads{
         }};
 
         basicMissile = new Missile("basic-missile"){{
-            requirements = with(Items.titanium, 4, Items.blastCompound, 6);
+            requirements = with(
+                Items.titanium, 4,
+                Items.blastCompound, 6
+            );
 
             prev = emptyMissile;
             size = 2;
@@ -92,7 +99,11 @@ public class PMPayloads{
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
-            requirements = with(Items.titanium, 3, Items.plastanium, 4, Items.silicon, 4, Items.blastCompound, 7);
+            requirements = with(
+                Items.plastanium, 4,
+                Items.silicon, 5,
+                Items.blastCompound, 7
+            );
 
             prev = emptyMissile;
             size = 2;
@@ -106,7 +117,11 @@ public class PMPayloads{
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
-            requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.tenelium, 20);
+            requirements = with(
+                Items.titanium, 25,
+                Items.surgeAlloy, 18,
+                PMItems.tenelium, 20
+            );
 
             size = 3;
             powerUse = 5f;
@@ -114,29 +129,31 @@ public class PMPayloads{
         }};
 
         basicNuke = new Missile("basic-nuke"){{
-            requirements = with(Items.lead, 40,Items.titanium, 30, Items.thorium, 35);
+            requirements = with(
+                Items.lead, 40,
+                Items.titanium, 30,
+                Items.thorium, 35
+            );
 
             prev = emptyNuke;
             size = 3;
             powerUse = 6f;
-            constructTime = 60f * 25f;
+            constructTime = 60f * 40f;
 
             explosion = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
             requirements = with(
-                Items.titanium, 35,
-                Items.plastanium, 25,
-                PMItems.tenelium, 15,
-                Items.silicon, 30,
-                Items.blastCompound, 25
+                Items.plastanium, 35,
+                PMItems.tenelium, 40,
+                Items.blastCompound, 40
             );
 
             prev = emptyNuke;
             size = 3;
             powerUse = 6.25f;
-            constructTime = 60f * 35f;
+            constructTime = 60f * 45f;
 
             explosionArea = -1f;
             explosion = PayloadBullets.paragonCluster.fragBullet;
