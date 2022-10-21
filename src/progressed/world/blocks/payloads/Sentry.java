@@ -102,13 +102,13 @@ public class Sentry extends Missile{
         public void updateTile(){
             super.updateTile();
             if(activated) return;
-            unitDrawer.set(x, y);
-            unitDrawer.rotation(drawRot() + 90f);
             unitDrawer.health(health);
         }
 
         @Override
         public void draw(){
+            unitDrawer.set(x, y);
+            unitDrawer.rotation(drawRot() + 90f);
             Draw.z(Layer.blockUnder - 1f);
             Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, drawRot());
             Draw.z(Layer.block);

@@ -159,6 +159,7 @@ public class PMUnitTypes{
                     homingRange = 48f * 8f;
                     trailLength = 3;
                     layer = Layer.flyingUnit - 1f;
+                    hitSound = Sounds.explosion;
                 }};
             }});
 
