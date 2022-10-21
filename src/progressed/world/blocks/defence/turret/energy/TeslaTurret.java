@@ -42,6 +42,7 @@ public class TeslaTurret extends Block{
 
     public int maxTargets;
     public float range, damage;
+    public float placeOverlapMargin = 8 * 7f;
     public StatusEffect status;
     public float statusDuration = 10f * 60f;
 
@@ -130,6 +131,9 @@ public class TeslaTurret extends Block{
             coolant.booster = true;
             coolant.optional = true;
         }
+
+        placeOverlapRange = Math.max(placeOverlapRange, range + placeOverlapMargin);
+        fogRadius = Math.max(Mathf.round(range / tilesize), fogRadius);
 
         super.init();
     }
