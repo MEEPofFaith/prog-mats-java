@@ -19,6 +19,10 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class EffectZone extends Block{
+
+    public final int timerSearch = timers++;
+    /** Ticks between attempt at finding a target. */
+    public float searchInterval = 20;
     protected static final Seq<Unit> all = new Seq<>();
 
     public float reload = 20f;
@@ -93,23 +97,28 @@ public class EffectZone extends Block{
             heat = Mathf.lerpDelta(heat, Mathf.num(canConsume()), 0.08f);
             activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(canConsume() && active), 0.08f);
             activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(canConsume() && active) * smoothEfficiency, 0.08f);
-            charge += heat * Time.delta;
+            charge += heat * Time.delta * smoothEfficiency;
+
+            if(timer(timerSearch, searchInterval)){
+                findUnits();
+                active = activate.get();
+            }
 
             if(charge >= reload){
-                charge = 0f;
-
-                all.clear();
-                Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
-                    if(
-                        !other.dead &&
-                        !(other instanceof SwordUnit) &&
-                        (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
-                    ) all.add(other);
-                });
-                active = activate.get();
-
+                charge = 0;
+                findUnits();
                 zoneEffect.get(this);
             }
+        }
+
+        protected void findUnits(){
+            all.clear();
+            Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
+                if(
+                    !other.dead && !(other instanceof SwordUnit) &&
+                        (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
+                ) all.add(other);
+            });
         }
 
         @Override
@@ -166,7 +175,7 @@ public class EffectZone extends Block{
             super.drawLight();
 
             if(activeHeat < 0.01f) return;
-            Drawf.light(x, y, lightRadius, baseColor,  0.8f * activeHeat);
+            Drawf.light(x, y, lightRadius, baseColor,  0.8f * activeHeat * smoothEfficiency);
         }
 
         @Override

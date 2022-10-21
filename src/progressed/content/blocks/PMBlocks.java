@@ -1250,7 +1250,7 @@ public class PMBlocks{
 
         // region Units
         healZone = new EffectZone("rejuvenation-beacon"){
-            final float healing = 100f;
+            final float healing = 60f;
 
             {
                 requirements(Category.units, with(
@@ -1298,7 +1298,7 @@ public class PMBlocks{
                 range = 16f * tilesize;
                 height = 0.125f;
 
-                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 22f * tile.heat));
 
 
                 consumePower(3f);
@@ -1325,7 +1325,7 @@ public class PMBlocks{
                 height = 0.125f;
                 baseColor = Pal.redderDust;
 
-                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 22f * tile.heat));
 
                 consumePower(10f);
             }
