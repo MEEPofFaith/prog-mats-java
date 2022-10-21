@@ -8,8 +8,8 @@ public class Recipe{
     public boolean requiresUnlock = true;
     public boolean blockBuild = true, centerBuild;
 
-    public ItemStack[] buildCost;
-    public LiquidStack liquidCost;
+    public ItemStack[] itemRequirements;
+    public LiquidStack liquidRequirements;
     public float powerUse;
     public Block inputBlock;
 
@@ -17,7 +17,7 @@ public class Recipe{
 
     public Recipe(Block block){
         outputBlock = block;
-        buildCost = block.requirements;
+        itemRequirements = block.requirements;
 
         if(block instanceof Missile m){
             craftTime = m.constructTime;
@@ -38,14 +38,22 @@ public class Recipe{
     }
 
     public Liquid getLiquidInput(){
-        return liquidCost != null ? liquidCost.liquid : null;
+        return liquidRequirements != null ? liquidRequirements.liquid : null;
     }
 
     public boolean hasLiquidInput(Liquid liquid){
-        return liquidCost != null && liquidCost.liquid == liquid;
+        return liquidRequirements != null && liquidRequirements.liquid == liquid;
     }
 
     public boolean hasInputBlock(){
         return inputBlock != null;
+    }
+
+    public boolean showReqList(){
+        return itemRequirements.length > 0 || liquidRequirements != null;
+    }
+
+    public boolean unlocked(){
+        return !requiresUnlock || outputBlock.unlockedNow();
     }
 }

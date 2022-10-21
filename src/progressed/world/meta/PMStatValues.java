@@ -12,6 +12,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.maps.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -354,85 +355,82 @@ public class PMStatValues{
     public static StatValue payloadProducts(Seq<Recipe> products){
         return table -> {
             table.row();
-            products.each(r -> {
-                Block b = r.outputBlock;
-                boolean unlocked = b.unlockedNow() || !r.requiresUnlock;
-                if(unlocked){
-                    table.image(icon(b)).padRight(4).right().top();
-                }else{
-                    Image out = new Image(icon(b));
-                    Image res = new Image(Icon.tree.getRegion());
-                    res.setColor(Color.red);
-                    res.setSize(out.getWidth() / 2f);
-                    ShiftedStack s = new ShiftedStack(out, res);
-                    s.setStackPos(out.getWidth() - res.getWidth(), -out.getHeight() + res.getHeight());
-                    table.add(s).padRight(4).right().top();
-                }
-                table.table(n -> {
-                    n.add(unlocked ? b.localizedName : "@pm-missing-research");
-                    if(unlocked){
-                        n.row();
-                        infoButton(n, b, 4f * 8f);
+
+            for(Recipe recipe: products){
+                table.table(Styles.grayPanel, t -> {
+                    Block out = recipe.outputBlock;
+
+                    if(state.rules.bannedBlocks.contains(out)){
+                        t.image(Icon.cancel).color(Pal.remove).size(40);
+                        return;
                     }
-                }).padRight(10).left().top();
 
-                if(unlocked){
-                    table.table(ct -> {
-                        ct.left().defaults().padRight(3).left();
+                    if(recipe.unlocked()){
+                        if(recipe.hasInputBlock()){
+                            t.table(i -> {
+                                i.left();
 
-                        if(r.buildCost != null || r.liquidCost != null){
-                            ct.table(it -> {
-                                it.add("[lightgray]" + Stat.input.localized() + ": []");
-                                if(r.buildCost != null)
-                                    for(ItemStack stack: r.buildCost){
-                                        it.add(new ItemDisplay(stack.item, stack.amount, r.craftTime, false));
-                                    }
-                                if(r.liquidCost != null){
-                                    //Copy over from ItemDisplay and LiquidDisplay
-                                    it.add(new Stack(){{
-                                        add(new Image(r.liquidCost.liquid.uiIcon));
+                                i.image(recipe.inputBlock.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                                i.add(recipe.inputBlock.localizedName).pad(10f).left();
 
-                                        if(r.liquidCost.amount != 0){
-                                            Table t = new Table().left().bottom();
-                                            t.add(Strings.autoFixed(r.liquidCost.amount, 2)).style(Styles.outlineLabel);
-                                            add(t);
-                                        }
-                                    }}).size(iconMed).padRight(3 + (r.liquidCost.amount != 0 && Strings.autoFixed(r.liquidCost.amount, 2).length() > 2 ? 8 : 0));
-                                    it.add(Strings.autoFixed(r.liquidCost.amount / (r.craftTime / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+                                i.image(Icon.right).color(Pal.darkishGray).size(40).pad(10f);
+
+                                i.image(out.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                                i.add(out.localizedName).pad(10f).left();
+                            }).left().padTop(5).padBottom(5);
+                            t.row();
+                            t.add(Strings.autoFixed(recipe.craftTime / 60f, 1) + " " + StatUnit.seconds.localized()).color(Color.lightGray).padLeft(10f).left();
+                            if(recipe.powerUse > 0){
+                                t.row();
+                                t.add(Strings.autoFixed(recipe.powerUse * 60f, 1) + " " + StatUnit.powerSecond.localized()).color(Color.lightGray).padLeft(10f).left();
+                            }
+                            t.row();
+                        }else{
+                            t.image(out.uiIcon).size(40).pad(10f).left().top();
+                            t.table(info -> {
+                                info.defaults().top().left();
+                                info.add(out.localizedName);
+                                info.row();
+                                info.add(Strings.autoFixed(recipe.craftTime / 60f, 1) + " " + StatUnit.seconds.localized()).color(Color.lightGray);
+                                if(recipe.powerUse > 0){
+                                    info.row();
+                                    info.add(Strings.autoFixed(recipe.powerUse * 60f, 1) + " " + StatUnit.powerSecond.localized()).color(Color.lightGray);
                                 }
-                            });
+                            }).top();
                         }
 
-                        if(r.inputBlock != null){
-                            ct.row();
-                            ct.table(pt -> {
-                                if(r.inputBlock.unlockedNow()){
-                                    pt.image(icon(r.inputBlock)).padLeft(60f).padRight(4).right().top();
+                        if(recipe.showReqList()){
+                            t.table(req -> {
+                                if(recipe.hasInputBlock()){
+                                    req.left().defaults().left();
                                 }else{
-                                    pt.add(PMElements.imageStack(icon(r.inputBlock), Icon.tree.getRegion(), Color.red)).padLeft(60f).padRight(4).right().top();
+                                    req.right().defaults().right();
                                 }
-                                pt.table(n -> {
-                                    n.add(r.inputBlock.unlockedNow() ? r.inputBlock.localizedName : "@pm-missing-research");
-                                    if(r.inputBlock.unlockedNow()){
-                                        n.row();
-                                        infoButton(n, r.inputBlock, 4f * 8f);
-                                    }
-                                }).padRight(10).left().top();
-                            });
-                        }
-                        if(r.craftTime > 0){
-                            ct.row();
-                            ct.add("[lightgray]" + Stat.buildTime.localized() + ": []" + PMUtls.stringsFixed(r.craftTime / 60f) + " " + StatUnit.seconds.localized());
-                        }
-                        if(r.powerUse > 0){
-                            ct.row();
-                            ct.add("[lightgray]" + Stat.powerUse.localized() + ": []" + PMUtls.stringsFixed(r.powerUse * 60f) + " " + StatUnit.powerSecond.localized());
-                        }
-                    }).padTop(-9).left().get().background(Tex.underline);
-                }
 
+                                int i = 0;
+                                int col = recipe.hasInputBlock() ? 12 : recipe.powerUse > 0 ? 4 : 6;
+                                if(recipe.itemRequirements.length > 0){
+                                    while(i < recipe.itemRequirements.length){
+                                        if(i % col == 0) req.row();
+
+                                        ItemStack stack = recipe.itemRequirements[i];
+                                        req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5);
+
+                                        i++;
+                                    }
+                                }
+                                if(recipe.liquidRequirements != null){
+                                    if(i % col == 0) req.row();
+                                    req.add(new NamelessLiquidDisplay(recipe.liquidRequirements.liquid, recipe.liquidRequirements.amount, false)).pad(5);
+                                }
+                            }).right().top().grow().pad(10f);
+                        }
+                    }else{
+                        t.image(Icon.lock).color(Pal.darkerGray).size(40);
+                    }
+                }).growX().pad(5);
                 table.row();
-            });
+            }
         };
     }
 

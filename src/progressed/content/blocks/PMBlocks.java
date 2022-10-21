@@ -1233,7 +1233,7 @@ public class PMBlocks{
                 basicMissile, recursiveMissile,
                 basicNuke, clusterNuke
             );
-            recipes.get(1).liquidCost = new LiquidStack(Liquids.slag, 40f);
+            recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
         }};
         // endregion
 
