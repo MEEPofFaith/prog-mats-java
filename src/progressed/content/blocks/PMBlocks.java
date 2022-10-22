@@ -495,8 +495,7 @@ public class PMBlocks{
             shootY = 0.25f;
             rotateSpeed = 3.5f;
             recoil = 4f;
-            beamStroke = 4f;
-            beamWidth = 20f;
+            beamEffect = LightningFx.blazeBeam;
             shootType = new MagmaBulletType(76f, 24f){{
                 shake = 2f;
                 crackEffects = 6;

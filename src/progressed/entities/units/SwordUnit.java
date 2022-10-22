@@ -51,7 +51,7 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
         }else{
             if(driftTrails != null && driftTrails[0].size() > 0){
                 for(DriftTrail trail : driftTrails){
-                    UtilFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
+                    TrailFadeFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
                     trail.clear();
                 }
             }
@@ -69,7 +69,7 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
 
         if(driftTrails != null){
             for(DriftTrail trail: driftTrails){
-                if(trail.size() > 0) UtilFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
+                if(trail.size() > 0) TrailFadeFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
             }
         }
     }

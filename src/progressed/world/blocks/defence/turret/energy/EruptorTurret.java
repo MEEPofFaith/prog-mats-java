@@ -8,15 +8,16 @@ import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
-import progressed.content.effects.UtilFx.*;
+import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.world.meta.*;
 
 public class EruptorTurret extends PowerTurret{
     public final int beamTimer = timers++;
-    public float beamInterval = 2f, beamStroke = 3f, beamWidth = 16f;
+    public float beamInterval = 2f;
     public Color beamColor = PMPal.magma;
-    public Effect beamEffect = EnergyFx.eruptorBurn;
+    public LightningEffect beamEffect = LightningFx.flameBeam;
+    public Effect endEffect = EnergyFx.eruptorBurn;
 
     public float shootDuration = 60f;
 
@@ -86,8 +87,8 @@ public class EruptorTurret extends PowerTurret{
                 lengthScl += Time.delta / shootDuration;
                 if(timer(beamTimer, beamInterval)){
                     Tmp.v1.trns(rotation, shootY - curRecoil);
-                    UtilFx.lightning.at(x + Tmp.v1.x, y + Tmp.v1.y, angleTo(bullet), beamColor, new LightningData(bullet, beamStroke, true, beamWidth));
-                    beamEffect.at(bullet, rotation);
+                    beamEffect.at(x + Tmp.v1.x, y + Tmp.v1.y, bullet.x, bullet.y, beamColor);
+                    endEffect.at(bullet, rotation);
                 }
                 if(bulletLife <= 0f){
                     bullet = null;

@@ -26,7 +26,7 @@ import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.Modu
 import progressed.world.blocks.payloads.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 import static progressed.content.blocks.PMPayloads.*;
 

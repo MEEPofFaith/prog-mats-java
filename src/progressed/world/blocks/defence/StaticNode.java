@@ -21,7 +21,6 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
-import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.world.meta.*;
 
@@ -40,6 +39,7 @@ public class StaticNode extends Block{
     public boolean hitAir = true, hitGround = true;
     public StatusEffect status = StatusEffects.shocked;
     public float statusDuration = 10f * 60f;
+    public LightningEffect lightningEffect = LightningFx.staticLightning;
     public Effect shockEffect = OtherFx.staticSpark;
     public float minValue = 0.75f;
 
@@ -208,10 +208,8 @@ public class StaticNode extends Block{
                 hitGround, hitAir
             );
             if(hit){
-                UtilFx.lightning.at(bx + Tmp.v3.x, by + Tmp.v3.y,
-                    angle1, team.color,
-                    new LightningData(Tmp.v4.trns(angle1, dst).add(bx, by).cpy(), 2f, 5f)
-                );
+                Tmp.v4.trns(angle1, dst).add(bx, by);
+                lightningEffect.at(bx + Tmp.v3.x, by + Tmp.v3.y, Tmp.v4.x, Tmp.v4.y, team.color);
             }
 
             return hit;

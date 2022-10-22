@@ -79,7 +79,7 @@ public class OrbBulletType extends BulletType{
 
         if(!hasDriftTrails()) return;
         for(DriftTrail t : (DriftTrail[])b.data){
-            UtilFx.driftTrailFade.at(b.x, b.y, driftTrailWidth, color, t);
+            TrailFadeFx.driftTrailFade.at(b.x, b.y, driftTrailWidth, color, t);
         }
     }
 

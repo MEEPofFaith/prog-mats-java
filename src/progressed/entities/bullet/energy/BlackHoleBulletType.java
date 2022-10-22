@@ -142,7 +142,7 @@ public class BlackHoleBulletType extends BulletType{
         }
         if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
             if(other.trail instanceof PMTrail t){
-                UtilFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+                TrailFadeFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
             }else{
                 Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
             }
@@ -152,7 +152,7 @@ public class BlackHoleBulletType extends BulletType{
         if(cataclysm){
             if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
                 if(b.trail instanceof PMTrail t){
-                    UtilFx.PMTrailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, t.copyPM());
+                    TrailFadeFx.PMTrailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, t.copyPM());
                 }else{
                     Fx.trailFade.at(b.x, b.y, b.type.trailWidth, b.type.trailColor, b.trail.copy());
                 }

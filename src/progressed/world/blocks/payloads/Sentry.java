@@ -14,7 +14,6 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;

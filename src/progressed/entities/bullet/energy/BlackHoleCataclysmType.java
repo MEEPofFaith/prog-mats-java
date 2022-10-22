@@ -132,7 +132,7 @@ public class BlackHoleCataclysmType extends BulletType{
         EnergyFx.blackHoleAbsorb.at(other.x, other.y);
         if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
             if(other.trail instanceof PMTrail t){
-                UtilFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+                TrailFadeFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
             }else{
                 Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
             }

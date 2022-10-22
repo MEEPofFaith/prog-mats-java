@@ -8,7 +8,7 @@ import mindustry.graphics.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.explosive.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
     public boolean drawMinRange = true;

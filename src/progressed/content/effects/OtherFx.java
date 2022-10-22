@@ -11,6 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import progressed.graphics.*;
 
+import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;

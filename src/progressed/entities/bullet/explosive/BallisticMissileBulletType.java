@@ -284,7 +284,7 @@ public class BallisticMissileBulletType extends BulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail instanceof HeightTrail trail && trail.size() > 0){
-            UtilFx.heightTrailFade.at(tX(b), tY(b), trailWidth, trailColor, trail.copy());
+            TrailFadeFx.heightTrailFade.at(tX(b), tY(b), trailWidth, trailColor, trail.copy());
         }
     }
 
