@@ -19,7 +19,7 @@ subtitle: "Pre-Erekir? Check releases."
 version: 26.4
 
 #the minimum game build required to run this mod
-minGameVersion: 138
+minGameVersion: 139
 
 #this is a java mod
 java: true
