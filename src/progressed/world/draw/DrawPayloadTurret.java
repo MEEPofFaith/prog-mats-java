@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
@@ -15,11 +16,12 @@ import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.SinglePayloadAmmoTurret.*;
 
 public class DrawPayloadTurret extends DrawTurret{
-    public String regionSuffix = "";
+    public String paySuffix = "";
     public boolean drawTurret;
-    public TextureRegion in;
+    public TextureRegion in, cover;
 
-    public DrawPayloadTurret(String basePrefix){
+    public DrawPayloadTurret(boolean drawTurret, String basePrefix){
+        this.drawTurret = drawTurret;
         this.basePrefix = basePrefix;
     }
 
@@ -62,9 +64,9 @@ public class DrawPayloadTurret extends DrawTurret{
         }
 
         if(parts.size > 0){
-            if(outline.found()){
+            if(drawTurret && outline.found()){
                 //draw outline under everything when parts are involved
-                Draw.z(Layer.turret - 0.01f);
+                Draw.z(Layer.turret - 0.05f);
                 Draw.rect(outline, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, tb.drawrot());
                 Draw.z(Layer.turret);
             }
@@ -84,8 +86,28 @@ public class DrawPayloadTurret extends DrawTurret{
         if(build.payload != null){
             build.updatePayload();
 
+            Payload p = build.payload;
             Draw.z(Layer.blockOver);
-            build.payload.draw();
+            Draw.scl(build.payloadf());
+            Drawf.shadow(p.x(), p.y(), p.size() * 2f);
+            Draw.rect(p.content().fullIcon, p.x(), p.y(), p.rotation());
+            Draw.scl();
+        }
+    }
+
+    @Override
+    public void drawTurret(Turret block, TurretBuild build){
+        if(block.region.found()){
+            Draw.rect(block.region, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
+        }
+
+        if(liquid.found()){
+            Liquid toDraw = liquidDraw == null ? build.liquids.current() : liquidDraw;
+            Drawf.liquid(liquid, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.liquids.get(toDraw) / block.liquidCapacity, toDraw.color.write(Tmp.c1).a(1f), build.drawrot());
+        }
+
+        if(cover.found()){
+            Draw.rect(cover, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
         }
     }
 
@@ -106,12 +128,13 @@ public class DrawPayloadTurret extends DrawTurret{
 
         super.load(block);
 
-        in = Core.atlas.find(block.name + "-in", "factory-in-" + block.size + regionSuffix);
-        top = Core.atlas.find(block.name + "-top", drawTurret ? "factory-top-" + block.size + regionSuffix : "");
+        in = Core.atlas.find(block.name + "-in", "factory-in-" + block.size + paySuffix);
+        top = Core.atlas.find(block.name + "-top", drawTurret ? "factory-top-" + block.size + paySuffix : "");
+        if(drawTurret) cover = Core.atlas.find(block.name + "-cover");
     }
 
     @Override
     public TextureRegion[] icons(Block block){
-        return top.found() ? new TextureRegion[]{base, in, top, preview} : new TextureRegion[]{base, in, preview};
+        return drawTurret ? new TextureRegion[]{base, in, top, preview} : new TextureRegion[]{base, in, preview};
     }
 }

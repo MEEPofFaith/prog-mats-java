@@ -7,6 +7,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.explosive.*;
+import progressed.world.draw.*;
 
 import static mindustry.Vars.*;
 
@@ -15,6 +16,11 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
 
     public BallisticMissileTurret(String name){
         super(name);
+
+        outlineIcon = false;
+        outlinedIcon = 1;
+
+        drawer = new DrawPayloadTurret(false);
     }
 
     @Override

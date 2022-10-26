@@ -33,6 +33,7 @@ public class SentryUnitType extends ErekirUnitType{
         flying = true;
         isEnemy = false;
         useUnitCap = false;
+        targetable = hittable = false;
         itemCapacity = 10;
         health = 200;
     }
@@ -44,10 +45,16 @@ public class SentryUnitType extends ErekirUnitType{
     }
 
     @Override
+    public Color cellColor(Unit unit){
+        float f = Mathf.clamp(((SentryUnit)unit).durationf());
+        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, 2.5f, 1f - f));
+    }
+
+    @Override
     public void update(Unit unit){
         if(unit.elevation < 1 && !unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
 
-        if(unit.health < Float.POSITIVE_INFINITY){ //I want my invincibility to work.
+        if(unit.health < Float.POSITIVE_INFINITY){ //I want Testing Utilities invincibility to work.
             SentryUnit sentry = ((SentryUnit)unit);
             sentry.duration -= Time.delta;
             sentry.clampDuration();

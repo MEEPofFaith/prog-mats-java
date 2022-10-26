@@ -6,6 +6,7 @@ import arc.math.Interp.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.part.*;
+import mindustry.entities.part.DrawPart.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -24,6 +25,7 @@ import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
 import static mindustry.Vars.*;
@@ -32,10 +34,10 @@ import static progressed.content.blocks.PMPayloads.*;
 
 public class PMErekirBlocks{
     public static Block
-    // region Turrets
+        // region Turrets
 
-    //Why do I hear anxiety piano
-    sentinel,
+        //Why do I hear anxiety piano
+        sentinel,
 
     //Sentries
     sergeant,
@@ -50,8 +52,8 @@ public class PMErekirBlocks{
     // region Crafting
 
     teneliumFuser,
-    moduleAssembler, moduleFoundry,
-    sentryBuilder;
+        moduleAssembler, moduleFoundry,
+        sentryBuilder;
 
 
     public static void load(){
@@ -59,8 +61,8 @@ public class PMErekirBlocks{
 
         sentinel = new PowerTurret("sentinel"){{
             requirements(Category.turret, with(
-                Items.copper, 900,
-                Items.lead, 375,
+                Items.beryllium, 900,
+                Items.tungsten, 375,
                 Items.graphite, 350,
                 Items.surgeAlloy, 450,
                 Items.silicon, 450,
@@ -109,7 +111,6 @@ public class PMErekirBlocks{
             cooldownTime = 75f;
 
             size = 4;
-            envEnabled |= Env.space;
             scaledHealth = 210;
 
             shootY = 6f / 4f;
@@ -146,7 +147,7 @@ public class PMErekirBlocks{
             );
 
             size = 3;
-            envEnabled |= Env.space;
+            reload = 5f * 60f;
             hideDetails = false;
             scaledHealth = 140;
             minRange = 5f * tilesize;
@@ -156,7 +157,29 @@ public class PMErekirBlocks{
             recoil = 6f;
             recoilTime = 60f;
             shake = 2f;
-            shootY = -4f;
+            shootY = -1f;
+            minLoadWarmup = 0f;
+            minWarmup = 1f;
+            setWarmupTime(0.75f);
+
+            drawer = new DrawMulti(
+                new DrawPayloadTurret(true, "reinforced-"){{
+                    parts.add(new LaunchPart(){{
+                        progress = PartProgress.warmup.shorten(0.125f);
+                        start = size * tilesize / 2f + 1.5f;
+                        length = size * tilesize / 2f * 1.5f;
+                        spacing = size * tilesize / 4f;
+
+                        //Set block clipSize
+                        clipSize = Math.max(clipSize, size * tilesize + (length + start) * 2f);
+                    }});
+                }},
+                new DrawPayloadAmmo(){{
+                    matProgress = PartProgress.reload.inv().shorten(0.125f);
+                    y = shootY;
+                }}
+            );
+            outlineColor = Pal.darkOutline;
 
             coolant = consumeLiquid(Liquids.water, 0.4f);
         }};

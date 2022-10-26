@@ -30,6 +30,7 @@ import progressed.world.meta.*;
 import static mindustry.Vars.*;
 
 //Payload + Turret = A lot of copy paste aaaaa
+@Deprecated
 public class PayloadMissileTurret extends PayloadBlock{
     public float range = 80f;
 

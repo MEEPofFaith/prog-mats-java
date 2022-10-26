@@ -80,6 +80,8 @@ public class SnakeBulletType extends BasicBulletType{
                     next[0] = seg;
                 });
             }
+
+            b.time = b.lifetime;
             b.remove();
         }
     }
@@ -94,27 +96,10 @@ public class SnakeBulletType extends BasicBulletType{
         updateTrail(b);
 
         SnakeBulletData data = (SnakeBulletData)b.data;
-        if(data.segmentType.equals(SegmentType.head)){
-            if(homingPower > 0.0001f && b.time >= homingDelay){
-                Teamc target;
-                //home in on allies if possible
-                if(healPercent > 0){
-                    target = Units.closestTarget(null, b.x, b.y, homingRange,
-                        e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                        t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
-                    );
-                }else{
-                    target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
-                }
-
-                if(target != null){
-                    b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                }
-            }
-
-            if(weaveMag > 0){
-                b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale / 2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
-            }
+        if(data == null) return;
+        if(data.segmentType == SegmentType.head){
+            updateHoming(b);
+            updateWeaving(b);
         }else if(data.followBullet != null){
             if(data.followBullet.isAdded()){
                 b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(data.followBullet), followPower * Time.delta * 50f));
@@ -123,17 +108,8 @@ public class SnakeBulletType extends BasicBulletType{
             }
         }
 
-        if(trailChance > 0){
-            if(Mathf.chanceDelta(trailChance)){
-                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
-            }
-        }
-
-        if(trailInterval > 0f){
-            if(b.timer(0, trailInterval)){
-                trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
-            }
-        }
+        updateTrailEffects(b);
+        updateBulletInterval(b);
     }
 
     public static class SnakeBulletData{

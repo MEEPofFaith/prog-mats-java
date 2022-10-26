@@ -1470,13 +1470,12 @@ public class PMBlocks{
             shootCone = 360f;
         }};
 
-        testTurret = new PowerTurret("test-turret"){{
+        testTurret = new FreeTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             size = 2;
             health = ProgMats.sandboxBlockHealth;
             range = 69 * tilesize;
             reload = 60f;
-
             shootType = new SnakeBulletType(3f, 50f, "aflare"){{
                 length = 5;
                 lifetime = 300f;
