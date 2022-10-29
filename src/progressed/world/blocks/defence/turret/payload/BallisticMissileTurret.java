@@ -12,13 +12,12 @@ import progressed.world.draw.*;
 import static mindustry.Vars.*;
 
 public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
-    public boolean drawMinRange = true;
-
     public BallisticMissileTurret(String name){
         super(name);
 
         outlineIcon = false;
         outlinedIcon = 1;
+        rotateSpeed = 3600f;
 
         drawer = new DrawPayloadTurret(false);
     }
@@ -27,19 +26,15 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
     public void setStats(){
         super.setStats();
 
-        if(drawMinRange){
-            stats.remove(Stat.shootRange);
-            stats.add(Stat.shootRange, "@-@ @", StatValues.fixValue(minRange / tilesize), StatValues.fixValue(range / tilesize), StatUnit.blocks.localized());
-        }
+        stats.remove(Stat.shootRange);
+        stats.add(Stat.shootRange, "@-@ @", StatValues.fixValue(minRange / tilesize), StatValues.fixValue(range / tilesize), StatUnit.blocks.localized());
     }
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
 
-        if(drawMinRange){
-            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.accentBack);
-        }
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.accentBack);
     }
 
     @Override
@@ -101,9 +96,7 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
         public void drawSelect(){
             super.drawSelect();
 
-            if(drawMinRange){
-                Drawf.dashCircle(x, y, minRange, Pal.accentBack);
-            }
+            Drawf.dashCircle(x, y, minRange, Pal.accentBack);
         }
     }
 }

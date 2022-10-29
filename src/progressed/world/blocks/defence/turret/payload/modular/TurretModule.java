@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.payload.modular;
 
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -56,16 +57,17 @@ public interface TurretModule{
 
     default void moduleDraw(){
         Draw.z(Layer.turret);
-        if(module().progress < deployTime()){
+        if(!isDeployed()){
             drawDeploy();
             return;
         }
 
-        module().highlight();
         build().draw();
         if(module().highlight){
             Draw.z(Layer.overlayUI);
+            module().highlight();
             build().drawSelect();
+            Draw.z(Layer.turret);
         }
     }
 
@@ -115,6 +117,10 @@ public interface TurretModule{
 
     default boolean isDeployed(){
         return module().progress >= 0.999f;
+    }
+
+    default boolean isActive(){
+        return isDeployed();
     }
 
     default boolean acceptModule(TurretModule module){

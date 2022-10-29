@@ -52,6 +52,7 @@ public class ModularTurret extends PayloadBlock{
         rotate = false;
         configurable = true;
         solid = true;
+        suppressable = true; //For modules that can heal.
         priority = TargetPriority.turret;
         group = BlockGroup.turrets;
         flags = EnumSet.of(BlockFlag.turret);
@@ -114,6 +115,8 @@ public class ModularTurret extends PayloadBlock{
     @Override
     public void load(){
         super.load();
+
+        if(!inRegion.found() && minfo.mod != null) inRegion = Core.atlas.find(minfo.mod.name + "-factory-in-" + size + regionSuffix);
 
         for(int i = 0; i < 3; i++){
             mountBases[i] = Core.atlas.find(name + "-mount" + (i + 1), "prog-mats-mount" + (i + 1));
@@ -248,6 +251,24 @@ public class ModularTurret extends PayloadBlock{
             if(isPayload()) updatePos();
 
             modules.each(TurretModule::moduleDraw);
+        }
+
+        @Override
+        public void applyBoost(float intensity, float duration){
+            super.applyBoost(intensity, duration);
+            modules.each(m -> m.build().applyBoost(intensity, duration));
+        }
+
+        @Override
+        public void applyHealSuppression(float amount){
+            super.applyHealSuppression(amount);
+            modules.each(m -> m.build().applyHealSuppression(amount));
+        }
+
+        @Override
+        public void applySlowdown(float intensity, float duration){
+            super.applySlowdown(intensity, duration);
+            modules.each(m -> m.build().applySlowdown(intensity, duration));
         }
 
         public void unHighlight(){

@@ -1,6 +1,8 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
+import arc.*;
 import arc.func.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
@@ -12,6 +14,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.meta.*;
 import progressed.content.effects.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.module.*;
@@ -19,8 +22,8 @@ import progressed.world.module.ModuleModule.*;
 
 public class BoostModule extends Block{
     public ModuleSize moduleSize = ModuleSize.small;
-    public float healPercentSec = 2f;
-    public float boostAmount = 0.25f;
+    public float healPercent = 2f;
+    public float speedBoost = 1.25f;
     public float regenEffectChance = 0.003f, overdriveEffectChance = 0.001f;
 
     public Effect regenEffect = Fx.regenParticle,
@@ -28,16 +31,36 @@ public class BoostModule extends Block{
 
     OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
 
+    protected TextureRegion mendTop, overdriveTop;
+
     public BoostModule(String name){
         super(name);
         canOverdrive = false;
+        outlineIcon = true;
+        suppressable = true;
     }
 
     @Override
     public void init(){
         super.init();
 
-        healPercentSec /= 60 * 100; //0-100/sec -> 0-1/tick
+        healPercent /= 60 * 100; //0-100/sec -> 0-1/tick
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        mendTop = Core.atlas.find(name + "-mend");
+        overdriveTop = Core.atlas.find(name + "-overdrive");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        if(healPercent > 0) stats.add(Stat.repairTime, (int)(1f / (healPercent / 100f) / 60f), StatUnit.seconds);
+        if(speedBoost > 0) stats.add(Stat.speedIncrease, "+" + (int)(speedBoost * 100f - 100) + "%");
     }
 
     @Override
@@ -50,6 +73,7 @@ public class BoostModule extends Block{
 
     public class BoostModuleBuild extends Building implements TurretModule{
         public ModuleModule module;
+        public float mendHeat, overdriveHeat;
 
         @Override
         public Building create(Block block, Team team){
@@ -62,15 +86,40 @@ public class BoostModule extends Block{
             module.moduleUpdate();
             if(!isDeployed()) return;
             if(efficiency > 0){
-                if(healPercentSec > 0 && parent().damaged()){
-                    parent().healFract(healPercentSec * edelta());
-                    parent().recentlyHealed();
-                    if(Mathf.chanceDelta(regenEffectChance * parent().block.size * parent().block.size)) parentEffect(regenEffect);
+                if(healPercent > 0){
+                    boolean canHeal = !checkSuppression() && parent().damaged();
+
+                    mendHeat = Mathf.lerpDelta(mendHeat, efficiency > 0 && canHeal ? 1f : 0f, 0.08f);
+
+                    if(canHeal){
+                        parent().healFract(healPercent * edelta());
+                        parent().recentlyHealed();
+                        if(Mathf.chanceDelta(regenEffectChance * parent().block.size * parent().block.size)) parentEffect(regenEffect);
+                    }
                 }
-                if(boostAmount > 0){
-                    parent().applyBoost(1 + boostAmount * efficiency, 2 * Time.delta);
-                    if(Mathf.chanceDelta(overdriveEffectChance * parent().block.size * parent().block.size)) parentEffect(overdriveEffect);
+                if(speedBoost > 0){
+                    boolean canOverdrive = parent().modules.contains(m -> m.block().canOverdrive && !(m instanceof BoostModuleBuild) && m.isActive());
+
+                    overdriveHeat = Mathf.lerpDelta(overdriveHeat, efficiency > 0 && canOverdrive ? 1f : 0f, 0.08f);
+
+                    if(canOverdrive){
+                        parent().applyBoost(1 + speedBoost * efficiency, 2 * Time.delta);
+                        if(Mathf.chanceDelta(overdriveEffectChance * parent().block.size * parent().block.size)) parentEffect(overdriveEffect);
+                    }
                 }
+            }
+        }
+
+        @Override
+        public void moduleDraw(){
+            TurretModule.super.moduleDraw();
+
+            if(isDeployed()){
+                Draw.alpha(mendHeat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+                Draw.rect(mendTop, x, y);
+
+                Draw.alpha(overdriveHeat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+                Draw.rect(overdriveTop, x, y);
             }
         }
 
@@ -83,7 +132,14 @@ public class BoostModule extends Block{
 
         @Override
         public boolean acceptModule(TurretModule module){
-            return !parent().modules.contains(m -> m.block() == module.block());
+            return !(module instanceof BoostModuleBuild);
+        }
+
+        @Override
+        public void pickedUp(){
+            super.pickedUp();
+
+            mendHeat = overdriveHeat = 0;
         }
 
         @Override
@@ -102,6 +158,11 @@ public class BoostModule extends Block{
         }
 
         @Override
+        public boolean isActive(){
+            return TurretModule.super.isActive() && (mendHeat > 0.01f || overdriveHeat > 0.01f);
+        }
+
+        @Override
         public Iterable<Func<Building, Bar>> listModuleBars(){
             return moduleBarMap.values();
         }
@@ -110,6 +171,8 @@ public class BoostModule extends Block{
         public void write(Writes write){
             super.write(write);
 
+            write.f(mendHeat);
+            write.f(overdriveHeat);
             module.write(write);
         }
 
@@ -117,6 +180,8 @@ public class BoostModule extends Block{
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
+            mendHeat = read.f();
+            overdriveHeat = read.f();
             (module == null ? new ModuleModule(self(), hasPower) : module).read(read);
         }
     }

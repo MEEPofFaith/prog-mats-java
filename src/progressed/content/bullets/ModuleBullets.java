@@ -1,12 +1,30 @@
 package progressed.content.bullets;
 
 import mindustry.entities.bullet.*;
+import progressed.content.effects.*;
+import progressed.entities.bullet.explosive.*;
+import progressed.graphics.*;
 
 public class ModuleBullets{
     public static BulletType
 
-    temporaryPlaceholderTM;
+    firestormMissile;
 
     public static void load(){
+        firestormMissile = new BallisticMissileBulletType("prog-mats-firestorm-missile"){{
+            lifetime = 75f;
+            splashDamage = 280f;
+            splashDamageRadius = 32f;
+            buildingDamageMultiplier = 0.3f;
+            hitShake = 3f;
+            ammoMultiplier = 8;
+
+            height *= 0.75f;
+            trailLength = 15;
+            trailWidth = 1f;
+            trailColor = targetColor = PMPal.missileBasic;
+
+            blockEffect = MissileFx.missileBlockedSmall;
+        }};
     }
 }

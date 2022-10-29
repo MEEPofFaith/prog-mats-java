@@ -42,7 +42,11 @@ public class ModuleModule extends BlockModule{
     }
 
     public void highlight(){
-        if(hAlpha > 0.001f) Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f) * hAlpha);
+        if(hAlpha > 0.001f){
+            Draw.mixcol(parent.team.color, Mathf.absin(7f, 1f) * hAlpha);
+            Draw.rect(module.block().fullIcon, module.x(), module.y(), module.build().drawrot());
+            Draw.mixcol();
+        }
     }
 
     public void moduleUpdate(){
@@ -88,6 +92,7 @@ public class ModuleModule extends BlockModule{
     }
 
     public void displayModuleBars(Table table){
+        if(module.listModuleBars() == null) return;
         for(Func<Building, Bar> bar : module.listModuleBars()){
             var result = bar.get(module.build());
             if(result == null) continue;

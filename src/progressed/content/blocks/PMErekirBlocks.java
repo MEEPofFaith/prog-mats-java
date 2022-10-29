@@ -188,7 +188,8 @@ public class PMErekirBlocks{
             requirements(Category.turret, with());
             size = 7;
             scaledHealth = 370;
-            envEnabled |= Env.space;
+            regionSuffix = "-dark";
+            squareSprite = false;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
@@ -238,7 +239,6 @@ public class PMErekirBlocks{
             warmupMaintainTime = 30f;
 
             reload = 15f;
-            envEnabled |= Env.space;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
@@ -292,7 +292,6 @@ public class PMErekirBlocks{
             warmupMaintainTime = 30f;
 
             reload = 140f;
-            envEnabled |= Env.space;
 
             heatRequirement = 150f;
             maxHeatEfficiency = 1f;
@@ -306,7 +305,6 @@ public class PMErekirBlocks{
             requirements(Category.crafting, with());
 
             size = 3;
-            envEnabled |= Env.space;
 
             itemCapacity = 20;
             heatRequirement = 15f;
@@ -334,7 +332,7 @@ public class PMErekirBlocks{
             //consumePower(4f);
         }};
 
-        if(false){
+        if(false){ //TODO Re-set these up once I create modules for Matrix.
             moduleAssembler = new PayloadCrafter("module-assembler"){{
                 requirements(Category.crafting, with(
                     Items.copper, 220,
@@ -342,7 +340,6 @@ public class PMErekirBlocks{
                     Items.silicon, 100
                 ));
                 size = 3;
-                envEnabled |= Env.space;
 
                 recipes(
                     new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
@@ -359,7 +356,6 @@ public class PMErekirBlocks{
                     Items.plastanium, 240
                 ));
                 size = 5;
-                envEnabled |= Env.space;
 
                 recipes(
                     new Recipe(Blocks.duo, 4f, 5f * 60f) //Placeholder

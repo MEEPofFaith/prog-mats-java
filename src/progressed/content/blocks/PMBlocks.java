@@ -1015,7 +1015,6 @@ public class PMBlocks{
             reload = 90f;
             range = 85f * 8f;
             minRange = 25f * 8f;
-            rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
             cooldownTime = 3.5f * 60f;
@@ -1046,7 +1045,6 @@ public class PMBlocks{
             reload = 12f * 60f;
             range = 180f * 8f;
             minRange = 50f * 8f;
-            rotateSpeed = 360f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
             cooldownTime = 6f * 60f;
