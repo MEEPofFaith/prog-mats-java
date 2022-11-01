@@ -128,7 +128,7 @@ public class PMTechTree{
                 new Research(arbalest)
             ), () -> {
                 node(trinity, combineCosts(trinity, emptyNuke, basicNuke), Seq.with(
-                    new Research(interplanetaryAccelerator)
+                    new SectorComplete(SectorPresets.planetaryTerminal)
                 ), () -> {
                     //Apotheosis
                     node(apotheosisNexus, Seq.with(
