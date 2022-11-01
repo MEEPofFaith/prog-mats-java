@@ -141,7 +141,6 @@ public class PMTechTree{
 
             //Tinker
             node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
-                new Research(payloadPropulsionTower),
                 new SectorComplete(SectorPresets.windsweptIslands)
             ), () -> {
                 node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
