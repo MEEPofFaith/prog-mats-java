@@ -13,6 +13,8 @@ import mindustry.world.blocks.defense.Wall.*;
 import static mindustry.Vars.*;
 
 public class TargetBulletType extends BasicBulletType{
+    static final UnitDamageEvent bulletDamageEvent = new UnitDamageEvent();
+
     public float tDamage;
     public StatusEffect tStatus = StatusEffects.none;
     public Effect tHitEffect = Fx.none;
@@ -35,14 +37,16 @@ public class TargetBulletType extends BasicBulletType{
 
     @Override
     public void hitEntity(Bullet b, Hitboxc entity, float initialHealth){
-        boolean tHit = false;
+        boolean wasDead = entity instanceof Unit u && u.dead;
+        boolean tHit = b.data.equals(entity);
 
         if(entity instanceof Healthc h){
-            if(b.data == entity){
-                h.damage(tDamage * b.damageMultiplier());
-                tHit = true;
+            float damage = tHit ? tDamage * b.damageMultiplier() : b.damage;
+
+            if(pierceArmor){
+                h.damagePierce(damage);
             }else{
-                h.damage(b.damage);
+                h.damage(damage);
             }
         }
 
@@ -50,17 +54,13 @@ public class TargetBulletType extends BasicBulletType{
             Tmp.v3.set(unit).sub(b).nor().scl(knockback * 80f);
             if(impact) Tmp.v3.setAngle(b.rotation() + (knockback < 0 ? 180f : 0f));
             unit.impulse(Tmp.v3);
-            if(b.data == unit){
-                unit.apply(tStatus, tStatusDuration);
-                tHit = true;
-            }else{
-                unit.apply(status, statusDuration);
-            }
+            unit.apply(tHit ? tStatus : status, tHit ? tStatusDuration : statusDuration);
+
+            Events.fire(bulletDamageEvent.set(unit, b));
         }
 
-        //for achievements
-        if(b.owner instanceof WallBuild && player != null && b.team == player.team() && entity instanceof Unit unit && unit.dead){
-            Events.fire(Trigger.phaseDeflectHit);
+        if(!wasDead && entity instanceof Unit unit && unit.dead){
+            Events.fire(new UnitBulletDestroyEvent(unit, b));
         }
 
         if(tHit){
