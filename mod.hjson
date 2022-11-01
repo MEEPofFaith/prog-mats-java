@@ -16,10 +16,10 @@ description: "This mod is mostly just turrets. It's just me creating random idea
 subtitle: "Pre-Erekir? Check releases."
 
 #the mod version
-version: 26.4
+version: 26.5
 
 #the minimum game build required to run this mod
-minGameVersion: 138
+minGameVersion: 140
 
 #this is a java mod
 java: true
