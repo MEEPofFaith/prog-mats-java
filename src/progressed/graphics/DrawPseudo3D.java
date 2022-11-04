@@ -160,7 +160,11 @@ public class DrawPseudo3D{
     }
 
     public static float hScale(float height){
-        return 1f + height * Vars.renderer.getDisplayScale();
+        return 1f + hMul(height);
+    }
+
+    public static float hMul(float height){
+        return height * Vars.renderer.getDisplayScale();
     }
 
     /**

@@ -25,7 +25,7 @@ public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 0.5f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
-    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
+    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f, growScl = 0.5f;
     public float shadowOffset = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
@@ -34,7 +34,7 @@ public class BallisticMissileBulletType extends BulletType{
     public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
     public boolean spinShade = true;
-    public Interp hInterp = PMMathf.arc, posInterp = Interp.pow2In;
+    public Interp hInterp = PMMathf.arc, posInterp = Interp.pow2In, rotInterp = Interp.circleOut;
 
     public TextureRegion region, blRegion, trRegion;
 
@@ -188,7 +188,7 @@ public class BallisticMissileBulletType extends BulletType{
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
         Draw.z(layer); //Unsure that the trail is drawn underneath.
         drawTrail(b);
-        Draw.scl(hScale(hScl));
+        Draw.scl(1f + hMul(hScl) * growScl);
         Draw.z(layer + hScl / 100f);
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
@@ -238,7 +238,7 @@ public class BallisticMissileBulletType extends BulletType{
         boolean inc = hScl - data[4] > 0;
         float ang = b.angleTo(data[0], data[1]) + 180f;
         if(inc){
-            return Angles.moveToward(90f, ang, hScl * Angles.angleDist(90f, ang));
+            return Angles.moveToward(90f, ang, rotInterp.apply(hScl) * Angles.angleDist(90f, ang));
         }else{
             float to = b.angleTo(shX, shY) + 180f;
             return Angles.moveToward(to, ang, hScl * Angles.angleDist(to, ang));
