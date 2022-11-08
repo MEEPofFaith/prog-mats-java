@@ -967,7 +967,7 @@ public class PMBlocks{
             }};
         }};
 
-        arbalest = new PayloadRocketTurret("arbalest"){{
+        arbalest = new SinglePayloadAmmoTurret("arbalest"){{
             requirements(Category.turret, with(
                 Items.copper, 150,
                 Items.graphite, 300,
@@ -985,12 +985,8 @@ public class PMBlocks{
             reload = 1.5f * 60f;
             range = 800f;
             recoil = 4f;
-            leadTargets = false;
 
-            shootY = doorOffset = 6f / 4f;
-            doorWidth = 32f / 4f;
-            doorLength = 116f / 4f;
-            rotOffset = 90f;
+            shootY = 6f / 4f;
 
             unitSort = UnitSorts.strongest;
 

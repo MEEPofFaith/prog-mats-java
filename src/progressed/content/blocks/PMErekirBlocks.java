@@ -36,8 +36,8 @@ public class PMErekirBlocks{
     public static Block
         // region Turrets
 
-        //Why do I hear anxiety piano
-        sentinel,
+    //Why do I hear anxiety piano
+    sentinel,
 
     //Sentries
     sergeant,
@@ -52,8 +52,8 @@ public class PMErekirBlocks{
     // region Crafting
 
     teneliumFuser,
-        moduleAssembler, moduleFoundry,
-        sentryBuilder;
+    moduleAssembler, moduleFoundry,
+    sentryBuilder;
 
 
     public static void load(){
