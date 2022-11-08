@@ -27,6 +27,7 @@ import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.util.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
+import progressed.world.blocks.defence.turret.sandbox.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -85,7 +86,7 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 if(everything()){
                     godHood(PMUnitTypes.everythingUnit);
-                    setupEveryBullets((Turret)PMBlocks.everythingGun);
+                    setupEveryBullets((EverythingTurret)PMSandboxBlocks.everythingGun);
                 }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
