@@ -1,5 +1,6 @@
 package progressed.world.meta;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -117,7 +118,12 @@ public class PMStatValues{
                         }
 
                         if(type.buildingDamageMultiplier != 1){
-                            sep(bt, bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
+                            int val = (int)(type.buildingDamageMultiplier * 100 - 100);
+                            sep(bt, Core.bundle.format("bullet.buildingdamage", ammoStat(val)));
+                        }
+
+                        if(type.rangeChange != 0 && !compact){
+                            sep(bt, Core.bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
                         }
 
                         if(type.splashDamage > 0){
@@ -128,8 +134,9 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 
-                        if(!Mathf.equal(type.reloadMultiplier, 1f)){
-                            sep(bt, bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
+                        if(!compact && !Mathf.equal(type.reloadMultiplier, 1f)){
+                            int val = (int)(type.reloadMultiplier * 100 - 100);
+                            sep(bt, Core.bundle.format("bullet.reload", ammoStat(val)));
                         }
 
                         if(type.knockback > 0){
@@ -567,6 +574,10 @@ public class PMStatValues{
     private static Cell<Label> sep(Table table, String text){
         table.row();
         return table.add(text);
+    }
+
+    private static String ammoStat(float val){
+        return (val > 0 ? "[stat]+" : "[negstat]") + Strings.autoFixed(val, 1);
     }
 
     private static TextureRegion icon(UnlockableContent t){
