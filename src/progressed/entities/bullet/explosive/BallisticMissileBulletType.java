@@ -65,8 +65,13 @@ public class BallisticMissileBulletType extends BulletType{
 
         super.init();
 
-        //Since the offset tilts it away from the camera, you only need the clip size to be the range of the missile.
+        //Since the offset tilts it away from the camera, you only need the draw size to be the range of the missile.
         drawSize = Math.max(drawSize, range);
+
+        //Ensure that split missiles also have enough draw size, as limitRange only applies to the main missile.
+        if(fragBullet instanceof BallisticMissileBulletType){
+            fragBullet.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
+        }
     }
 
     @Override
