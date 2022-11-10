@@ -52,7 +52,6 @@ public class BallisticMissileBulletType extends BulletType{
         scaleLife = true;
         scaledSplashDamage = true;
         status = StatusEffects.blasted;
-        drawSize = Float.MAX_VALUE;
     }
 
     @Override
@@ -65,6 +64,9 @@ public class BallisticMissileBulletType extends BulletType{
         }
 
         super.init();
+
+        //Since the offset tilts it away from the camera, you only need the clip size to be the range of the missile.
+        drawSize = Math.max(drawSize, range);
     }
 
     @Override
