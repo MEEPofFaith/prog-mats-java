@@ -210,6 +210,10 @@ public class PayloadBullets{
         BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
         stop.speed = 1;
 
+        BallisticMissileBulletType tooFar = (BallisticMissileBulletType)stop.fragBullet.fragBullet.copy();
+        tooFar.buildingDamageMultiplier = 1f;
+        stop.fragBullet.fragBullet = tooFar;
+
         RocketBulletType cease = (RocketBulletType)arbalestIncend.copy();
         cease.layer = Layer.bullet - 1;
         cease.homingRange = -1f;
@@ -226,5 +230,6 @@ public class PayloadBullets{
 
         ohno.fragBullet = enough;
         ohno.fragRandomSpread = 40f * 8f;
+        ohno.splitLifeMaxOffset = 45f;
     }
 }
