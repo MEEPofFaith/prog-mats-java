@@ -170,7 +170,7 @@ public class PMTechTree{
         });
 
         // Effect
-        vanillaNode(coreNucleus, () -> {
+        vanillaNode(coreFoundation, () -> {
             //Core link
             node(coreCovalence, Seq.with(
                 new SectorComplete(SectorPresets.impact0078),
@@ -182,13 +182,6 @@ public class PMTechTree{
             //Static link
             node(fence);
             node(web);
-        });
-
-        vanillaNode(overdriveDome, () -> {
-            //Overdrive Diffuser
-            node(systemBooster, Seq.with(
-                new Research(surgeTower)
-            ));
         });
 
         vanillaNode(forceProjector, () -> {
