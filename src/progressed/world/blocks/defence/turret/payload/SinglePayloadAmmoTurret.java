@@ -37,6 +37,8 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
     }
 
     public void setWarmupTime(float seconds){
+        minLoadWarmup = 0f;
+        minWarmup = 1f;
         linearWarmup = true;
         shootWarmupSpeed = 1 / (seconds * 60f);
     }

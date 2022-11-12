@@ -952,23 +952,24 @@ public class PMBlocks{
             size = 5;
             hideDetails = false;
             scaledHealth = 180;
-            reload = 1.5f * 60f;
+            reload = 2f * 60f;
+            setWarmupTime(1.5f);
             range = 800f;
             recoil = 4f;
 
             unitSort = UnitSorts.strongest;
 
-            PartProgress baseProgress = PartProgress.reload.inv().shorten(0.2f);
+            PartProgress baseProgress = PartProgress.warmup.shorten(0.3f);
             drawer = new DrawMulti(
                 new DrawPayloadTurret(true){{
                     parts.add(new RegionPart("-doors"){{
-                        progress = baseProgress.slope().mul(1.5f);
+                        progress = baseProgress.mul(1.5f);
                         mirror = true;
                         moveX = 6f;
                     }});
                 }},
                 new DrawPayloadAmmo(){{
-                    progress = matProgress = baseProgress.compress(0.3f, 0.7f);
+                    progress = matProgress = baseProgress.delay(0.7f);
                     layer = Layer.turret + 1f;
                     materialize = false;
                     rotation = 90f;

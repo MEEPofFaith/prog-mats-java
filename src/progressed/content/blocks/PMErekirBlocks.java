@@ -158,8 +158,6 @@ public class PMErekirBlocks{
             recoilTime = 60f;
             shake = 2f;
             shootY = -1f;
-            minLoadWarmup = 0f;
-            minWarmup = 1f;
             setWarmupTime(0.75f);
 
             drawer = new DrawMulti(
