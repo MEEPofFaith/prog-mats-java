@@ -956,9 +956,26 @@ public class PMBlocks{
             range = 800f;
             recoil = 4f;
 
-            shootY = 6f / 4f;
-
             unitSort = UnitSorts.strongest;
+
+            PartProgress baseProgress = PartProgress.reload.inv().shorten(0.2f);
+            drawer = new DrawMulti(
+                new DrawPayloadTurret(true){{
+                    parts.add(new RegionPart("-doors"){{
+                        progress = baseProgress.slope().mul(1.5f);
+                        mirror = true;
+                        moveX = 6f;
+                    }});
+                }},
+                new DrawPayloadAmmo(){{
+                    progress = matProgress = baseProgress.compress(0.3f, 0.7f);
+                    layer = Layer.turret + 1f;
+                    materialize = false;
+                    rotation = 90f;
+                    xScl = yScl = 0.8f;
+                    growX = growY = 0.2f;
+                }}
+            );
 
             coolant = consumeCoolant(0.2f);
         }};
