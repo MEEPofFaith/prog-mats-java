@@ -69,6 +69,7 @@ public class ModuleModule extends BlockModule{
         highlight = false;
         hAlpha = 0f;
         if(hasPower) module.build().power.graph.remove(module.build());
+        module.moduleRemoved();
     }
 
     public void moduleDisplay(Table table){

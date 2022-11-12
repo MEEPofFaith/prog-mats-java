@@ -111,6 +111,8 @@ public interface TurretModule{
         return module().swapNumber == number;
     }
 
+    default void moduleRemoved(){}
+
     default boolean isModule(){
         return module().parent != null;
     }

@@ -100,9 +100,17 @@ public class BallisticModule extends ItemTurret{
 
         @Override
         public Unit unit(){
-            if(parent() != null) return (Unit)(unit = parent().unit);
+            if(parent() != null){
+                unit = (BlockUnitc)parent().unit();
+                return (Unit)unit;
+            }
 
             return super.unit();
+        }
+
+        @Override
+        public boolean canControl(){
+            return super.canControl() && isDeployed();
         }
 
         @Override
@@ -205,6 +213,11 @@ public class BallisticModule extends ItemTurret{
         @Override
         public Iterable<Func<Building, Bar>> listModuleBars(){
             return moduleBarMap.values();
+        }
+
+        @Override
+        public void moduleRemoved(){
+            unit = (BlockUnitc)UnitTypes.block.create(team);
         }
 
         @Override
