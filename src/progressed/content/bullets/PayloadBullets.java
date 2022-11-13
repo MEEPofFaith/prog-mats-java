@@ -3,8 +3,13 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.type.unit.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
@@ -18,7 +23,7 @@ public class PayloadBullets{
 
     barrageLaunch, downpourLaunch;
 
-    public static RocketBulletType
+    public static BulletType
 
     arbalestBasic, arbalestIncend; //TODO 3rd rocket
 
@@ -31,70 +36,108 @@ public class PayloadBullets{
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
         downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
 
-        arbalestBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
-            lifetime = 70f;
-            acceleration = 0.03f;
-            backSpeed = thrustDelay = 0f;
-            trailWidth = thrusterSize = 6f / 4f;
-            trailParam = thrusterSize * 2f * 1.5f;
-            trailOffset = thrusterOffset = 43f / 4f;
-            rotOffset = 90f;
-            hitEffect = despawnEffect = MissileFx.missileExplosion;
-            trailInterval = 1f;
-            trailEffect = MissileFx.rocketTrail;
-            trailLength = 6;
-            drawSize = 60f * 80f;
-            layer = Layer.turret + 0.015f;
-            riseStart = thrusterGrowth;
-            riseEnd = thrusterGrowth + 10f;
-            targetLayer = Layer.bullet - 1;
+        arbalestBasic = new BulletType(0f, 0f){{
+            ammoMultiplier = 1f;
 
-            splashDamage = 526f;
-            splashDamageRadius = 8f * tilesize;
-            homingPower = 0.2f;
-            homingDelay = 5f;
-            homingRange = 100f * tilesize;
+            spawnUnit = new MissileUnitType("basic-rocket-b"){{
+                speed = 8f;
+                maxRange = 6f;
+                lifetime = 3.1f * 60f;
+                engineColor = trailColor = Pal.accent;
+                engineLayer = Layer.effect;
+                engineSize = 3.1f;
+                engineOffset = 10f;
+                rotateSpeed = 0.5f;
+                trailLength = 18;
+                missileAccelTime = 2f * 60f;
+                lowAltitude = true;
+                loopSound = Sounds.missileTrail;
+                loopSoundVolume = 0.6f;
+                deathSound = Sounds.largeExplosion;
 
-            unitSort = UnitSorts.strongest;
+                fogRadius = 6f;
+
+                health = 210;
+
+                weapons.add(new Weapon(){{
+                    shootCone = 360f;
+                    mirror = false;
+                    reload = 1f;
+                    deathExplosionEffect = MissileFx.missileExplosion;
+                    shootOnDeath = true;
+                    shake = 10f;
+                    bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                        hitColor = Pal.accent;
+                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                            lifetime = 10f;
+                            strokeFrom = 4f;
+                            sizeTo = 130f;
+                        }});
+                    }};
+                }});
+
+                abilities.add(new MoveEffectAbility(){{
+                    effect = MissileFx.rocketTrailSmoke;
+                    rotateEffect = true;
+                    y = -9f;
+                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                    interval = 4f;
+                }});
+            }};
         }};
 
-        arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){
-            {
-                lifetime = 70f;
-                acceleration = 0.03f;
-                backSpeed = thrustDelay = 0f;
-                trailWidth = thrusterSize = 6f / 4f;
-                trailParam = thrusterSize * 2f * 1.5f;
-                trailOffset = thrusterOffset = 43f / 4f;
-                rotOffset = 90f;
-                hitEffect = despawnEffect = MissileFx.missileExplosion;
-                trailInterval = 1f;
-                trailEffect = MissileFx.rocketTrail;
-                trailLength = 6;
-                drawSize = 60f * 80f;
-                layer = Layer.turret + 0.015f;
-                riseStart = thrusterGrowth;
-                riseEnd = thrusterGrowth + 10f;
-                targetLayer = Layer.bullet - 1;
+        arbalestIncend = new BulletType(0f, 0f){{
+            ammoMultiplier = 1f;
 
-                splashDamage = 276f;
-                splashDamageRadius = 88f;
-                makeFire = true;
-                status = PMStatusEffects.incendiaryBurn;
-                statusDuration = 15f * 60f;
-                homingPower = 0.2f;
-                homingDelay = 5f;
-                homingRange = 100f * tilesize;
+            spawnUnit = new MissileUnitType("incendiary-rocket-b"){{
+                speed = 8f;
+                maxRange = 6f;
+                lifetime = 3.1f * 60f;
+                engineColor = trailColor = Pal.remove;
+                engineLayer = Layer.effect;
+                engineSize = 3.1f;
+                engineOffset = 10f;
+                rotateSpeed = 0.5f;
+                trailLength = 18;
+                missileAccelTime = 2f * 60f;
+                lowAltitude = true;
+                loopSound = Sounds.missileTrail;
+                loopSoundVolume = 0.6f;
+                deathSound = Sounds.largeExplosion;
 
-                unitSort = UnitSorts.strongest;
-            }
+                fogRadius = 6f;
 
-            @Override
-            public void hit(Bullet b, float x, float y){
-                if(!b.absorbed) MissileFx.flameRing.at(x, y, b.rotation(), hitColor);
-                super.hit(b, x, y);
-            }
-        };
+                health = 210;
+
+                weapons.add(new Weapon(){{
+                    shootCone = 360f;
+                    mirror = false;
+                    reload = 1f;
+                    deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
+                    shootOnDeath = true;
+                    shake = 10f;
+                    bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                        hitColor = Pal.remove;
+                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                            lifetime = 10f;
+                            strokeFrom = 4f;
+                            sizeTo = 130f;
+                        }});
+
+                        makeFire = true;
+                        status = PMStatusEffects.incendiaryBurn;
+                    }};
+                }});
+
+                abilities.add(new MoveEffectAbility(){{
+                    effect = MissileFx.rocketTrailSmoke;
+                    rotateEffect = true;
+                    y = -9f;
+                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                    interval = 4f;
+                }});
+            }};
+        }};
 
         artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
@@ -214,13 +257,59 @@ public class PayloadBullets{
         tooFar.buildingDamageMultiplier = 1f;
         stop.fragBullet.fragBullet = tooFar;
 
-        RocketBulletType cease = (RocketBulletType)arbalestIncend.copy();
-        cease.layer = Layer.bullet - 1;
-        cease.homingRange = -1f;
-        cease.fragBullets = 1;
-        cease.fragLifeMin = 1.5f;
-        cease.fragLifeMax = 3f;
-        cease.fragBullet = stop;
+        BulletType cease = arbalestIncend.copy();
+        cease.spawnUnit = new MissileUnitType("mistake-rocket-b"){{
+            speed = 8f;
+            maxRange = 6f;
+            lifetime = 3.1f * 60f;
+            engineColor = trailColor = Pal.remove;
+            engineLayer = Layer.effect;
+            engineSize = 3.1f;
+            engineOffset = 10f;
+            rotateSpeed = 0.5f;
+            trailLength = 18;
+            missileAccelTime = 2f * 60f;
+            lowAltitude = true;
+            loopSound = Sounds.missileTrail;
+            loopSoundVolume = 0.6f;
+            deathSound = Sounds.largeExplosion;
+
+            fogRadius = 6f;
+
+            health = 210;
+
+            weapons.add(new Weapon(){{
+                shootCone = 360f;
+                mirror = false;
+                reload = 1f;
+                deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
+                shootOnDeath = true;
+                shake = 10f;
+                bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                    hitColor = Pal.remove;
+                    shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                        lifetime = 10f;
+                        strokeFrom = 4f;
+                        sizeTo = 130f;
+                    }});
+
+                    makeFire = true;
+                    status = PMStatusEffects.incendiaryBurn;
+                    fragBullets = 1;
+                    fragLifeMin = 1.5f;
+                    fragLifeMax = 3f;
+                    fragBullet = stop;
+                }};
+            }});
+
+            abilities.add(new MoveEffectAbility(){{
+                effect = MissileFx.rocketTrailSmoke;
+                rotateEffect = true;
+                y = -9f;
+                color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                interval = 4f;
+            }});
+        }};
 
         BallisticMissileBulletType enough = (BallisticMissileBulletType)paragonBasic.copy();
         enough.buildingDamageMultiplier = 1f;

@@ -949,15 +949,6 @@ public class PMBlocks{
                 basicRocket, PayloadBullets.arbalestBasic,
                 incendiaryRocket, PayloadBullets.arbalestIncend
             );
-            size = 5;
-            hideDetails = false;
-            scaledHealth = 180;
-            reload = 2f * 60f;
-            setWarmupTime(1.5f);
-            range = 800f;
-            recoil = 4f;
-
-            unitSort = UnitSorts.strongest;
 
             PartProgress baseProgress = PartProgress.warmup.shorten(0.3f);
             drawer = new DrawMulti(
@@ -978,7 +969,24 @@ public class PMBlocks{
                 }}
             );
 
+            size = 5;
+            hideDetails = false;
+            scaledHealth = 180;
+            reload = 2f * 60f;
+            setWarmupTime(1.5f);
+            shootCone = 1f;
+            shootY = 0f;
+            range = 800f;
+            recoil = 0.5f;
+            rotateSpeed = 0.9f;
+            shootSound = Sounds.missileLaunch;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootSmokeMissile;
+
+            unitSort = UnitSorts.strongest;
+
             coolant = consumeCoolant(0.2f);
+            limitRange();
         }};
 
         artemis = new BallisticMissileTurret("artemis"){{
