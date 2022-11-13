@@ -31,15 +31,15 @@ public class PMSounds{
     public static void load() {
         if(Vars.headless) return;
 
-        pixelShoot = loadSound("pixel-shoot");
-        pixelHit = loadSound("pixel-hit");
-        rockExplode = loadSound("rock-explode");
-        harbingerCharge = loadSound("harbinger-charge");
-        harbingerBlast = loadSound("harbinger-blast");
-        nuclearExplosion = loadSound("nuclear-explosion");
-        pulseBeam = loadSound("pulse-beam");
-        funiBoom = loadSound("funi-boom");
-        gigaFard = loadSound("giga-fard");
+        pixelShoot = Vars.tree.loadSound("pixel-shoot");
+        pixelHit = Vars.tree.loadSound("pixel-hit");
+        rockExplode = Vars.tree.loadSound("rock-explode");
+        harbingerCharge = Vars.tree.loadSound("harbinger-charge");
+        harbingerBlast = Vars.tree.loadSound("harbinger-blast");
+        nuclearExplosion = Vars.tree.loadSound("nuclear-explosion");
+        pulseBeam = Vars.tree.loadSound("pulse-beam");
+        funiBoom = Vars.tree.loadSound("funi-boom");
+        gigaFard = Vars.tree.loadSound("giga-fard");
     }
 
     public static void overrideSounds(){
@@ -52,16 +52,6 @@ public class PMSounds{
         Sounds.press.load(soundFile("press-boom"));
     }
 
-    protected static Sound loadSound(String soundName){
-        String path = soundPath(soundName);
-
-        Sound sound = new Sound();
-
-        AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundParameter(sound));
-        desc.errored = Throwable::printStackTrace;
-
-        return sound;
-    }
     protected static String soundPath(String soundName){
         String name = "sounds/" + soundName;
         return Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
