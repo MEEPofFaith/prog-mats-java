@@ -13,11 +13,11 @@ public class ModuleBullets{
     public static void load(){
         firestormMissile = new BallisticMissileBulletType("prog-mats-firestorm-missile"){{
             lifetime = 75f;
-            splashDamage = 280f;
+            splashDamage = 170f;
             splashDamageRadius = 32f;
             buildingDamageMultiplier = 0.3f;
             hitShake = 3f;
-            ammoMultiplier = 8;
+            ammoMultiplier = 12;
 
             height *= 0.75f;
             trailLength = 15;

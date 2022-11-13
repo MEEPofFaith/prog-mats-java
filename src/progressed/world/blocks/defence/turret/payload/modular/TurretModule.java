@@ -52,7 +52,7 @@ public interface TurretModule{
 
     default void moduleUpdate(){
         module().moduleUpdate();
-        if(isDeployed()) build().updateTile();
+        if(isDeployed()) build().update();
     }
 
     default void moduleDraw(){

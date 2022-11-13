@@ -15,6 +15,7 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import progressed.content.blocks.*;
 import progressed.content.effects.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.module.*;
@@ -45,6 +46,7 @@ public class BoostModule extends Block{
         super.init();
 
         healPercent /= 60 * 100; //0-100/sec -> 0-1/tick
+        PMModules.setClip(clipSize);
     }
 
     @Override
@@ -82,9 +84,10 @@ public class BoostModule extends Block{
             return self();
         }
 
-        public void moduleUpdate(){
-            module.moduleUpdate();
+        @Override
+        public void updateTile(){
             if(!isDeployed()) return;
+
             if(efficiency > 0){
                 if(healPercent > 0){
                     boolean canHeal = !checkSuppression() && parent().damaged();

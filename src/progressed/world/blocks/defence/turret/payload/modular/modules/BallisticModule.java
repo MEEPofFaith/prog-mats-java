@@ -14,6 +14,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import progressed.content.blocks.*;
 import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
@@ -58,6 +59,13 @@ public class BallisticModule extends ItemTurret{
     @Override
     public void limitRange(BulletType bullet, float margin){
         bullet.speed = range + bullet.rangeChange + margin;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        PMModules.setClip(clipSize);
     }
 
     @Override

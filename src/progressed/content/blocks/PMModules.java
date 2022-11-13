@@ -41,7 +41,7 @@ public class PMModules{
             );
 
             reload = 5f * 60f;
-            maxAmmo = 24;
+            maxAmmo = 27;
             moduleSize = ModuleSize.large;
             size = 3;
             range = 27f * 8f;
@@ -57,8 +57,8 @@ public class PMModules{
                     3f, -3f, 0f
                 };
 
-                shots = 6;
-                shotDelay = 15f;
+                shots = 9;
+                shotDelay = 10f;
             }};
         }};
     }

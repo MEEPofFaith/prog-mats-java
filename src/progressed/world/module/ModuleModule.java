@@ -54,7 +54,6 @@ public class ModuleModule extends BlockModule{
             module.build().power.graph.remove(module.build());
             parent.power.graph.add(module.build());
         }
-        module.build().updateConsumption();
         hAlpha = Mathf.approachDelta(hAlpha, Mathf.num(highlight), 0.15f);
 
         if(module.deployTime() > 0){
