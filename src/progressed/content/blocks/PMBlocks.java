@@ -954,7 +954,7 @@ public class PMBlocks{
             drawer = new DrawMulti(
                 new DrawPayloadTurret(true){{
                     parts.add(new RegionPart("-doors"){{
-                        progress = baseProgress.mul(1.5f);
+                        progress = baseProgress.shorten(0.3f).clamp().curve(Interp.smooth);
                         mirror = true;
                         moveX = 6f;
                     }});
