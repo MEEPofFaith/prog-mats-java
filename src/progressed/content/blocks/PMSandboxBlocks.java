@@ -51,7 +51,7 @@ public class PMSandboxBlocks{
     godFactory, capBlock, harmacist,
 
     //Items
-    multiSource, multiVoid, multiSourceVoid,
+    multiSource, multiVoid, multiSourceVoid, multiEverythingSourceVoid,
 
     //Effect
     infiniMender, infiniOverdrive;
@@ -193,6 +193,7 @@ public class PMSandboxBlocks{
         multiSource = new MultiSource("multi-source");
         multiVoid = new MultiVoid("multi-void");
         multiSourceVoid = new MultiSourceVoid("multi-source-void");
+        multiEverythingSourceVoid = new MaterialSourceVoid("material-source-void");
 
         // Effect
         infiniMender = new InfiniMendProjector("infini-mender");
