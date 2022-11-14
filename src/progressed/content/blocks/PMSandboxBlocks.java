@@ -159,6 +159,7 @@ public class PMSandboxBlocks{
             requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             alwaysUnlocked = true;
             hasItems = false;
+            configurable = false;
 
             size = 3;
             health = ProgMats.sandboxBlockHealth;
@@ -166,7 +167,7 @@ public class PMSandboxBlocks{
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, with())
             );
 
-            consumePower(1f);
+            consumePower(69f / 60f);
         }};
 
         capBlock = new CapBlock("cap-block"){{

@@ -4,8 +4,10 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.Interp.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
@@ -29,6 +31,9 @@ public class EverythingTurret extends PowerTurret{
 
     protected PowOut pow = Interp.pow3Out;
 
+    public String basePrefix = "";
+    public TextureRegion baseRegion;
+
     public EverythingTurret(String name){
         super(name);
         requirements(
@@ -42,7 +47,8 @@ public class EverythingTurret extends PowerTurret{
         shootY = 0f;
         targetInterval = 1;
         minRange = 0f;
-        shootType = new BulletType();
+        shootType = Bullets.placeholder;
+        drawer = null;
     }
 
     @Override
@@ -61,6 +67,24 @@ public class EverythingTurret extends PowerTurret{
             () -> entity.team.color,
             entity::levelf
         ));
+    }
+
+    @Override
+    public void load(){
+        region = Core.atlas.find(name);
+        baseRegion = Core.atlas.find(name + "-base");
+        if(!baseRegion.found() && minfo.mod != null) baseRegion = Core.atlas.find(minfo.mod.name + "-" + basePrefix + "block-" + size);
+        if(!baseRegion.found()) baseRegion = Core.atlas.find(basePrefix + "-block-" + size);
+    }
+
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{baseRegion, region};
+    }
+
+    @Override
+    public void getRegionsToOutline(Seq<TextureRegion> out){
+        //Do not
     }
 
     public class EverythingTurretBuild extends PowerTurretBuild{
@@ -104,6 +128,8 @@ public class EverythingTurret extends PowerTurret{
 
         @Override
         public void draw(){
+            Draw.rect(baseRegion, x, y);
+
             Draw.z(Layer.turret);
             Drawf.shadow(region, x - elevation, y - elevation, drawRot);
             Drawf.spinSprite(region, x, y, drawRot);
