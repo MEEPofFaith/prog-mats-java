@@ -1815,6 +1815,7 @@ public class PMBlocks{
             requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
             alwaysUnlocked = true;
             hasItems = false;
+            configurable = false;
 
             size = 3;
             health = ProgMats.sandboxBlockHealth;
