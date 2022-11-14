@@ -221,16 +221,16 @@ public class ProgMats extends Mod{
             if(b != base && b instanceof Turret){
                 if(b instanceof LaserTurret block && block.shootType != null){
                     BulletType bul = block.shootType;
-                    Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : block.shootEffect;
-                    Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : block.smokeEffect;
+                    Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                    Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
                     BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime + block.shootDuration, true);
                     if(!allBullets.contains(data)){
                         allBullets.add(data);
                     }
                 }else if(b instanceof PowerTurret block && block.shootType != null){
                     BulletType bul = block.shootType;
-                    Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : base.shootEffect;
-                    Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : base.smokeEffect;
+                    Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                    Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
                     BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
                     if(!allBullets.contains(data)){
                         allBullets.add(data);
@@ -239,8 +239,8 @@ public class ProgMats extends Mod{
                     content.items().each(i -> {
                         if(block.ammoTypes.get(i) != null){
                             BulletType bul = block.ammoTypes.get(i);
-                            Effect fshootEffect = block.shootEffect == Fx.none ? bul.shootEffect : base.shootEffect;
-                            Effect fsmokeEffect = block.smokeEffect == Fx.none ? bul.smokeEffect : base.smokeEffect;
+                            Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                            Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
                             BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
                             if(!allBullets.contains(data)){
                                 allBullets.add(data);

@@ -1762,13 +1762,16 @@ public class PMBlocks{
             range = 69 * tilesize;
             reload = 60f;
 
-            shootType = new SnakeBulletType(3f, 50f, "aflare"){{
+            shootType = Bullets.placeholder;
+
+            //Crashes
+            /*shootType = new SnakeBulletType(3f, 50f, "aflare"){{
                 length = 5;
                 lifetime = 300f;
                 weaveScale = 8f;
                 weaveMag = 2f;
                 homingPower = 0.3f;
-            }};
+            }};*/
         }};
 
         /// Distribution
@@ -1819,7 +1822,7 @@ public class PMBlocks{
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
             );
 
-            consumePower(1f);
+            consumePower(69f / 60f);
         }};
 
         capBlock = new CapBlock("cap-block"){{
