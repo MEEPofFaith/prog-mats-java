@@ -25,6 +25,7 @@ import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
 import progressed.world.blocks.payloads.*;
+import progressed.world.blocks.power.*;
 import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
@@ -53,7 +54,12 @@ public class PMErekirBlocks{
 
     teneliumFuser,
     moduleAssembler, moduleFoundry,
-    sentryBuilder;
+    sentryBuilder,
+
+    // endregion
+    // region power
+
+    beamDiode;
 
 
     public static void load(){
@@ -343,9 +349,7 @@ public class PMErekirBlocks{
                     new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
                 );
             }};
-            // endregion
 
-            // region Crafting
             moduleFoundry = new PayloadCrafter("module-foundry"){{
                 requirements(Category.crafting, with(
                     Items.lead, 540,
@@ -376,6 +380,20 @@ public class PMErekirBlocks{
             );
 
             recipes.each(r -> r.blockBuild = false);
+        }};
+
+        // endregion
+        // region Power
+
+        beamDiode = new BeamDiode("beam-diode"){{
+            requirements(Category.power, with(
+                Items.beryllium, 10,
+                Items.silicon, 10,
+                Items.surgeAlloy, 5
+            ));
+            health = 90;
+            range = 10;
+            fogRadius = 1;
         }};
     }
 }
