@@ -57,7 +57,7 @@ public class EnergyFx{
     }),
 
     kugelblitzCharge = new Effect(80f, e -> {
-        Tmp.c2.set(e.color).lerp(e.color, 0.5f); //Draw.color(c1, c2, s) uses Tmp.c1
+        Tmp.c2.set(Color.black).lerp(e.color, 0.5f); //Draw.color(c1, c2, s) uses Tmp.c1
 
         color(Color.black, Tmp.c2, e.fin());
         randLenVectors(e.id, 8, 23f * e.fout(), e.rotation, 180f, (x, y) -> {
