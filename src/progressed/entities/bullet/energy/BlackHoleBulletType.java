@@ -34,7 +34,8 @@ public class BlackHoleBulletType extends BulletType{
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 2f;
-    public Color swirlColor = Color.black;
+    public float swirlInterval = 3f;
+    public int swirlEffects = 4;
     public boolean repel;
 
     public BlackHoleBulletType(float speed, float damage){
@@ -56,10 +57,6 @@ public class BlackHoleBulletType extends BulletType{
     public void update(Bullet b){
         if(b.timer(1, 2f)){
             PMDamage.completeDamage(b.team, b.x, b.y, damageRadius, b.damage);
-            
-            if(swirlEffect != Fx.none && b.time <= b.lifetime - swirlEffect.lifetime){
-                swirlEffect.at(b.x, b.y, suctionRadius, swirlColor, b);
-            }
 
             Units.nearbyEnemies(b.team, b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, unit -> {
                 if(unit.within(b.x, b.y, suctionRadius)){
@@ -88,6 +85,19 @@ public class BlackHoleBulletType extends BulletType{
         }
 
         super.update(b);
+    }
+
+    @Override
+    public void updateTrailEffects(Bullet b){
+        super.updateTrailEffects(b);
+
+        if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
+            if(b.timer(0, swirlInterval)){
+                for(int i = 0; i < swirlEffects; i++){
+                    swirlEffect.at(b.x, b.y, suctionRadius, b.team.color, b);
+                }
+            }
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import mindustry.graphics.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
@@ -72,20 +73,20 @@ public class EnergyFx{
         if(e.time < 1f) return;
 
         int length = 8;
-        color(e.color);
-
         float lifetime = e.lifetime - length;
+        color(Color.black, e.color, Mathf.clamp(e.time / lifetime) * 0.5f);
+
         int points = (int)Math.min(e.time, length);
         float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
         float size = width / points;
-        float baseRot = Mathf.randomSeed(e.id, 360f), addRot = Mathf.randomSeed(e.id + 1, 180f, 360f);
+        float baseRot = Mathf.randomSeed(e.id, 360f), addRot = Mathf.randomSeed(e.id + 1, 90f, 2f * 360f);
 
         float fout, lastAng = 0f;
         for(int i = 0; i < points; i++){
             fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
-            v1.trns(baseRot + addRot * fout, Mathf.maxZero(e.rotation * fout));
+            v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(e.rotation * fout));
             fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
-            v2.trns(baseRot + addRot * fout, Mathf.maxZero(e.rotation * fout));
+            v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(e.rotation * fout));
 
             float a2 = -v1.angleTo(v2) * Mathf.degRad;
             float a1 = i == 0 ? a2 : lastAng;
