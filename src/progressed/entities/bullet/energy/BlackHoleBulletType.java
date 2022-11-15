@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -17,6 +18,18 @@ import progressed.entities.bullet.explosive.*;
 import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
+    static Seq<Class<?>> immuneTypes = Seq.with(
+        OrbitalStrikeBulletType.class,
+        BallisticMissileBulletType.class,
+        BlackHoleBulletType.class,
+        MagmaBulletType.class,
+        SweepLaserBulletType.class,
+        ContinuousBulletType.class,
+        LaserBulletType.class,
+        SapBulletType.class,
+        ShrapnelBulletType.class
+    );
+
     public Color color = Color.black;
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
@@ -72,7 +85,7 @@ public class BlackHoleBulletType extends BulletType{
                     }
 
                     if(Mathf.within(b.x, b.y, other.x, other.y, size * 2f)){
-                        absorbBullet(b, other);
+                        absorbBullet(other);
                     }
                 }
             });
@@ -105,22 +118,19 @@ public class BlackHoleBulletType extends BulletType{
     }
 
     public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.
-        return (type instanceof BallisticMissileBulletType) ||
-            (type instanceof OrbitalStrikeBulletType) ||
-            (type instanceof BlackHoleBulletType) ||
-            (type instanceof MagmaBulletType);
+        return immuneTypes.contains(c -> c.isAssignableFrom(type.getClass()));
     }
 
-    public void absorbBullet(Bullet b, Bullet other){
-        if(absorbEffect != Fx.none) absorbEffect.at(other.x, other.y);
-        if(other.type.trailLength > 0 && other.trail != null && other.trail.size() > 0){
-            if(other.trail instanceof PMTrail t){
-                TrailFadeFx.PMTrailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, t.copyPM());
+    public void absorbBullet(Bullet bullet){
+        if(absorbEffect != Fx.none) absorbEffect.at(bullet.x, bullet.y);
+        if(bullet.type.trailLength > 0 && bullet.trail != null && bullet.trail.size() > 0){
+            if(bullet.trail instanceof PMTrail t){
+                TrailFadeFx.PMTrailFade.at(bullet.x, bullet.y, bullet.type.trailWidth, bullet.type.trailColor, t.copyPM());
             }else{
-                Fx.trailFade.at(other.x, other.y, other.type.trailWidth, other.type.trailColor, other.trail.copy());
+                Fx.trailFade.at(bullet.x, bullet.y, bullet.type.trailWidth, bullet.type.trailColor, bullet.trail.copy());
             }
         }
-        other.type = PMBullets.absorbed;
-        other.absorb();
+        bullet.type = PMBullets.absorbed;
+        bullet.absorb();
     }
 }
