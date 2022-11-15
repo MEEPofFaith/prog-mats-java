@@ -4,10 +4,10 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
@@ -72,34 +72,28 @@ public class EnergyFx{
         });
     }),
 
-    blackHoleSwirl = new Effect(90f, e -> {
-        Bullet bullet = (Bullet)e.data;
+    blackHoleSwirl = new Effect(90f, 400f, e -> {
+        Object[] data = (Object[])e.data;
+        Bullet b = (Bullet)data[0];
+        Trail trail = (Trail)data[1];
 
-        if(bullet != null && bullet.type instanceof BlackHoleBulletType b){
-            float a = Mathf.clamp(e.fin() * 8f);
-            Tmp.c1.set(bullet.team.color).lerp(Color.black, 0.5f + Mathf.absin(Time.time + Mathf.randomSeed(e.id), 10f, 0.4f)).a(a);
-            Tmp.c2.set(Color.black).a(a);
-            float startAngle = Mathf.randomSeed(e.id, 360f, 720f);
+        float fin = Mathf.clamp(e.time / (e.lifetime - trail.length));
 
-            Fill.light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                bullet.y + trnsy(e.rotation + startAngle * e.fout(), b.suctionRadius * e.fout()),
-                60,
-                b.swirlSize * e.fout(),
-                Tmp.c1,
-                Tmp.c2
-            );
-
-            light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                bullet.y + trnsy(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                b.swirlSize * e.fout(),
-                Tmp.c1,
-                0.7f * a
-            );
+        if(!Vars.state.isPaused()){
+            if(fin < 0.999f){
+                float rot = Mathf.randomSeed(e.id, 360f) + Mathf.randomSeed(e.id + 1, 180f, 360f) * (1f - fin);
+                float dst = e.rotation * (1 - fin);
+                v1.trns(rot, dst);
+                trail.update(b.x + v1.x, b.y + v1.y);
+            }else{
+                trail.shorten();
+            }
         }
-    }).layer(Layer.max - 0.02f),
+
+        float w = fin * 3f;
+        trail.drawCap(Color.black, w);
+        trail.draw(Color.black, w);
+    }).layer(Layer.weather + 1),
 
     blackHoleDespawn = new Effect(24f, e -> {
         color(Color.darkGray, Color.black, e.fin());
@@ -120,13 +114,13 @@ public class EnergyFx{
             float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
-    }).layer(Layer.max - 0.03f),
+    }).layer(Layer.weather + 1),
 
     blackHoleAbsorb = new Effect(20f, e -> {
         color(Color.black);
         stroke(2f * e.fout(Interp.pow3In));
         Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
-    }).layer(Layer.max - 0.04f),
+    }).layer(Layer.weather + 1),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);

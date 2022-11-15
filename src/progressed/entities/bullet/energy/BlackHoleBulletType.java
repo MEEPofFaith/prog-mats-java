@@ -23,7 +23,7 @@ public class BlackHoleBulletType extends BulletType{
     public float cataclysmForceMul = 5f, cataclysmBulletForceMul = 5f, cataclysmForceRange = 40f * 8f;
     public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 2f;
-    public float swirlSize = 6f;
+    public int swirlTrailLength = 8;
     public boolean repel;
 
     public BlackHoleBulletType(float speed, float damage){
@@ -33,6 +33,7 @@ public class BlackHoleBulletType extends BulletType{
         pierce = true;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = EnergyFx.blackHoleDespawn;
+        layer = Layer.weather + 2;
     }
 
     @Override
@@ -46,7 +47,11 @@ public class BlackHoleBulletType extends BulletType{
             PMDamage.completeDamage(b.team, b.x, b.y, damageRadius, b.damage);
             
             if(swirlEffect != Fx.none && b.time <= b.lifetime - swirlEffect.lifetime){
-                swirlEffect.at(b.x, b.y, Mathf.random(360f), b);
+                if(swirlTrailLength > 0){
+                    swirlEffect.at(b.x, b.y, suctionRadius, new Object[]{b, new Trail(swirlTrailLength)});
+                }else{
+                    swirlEffect.at(b.x, b.y, suctionRadius, b);
+                }
             }
 
             Units.nearbyEnemies(b.team, b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, unit -> {
@@ -106,9 +111,7 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Draw.z(Layer.max - 0.01f);
-        Fill.light(b.x, b.y, 60, size,
-            Tmp.c1.set(b.team.color).lerp(color, 0.5f + Mathf.absin(Time.time + Mathf.randomSeed(b.id), 10f, 0.4f)), color);
+        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, Tmp.c1.set(color).lerp(b.team.color, 0.5f));
     }
 
     @Override
