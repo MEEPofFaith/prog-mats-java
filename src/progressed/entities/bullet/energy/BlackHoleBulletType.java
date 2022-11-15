@@ -34,7 +34,7 @@ public class BlackHoleBulletType extends BulletType{
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 2f;
-    public int swirlTrailLength = 8;
+    public Color swirlColor = Color.black;
     public boolean repel;
 
     public BlackHoleBulletType(float speed, float damage){
@@ -58,11 +58,7 @@ public class BlackHoleBulletType extends BulletType{
             PMDamage.completeDamage(b.team, b.x, b.y, damageRadius, b.damage);
             
             if(swirlEffect != Fx.none && b.time <= b.lifetime - swirlEffect.lifetime){
-                if(swirlTrailLength > 0){
-                    swirlEffect.at(b.x, b.y, suctionRadius, new Object[]{b, new Trail(swirlTrailLength)});
-                }else{
-                    swirlEffect.at(b.x, b.y, suctionRadius, b);
-                }
+                swirlEffect.at(b.x, b.y, suctionRadius, swirlColor, b);
             }
 
             Units.nearbyEnemies(b.team, b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, unit -> {

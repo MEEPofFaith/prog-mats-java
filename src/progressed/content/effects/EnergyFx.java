@@ -4,14 +4,11 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.entities.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
@@ -59,40 +56,56 @@ public class EnergyFx{
         }
     }),
 
-    kugelblitzChargeBegin = new Effect(80f, e -> {
-        Draw.z(Layer.max - 0.01f);
-        Fill.light(e.x, e.y, 60, 6f * e.fin(), Tmp.c1.set(e.color).lerp(Color.black, 0.5f + Mathf.absin(10f, 0.4f)), Color.black);
-    }),
+    kugelblitzCharge = new Effect(80f, e -> {
+        Tmp.c2.set(e.color).lerp(e.color, 0.5f); //Draw.color(c1, c2, s) uses Tmp.c1
 
-    kugelblitzCharge = new Effect(38f, e -> {
-        color(Tmp.c1.set(e.color).lerp(Color.black, 0.5f), Color.black, e.fin());
-        randLenVectors(e.id, 2, 45f * e.fout(), e.rotation, 180f, (x, y) -> {
+        color(Color.black, Tmp.c2, e.fin());
+        randLenVectors(e.id, 8, 23f * e.fout(), e.rotation, 180f, (x, y) -> {
             float ang = angle(x, y);
             Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
-    }),
+
+        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, Tmp.c2);
+    }).layer(Layer.weather + 2),
 
     blackHoleSwirl = new Effect(90f, 400f, e -> {
-        Object[] data = (Object[])e.data;
-        Bullet b = (Bullet)data[0];
-        Trail trail = (Trail)data[1];
+        if(e.time < 1f) return;
 
-        float fin = Mathf.clamp(e.time / (e.lifetime - trail.length));
+        int length = 8;
+        color(e.color);
 
-        if(!Vars.state.isPaused()){
-            if(fin < 0.999f){
-                float rot = Mathf.randomSeed(e.id, 360f) + Mathf.randomSeed(e.id + 1, 180f, 360f) * (1f - fin);
-                float dst = e.rotation * (1 - fin);
-                v1.trns(rot, dst);
-                trail.update(b.x + v1.x, b.y + v1.y);
-            }else{
-                trail.shorten();
-            }
+        float lifetime = e.lifetime - length;
+        int points = (int)Math.min(e.time, length);
+        float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
+        float size = width / points;
+        float baseRot = Mathf.randomSeed(e.id, 360f), addRot = Mathf.randomSeed(e.id + 1, 180f, 360f);
+
+        float fout, lastAng = 0f;
+        for(int i = 0; i < points; i++){
+            fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
+            v1.trns(baseRot + addRot * fout, Mathf.maxZero(e.rotation * fout));
+            fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
+            v2.trns(baseRot + addRot * fout, Mathf.maxZero(e.rotation * fout));
+
+            float a2 = -v1.angleTo(v2) * Mathf.degRad;
+            float a1 = i == 0 ? a2 : lastAng;
+
+            float
+                cx = Mathf.sin(a1) * i * size,
+                cy = Mathf.cos(a1) * i * size,
+                nx = Mathf.sin(a2) * (i + 1) * size,
+                ny = Mathf.cos(a2) * (i + 1) * size;
+
+            Fill.quad(
+                e.x + v1.x - cx, e.y + v1.y - cy,
+                e.x + v1.x + cx, e.y + v1.y + cy,
+                e.x + v2.x + nx, e.y + v2.y + ny,
+                e.x + v2.x - nx, e.y + v2.y - ny
+            );
+
+            lastAng = a2;
         }
-
-        float w = fin * 3f;
-        trail.drawCap(Color.black, w);
-        trail.draw(Color.black, w);
+        Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
     }).layer(Layer.weather + 1),
 
     blackHoleDespawn = new Effect(24f, e -> {

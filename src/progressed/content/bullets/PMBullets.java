@@ -111,8 +111,7 @@ public class PMBullets{
             backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
-            //TODO merge
-            chargeEffect = new MultiEffect(EnergyFx.kugelblitzChargeBegin, EnergyFx.kugelblitzCharge);
+            chargeEffect = EnergyFx.kugelblitzCharge;
         }};
 
         absorbed = new BulletType(0f, 0f){

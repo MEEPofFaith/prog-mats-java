@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.Interp.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -93,6 +94,32 @@ public class BlackHoleTurret extends PowerTurret{
             }
 
             super.updateTile();
+        }
+
+        @Override
+        protected void shoot(BulletType type){
+            float
+                bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+
+            if(shoot.firstShotDelay > 0){
+                chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+                type.chargeEffect.at(bulletX, bulletY, rotation, team.color);
+            }
+
+            shoot.shoot(totalShots, (xOffset, yOffset, angle, delay, mover) -> {
+                queuedBullets ++;
+                if(delay > 0f){
+                    Time.run(delay, () -> bullet(type, xOffset, yOffset, angle, mover));
+                }else{
+                    bullet(type, xOffset, yOffset, angle, mover);
+                }
+                totalShots ++;
+            });
+
+            if(consumeAmmoOnce){
+                useAmmo();
+            }
         }
     }
 }
