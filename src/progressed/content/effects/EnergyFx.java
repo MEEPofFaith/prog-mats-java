@@ -58,35 +58,36 @@ public class EnergyFx{
     }),
 
     kugelblitzCharge = new Effect(80f, e -> {
-        Tmp.c2.set(Color.black).lerp(e.color, 0.5f); //Draw.color(c1, c2, s) uses Tmp.c1
-
-        color(Color.black, Tmp.c2, e.fin());
+        color(Color.black, e.color, e.fin());
         randLenVectors(e.id, 8, 23f * e.fout(), e.rotation, 180f, (x, y) -> {
             float ang = angle(x, y);
-            Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
+            lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
 
-        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, Tmp.c2);
-    }).layer(Layer.weather + 2),
+        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
+        z(Layer.effect + 0.03f);
+        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
+    }).layer(Layer.effect + 0.01f),
 
     blackHoleSwirl = new Effect(90f, 400f, e -> {
         if(e.time < 1f) return;
 
         int length = 8;
         float lifetime = e.lifetime - length;
-        color(Color.black, e.color, Mathf.clamp(e.time / lifetime) * 0.5f);
+        float dst = Math.abs(e.rotation);
+        color(Color.black, e.color, Mathf.clamp(e.time / lifetime));
 
         int points = (int)Math.min(e.time, length);
         float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
         float size = width / points;
-        float baseRot = Mathf.randomSeed(e.id, 360f), addRot = Mathf.randomSeed(e.id + 1, 90f, 2f * 360f);
+        float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, 90f, 2f * 360f) * Mathf.sign(e.rotation);
 
         float fout, lastAng = 0f;
         for(int i = 0; i < points; i++){
             fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
-            v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(e.rotation * fout));
+            v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
             fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
-            v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(e.rotation * fout));
+            v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
 
             float a2 = -v1.angleTo(v2) * Mathf.degRad;
             float a1 = i == 0 ? a2 : lastAng;
@@ -107,7 +108,7 @@ public class EnergyFx{
             lastAng = a2;
         }
         Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
-    }).layer(Layer.weather + 1),
+    }).layer(Layer.effect + 0.005f),
 
     blackHoleDespawn = new Effect(24f, e -> {
         color(Color.darkGray, Color.black, e.fin());
@@ -124,17 +125,17 @@ public class EnergyFx{
         });
 
         color(e.color);
-        randLenVectors(e.id * 2, 4, e.fin() * 15f, (x, y) -> {
+        randLenVectors(e.id * 2L, 4, e.fin() * 15f, (x, y) -> {
             float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
-    }).layer(Layer.weather + 1),
+    }).layer(Layer.effect + 0.005f),
 
     blackHoleAbsorb = new Effect(20f, e -> {
         color(Color.black);
         stroke(2f * e.fout(Interp.pow3In));
         Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
-    }).layer(Layer.weather + 1),
+    }),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);

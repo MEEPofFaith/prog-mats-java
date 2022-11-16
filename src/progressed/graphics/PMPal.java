@@ -9,12 +9,9 @@ public class PMPal{
     //Single colors
     public static Color
 
-    lightGray = valueOf("B0BAC0"),
-    midGray = valueOf("989AA4"),
-    darkGray = valueOf("6E7080"),
     darkBrown = valueOf("4d2c0c"),
 
-    heal = Color.valueOf("84f491"),
+    heal = valueOf("84f491"),
     overdrive = valueOf("feb380"),
 
     outline = valueOf("404049"),
@@ -28,9 +25,7 @@ public class PMPal{
     missileFrag = valueOf("9CB664"),
 
     nexusLaser = valueOf("CE5EE5"),
-    nexusLaserDark = valueOf("9A27C4"),
-    pissbeam = valueOf("e5c85e"),
-    pissbeamDark = valueOf("c4b427");
+    nexusLaserDark = valueOf("9A27C4");
 
     //Color sets
     public static Color[]

@@ -45,7 +45,7 @@ public class BlackHoleBulletType extends BulletType{
         pierce = true;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = EnergyFx.blackHoleDespawn;
-        layer = Layer.weather + 2;
+        layer = Layer.effect + 0.03f;
     }
 
     @Override
@@ -93,8 +93,9 @@ public class BlackHoleBulletType extends BulletType{
 
         if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
             if(b.timer(0, swirlInterval)){
+                int sign = Mathf.sign(Mathf.randomSeed(b.id, -1, 0));
                 for(int i = 0; i < swirlEffects; i++){
-                    swirlEffect.at(b.x, b.y, suctionRadius, b.team.color, b);
+                    swirlEffect.at(b.x, b.y, suctionRadius * sign, b.team.color, b);
                 }
             }
         }
@@ -102,7 +103,9 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, Tmp.c1.set(color).lerp(b.team.color, 0.5f));
+        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, b.team.color);
+        Draw.z(Layer.effect + 0.01f);
+        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, b.team.color);
     }
 
     @Override
