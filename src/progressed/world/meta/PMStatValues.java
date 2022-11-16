@@ -61,6 +61,12 @@ public class PMStatValues{
                 if(payload && t instanceof Missile m && !m.displayCampaign && state.isCampaign()) continue;
 
                 BulletType type = map.get(t);
+
+                if(type.spawnUnit != null && type.spawnUnit.weapons.size > 0){
+                    ammo(ObjectMap.of(t, type.spawnUnit.weapons.first().bullet), indent, false).display(table);
+                    return;
+                }
+
                 //no point in displaying unit icon twice
                 if(!compact && !(t instanceof PowerTurret)){
                     if(payload){
@@ -229,10 +235,6 @@ public class PMStatValues{
                                 ut.add("[lightgray]" + type.despawnUnit.localizedName).padLeft(6);
                                 infoButton(ut, type.despawnUnit, 4 * 8).padLeft(6);
                             });
-                        }
-
-                        if(type.homingPower > 0.01f){
-                            sep(bt, "@bullet.homing");
                         }
 
                         if(type instanceof CritBulletType stype && stype.bouncing){
