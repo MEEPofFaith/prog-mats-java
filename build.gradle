@@ -14,7 +14,7 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v140.3'
+    mindustryVersion = 'v140.4'
     mindustryHash = '385af57d1b'
     arcHash = '2b9b7c4a1d'
     jabelVersion = "0.7.0"
@@ -29,12 +29,15 @@ allprojects{
 }
 
 dependencies{
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
+    //Release
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
-    //compileOnly "com.github.Anuken.MindustryJitpack:core:69f0126eca"
-    //compileOnly "com.github.Anuken.Arc:arc-core:b1b88883e2"
+    //BE
+    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
+    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
+
+    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
 task jarAndroid{
