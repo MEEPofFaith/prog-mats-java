@@ -66,17 +66,41 @@ public class PMTechTree{
         vanillaNode(ripple, () -> {
             //Rockets
             node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
-                new SectorComplete(SectorPresets.nuclearComplex)
+                new SectorComplete(SectorPresets.impact0078)
             ), () -> {
                 nodeFree(shellPress, arbalest, () -> {
-                    nodeFree(emptyRocket, arbalest);
-                    nodeFree(missileFactory, arbalest, () -> {
-                        //Rockets
+                    //Rockets
+                    nodeFree(emptyRocket, arbalest, () -> {
                         nodeFree(basicRocket, arbalest, () -> {
                             node(incendiaryRocket);
                         });
                     });
+                    //Missiles
+                    nodeFree(emptyMissile, artemis, () -> {
+                        nodeFree(basicMissile, artemis, () -> {
+                            node(recursiveMissile);
+                        });
+                    });
+                    //Nukes
+                    nodeFree(emptyNuke, paragon, () -> {
+                        nodeFree(basicNuke, paragon, () -> {
+                            node(clusterNuke);
+                        });
+                    });
+                    nodeFree(missileFactory, arbalest);
                 });
+            });
+
+            //Missiles
+            node(artemis, combineCosts(artemis, emptyMissile, basicMissile), Seq.with(
+                new SectorComplete(SectorPresets.impact0078),
+                new Research(launchPad),
+                new Research(arbalest)
+            ), () -> {
+                //Nukes
+                node(paragon, combineCosts(paragon, emptyNuke, basicNuke), Seq.with(
+                    new SectorComplete(SectorPresets.planetaryTerminal)
+                ), () -> {});
             });
         });
 
