@@ -78,8 +78,9 @@ public class PMBlocks{
     //Support
     allure, vaccinator,
 
-    //Anime sweep laser
-    incision, fissure,
+    //Behold: a laser pointer
+
+    pinpoint,
 
     //Swords
     dance, masquerade,
@@ -635,151 +636,29 @@ public class PMBlocks{
             }
         };
 
-        incision = new SweepLaserTurret("incision"){
-            final float brange = range = 22f * tilesize;
+        pinpoint = new SwingContinuousTurret("pinpoint"){{
+            requirements(Category.turret, with());
 
-            final SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
-                speed = brange;
-                drawSize = brange + 10f * tilesize;
-                length = 8f * tilesize;
-                startDelay = 0.125f;
-                extendTime += startDelay;
-                sweepTime += startDelay;
-                angleRnd = 25f;
-                blasts = 12;
-                blastBullet = new BombBulletType(20, 32f, "clear"){{
-                    lifetime = 0f;
-                    hitEffect = Fx.explosion;
-                    status = StatusEffects.blasted;
-                }};
+            shootType = new PointLaserBulletType(){{
+                damage = 200f;
+                hitColor = Color.valueOf("fda981");
             }};
 
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 60,
-                    Items.lead, 50,
-                    Items.silicon, 60,
-                    Items.titanium, 50
-                ));
-                scaledHealth = 260;
-                size = 2;
-                reload = 1.5f * 60f;
-                shootY = 23f / 4f - recoil;
-                shootSound = Sounds.plasmadrop;
-                retractDelay = 0.125f;
-                hideDetails = false;
-                shootType = sweepLaser;
+            shootSound = Sounds.none;
+            loopSoundVolume = 1f;
+            loopSound = Sounds.laserbeam;
 
-                pointDrawer = t -> {
-                    if(t.bullet == null) return;
+            aimChangeSpeed = rotateSpeed = 6f;
+            aimChangeSpeedAccel = rotateSpeedAccel = 0.5f;
+            aimChangeSpeedDrag = rotateSpeedDrag = 0.06f;
 
-                    Draw.z(Layer.effect + 1f);
-                    Draw.color(Color.red);
-                    Tmp.v1.trns(t.rotation, shootY);
-
-                    float x = t.x + Tmp.v1.x + t.recoilOffset.x,
-                        y = t.y + Tmp.v1.y + t.recoilOffset.y,
-                        fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
-                        fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
-                        scl = fin * fout;
-
-                    Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
-                };
-
-                consumePower(5f);
-                coolant = consumeCoolant(0.2f);
-            }
-
-            @Override
-            public void setStats(){
-                super.setStats();
-
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, s -> {
-                    s.row();
-                    s.table(bt -> {
-                        bt.left().defaults().padRight(3).left();
-
-                        BulletType blast = sweepLaser.blastBullet;
-                        bt.add(
-                            Core.bundle.format("bullet.pm-multi-splash",
-                                sweepLaser.blasts,
-                                blast.splashDamage,
-                                Strings.fixed(blast.splashDamageRadius / tilesize, 1)
-                            )
-                        );
-                        bt.row();
-                        bt.add(
-                            (blast.status.minfo.mod == null ? blast.status.emoji() : "") + "[stat]" + blast.status.localizedName
-                        );
-                    }).padTop(-9).left().fillY().get().background(Tex.underline);
-                });
-            }
-        };
-
-        fissure = new SweepLaserTurret("fissure"){{
-            float brange = range = 25f * tilesize;
-
-            requirements(Category.turret, with(
-                Items.copper, 210,
-                Items.titanium, 200,
-                Items.silicon, 180,
-                PMItems.tenelium, 150
-            ));
-            scaledHealth = 230;
             size = 3;
-            reload = 2f * 60f;
-            shootY = 46f / 4f - recoil;
-            shootSound = Sounds.plasmadrop;
-            retractDelay = 0.125f;
+            range = 16f * tilesize;
+            scaledHealth = 140;
 
-            consumePower(8.5f);
-            coolant = consumeCoolant(0.2f);
+            unitSort = UnitSorts.strongest;
 
-            RiftBulletType rift = new RiftBulletType(550f){{
-                speed = brange;
-                drawSize = brange + 10f * tilesize;
-                length = 12f * tilesize;
-                startDelay = 0.125f;
-                extendTime += startDelay;
-                sweepTime += startDelay;
-                angleRnd = 25f;
-                hitSound = Sounds.largeExplosion;
-                hitSoundVolume = 3f;
-                layer = Layer.effect + 1f;
-            }};
-            shootType = rift;
-
-            pointDrawer = t -> {
-                if(t.bullet == null) return;
-
-                Draw.z(Layer.bullet - 1f);
-                Draw.color(Color.black);
-                Tmp.v1.trns(t.rotation, shootY);
-
-                float x = t.x + Tmp.v1.x + t.recoilOffset.x,
-                    y = t.y + Tmp.v1.y + t.recoilOffset.y,
-                    fin = Mathf.curve(t.bullet.fin(), 0f, rift.startDelay),
-                    fout = 1f - Mathf.curve(t.bullet.fin(), rift.retractTime, rift.retractTime + 0.125f),
-                    scl = fin * fout,
-                    s = Mathf.absin(Time.time, 1f, 0.25f),
-                    w = 1.5f + s,
-                    l = 4.5f + s;
-
-                for(int i = 0; i < 4; i++){
-                    float a = t.rotation + 45 + 90 * i;
-
-                    Tmp.v1.trns(a, w * scl, 0f);
-                    Tmp.v2.trns(a, -w * scl, 0f);
-                    Tmp.v3.trns(a, 0f, l * scl);
-
-                    Fill.tri(
-                        x + Tmp.v1.x, y + Tmp.v1.y,
-                        x + Tmp.v2.x, y + Tmp.v2.y,
-                        x + Tmp.v3.x, y + Tmp.v3.y
-                    );
-                }
-            };
+            consumePower(1.5f);
         }};
 
         //"lets dance"

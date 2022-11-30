@@ -23,7 +23,6 @@ public class BlackHoleBulletType extends BulletType{
         BallisticMissileBulletType.class,
         BlackHoleBulletType.class,
         MagmaBulletType.class,
-        SweepLaserBulletType.class,
         ContinuousBulletType.class,
         LaserBulletType.class,
         SapBulletType.class,

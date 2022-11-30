@@ -255,18 +255,6 @@ public class PMStatValues{
                             }
                         }
 
-                        if(type instanceof RocketBulletType stype && stype.bombBullet != null){
-                            float amount = type.speed * stype.bombInterval / tilesize;
-                            if(amount == 1){
-                                sep(bt, "@bullet.pm-bombs-single");
-                            }else{
-                                sep(bt, bundle.format("bullet.pm-bombs", amount));
-                            }
-                            bt.row();
-
-                            ammo(ObjectMap.of(t, stype.bombBullet), indent + 1, false).display(bt);
-                        }
-
                         if(type.fragBullet != null){
                             sep(bt, bundle.format("bullet.frags", type.fragBullets));
                             bt.row();

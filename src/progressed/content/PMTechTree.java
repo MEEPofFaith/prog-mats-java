@@ -24,10 +24,8 @@ public class PMTechTree{
 
     public static void load(){
         vanillaNode(lancer, () -> {
-            // Anime Sweep Laser
-            node(incision, () -> {
-                node(fissure);
-            });
+            // Behold: a laser pointer
+            //node(pinpoint);
 
             // Geomancy
             node(concretion, () -> {
@@ -58,8 +56,7 @@ public class PMTechTree{
             //Kugelblitz
             node(kugelblitz, Seq.with(
                 new SectorComplete(SectorPresets.nuclearComplex),
-                new Research(meltdown),
-                new Research(fissure)
+                new Research(meltdown)
             ));
         });
 
@@ -126,8 +123,7 @@ public class PMTechTree{
 
             //Sword
             node(dance, Seq.with(
-                new SectorComplete(SectorPresets.overgrowth),
-                new Research(incision)
+                new SectorComplete(SectorPresets.overgrowth)
             ), () -> {
                 node(masquerade, Seq.with(
                     new SectorComplete(SectorPresets.nuclearComplex)
