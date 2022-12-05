@@ -64,7 +64,7 @@ public class PMStatValues{
 
                 if(type.spawnUnit != null && type.spawnUnit.weapons.size > 0){
                     ammo(ObjectMap.of(t, type.spawnUnit.weapons.first().bullet), indent, false).display(table);
-                    return;
+                    continue;
                 }
 
                 //no point in displaying unit icon twice
