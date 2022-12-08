@@ -2,13 +2,11 @@ package progressed.content.blocks;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.struct.*;
+import arc.math.Interp.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
@@ -18,15 +16,14 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.part.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -34,16 +31,9 @@ import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.*;
-import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
-import progressed.world.blocks.sandbox.defence.*;
-import progressed.world.blocks.sandbox.distribution.*;
-import progressed.world.blocks.sandbox.heat.*;
-import progressed.world.blocks.sandbox.items.*;
-import progressed.world.blocks.sandbox.power.*;
-import progressed.world.blocks.sandbox.units.*;
 import progressed.world.blocks.storage.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
@@ -90,6 +80,9 @@ public class PMBlocks{
 
     //Payload
     arbalest, artemis, paragon,
+
+    //Nexus
+    ravage, onslaught,
 
     // endregion
     // region production
@@ -955,6 +948,102 @@ public class PMBlocks{
 
             consumePower(1.8f);
             consumeLiquid(Liquids.water, 0.09f).boost();
+        }};
+
+        ravage = new NexusTurret("ravage"){{
+            requirements(Category.turret, with());
+            size = 6;
+
+            float brange = range = 100f * 8f;
+            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
+                speed = brange;
+                splashDamage = 2000f;
+                splashDamageRadius = 32f;
+            }});
+
+            drawer = new DrawTurret(/*"reinforced-"*/){{
+                Interp swing = new SwingOut(4f);
+                parts.add(new PillarPart(){{
+                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
+                    alphaProg = PartProgress.warmup;
+                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    blending = Blending.additive;
+                }});
+
+                for(float i = 0; i < 3; i++){
+                    float scl = 2f - i * 0.5f;
+                    float del = i * 0.1f;
+                    float ii = i;
+                    parts.add(new RingPart(){{
+                        height = (ii + 1) * 0.25f;
+                        inRad = 12f * scl;
+                        outRad = 20f * scl;
+                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
+                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
+                        blending = Blending.additive;
+                    }});
+                }
+            }};
+
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (1.5f * 60f);
+            warmupMaintainTime = 30f;
+
+            reload = 15f;
+
+            consumePower(25f);
+        }};
+
+        onslaught = new NexusTurret("onslaught"){{
+            requirements(Category.turret, with());
+            size = 6;
+
+            float brange = range = 100f * 8f;
+            ammo(Items.phaseFabric, new OrbitalRainBulletType(){{
+                speed = brange;
+                bottomColor = Pal.surge;
+                topColor = null;
+                splashDamage = 2000f;
+                splashDamageRadius = 32f;
+            }});
+
+            drawer = new DrawTurret(/*"reinforced-"*/){{
+                Interp swing = new SwingOut(4f);
+                parts.add(new PillarPart(){{
+                    colorFrom = Pal.surge;
+                    colorTo = null;
+                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
+                    alphaProg = PartProgress.warmup;
+                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    blending = Blending.additive;
+                }});
+
+                for(float i = 0; i < 3; i++){
+                    float scl = 2f - i * 0.5f;
+                    float del = i * 0.1f;
+                    float ii = i;
+                    parts.add(new RingPart(){{
+                        colorFrom = Pal.surge;
+                        colorTo = null;
+                        height = (ii + 1) * 0.25f;
+                        inRad = 12f * scl;
+                        outRad = 20f * scl;
+                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
+                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
+                        blending = Blending.additive;
+                    }});
+                }
+            }};
+
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (1.5f * 60f);
+            warmupMaintainTime = 30f;
+
+            reload = 140f;
+
+            consumePower(25f);
         }};
         // endregion
 

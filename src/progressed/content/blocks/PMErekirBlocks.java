@@ -2,11 +2,10 @@ package progressed.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
-import arc.math.Interp.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.part.*;
 import mindustry.entities.part.DrawPart.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -14,13 +13,10 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
-import progressed.entities.bullet.energy.*;
 import progressed.entities.part.*;
-import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
@@ -45,9 +41,6 @@ public class PMErekirBlocks{
 
     //Modular
     matrix,
-
-    //Nexus
-    ravage, onslaught,
 
     // endregion
     // region Crafting
@@ -200,106 +193,6 @@ public class PMErekirBlocks{
                 new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
                 new ModuleGroup(ModuleSize.large)
             };
-        }};
-
-        ravage = new NexusTurret("ravage"){{
-            requirements(Category.turret, with());
-            size = 6;
-
-            float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
-                speed = brange;
-                splashDamage = 2000f;
-                splashDamageRadius = 32f;
-            }});
-
-            drawer = new DrawTurret(/*"reinforced-"*/){{
-                Interp swing = new SwingOut(4f);
-                parts.add(new PillarPart(){{
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                    blending = Blending.additive;
-                }});
-
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
-                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
-                        blending = Blending.additive;
-                    }});
-                }
-            }};
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
-            warmupMaintainTime = 30f;
-
-            reload = 15f;
-
-            heatRequirement = 150f;
-            maxHeatEfficiency = 1f;
-            consumePower(20f);
-        }};
-
-        onslaught = new NexusTurret("onslaught"){{
-            requirements(Category.turret, with());
-            size = 6;
-
-            float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalRainBulletType(){{
-                speed = brange;
-                bottomColor = Pal.surge;
-                topColor = null;
-                splashDamage = 2000f;
-                splashDamageRadius = 32f;
-            }});
-
-            drawer = new DrawTurret(/*"reinforced-"*/){{
-                Interp swing = new SwingOut(4f);
-                parts.add(new PillarPart(){{
-                    colorFrom = Pal.surge;
-                    colorTo = null;
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
-                    blending = Blending.additive;
-                }});
-
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        colorFrom = Pal.surge;
-                        colorTo = null;
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
-                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
-                        blending = Blending.additive;
-                    }});
-                }
-            }};
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
-            warmupMaintainTime = 30f;
-
-            reload = 140f;
-
-            heatRequirement = 150f;
-            maxHeatEfficiency = 1f;
-            consumePower(20f);
         }};
 
         // endregion
