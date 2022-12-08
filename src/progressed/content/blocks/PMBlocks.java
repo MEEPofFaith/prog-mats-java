@@ -639,10 +639,16 @@ public class PMBlocks{
         pinpoint = new SwingContinuousTurret("pinpoint"){{
             requirements(Category.turret, with());
 
-            shootType = new PointLaserBulletType(){{
+            shootType = new PMPointLaserBulletType(){{
                 damage = 200f;
                 sprite = "prog-mats-swing-laser";
-                hitColor = Pal.remove;
+
+                beamEffect = Fx.none;
+                trailLength = 6;
+                trailColor = hitColor = Color.valueOf("fd4f60");
+                trailWidth = 3f;
+                trailSinMag = oscMag;
+                trailSinScl = oscScl;
             }};
 
             shootSound = Sounds.none;
@@ -656,7 +662,8 @@ public class PMBlocks{
             size = 3;
             range = 16f * tilesize;
             scaledHealth = 140;
-            shootY = 34f / tilesize;
+            shootY = 34f / 4f;
+            shootCone = 360f;
 
             unitSort = UnitSorts.strongest;
 
