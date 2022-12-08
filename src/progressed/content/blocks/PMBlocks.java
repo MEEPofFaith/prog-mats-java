@@ -641,7 +641,8 @@ public class PMBlocks{
 
             shootType = new PointLaserBulletType(){{
                 damage = 200f;
-                hitColor = Color.valueOf("fda981");
+                sprite = "prog-mats-swing-laser";
+                hitColor = Pal.remove;
             }};
 
             shootSound = Sounds.none;
@@ -655,6 +656,7 @@ public class PMBlocks{
             size = 3;
             range = 16f * tilesize;
             scaledHealth = 140;
+            shootY = 34f / tilesize;
 
             unitSort = UnitSorts.strongest;
 
