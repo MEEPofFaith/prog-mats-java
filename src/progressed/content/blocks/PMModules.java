@@ -30,6 +30,7 @@ public class PMModules{
         augment = new BoostModule("augment"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             hasPower = true;
+            healPercent = 100f / 60f / 60f;
 
             consumePower(2f);
         }};

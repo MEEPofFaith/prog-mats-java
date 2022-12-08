@@ -23,7 +23,8 @@ import progressed.world.module.ModuleModule.*;
 
 public class BoostModule extends Block{
     public ModuleSize moduleSize = ModuleSize.small;
-    public float healPercent = 2f;
+    //per tick
+    public float healPercent = 1f / 60f;
     public float speedBoost = 1.25f;
     public float regenEffectChance = 0.003f, overdriveEffectChance = 0.001f;
 
@@ -36,16 +37,20 @@ public class BoostModule extends Block{
 
     public BoostModule(String name){
         super(name);
-        canOverdrive = false;
+        solid = true;
+        destructible = true;
+        breakable = rebuildable = false;
+        group = BlockGroup.turrets;
+
         outlineIcon = true;
         suppressable = true;
+        canOverdrive = false;
     }
 
     @Override
     public void init(){
         super.init();
 
-        healPercent /= 60 * 100; //0-100/sec -> 0-1/tick
         PMModules.setClip(clipSize);
     }
 
