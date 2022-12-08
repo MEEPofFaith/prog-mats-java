@@ -47,6 +47,7 @@ public class PMModules{
             range = 27f * 8f;
             minRange = 7f * 8f;
             shootSound = Sounds.missile;
+            hideDetails = false;
 
             shoot = new ShootBarrel(){{
                 barrels = new float[]{

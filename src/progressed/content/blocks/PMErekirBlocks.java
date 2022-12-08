@@ -187,6 +187,7 @@ public class PMErekirBlocks{
             scaledHealth = 370;
             regionSuffix = "-dark";
             squareSprite = false;
+            hideDetails = false;
 
             moduleGroups = new ModuleGroup[]{
                 new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
