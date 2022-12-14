@@ -69,46 +69,7 @@ public class EnergyFx{
         Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
     }).layer(Layer.effect + 0.01f),
 
-    blackHoleSwirl = new Effect(90f, 400f, e -> {
-        if(e.time < 1f) return;
-
-        int length = 8;
-        float lifetime = e.lifetime - length;
-        float dst = Math.abs(e.rotation);
-        color(Color.black, e.color, Mathf.clamp(e.time / lifetime));
-
-        int points = (int)Math.min(e.time, length);
-        float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
-        float size = width / points;
-        float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, 90f, 2f * 360f) * Mathf.sign(e.rotation);
-
-        float fout, lastAng = 0f;
-        for(int i = 0; i < points; i++){
-            fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
-            v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
-            fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
-            v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
-
-            float a2 = -v1.angleTo(v2) * Mathf.degRad;
-            float a1 = i == 0 ? a2 : lastAng;
-
-            float
-                cx = Mathf.sin(a1) * i * size,
-                cy = Mathf.cos(a1) * i * size,
-                nx = Mathf.sin(a2) * (i + 1) * size,
-                ny = Mathf.cos(a2) * (i + 1) * size;
-
-            Fill.quad(
-                e.x + v1.x - cx, e.y + v1.y - cy,
-                e.x + v1.x + cx, e.y + v1.y + cy,
-                e.x + v2.x + nx, e.y + v2.y + ny,
-                e.x + v2.x - nx, e.y + v2.y - ny
-            );
-
-            lastAng = a2;
-        }
-        Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
-    }).layer(Layer.effect + 0.005f),
+    blackHoleSwirl = makeSwirlEffect(90f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
     blackHoleDespawn = new Effect(24f, e -> {
         color(Color.darkGray, Color.black, e.fin());
@@ -227,4 +188,55 @@ public class EnergyFx{
         color(e.color, Color.black, 0.25f + e.fin() * 0.75f);
         Fill.circle(e.x + v1.x, e.y + v1.y, data[0] * e.fout());
     }).layer(Layer.bullet - 0.00999f);
+
+    public static Effect makeSwirlEffect(Color color, float eLifetime, float minRot, float maxRot, boolean lerp){
+        return new Effect(eLifetime, 400f, e -> {
+            if(e.time < 1f) return;
+
+            int length = 8;
+            float lifetime = e.lifetime - length;
+            float dst = Math.abs(e.rotation);
+            if(lerp){
+                color(color, e.color, Mathf.clamp(e.time / lifetime));
+            }else{
+                color(color);
+            }
+
+            int points = (int)Math.min(e.time, length);
+            float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
+            float size = width / points;
+            float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, minRot, maxRot) * Mathf.sign(e.rotation);
+
+            float fout, lastAng = 0f;
+            for(int i = 0; i < points; i++){
+                fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
+                v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+                fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
+                v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+
+                float a2 = -v1.angleTo(v2) * Mathf.degRad;
+                float a1 = i == 0 ? a2 : lastAng;
+
+                float
+                    cx = Mathf.sin(a1) * i * size,
+                    cy = Mathf.cos(a1) * i * size,
+                    nx = Mathf.sin(a2) * (i + 1) * size,
+                    ny = Mathf.cos(a2) * (i + 1) * size;
+
+                Fill.quad(
+                    e.x + v1.x - cx, e.y + v1.y - cy,
+                    e.x + v1.x + cx, e.y + v1.y + cy,
+                    e.x + v2.x + nx, e.y + v2.y + ny,
+                    e.x + v2.x - nx, e.y + v2.y - ny
+                );
+
+                lastAng = a2;
+            }
+            Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
+        });
+    }
+
+    public static Effect makeSwirlEffect(float eLifetime, float minRot, float maxRot, boolean lerp){
+        return makeSwirlEffect(Color.black, eLifetime, minRot, maxRot, lerp);
+    }
 }

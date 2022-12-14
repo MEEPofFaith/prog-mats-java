@@ -66,7 +66,8 @@ public class BlackHoleBulletType extends BulletType{
             });
 
             Groups.bullet.intersect(b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, other -> {
-                if(other != null && Mathf.within(b.x, b.y, other.x, other.y, suctionRadius) && b != other && b.team != other.team && other.type.speed > 0.01f && !checkType(other.type)){
+                //if(other != null && Mathf.within(b.x, b.y, other.x, other.y, suctionRadius) && b != other && b.team != other.team && other.type.speed > 0.01f && !checkType(other.type)){
+                if(other != null && Mathf.within(b.x, b.y, other.x, other.y, suctionRadius) && b != other && b.team != other.team && b.type.absorbable && other.type.speed > 0.01f){
                     Vec2 impulse = Tmp.v1.trns(other.angleTo(b), bulletForce + (1f - other.dst(b) / suctionRadius) * bulletScaledForce);
                     if(repel) impulse.rotate(180f);
                     other.vel().add(impulse);
@@ -125,10 +126,6 @@ public class BlackHoleBulletType extends BulletType{
         }
     }
 
-    public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.
-        return immuneTypes.contains(c -> c.isAssignableFrom(type.getClass()));
-    }
-
     public void absorbBullet(Bullet bullet){
         if(absorbEffect != Fx.none) absorbEffect.at(bullet.x, bullet.y);
         if(bullet.type.trailLength > 0 && bullet.trail != null && bullet.trail.size() > 0){
@@ -140,5 +137,9 @@ public class BlackHoleBulletType extends BulletType{
         }
         bullet.type = PMBullets.absorbed;
         bullet.absorb();
+    }
+
+    public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.
+        return immuneTypes.contains(c -> c.isAssignableFrom(type.getClass()));
     }
 }

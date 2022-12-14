@@ -48,21 +48,9 @@ public class BallisticModule extends ItemTurret{
     }
 
     @Override
-    public void limitRange(float margin){
-        for(var entry: ammoTypes.copy().entries()){
-            limitRange(entry.value, margin);
-        }
-    }
-
-    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         drawPotentialLinks(x, y);
         drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
-    }
-
-    @Override
-    public void limitRange(BulletType bullet, float margin){
-        bullet.speed = range + bullet.rangeChange + margin;
     }
 
     @Override
@@ -97,6 +85,18 @@ public class BallisticModule extends ItemTurret{
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
+    }
+
+    @Override
+    public void limitRange(float margin){
+        for(var entry : ammoTypes.copy().entries()){
+            limitRange(entry.value, margin);
+        }
+    }
+
+    @Override
+    public void limitRange(BulletType bullet, float margin){
+        bullet.speed = range + bullet.rangeChange + margin;
     }
 
     public class BallisticModuleBuild extends ItemTurretBuild implements TurretModule{

@@ -7,6 +7,8 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
+import progressed.content.effects.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.module.ModuleModule.*;
@@ -22,6 +24,7 @@ public class PMModules{
     augment,
 
     //Medium
+    abyss,
 
     //Large
     firestorm;
@@ -35,11 +38,43 @@ public class PMModules{
             consumePower(2f);
         }};
 
+        abyss = new PowerTurretModule("abyss"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            moduleSize = ModuleSize.medium;
+            size = 2;
+            reload = 2.5f * 60f;
+            shootSound = Sounds.bolt;
+
+            float brange = 14.5f * 8f;
+            range = brange;
+            shootType = new AbyssBulletType(){{
+                splashDamage = 280f;
+                splashDamageRadius = 12f;
+                pierceArmor = true;
+                buildingDamageMultiplier = 0.3f;
+                lifetime = ModuleFx.abyssGrow.lifetime;
+                swirlEffects = 15;
+                maxSwirlDelay = lifetime - ModuleFx.abyssSwirl.lifetime;
+                length = brange;
+
+                beamEffect = ModuleFx.abyssBeam;
+                swirlEffect = ModuleFx.abyssSwirl;
+                growEffect = ModuleFx.abyssGrow;
+
+                swirlRad = 4f * 8f;
+                despawnEffect = ModuleFx.abyssBurst;
+                displayAmmoMultiplier = false;
+            }};
+
+            consumePower(8f);
+        }};
+
         firestorm = new BallisticModule("firestorm"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             ammo(
                 Items.carbide, ModuleBullets.firestormMissile
             );
+            limitRange(1f);
 
             reload = 5f * 60f;
             maxAmmo = 27;
