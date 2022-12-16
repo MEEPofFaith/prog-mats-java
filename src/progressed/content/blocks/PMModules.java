@@ -49,7 +49,7 @@ public class PMModules{
             range = brange;
             shootType = new AbyssBulletType(){{
                 splashDamage = 280f;
-                splashDamageRadius = 12f;
+                splashDamageRadius = 20f;
                 pierceArmor = true;
                 buildingDamageMultiplier = 0.3f;
                 lifetime = ModuleFx.abyssGrow.lifetime;

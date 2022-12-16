@@ -7,9 +7,10 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import progressed.content.effects.*;
+import progressed.entities.*;
 
 public class AbyssBulletType extends BulletType{
+
     public float length = 10f * 8f;
     public int swirlEffects = 10;
     public float maxSwirlDelay = 5f;
@@ -29,6 +30,7 @@ public class AbyssBulletType extends BulletType{
         collides = false;
         hittable = false;
         absorbable = false;
+        scaledSplashDamage = true;
     }
 
     @Override
@@ -47,12 +49,7 @@ public class AbyssBulletType extends BulletType{
     public void init(Bullet b){
         super.init(b);
 
-        Healthc target = Damage.linecast(b, b.x, b.y, b.rotation(), length);
-        if(target != null){
-            Tmp.v1.set(target);
-        }else{
-            Tmp.v1.trns(b.rotation(), length).add(b);
-        }
+        Tmp.v1.set(PMDamage.linecast(collidesGround, collidesAir, b.team, b.x, b.y, b.rotation(), length));
 
         if(beamEffect != Fx.none){
             beamEffect.at(b.x, b.y, b.angleTo(Tmp.v1), new Vec2(Tmp.v1));

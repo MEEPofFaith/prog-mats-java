@@ -335,43 +335,31 @@ public class PMDamage{
 
     /**
      * Casts forward in a line.
-     * @return the first encountered object.
+     * @return the collision point of the first encountered object.
      */
-    public static Healthc linecast(boolean ground, boolean air, Team team, float x, float y, float angle, float length){
-        tr.trns(angle, length);
+    public static Vec2 linecast(boolean ground, boolean air, Team team, float x, float y, float angle, float length){
+        tr.trnsExact(angle, length);
         
         tmpBuilding = null;
 
         if(ground){
-            World.raycastEachWorld(x, y, x + tr.x, y + tr.y, (cx, cy) -> {
+            seg1.set(x, y);
+            seg2.set(seg1).add(tr);
+            World.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
                 Building tile = world.build(cx, cy);
                 if(tile != null && tile.team != team){
                     tmpBuilding = tile;
+                    Tmp.v1.set(cx * tilesize, cy * tilesize);
                     return true;
                 }
                 return false;
             });
         }
 
-        rect.setPosition(x, y).setSize(tr.x, tr.y);
-        float x2 = tr.x + x, y2 = tr.y + y;
-
-        if(rect.width < 0){
-            rect.x += rect.width;
-            rect.width *= -1;
-        }
-
-        if(rect.height < 0){
-            rect.y += rect.height;
-            rect.height *= -1;
-        }
-
         float expand = 3f;
 
-        rect.y -= expand;
-        rect.x -= expand;
-        rect.width += expand * 2;
-        rect.height += expand * 2;
+        rect.setPosition(x, y).setSize(tr.x, tr.y).normalize().grow(expand * 2f);
+        float x2 = tr.x + x, y2 = tr.y + y;
 
         tmpUnit = null;
 
@@ -379,27 +367,24 @@ public class PMDamage{
             if((tmpUnit != null && e.dst2(x, y) > tmpUnit.dst2(x, y)) || !e.checkTarget(ground, air)) return;
 
             e.hitbox(hitrect);
-            Rect other = hitrect;
-            other.y -= expand;
-            other.x -= expand;
-            other.width += expand * 2;
-            other.height += expand * 2;
-
-            Vec2 vec = Geometry.raycastRect(x, y, x2, y2, other);
+            Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
 
             if(vec != null){
                 tmpUnit = e;
+                Tmp.v2.set(vec);
             }
         });
 
         if(tmpBuilding != null && tmpUnit != null){
-            if(Mathf.dst2(x, y, tmpBuilding.getX(), tmpBuilding.getY()) <= Mathf.dst2(x, y, tmpUnit.getX(), tmpUnit.getY())){
-                return tmpBuilding;
+            if(Mathf.dst2(x, y, Tmp.v1.x, Tmp.v1.y) <= Mathf.dst2(x, y, Tmp.v2.x, Tmp.v2.y)){
+                return Tmp.v1;
             }
         }else if(tmpBuilding != null){
-            return tmpBuilding;
+            return Tmp.v1;
+        }else if(tmpUnit != null){
+            return Tmp.v2;
         }
 
-        return tmpUnit;
+        return tr.add(x, y);
     }
 }
