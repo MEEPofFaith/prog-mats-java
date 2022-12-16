@@ -11,7 +11,6 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import progressed.content.*;
@@ -21,9 +20,7 @@ import progressed.entities.part.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.ModuleGroup.*;
-import progressed.world.blocks.liquid.*;
 import progressed.world.blocks.payloads.*;
-import progressed.world.blocks.power.*;
 import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
@@ -49,18 +46,9 @@ public class PMErekirBlocks{
 
     teneliumFuser,
     moduleAssembler, moduleFoundry,
-    sentryBuilder,
+    sentryBuilder;
 
     // endregion
-    // region liquid
-
-    reinforcedLiquidOverflowGate, reinforcedLiquidUnderflowGate,
-
-    // endregion
-    // region power
-
-    beamDiode;
-
 
     public static void load(){
         // region Turrets
@@ -284,39 +272,5 @@ public class PMErekirBlocks{
         }};
 
         // endregion
-        // region Liquids
-
-        reinforcedLiquidOverflowGate = new LiquidOverflowGate("reinforced-liquid-overflow-gate"){{
-            requirements(Category.liquid, with(Items.graphite, 6, Items.beryllium, 10));
-            buildCostMultiplier = 3f;
-            health = 260;
-            researchCostMultiplier = 1;
-            solid = false;
-            underBullets = true;
-        }};
-
-        reinforcedLiquidUnderflowGate = new LiquidOverflowGate("reinforced-liquid-underflow-gate"){{
-            requirements(Category.liquid, with(Items.graphite, 6, Items.beryllium, 10));
-            buildCostMultiplier = 3f;
-            health = 260;
-            researchCostMultiplier = 1;
-            invert = true;
-            solid = false;
-            underBullets = true;
-        }};
-
-        // endregion
-        // region Power
-
-        beamDiode = new BeamDiode("beam-diode"){{
-            requirements(Category.power, with(
-                Items.beryllium, 10,
-                Items.silicon, 10,
-                Items.surgeAlloy, 5
-            ));
-            health = 90;
-            range = 10;
-            fogRadius = 1;
-        }};
     }
 }
