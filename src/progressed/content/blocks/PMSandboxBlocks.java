@@ -103,7 +103,6 @@ public class PMSandboxBlocks{
         testTurret = new FreeTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             size = 2;
-            health = ProgMats.sandboxBlockHealth;
             range = 69 * tilesize;
             reload = 60f;
             shootType = new SnakeBulletType(3f, 50f, "aflare"){{
@@ -162,7 +161,6 @@ public class PMSandboxBlocks{
             configurable = false;
 
             size = 3;
-            health = ProgMats.sandboxBlockHealth;
             plans = Seq.with(
                 new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, with())
             );
@@ -179,7 +177,6 @@ public class PMSandboxBlocks{
             alwaysUnlocked = true;
 
             size = 2;
-            health = ProgMats.sandboxBlockHealth;
             range = 32f * tilesize;
             height = 0.125f;
             baseColor = Color.red;

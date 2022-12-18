@@ -1,8 +1,5 @@
 package progressed.content;
 
-import arc.*;
-import arc.assets.*;
-import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
 import arc.files.*;
 import mindustry.*;

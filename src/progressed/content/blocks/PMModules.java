@@ -9,7 +9,6 @@ import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.module.ModuleModule.*;
 

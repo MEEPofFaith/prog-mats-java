@@ -2,7 +2,6 @@ package progressed.entities.bullet;
 
 import arc.math.*;
 import arc.util.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.entities.bullet.SnakeBulletType.SnakeBulletData.*;

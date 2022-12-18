@@ -8,9 +8,6 @@ import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.world.blocks.defense.Wall.*;
-
-import static mindustry.Vars.*;
 
 public class TargetBulletType extends BasicBulletType{
     static final UnitDamageEvent bulletDamageEvent = new UnitDamageEvent();

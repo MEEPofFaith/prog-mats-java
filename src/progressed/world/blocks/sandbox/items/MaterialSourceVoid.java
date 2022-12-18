@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.graphics.*;
 
 public class MaterialSourceVoid extends Block{
@@ -23,7 +22,6 @@ public class MaterialSourceVoid extends Block{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         update = solid = true;
         hasItems = hasLiquids = acceptsItems = true;
         displayFlow = false;

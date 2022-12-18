@@ -223,7 +223,7 @@ public class PMTechTree{
     }
 
     private static void vanillaNode(String tree, UnlockableContent parent, Runnable children){
-        context = findNode(TechTree.roots.find(r -> r.name == tree), n -> n.content == parent);
+        context = findNode(TechTree.roots.find(r -> r.name.equals(tree)), n -> n.content == parent);
         children.run();
     }
 

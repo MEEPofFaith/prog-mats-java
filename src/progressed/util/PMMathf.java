@@ -2,7 +2,6 @@ package progressed.util;
 
 import arc.math.*;
 import arc.math.geom.*;
-import arc.util.*;
 
 public class PMMathf{
     public static final Interp arc = a -> Interp.sineOut.apply(Interp.slope.apply(a));

@@ -1,7 +1,6 @@
 package progressed.world.blocks.defence.turret;
 
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;

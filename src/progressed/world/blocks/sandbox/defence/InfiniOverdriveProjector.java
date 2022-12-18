@@ -14,7 +14,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
-import progressed.*;
 
 import static mindustry.Vars.*;
 
@@ -26,7 +25,6 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         configurable = saveConfig = true;
         hasPower = hasItems = hasBoost = false;
 

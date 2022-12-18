@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.graphics.*;
 
 public class EverythingLiquidSource extends Block{
@@ -22,7 +21,6 @@ public class EverythingLiquidSource extends Block{
         requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         update = true;
         solid = true;
         hasLiquids = true;

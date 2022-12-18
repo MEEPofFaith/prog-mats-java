@@ -6,8 +6,6 @@ import arc.util.*;
 import mindustry.entities.part.*;
 import mindustry.graphics.*;
 
-import static mindustry.Vars.tilesize;
-
 public class LaunchPart extends DrawPart{
     public PartProgress progress = PartProgress.warmup;
     public float layer = Layer.effect;

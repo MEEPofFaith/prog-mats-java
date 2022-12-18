@@ -15,7 +15,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.heat.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.*;
 
 public class InfiniHeatSource extends Block{
     public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
@@ -25,7 +24,6 @@ public class InfiniHeatSource extends Block{
         requirements(Category.crafting, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         configurable = saveConfig = true;
 
         update = true;

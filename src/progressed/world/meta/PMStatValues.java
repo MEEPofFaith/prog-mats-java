@@ -23,7 +23,6 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.physical.InjectorBulletType.*;
 import progressed.entities.bullet.unit.*;
