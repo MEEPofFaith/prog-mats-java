@@ -211,7 +211,7 @@ public class PMErekirBlocks{
 
             drawer = new DrawMulti(
                 new DrawRegion("-bottom"),
-                new DrawLiquidTile(Liquids.slag),
+                new DrawLiquidTile(Liquids.slag, 3f),
                 new DrawDefault(),
                 new DrawHeatInput(),
                 new DrawGlowRegion("-glow"){{
