@@ -82,7 +82,7 @@ public class PMBlocks{
     arbalest, artemis, paragon,
 
     //Nexus
-    ravage, onslaught,
+    solstice, starfall,
 
     // endregion
     // region production
@@ -950,7 +950,7 @@ public class PMBlocks{
             consumeLiquid(Liquids.water, 0.09f).boost();
         }};
 
-        ravage = new NexusTurret("ravage"){{
+        solstice = new NexusTurret("solstice"){{
             requirements(Category.turret, with());
             size = 6;
 
@@ -995,7 +995,7 @@ public class PMBlocks{
             consumePower(25f);
         }};
 
-        onslaught = new NexusTurret("onslaught"){{
+        starfall = new NexusTurret("starfall"){{
             requirements(Category.turret, with());
             size = 6;
 
