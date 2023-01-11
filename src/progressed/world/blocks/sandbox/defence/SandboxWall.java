@@ -6,7 +6,9 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
+import arc.scene.utils.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -14,6 +16,7 @@ import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
@@ -31,7 +34,7 @@ public class SandboxWall extends Wall{
     public float resetTime = 120f;
 
     protected String[] buttonLabels = {"@pm-sandbox-wall-mode.sparking", "@pm-sandbox-wall-mode.reflecting", "@pm-sandbox-wall-mode.insulating", "@pm-sandbox-wall-mode.DPS-testing"};
-    public TextureRegion colorRegion, sparkRegion, reflectRegion, insulatingRegion;
+    public TextureRegion colorRegion, sparkRegion, reflectRegion, insulatingRegion, armorRegion;
 
     public SandboxWall(String name){
         super(name);
@@ -44,12 +47,18 @@ public class SandboxWall extends Wall{
         schematicPriority = 10;
         configurable = saveConfig = update = noUpdateDisabled = true;
 
-        config(byte[].class, (SandboxWallBuild tile, byte[] b) -> tile.modes = b.clone());
+        config(int[].class, (SandboxWallBuild tile, int[] b) -> tile.modes = b.clone());
         config(Integer.class, (SandboxWallBuild tile, Integer i) -> {
             tile.toggle(i);
             if(i == 1 && tile.reflecting()){
                 tile.hit = 0f;
             }
+            if(i == 3){
+                tile.rebuild();
+            }
+        });
+        config(Float.class, (SandboxWallBuild tile, Float f) -> {
+            tile.modes[4] = Mathf.floorPositive(f);
         });
 
         configClear(SandboxWallBuild::resetModes);
@@ -64,6 +73,7 @@ public class SandboxWall extends Wall{
         sparkRegion = Core.atlas.find(name + "-sparking");
         reflectRegion = Core.atlas.find(name + "-reflecting");
         insulatingRegion = Core.atlas.find(name + "-insulating");
+        armorRegion = Core.atlas.find(name + "-armor");
     }
 
     @Override
@@ -82,23 +92,27 @@ public class SandboxWall extends Wall{
 
     @Override
     public void drawPlanConfig(BuildPlan req, Eachable<BuildPlan> list){
-        if(req.config instanceof byte[] b){
+        if(req.config instanceof int[] modes){
             //draw floating items to represent active mode
-            if(b[0] == 1){
+            if(modes[0] == 1){
                 Draw.rect(sparkRegion, req.drawx(), req.drawy());
             }
-            if(b[1] == 1){
+            if(modes[1] == 1){
                 Draw.rect(reflectRegion, req.drawx(), req.drawy());
             }
-            if(b[2] == 1){
+            if(modes[2] == 1){
                 Draw.rect(insulatingRegion, req.drawx(), req.drawy());
+            }
+            if(modes[3] == 1 && modes[4] > 0){
+                Draw.rect(armorRegion, req.drawx(), req.drawy());
             }
         }
     }
 
     public class SandboxWallBuild extends WallBuild{
         public float total, reset = resetTime, time, DPS;
-        byte[] modes = new byte[4];
+        public int[] modes = new int[5];
+        public Table gui = new Table();
 
         @Override
         public void updateTile(){
@@ -151,8 +165,13 @@ public class SandboxWall extends Wall{
                 Draw.rect(insulatingRegion, x, y);
             }
             if(DPSTesting()){
+                if(armored()){
+                    Draw.rect(armorRegion, x, y);
+                }
+
                 Draw.z(Layer.overlayUI);
-                String text = (time > 0 ? Strings.autoFixed(DPS, 2) : "---") + " DPS";
+                float dm = state.rules.blockHealth(team);
+                String text = (time > 0 ? (Mathf.zero(dm) ? "Infinity" : Strings.autoFixed(DPS, 2)) : "---") + " DPS";
                 PMDrawf.text(x, y + size * tilesize / 2f + 3f, team.color, text);
             }
         }
@@ -211,10 +230,22 @@ public class SandboxWall extends Wall{
 
         @Override
         public void damage(float damage){
+            rawDamage(Damage.applyArmor(damage, modes[4]));
+        }
+
+        @Override
+        public void damagePierce(float amount, boolean withEffect){
+            rawDamage(amount);
+        }
+
+        public void rawDamage(float damage){
+            float dm = state.rules.blockHealth(team);
             lastDamageTime = Time.time;
-            if(!DPSTesting()) return;
+
+            if(!DPSTesting() || Mathf.zero(dm)) return;
             reset = 0f;
-            total += damage;
+
+            total += damage / dm;
         }
 
         @Override
@@ -224,21 +255,36 @@ public class SandboxWall extends Wall{
 
         @Override
         public void buildConfiguration(Table table){
-            Table cont = new Table();
-            cont.defaults().size(40);
+            rebuild();
 
-            addButton(cont, Items.surgeAlloy.fullIcon, 0);
-            addButton(cont, Items.phaseFabric.fullIcon, 1);
-            addButton(cont, Items.plastanium.fullIcon, 2);
-            addButton(cont, Icon.modePvp.getRegion(), 3);
+            table.table(t -> {
+                t.add(gui);
+                t.background(Styles.black6);
+            }).top().expandY();
+        }
 
-            table.add(cont);
+        public void rebuild(){
+            gui.clear();
+
+            gui.table(b -> {
+                addButton(b, Items.surgeAlloy.fullIcon, 0);
+                addButton(b, Items.phaseFabric.fullIcon, 1);
+                addButton(b, Items.plastanium.fullIcon, 2);
+                addButton(b, Icon.modePvp.getRegion(), 3);
+            });
+
+            if(!DPSTesting()) return;
+            gui.row();
+            gui.table(a -> {
+                a.image(new TextureRegionDrawable(Icon.defense.getRegion()), Pal.accent).size(32f);
+                a.field(Integer.toString(modes[4]), TextFieldFilter.digitsOnly, text -> configure(Strings.parseFloat(text, 0)));
+            });
         }
 
         public void addButton(Table t, TextureRegion icon, int index){
             ImageButton button = t.button(
                 new TextureRegionDrawable(icon),
-                Styles.clearTogglei,
+                Styles.clearNoneTogglei,
                 32f, () -> {}
             ).tooltip(buttonLabels[index]).get();
             button.changed(() -> configure(index));
@@ -257,7 +303,7 @@ public class SandboxWall extends Wall{
         }
 
         @Override
-        public byte[] config(){
+        public Object config(){
             return modes;
         }
 
@@ -293,32 +339,45 @@ public class SandboxWall extends Wall{
             return modes[3] == 1;
         }
 
+        public boolean armored(){
+            return modes[4] > 0;
+        }
+
         public void resetModes(){
-            Arrays.fill(modes, (byte)0);
+            Arrays.fill(modes, 0);
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             
-            write.b(modes);
+            TypeIO.writeInts(write, modes);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision == 1){
-                read.b(modes, 0, 3);
+            if(revision >= 3){
+                modes = TypeIO.readInts(read);
+                return;
             }
-            if(revision >= 2){
-                read.b(modes);
+
+            byte[] oldModes = new byte[4];
+            if(revision == 1){
+                read.b(oldModes, 0, 3);
+            }
+            if(revision == 2){
+                read.b(oldModes);
+            }
+            for(int i = 0; i < 4; i++){
+                modes[i] = oldModes[i];
             }
         }
 
         @Override
         public byte version(){
-            return 2;
+            return 3;
         }
     }
 }
