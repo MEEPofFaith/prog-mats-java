@@ -8,12 +8,12 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
-import arc.scene.utils.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
@@ -229,23 +229,32 @@ public class SandboxWall extends Wall{
         }
 
         @Override
-        public void damage(float damage){
-            rawDamage(Damage.applyArmor(damage, modes[4]));
+        public boolean collide(Bullet other){
+            boolean wasDead = health <= 0;
+
+            float damage = other.damage() * other.type().buildingDamageMultiplier;
+            if(!other.type.pierceArmor){
+                damage = Damage.applyArmor(damage, modes[4]);
+            }
+
+            damage(other.team, damage);
+            Events.fire(bulletDamageEvent.set(self(), other));
+
+            if(health <= 0 && !wasDead){
+                Events.fire(new BuildingBulletDestroyEvent(self(), other));
+            }
+            return true;
         }
 
         @Override
-        public void damagePierce(float amount, boolean withEffect){
-            rawDamage(amount);
-        }
-
-        public void rawDamage(float damage){
+        public void damage(float damage){
             float dm = state.rules.blockHealth(team);
             lastDamageTime = Time.time;
 
-            if(!DPSTesting() || Mathf.zero(dm)) return;
+            if(!DPSTesting()) return;
             reset = 0f;
 
-            total += damage / dm;
+            total += Mathf.zero(dm) ? 1 : damage / dm;
         }
 
         @Override
