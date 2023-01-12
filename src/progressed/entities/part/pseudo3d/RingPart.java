@@ -1,4 +1,4 @@
-package progressed.entities.part;
+package progressed.entities.part.pseudo3d;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -8,7 +8,7 @@ import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
-public class PillarPart extends DrawPart{
+public class RingPart extends DrawPart{
     /** Progress function for determining height. */
     public PartProgress heightProg = PartProgress.constant(1f);
     /** Progress function for determining radius. */
@@ -20,15 +20,13 @@ public class PillarPart extends DrawPart{
     /** Whether this part is bloomed even if outside bloom layers. */
     public boolean alwaysBloom = false;
     public Blending blending = Blending.normal;
-    public Color baseColorLight = PMPal.nexusLaser, baseColorDark = PMPal.nexusLaserDark, topColorLight, topColorDark;
+    public Color inColor = PMPal.nexusLaser, outColor;
+    public float inRad = 16f, outRad = 24f;
 
     @Override
     public void draw(PartParams params){
-        if(topColorLight == null){
-            topColorLight = baseColorLight.cpy().a(0f);
-        }
-        if(topColorDark == null){
-            topColorDark = baseColorDark.cpy().a(0f);
+        if(outColor == null){
+            outColor = inColor.cpy().a(0f);
         }
 
         float rx = params.x, ry = params.y;
@@ -45,22 +43,20 @@ public class PillarPart extends DrawPart{
         float heightScl = heightProg.get(params);
 
         if(alwaysBloom){
-            PMDrawf.bloom(() -> drawCylinder(rx, ry, alpha, radScl, heightScl));
+            PMDrawf.bloom(() -> drawRing(rx, ry, alpha, radScl, heightScl));
         }else{
-            drawCylinder(rx, ry, alpha, radScl, heightScl);
+            drawRing(rx, ry, alpha, radScl, heightScl);
         }
 
         Draw.z(z);
     }
 
-    public void drawCylinder(float x, float y, float alpha, float radScl, float heightScl){
-        Tmp.c1.set(baseColorDark).mulA(alpha);
-        Tmp.c2.set(baseColorLight).mulA(alpha);
-        Tmp.c3.set(topColorLight).mulA(alpha);
-        Tmp.c4.set(topColorLight).mulA(alpha);
+    public void drawRing(float x, float y, float alpha, float radScl, float heightScl){
+        Tmp.c1.set(inColor).mulA(alpha);
+        Tmp.c2.set(outColor).mulA(alpha);
 
         Draw.blend(blending);
-        DrawPseudo3D.tube(x, y, rad * radScl, height * heightScl, Tmp.c1, Tmp.c2, Tmp.c3, Tmp.c4);
+        DrawPseudo3D.ring(x, y, rad, inRad * radScl, outRad * radScl, height * heightScl, Tmp.c1, Tmp.c2);
         Draw.blend();
     }
 

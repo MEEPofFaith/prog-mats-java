@@ -3,7 +3,6 @@ package progressed.content.blocks;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.math.Interp.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -23,7 +22,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.part.*;
+import progressed.entities.part.pseudo3d.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.util.*;
@@ -951,6 +950,9 @@ public class PMBlocks{
             consumeLiquid(Liquids.water, 0.09f).boost();
         }};
 
+        PartProgress nexusGrow = PartProgress.warmup.shorten(0.9f).curve(Interp.pow2In).mul(0.2f).add(PartProgress.warmup.delay(0.5f).clamp()).clamp();
+        float starLen = 24f;
+        float starWidth = 16f;
         solstice = new NexusTurret("solstice"){{
             requirements(Category.turret, with());
             size = 6;
@@ -963,32 +965,26 @@ public class PMBlocks{
             }});
 
             drawer = new DrawTurret(){{
-                Interp swing = new SwingOut(4f);
                 parts.add(new PillarPart(){{
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    topColorLight = baseColorLight;
+                    topColorDark = baseColorDark;
+                    radius = starWidth / 4f;
+                    alphaProg = PartProgress.constant(1f);
+                    radProg = heightProg = nexusGrow;
                     alwaysBloom = true;
                 }});
 
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
-                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
-                        alwaysBloom = true;
-                    }});
-                }
+                parts.add(new StarPart(){{
+                    sizeProg = heightProg = nexusGrow;;
+                    alwaysBloom = true;
+                    spikeLen = starLen;
+                    spikeWidth = starWidth;
+                }});
             }};
 
             linearWarmup = true;
             minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
+            shootWarmupSpeed = 1f / (4f * 60f);
             warmupMaintainTime = 30f;
 
             reload = 15f;
@@ -1010,38 +1006,28 @@ public class PMBlocks{
             }});
 
             drawer = new DrawTurret(){{
-                Interp swing = new SwingOut(4f);
                 parts.add(new PillarPart(){{
-                    baseColorLight = Pal.surge;
-                    topColorLight = null;
-                    baseColorDark = PMPal.surgeDark;
-                    topColorDark = null;
-                    radProg = PartProgress.warmup.curve(swing).inv().add(1f);
-                    alphaProg = PartProgress.warmup;
-                    heightProg = PartProgress.warmup.curve(Interp.pow2In).mul(0.5f).add(0.5f);
+                    baseColorLight = topColorLight = Pal.surge;
+                    baseColorDark = topColorDark = PMPal.surgeDark;
+                    radius = starWidth / 4f;
+                    alphaProg = PartProgress.constant(1f);
+                    radProg = heightProg = nexusGrow;
                     alwaysBloom = true;
                 }});
 
-                for(float i = 0; i < 3; i++){
-                    float scl = 2f - i * 0.5f;
-                    float del = i * 0.1f;
-                    float ii = i;
-                    parts.add(new RingPart(){{
-                        inColor = Pal.surge;
-                        outColor = null;
-                        height = (ii + 1) * 0.25f;
-                        inRad = 12f * scl;
-                        outRad = 20f * scl;
-                        radProg = PartProgress.warmup.compress(0.25f + del, 0.8f + del).curve(Interp.swingOut).inv().add(1f);
-                        alphaProg = PartProgress.warmup.compress(0.5f + del, 0.8f + del);
-                        alwaysBloom = true;
-                    }});
-                }
+                parts.add(new StarPart(){{
+                    lightColor = Pal.surge;
+                    darkColor = PMPal.surgeDark;
+                    sizeProg = heightProg = nexusGrow;
+                    alwaysBloom = true;
+                    spikeLen = starLen;
+                    spikeWidth = starWidth;
+                }});
             }};
 
             linearWarmup = true;
             minWarmup = 1f;
-            shootWarmupSpeed = 1f / (1.5f * 60f);
+            shootWarmupSpeed = 1f / (4f * 60f);
             warmupMaintainTime = 30f;
 
             reload = 140f;

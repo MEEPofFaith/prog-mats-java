@@ -10,6 +10,7 @@ import static arc.Core.*;
 import static arc.math.Mathf.*;
 
 public class DrawPseudo3D{
+    public static final float horiToVerti = 1f/48f;
     private static final Color tmpCol = new Color();
     
     /**

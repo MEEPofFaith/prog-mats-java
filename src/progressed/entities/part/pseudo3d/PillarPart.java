@@ -1,32 +1,33 @@
-package progressed.entities.part;
+package progressed.entities.part.pseudo3d;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
-public class RingPart extends DrawPart{
+public class PillarPart extends DrawPart{
     /** Progress function for determining height. */
     public PartProgress heightProg = PartProgress.constant(1f);
     /** Progress function for determining radius. */
     public PartProgress radProg = PartProgress.warmup;
     /** Progress function for determining alpha. */
     public PartProgress alphaProg = PartProgress.warmup;
-    public float rad = 8f, height = 1f;
+    public float radius = 8f, height = 1f;
     public float layer = Layer.flyingUnit + 0.5f;
     /** Whether this part is bloomed even if outside bloom layers. */
     public boolean alwaysBloom = false;
     public Blending blending = Blending.normal;
-    public Color inColor = PMPal.nexusLaser, outColor;
-    public float inRad = 16f, outRad = 24f;
+    public Color baseColorLight = PMPal.nexusLaser, baseColorDark = PMPal.nexusLaserDark, topColorLight, topColorDark;
 
     @Override
     public void draw(PartParams params){
-        if(outColor == null){
-            outColor = inColor.cpy().a(0f);
+        if(topColorLight == null){
+            topColorLight = baseColorLight.cpy().a(0f);
+        }
+        if(topColorDark == null){
+            topColorDark = baseColorDark.cpy().a(0f);
         }
 
         float rx = params.x, ry = params.y;
@@ -43,20 +44,22 @@ public class RingPart extends DrawPart{
         float heightScl = heightProg.get(params);
 
         if(alwaysBloom){
-            PMDrawf.bloom(() -> drawRing(rx, ry, alpha, radScl, heightScl));
+            PMDrawf.bloom(() -> drawCylinder(rx, ry, alpha, radScl, heightScl));
         }else{
-            drawRing(rx, ry, alpha, radScl, heightScl);
+            drawCylinder(rx, ry, alpha, radScl, heightScl);
         }
 
         Draw.z(z);
     }
 
-    public void drawRing(float x, float y, float alpha, float radScl, float heightScl){
-        Tmp.c1.set(inColor).mulA(alpha);
-        Tmp.c2.set(outColor).mulA(alpha);
+    public void drawCylinder(float x, float y, float alpha, float radScl, float heightScl){
+        Tmp.c1.set(baseColorDark).mulA(alpha);
+        Tmp.c2.set(baseColorLight).mulA(alpha);
+        Tmp.c3.set(topColorDark).mulA(alpha);
+        Tmp.c4.set(topColorLight).mulA(alpha);
 
         Draw.blend(blending);
-        DrawPseudo3D.ring(x, y, rad, inRad * radScl, outRad * radScl, height * heightScl, Tmp.c1, Tmp.c2);
+        DrawPseudo3D.tube(x, y, radius * radScl, height * heightScl, Tmp.c1, Tmp.c2, Tmp.c3, Tmp.c4);
         Draw.blend();
     }
 
