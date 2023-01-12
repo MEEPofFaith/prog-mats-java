@@ -144,6 +144,7 @@ public class PayloadBullets{
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
+            height = 24f;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
@@ -152,7 +153,7 @@ public class PayloadBullets{
         artemisRecursive = new BallisticMissileBulletType("prog-mats-recursive-missile"){{
             status = StatusEffects.none;
 
-            height *= 1.5;
+            height = 36f;
             zoneRadius = 5f * 8f;
             trailLength = 25;
             trailWidth = 1f;
@@ -164,7 +165,7 @@ public class PayloadBullets{
             fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
 
-                height *= 1.5;
+                height = 36f;
                 zoneRadius = 3.5f * 8f;
                 trailLength = 20;
                 trailWidth = 1f;
@@ -178,7 +179,7 @@ public class PayloadBullets{
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
 
-                    height *= 1.5;
+                    height = 36f;
                     zoneRadius = 2f * 8f;
                     trailLength = 15;
                     trailWidth = 1f;
@@ -201,7 +202,7 @@ public class PayloadBullets{
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            height *= 4;
+            height = 100f;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
@@ -213,7 +214,7 @@ public class PayloadBullets{
 
             lifetime = 5f * 60f;
 
-            height *= 6;
+            height = 160f;
             zoneRadius = 12f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
@@ -237,7 +238,7 @@ public class PayloadBullets{
                 despawnEffect = MissileFx.missileExplosion;
                 blockEffect = MissileFx.missileBlocked;
 
-                height *= 6;
+                height = 160f;
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;

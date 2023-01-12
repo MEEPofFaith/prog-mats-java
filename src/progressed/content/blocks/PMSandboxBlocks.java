@@ -178,7 +178,7 @@ public class PMSandboxBlocks{
 
             size = 2;
             range = 32f * tilesize;
-            height = 0.125f;
+            height = 16f;
             baseColor = Color.red;
             reload = 5f;
             affectOwnTeam = false;

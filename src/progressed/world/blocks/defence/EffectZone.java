@@ -32,7 +32,7 @@ public class EffectZone extends Block{
     public Color
         baseColor = Pal.lancerLaser,
         topColor;
-    public float height = 0.25f;
+    public float height = 1f;
     public float zoneLayer = -1f, ringLayer = Layer.flyingUnit + 0.5f;
 
     public Cons<EffectZoneBuild> zoneEffect = tile -> {};

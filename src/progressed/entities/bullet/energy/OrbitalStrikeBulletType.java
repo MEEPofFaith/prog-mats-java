@@ -42,8 +42,6 @@ public class OrbitalStrikeBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Draw.blend(Blending.additive);
-        DrawPseudo3D.cylinder(b.x, b.y, radius * Mathf.curve(b.fin(), 0f, growTime), height, bottomColor, topColor);
-        Draw.blend();
+        //TODO
     }
 }

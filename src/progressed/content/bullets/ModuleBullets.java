@@ -20,7 +20,7 @@ public class ModuleBullets{
             hitShake = 3f;
             ammoMultiplier = 12;
 
-            height *= 0.75f;
+            height = 32f;
             trailLength = 15;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;

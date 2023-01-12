@@ -957,7 +957,7 @@ public class PMBlocks{
             .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusSizeGrowStop));
         float starLen = 24f;
         float starWidth = 16f;
-        float starHeight = 1f;
+        float starHeight = 50f;
         float beamLayer = Layer.weather + 0.5f;
         solstice = new NexusTurret("solstice"){{
             requirements(Category.turret, with());
@@ -1254,7 +1254,7 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
                 baseColor = Pal.heal;
                 reload = 40f;
 
@@ -1290,7 +1290,7 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 22f * tile.heat));
 
@@ -1316,7 +1316,7 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
                 baseColor = Pal.redderDust;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 22f * tile.heat));

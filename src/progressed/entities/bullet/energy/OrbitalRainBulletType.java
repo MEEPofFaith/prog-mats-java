@@ -45,26 +45,7 @@ public class OrbitalRainBulletType extends OrbitalStrikeBulletType{
 
     @Override
     public void draw(Bullet b){
-        Draw.blend(Blending.additive);
-        if(b.data instanceof float[] pos){
-            float x = Mathf.lerp(b.x, pos[0], tiltScl),
-             y = Mathf.lerp(b.y, pos[1], tiltScl);
-
-            DrawPseudo3D.slantCylinder(b.x, b.y, x, y, radius * Mathf.curve(b.fin(), 0f, growTime), height, bottomColor, topColor);
-        }else{
-            float scl = Mathf.curve(b.time, 0f, rainGrowTime) * (1f - Mathf.curve(b.time, b.lifetime - rainShrinkTime, b.lifetime));
-            float rad = (rainRadius + radius) * scl;
-            Lines.stroke(4f * scl, rainAreaColor);
-            Lines.circle(b.x, b.y, rad);
-            float baseRot = Mathf.randomSeed(b.id, 360f) + pointRotateSpeed * Time.time,
-                w = pointWidth * scl, iL = pointInLength * scl, oL = pointOutLength * scl;
-            for(int i = 0; i < points; i++){
-                float rot = baseRot + i * (360f / points);
-                Drawf.tri(b.x + Angles.trnsx(rot, rad), b.y + Angles.trnsy(rot, rad), w, iL, rot + 180f);
-                Drawf.tri(b.x + Angles.trnsx(rot, rad), b.y + Angles.trnsy(rot, rad), w, oL, rot);
-            }
-        }
-        Draw.blend();
+        //TODO
     }
 
     @Override

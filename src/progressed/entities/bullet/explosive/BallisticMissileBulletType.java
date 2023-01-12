@@ -23,7 +23,7 @@ import static progressed.graphics.DrawPseudo3D.*;
 
 public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
-    public float height = 0.5f;
+    public float height = 1f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f, growScl = 0.5f;
     public float shadowOffset = -1f;
@@ -56,7 +56,7 @@ public class BallisticMissileBulletType extends BulletType{
 
     @Override
     public void init(){
-        if(shadowOffset < 0) shadowOffset = height * 48f;
+        if(shadowOffset < 0) shadowOffset = height * 2f;
         if(shrinkRad < 0) shrinkRad = zoneRadius / 6f;
         if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;

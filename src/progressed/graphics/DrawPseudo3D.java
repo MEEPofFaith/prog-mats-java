@@ -10,6 +10,7 @@ import static arc.Core.*;
 import static arc.math.Mathf.*;
 
 public class DrawPseudo3D{
+    /** Translates horizontal world units to camera offset height. Somewhat arbitrary. */
     public static final float horiToVerti = 1f/48f;
     private static final Color tmpCol = new Color();
     
@@ -153,33 +154,38 @@ public class DrawPseudo3D{
     }
 
     public static float xHeight(float x, float height){
-        if(height == 0) return x;
+        if(height <= 0) return x;
         return x + xOffset(x, height);
     }
 
     public static float yHeight(float y, float height){
-        if(height == 0) return y;
+        if(height <= 0) return y;
         return y + yOffset(y, height);
     }
 
     public static float xOffset(float x, float height){
-        return (x - camera.position.x) * height * Vars.renderer.getDisplayScale();
+        return (x - camera.position.x) * height(height) * Vars.renderer.getDisplayScale();
     }
 
     public static float yOffset(float y, float height){
-        return (y - camera.position.y) * height * Vars.renderer.getDisplayScale();
+        return (y - camera.position.y) * height(height) * Vars.renderer.getDisplayScale();
     }
 
     public static float hScale(float height){
-        return 1f + hMul(height);
+        return 1f + hMul(height(height));
     }
 
     public static float hMul(float height){
-        return height * Vars.renderer.getDisplayScale();
+        return height(height) * Vars.renderer.getDisplayScale();
+    }
+
+    public static float height(float height){
+        return height * horiToVerti;
     }
 
     public static float layerOffset(float x, float y){
-        return -Mathf.dst(x, y, camera.position.x, camera.position.y) / 1000f;
+        float max = Math.max(camera.width, camera.height);
+        return -Mathf.dst(x, y, camera.position.x, camera.position.y) / max / 1000f;
     }
 
     /**
