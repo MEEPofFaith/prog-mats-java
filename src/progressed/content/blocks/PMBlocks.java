@@ -950,9 +950,15 @@ public class PMBlocks{
             consumeLiquid(Liquids.water, 0.09f).boost();
         }};
 
-        PartProgress nexusGrow = PartProgress.warmup.shorten(0.9f).curve(Interp.pow2In).mul(0.2f).add(PartProgress.warmup.delay(0.5f).clamp()).clamp();
+        float nexusHeightGrowStop = 0.15f, nexusSizeGrowStop = 0.3f;
+        PartProgress nexusBeamHeight = PartProgress.warmup.shorten(0.7f).clamp().curve(Interp.smooth).mul(nexusHeightGrowStop)
+            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusHeightGrowStop));
+        PartProgress nexusBeamSize = PartProgress.warmup.shorten(0.5f).clamp().curve(Interp.smooth).mul(nexusSizeGrowStop)
+            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusSizeGrowStop));
         float starLen = 24f;
         float starWidth = 16f;
+        float starHeight = 1f;
+        float beamLayer = Layer.weather + 0.5f;
         solstice = new NexusTurret("solstice"){{
             requirements(Category.turret, with());
             size = 6;
@@ -970,15 +976,29 @@ public class PMBlocks{
                     topColorDark = baseColorDark;
                     radius = starWidth / 4f;
                     alphaProg = PartProgress.constant(1f);
-                    radProg = heightProg = nexusGrow;
+                    heightProg = nexusBeamHeight;
+                    radProg = nexusBeamSize;
                     alwaysBloom = true;
+                    layer = beamLayer;
+                    height = starHeight;
+                }});
+
+                parts.add(new RingPart(){{
+                    height = starHeight * nexusHeightGrowStop;
+                    inRad = starLen * 2f;
+                    outRad = inRad * 2.5f;
+                    radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
+                    alphaProg = radProg.inv();
                 }});
 
                 parts.add(new StarPart(){{
-                    sizeProg = heightProg = nexusGrow;;
-                    alwaysBloom = true;
+                    heightProg = nexusBeamHeight;
+                    sizeProg = nexusBeamSize;
                     spikeLen = starLen;
                     spikeWidth = starWidth;
+                    alwaysBloom = true;
+                    layer = beamLayer;
+                    height = starHeight;
                 }});
             }};
 
@@ -1011,17 +1031,32 @@ public class PMBlocks{
                     baseColorDark = topColorDark = PMPal.surgeDark;
                     radius = starWidth / 4f;
                     alphaProg = PartProgress.constant(1f);
-                    radProg = heightProg = nexusGrow;
+                    heightProg = nexusBeamHeight;
+                    radProg = nexusBeamSize;
                     alwaysBloom = true;
+                    layer = beamLayer;
+                    height = starHeight;
+                }});
+
+                parts.add(new RingPart(){{
+                    inColor = Pal.surge;
+                    height = starHeight * nexusHeightGrowStop;
+                    inRad = starLen * 2f;
+                    outRad = inRad * 2.5f;
+                    radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
+                    alphaProg = radProg.inv();
                 }});
 
                 parts.add(new StarPart(){{
                     lightColor = Pal.surge;
                     darkColor = PMPal.surgeDark;
-                    sizeProg = heightProg = nexusGrow;
-                    alwaysBloom = true;
+                    heightProg = nexusBeamHeight;
+                    sizeProg = nexusBeamSize;
                     spikeLen = starLen;
                     spikeWidth = starWidth;
+                    alwaysBloom = true;
+                    layer = beamLayer;
+                    height = starHeight;
                 }});
             }};
 

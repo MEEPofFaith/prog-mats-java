@@ -42,6 +42,7 @@ public class PillarPart extends DrawPart{
         float alpha = alphaProg.get(params);
         float radScl = radProg.get(params);
         float heightScl = heightProg.get(params);
+        if(radScl <= 0.001f) return;
 
         if(alwaysBloom){
             PMDrawf.bloom(() -> drawCylinder(rx, ry, alpha, radScl, heightScl));

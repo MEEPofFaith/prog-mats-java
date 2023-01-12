@@ -41,6 +41,7 @@ public class RingPart extends DrawPart{
         float alpha = alphaProg.get(params);
         float radScl = radProg.get(params);
         float heightScl = heightProg.get(params);
+        if(radScl <= 0.001f) return;
 
         if(alwaysBloom){
             PMDrawf.bloom(() -> drawRing(rx, ry, alpha, radScl, heightScl));

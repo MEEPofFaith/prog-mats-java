@@ -33,6 +33,7 @@ public class StarPart extends DrawPart{
         float rx = params.x, ry = params.y;
         float heightScl = heightProg.get(params);
         float sizeScl = sizeProg.get(params);
+        if(sizeScl <= 0.001f) return;
 
         float z = Draw.z();
         if(layer > 0){
@@ -68,22 +69,20 @@ public class StarPart extends DrawPart{
             th = h + spikeWidth/2f * horiToVerti * sizeScl,
             ph = h + spikeLen * horiToVerti * sizeScl;
 
-        //TODO properly calculate how far away the tops of these spikes should go
+        Draw.color(getColor(side));
+
         Point2 corner = d8edge(side);
         float x1 = xHeight(x + spikeWidth/4f * sizeScl * corner.x, h),
-            y1 = yHeight(y + spikeWidth/4f * sizeScl * corner.y, h),
-            x2 = xHeight(x + spikeLen * sizeScl * d4x(side), h),
-            y2 = yHeight(y + spikeLen * sizeScl * d4y(side), h),
-            x3 = xHeight(x /*+ spikeWidth/4f * sizeScl * d4x(side)*/, th),
-            y3 = yHeight(y /*+ spikeWidth/4f * sizeScl * d4y(side)*/, th),
-            x4 = xHeight(x + spikeLen * sizeScl * d4x(side + 1), h),
-            y4 = yHeight(y + spikeLen * sizeScl * d4y(side + 1), h),
-            x5 = xHeight(x /*+ spikeWidth/4f * sizeScl * d4x(side + 1)*/, th),
-            y5 = yHeight(y /*+ spikeWidth/4f * sizeScl * d4y(side + 1)*/, th);
+            y1 = yHeight(y + spikeWidth/4f * sizeScl * corner.y, h);
 
-        Draw.color(getColor(side));
-        Fill.tri(x1, y1, x2, y2, x3, y3);
-        Fill.tri(x1, y1, x4, y4, x5, y5);
+        //TODO properly calculate how far away the tops of these spikes should go
+        for(int next : Mathf.zeroOne){
+            float x2 = xHeight(x + spikeLen * sizeScl * d4x(side + next), h),
+                y2 = yHeight(y + spikeLen * sizeScl * d4y(side + next), h),
+                x3 = xHeight(x /*+ spikeWidth/4f * sizeScl * d4x(side + next)*/, th),
+                y3 = yHeight(y /*+ spikeWidth/4f * sizeScl * d4y(side + next)*/, th);
+            Fill.tri(x1, y1, x2, y2, x3, y3);
+        }
 
         float px1 = xHeight(x, ph),
             py1 = yHeight(y, ph),
