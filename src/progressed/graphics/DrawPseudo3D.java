@@ -172,7 +172,7 @@ public class DrawPseudo3D{
     }
 
     public static float hScale(float height){
-        return 1f + hMul(height(height));
+        return 1f + hMul(height);
     }
 
     public static float hMul(float height){

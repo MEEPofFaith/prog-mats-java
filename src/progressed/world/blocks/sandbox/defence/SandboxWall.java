@@ -178,7 +178,13 @@ public class SandboxWall extends Wall{
 
         @Override
         public boolean collision(Bullet bullet){
-            damage(bullet.team, bullet.damage() * bullet.type().buildingDamageMultiplier);
+            float damage = bullet.damage() * bullet.type().buildingDamageMultiplier;
+            if(!bullet.type.pierceArmor){
+                damage = Damage.applyArmor(damage, modes[4]);
+            }
+
+            damage(bullet.team, damage);
+            Events.fire(bulletDamageEvent.set(self(), bullet));
 
             hit = 1f;
 
@@ -226,24 +232,6 @@ public class SandboxWall extends Wall{
         @Override
         public boolean isInsulated(){
             return insulating();
-        }
-
-        @Override
-        public boolean collide(Bullet other){
-            boolean wasDead = health <= 0;
-
-            float damage = other.damage() * other.type().buildingDamageMultiplier;
-            if(!other.type.pierceArmor){
-                damage = Damage.applyArmor(damage, modes[4]);
-            }
-
-            damage(other.team, damage);
-            Events.fire(bulletDamageEvent.set(self(), other));
-
-            if(health <= 0 && !wasDead){
-                Events.fire(new BuildingBulletDestroyEvent(self(), other));
-            }
-            return true;
         }
 
         @Override
