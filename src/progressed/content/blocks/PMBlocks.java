@@ -987,6 +987,8 @@ public class PMBlocks{
                     height = starHeight * nexusHeightGrowStop;
                     inRad = starLen * 2f;
                     outRad = inRad * 2.5f;
+                    alwaysBloom = true;
+                    layer = beamLayer;
                     radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
                     alphaProg = radProg.inv();
                 }});
@@ -1043,6 +1045,8 @@ public class PMBlocks{
                     height = starHeight * nexusHeightGrowStop;
                     inRad = starLen * 2f;
                     outRad = inRad * 2.5f;
+                    alwaysBloom = true;
+                    layer = beamLayer;
                     radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
                     alphaProg = radProg.inv();
                 }});
