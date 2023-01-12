@@ -25,7 +25,7 @@ public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 1f;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
-    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f, growScl = 0.5f;
+    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float shadowOffset = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
@@ -195,7 +195,7 @@ public class BallisticMissileBulletType extends BulletType{
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
         Draw.z(layer + DrawPseudo3D.layerOffset(x, y)); //Unsure that the trail is drawn underneath.
         drawTrail(b);
-        Draw.scl(1f + hMul(hScl) * growScl);
+        Draw.scl(1f + hMul(hScl));
         Draw.z(layer + hScl / 100f);
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
