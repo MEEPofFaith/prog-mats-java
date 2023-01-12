@@ -31,10 +31,14 @@ public class PillarPart extends DrawPart{
             topColorDark = baseColorDark.cpy().a(0f);
         }
 
-        float z = Draw.z();
-        if(layer > 0) Draw.z(layer);
-
         float rx = params.x, ry = params.y;
+
+        float z = Draw.z();
+        if(layer > 0){
+            Draw.z(layer + DrawPseudo3D.layerOffset(rx, ry));
+        }else{
+            Draw.z(z + DrawPseudo3D.layerOffset(rx, ry));
+        }
 
         float alpha = alphaProg.get(params);
         float radScl = radProg.get(params);

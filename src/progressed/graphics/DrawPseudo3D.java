@@ -177,6 +177,10 @@ public class DrawPseudo3D{
         return height * Vars.renderer.getDisplayScale();
     }
 
+    public static float layerOffset(float x, float y){
+        return -Mathf.dst(x, y, camera.position.x, camera.position.y) / 1000f;
+    }
+
     /**
      * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
      * @author Xelo

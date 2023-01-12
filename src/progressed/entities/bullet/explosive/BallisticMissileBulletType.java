@@ -193,7 +193,7 @@ public class BallisticMissileBulletType extends BulletType{
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl);
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
-        Draw.z(layer); //Unsure that the trail is drawn underneath.
+        Draw.z(layer + DrawPseudo3D.layerOffset(x, y)); //Unsure that the trail is drawn underneath.
         drawTrail(b);
         Draw.scl(1f + hMul(hScl) * growScl);
         Draw.z(layer + hScl / 100f);
