@@ -10,6 +10,8 @@ import static arc.Core.*;
 import static arc.math.Mathf.*;
 
 public class DrawPseudo3D{
+    private static final Color tmpCol = new Color();
+    
     /**
      * @author sunny, modified by MEEP
      * */
@@ -32,13 +34,10 @@ public class DrawPseudo3D{
         wall(x1, y1, x2, y2, 0f, height, baseColor, topColor);
     }
 
-    public static void tube(float x, float y, float rad, float height, Color baseColor, Color topColor){
+    public static void tube(float x, float y, float rad, float height, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
         float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * hScale(height));
-
-        float c1f = baseColor.toFloatBits();
-        float c2f = topColor.toFloatBits();
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -52,9 +51,20 @@ public class DrawPseudo3D{
                 y3 = yHeight(y1, height),
                 x4 = xHeight(x2, height),
                 y4 = yHeight(y2, height);
+            
+            float cLerp1 = 1f - Angles.angleDist(a, 45f) / 180f,
+                cLerp2 = 1f - Angles.angleDist(a + space, 45f) / 180f;
+            float bc1f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp1).toFloatBits(),
+                tc1f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp1).toFloatBits(),
+                bc2f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp2).toFloatBits(),
+                tc2f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp2).toFloatBits();
 
-            Fill.quad(x1, y1, c1f, x2, y2, c1f, x4, y4, c2f, x3, y3, c2f);
+            Fill.quad(x1, y1, bc1f, x2, y2, bc2f, x4, y4, tc2f, x3, y3, tc1f);
         }
+    }
+
+    public static void tube(float x, float y, float rad, float height, Color baseColor, Color topColor){
+        tube(x, y, rad, height, baseColor, baseColor, topColor, topColor);
     }
 
     public static void cylinder(float x, float y, float rad, float height, Color baseColor, Color topColor){

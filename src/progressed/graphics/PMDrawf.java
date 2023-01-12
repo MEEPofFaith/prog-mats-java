@@ -384,4 +384,18 @@ public class PMDrawf{
 
         return width;
     }
+
+    public static void bloom(Runnable draw){
+        Bloom bloom = renderer.bloom;
+        float z = Draw.z();
+        if(bloom != null && (z < Layer.bullet - 0.02f || z > Layer.effect + 0.02f)){
+            Draw.draw(z, () -> {
+                bloom.capture();
+                draw.run();
+                bloom.render();
+            });
+        }else{
+            draw.run();
+        }
+    }
 }
