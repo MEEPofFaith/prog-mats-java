@@ -964,17 +964,19 @@ public class PMBlocks{
             size = 6;
 
             float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalStrikeBulletType(){{
+            OrbitalStrikeBulletType bullet = new OrbitalStrikeBulletType(){{ //TODO hit effect
                 speed = brange;
                 splashDamage = 2000f;
                 splashDamageRadius = 32f;
-            }});
+                height = starHeight;
+                alwaysBloom = true;
+            }};
+
+            ammo(Items.phaseFabric, bullet);
 
             drawer = new DrawMulti(
                 new DrawTurret(){{
                     parts.add(new PillarPart(){{
-                        topColorLight = baseColorLight;
-                        topColorDark = baseColorDark;
                         radius = starWidth / 4f;
                         alphaProg = PartProgress.constant(1f);
                         heightProg = nexusBeamHeight;
@@ -1019,9 +1021,9 @@ public class PMBlocks{
             linearWarmup = true;
             minWarmup = 1f;
             shootWarmupSpeed = 1f / (4f * 60f);
-            warmupMaintainTime = 30f;
+            warmupMaintainTime = bullet.lifetime + 30f;
 
-            reload = 15f;
+            reload = 20f;
 
             consumePower(25f);
         }};
@@ -1031,13 +1033,21 @@ public class PMBlocks{
             size = 6;
 
             float brange = range = 100f * 8f;
-            ammo(Items.phaseFabric, new OrbitalRainBulletType(){{
+            float shootRadius = 10f * 8f;
+            OrbitalStrikeBulletType bullet = new OrbitalStrikeBulletType(){{ //TODO hit effect
                 speed = brange;
-                bottomColor = Pal.surge;
-                topColor = null;
                 splashDamage = 2000f;
                 splashDamageRadius = 32f;
-            }});
+                strikeInaccuracy = shootRadius;
+                height = starHeight;
+                baseColorLight = Pal.surge;
+                baseColorDark = PMPal.surgeDark;
+                alwaysBloom = true;
+            }};
+
+            ammo(Items.phaseFabric, bullet);
+            shoot.shots = 10;
+            shoot.shotDelay = 5f;
 
             drawer = new DrawMulti(
                 new DrawTurret(){{
@@ -1079,7 +1089,7 @@ public class PMBlocks{
                 new DrawNexusAim(){{
                     color = Pal.surge;
                     beams = 6;
-                    radius = 10f * 8f;
+                    radius = shootRadius + bullet.radius;
                     pointWidth = 8f;
                     pointInLen = 3f * 8f;
                     pointOutLen = 5f * 8f;
@@ -1095,9 +1105,9 @@ public class PMBlocks{
             linearWarmup = true;
             minWarmup = 1f;
             shootWarmupSpeed = 1f / (4f * 60f);
-            warmupMaintainTime = 30f;
+            warmupMaintainTime = shoot.shots * shoot.shotDelay + bullet.lifetime + 30f;
 
-            reload = 140f;
+            reload = 90f;
 
             consumePower(25f);
         }};

@@ -23,12 +23,8 @@ public class PillarPart extends DrawPart{
 
     @Override
     public void draw(PartParams params){
-        if(topColorLight == null){
-            topColorLight = baseColorLight.cpy().a(0f);
-        }
-        if(topColorDark == null){
-            topColorDark = baseColorDark.cpy().a(0f);
-        }
+        if(topColorLight == null) topColorLight = baseColorLight;
+        if(topColorDark == null) topColorDark = baseColorDark;
 
         float rx = params.x, ry = params.y;
 

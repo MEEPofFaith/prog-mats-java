@@ -43,6 +43,8 @@ public class DrawNexusAim extends DrawBlock{
         }else{
             drawAim(b);
         }
+
+        Draw.z(z);
     }
 
     public void drawAim(NexusTurretBuild b){

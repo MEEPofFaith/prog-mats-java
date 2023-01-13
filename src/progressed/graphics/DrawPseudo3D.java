@@ -119,18 +119,11 @@ public class DrawPseudo3D{
         }
     }
 
-    public static void slantCylinder(float x1, float y1, float x2, float y2, float rad, float height, Color baseColor, Color topColor){
+    public static void slantTube(float x1, float y1, float x2, float y2, float rad, float height, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
-
-        Draw.color(baseColor);
-        Fill.poly(x1, y1, vert, rad);
-        Draw.color();
 
         float space = 360f / vert;
         float angle = tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * hScale(height));
-
-        float c1f = baseColor.toFloatBits();
-        float c2f = topColor.toFloatBits();
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -145,12 +138,15 @@ public class DrawPseudo3D{
                 dx4 = xHeight(x2 + rad * cos2, height),
                 dy4 = yHeight(y2 + rad * sin2, height);
 
-            Fill.quad(dx1, dy1, c1f, dx2, dy2, c1f, dx4, dy4, c2f, dx3, dy3, c2f);
-        }
+            float cLerp1 = Angles.angleDist(a, 45f) / 180f,
+                cLerp2 = Angles.angleDist(a + space, 45f) / 180f;
+            float bc1f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp1).toFloatBits(),
+                tc1f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp1).toFloatBits(),
+                bc2f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp2).toFloatBits(),
+                tc2f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp2).toFloatBits();
 
-        Draw.color(topColor);
-        Fill.poly(xHeight(x2, height), yHeight(y2, height), vert, rad * (1 + height));
-        Draw.color();
+            Fill.quad(dx1, dy1, bc1f, dx2, dy2, bc2f, dx4, dy4, tc2f, dx3, dy3, tc1f);
+        }
     }
 
     public static float xHeight(float x, float height){
