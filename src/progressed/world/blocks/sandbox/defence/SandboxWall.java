@@ -100,7 +100,7 @@ public class SandboxWall extends Block{
             if(modes[2] == 1){
                 Draw.rect(insulatingRegion, req.drawx(), req.drawy());
             }
-            if(modes[3] == 1 && modes[4] > 0){
+            if(modes[3] == 1 && Float.intBitsToFloat(modes[8]) > 0){
                 Draw.rect(armorRegion, req.drawx(), req.drawy());
             }
         }
@@ -500,13 +500,33 @@ public class SandboxWall extends Block{
         }
 
         public void write(Writes write){
-            TypeIO.writeInts(write, toIntArray());
+            write.bool(lightning);
+            write.bool(deflecting);
+            write.bool(insulated);
+            write.bool(dpsTesting);
+
+            write.f(lightningChance);
+            write.f(lightningDamage);
+            write.i(lightningLength);
+
+            write.f(deflectChance);
+
+            write.f(armor);
         }
 
         public void read(Reads read){
-            int[] data = TypeIO.readInts(read);
+            lightning = read.bool();
+            deflecting = read.bool();
+            insulated = read.bool();
+            dpsTesting = read.bool();
 
-            readIntArray(data);
+            lightningChance = read.f();
+            lightningDamage = read.f();
+            lightningLength = read.i();
+
+            deflectChance = read.f();
+
+            armor = read.f();
         }
     }
 }
