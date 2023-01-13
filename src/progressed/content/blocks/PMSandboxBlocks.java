@@ -146,8 +146,6 @@ public class PMSandboxBlocks{
 
         sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
             size = 2;
-            iconSize = 6f;
-            rotateRadius = 5f;
         }};
 
         // Heat

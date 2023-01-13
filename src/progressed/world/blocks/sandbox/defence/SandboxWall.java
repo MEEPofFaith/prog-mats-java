@@ -1,64 +1,61 @@
 package progressed.world.blocks.sandbox.defence;
 
 import arc.*;
+import arc.audio.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.style.*;
+import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.defense.*;
+import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.ui.*;
 
-import java.util.*;
-
 import static mindustry.Vars.*;
 
-public class SandboxWall extends Wall{
-    public final int DPSUpdateTime = timers++;
-    public float rotateSpeed = 6f, rotateRadius = 2.5f, iconSize = 3f;
-    public float resetTime = 120f;
+public class SandboxWall extends Block{
+    protected static final Vec2 configVec = new Vec2();
 
-    protected String[] buttonLabels = {"@pm-sandbox-wall-mode.sparking", "@pm-sandbox-wall-mode.reflecting", "@pm-sandbox-wall-mode.insulating", "@pm-sandbox-wall-mode.DPS-testing"};
-    public TextureRegion colorRegion, sparkRegion, reflectRegion, insulatingRegion, armorRegion;
+    public final int DPSUpdateTime = timers++;
+    public float resetTime = 120f;
+    public Color lightningColor = Pal.surge;
+    public Sound lightningSound = Sounds.spark;
+    public boolean flashHit = true;
+    public Color flashColor = Color.white;
+    public Sound deflectSound = Sounds.none;
+    public TextureRegion colorRegion, lightningRegion, deflectRegion, insulatingRegion, armorRegion;
 
     public SandboxWall(String name){
         super(name);
         requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        lightningDamage = 5000f;
-        lightningLength = 10;
-        flashHit = insulated = absorbLasers = true;
+        insulated = absorbLasers = true;
         schematicPriority = 10;
         configurable = saveConfig = update = noUpdateDisabled = true;
 
-        config(int[].class, (SandboxWallBuild tile, int[] b) -> tile.modes = b.clone());
+        config(int[].class, (SandboxWallBuild tile, int[] data) -> tile.data.readIntArray(data));
         config(Integer.class, (SandboxWallBuild tile, Integer i) -> {
             tile.toggle(i);
-            if(i == 1 && tile.reflecting()){
+            if(i == 1 && tile.deflection()){
                 tile.hit = 0f;
             }
-            if(i == 3){
-                tile.rebuild();
-            }
         });
-        config(Float.class, (SandboxWallBuild tile, Float f) -> {
-            tile.modes[4] = Mathf.floorPositive(f);
+        config(Vec2.class, (SandboxWallBuild tile, Vec2 data) -> {
+            tile.data.configure((int)data.x, data.y);
         });
 
         configClear(SandboxWallBuild::resetModes);
@@ -70,8 +67,8 @@ public class SandboxWall extends Wall{
 
         colorRegion = Core.atlas.find(name + "-color");
 
-        sparkRegion = Core.atlas.find(name + "-sparking");
-        reflectRegion = Core.atlas.find(name + "-reflecting");
+        lightningRegion = Core.atlas.find(name + "-lightning");
+        deflectRegion = Core.atlas.find(name + "-deflection");
         insulatingRegion = Core.atlas.find(name + "-insulating");
         armorRegion = Core.atlas.find(name + "-armor");
     }
@@ -95,10 +92,10 @@ public class SandboxWall extends Wall{
         if(req.config instanceof int[] modes){
             //draw floating items to represent active mode
             if(modes[0] == 1){
-                Draw.rect(sparkRegion, req.drawx(), req.drawy());
+                Draw.rect(lightningRegion, req.drawx(), req.drawy());
             }
             if(modes[1] == 1){
-                Draw.rect(reflectRegion, req.drawx(), req.drawy());
+                Draw.rect(deflectRegion, req.drawx(), req.drawy());
             }
             if(modes[2] == 1){
                 Draw.rect(insulatingRegion, req.drawx(), req.drawy());
@@ -109,10 +106,10 @@ public class SandboxWall extends Wall{
         }
     }
 
-    public class SandboxWallBuild extends WallBuild{
+    public class SandboxWallBuild extends Building{
+        public float hit;
         public float total, reset = resetTime, time, DPS;
-        public int[] modes = new int[5];
-        public Table gui = new Table();
+        public SandboxWallData data = new SandboxWallData();
 
         @Override
         public void updateTile(){
@@ -144,7 +141,7 @@ public class SandboxWall extends Wall{
             Draw.reset();
 
             //draw flashing white overlay if enabled
-            if(flashHit && reflecting() && hit >= 0.0001f){
+            if(flashHit && deflection() && hit >= 0.0001f){
                 Draw.color(flashColor);
                 Draw.alpha(hit * 0.5f);
                 Draw.blend(Blending.additive);
@@ -155,11 +152,11 @@ public class SandboxWall extends Wall{
                 hit = Mathf.clamp(hit - Time.delta / 10f);
             }
 
-            if(sparking()){
-                Draw.rect(sparkRegion, x, y);
+            if(lightning()){
+                Draw.rect(lightningRegion, x, y);
             }
-            if(reflecting()){
-                Draw.rect(reflectRegion, x, y);
+            if(deflection()){
+                Draw.rect(deflectRegion, x, y);
             }
             if(insulating()){
                 Draw.rect(insulatingRegion, x, y);
@@ -180,7 +177,7 @@ public class SandboxWall extends Wall{
         public boolean collision(Bullet bullet){
             float damage = bullet.damage() * bullet.type().buildingDamageMultiplier;
             if(!bullet.type.pierceArmor){
-                damage = Damage.applyArmor(damage, modes[4]);
+                damage = Damage.applyArmor(damage, data.armor);
             }
 
             damage(bullet.team, damage);
@@ -189,15 +186,18 @@ public class SandboxWall extends Wall{
             hit = 1f;
 
             //create lightning if necessary
-            if(sparking()){
-                Lightning.create(team, lightningColor, lightningDamage, x, y, bullet.rotation() + 180f, lightningLength);
+            if(lightning() && Mathf.chance(data.lightningChance)){
+                Lightning.create(team, lightningColor, data.lightningDamage, x, y, bullet.rotation() + 180f, data.lightningLength);
                 lightningSound.at(tile, Mathf.random(0.9f, 1.1f));
             }
 
             //deflect bullets if necessary
-            if(reflecting()){
+            if(deflection()){
                 //slow bullets are not deflected
                 if(bullet.vel().len() <= 0.1f || !bullet.type.reflectable) return true;
+
+                //bullet reflection chance depends on bullet damage
+                if(!Mathf.chance(data.deflectChance / bullet.damage())) return true;
 
                 //make sound
                 deflectSound.at(tile, Mathf.random(0.9f, 1.1f));
@@ -252,40 +252,94 @@ public class SandboxWall extends Wall{
 
         @Override
         public void buildConfiguration(Table table){
-            rebuild();
-
             table.table(t -> {
-                t.add(gui);
                 t.background(Styles.black6);
-            }).top().expandY();
+                t.defaults().left();
+                t.table(i -> {
+                    i.defaults().left();
+                    i.image(Icon.power.getRegion()).size(32f).scaling(Scaling.fit);
+                    i.add("@pm-sandbox-wall.mode-lightning").padLeft(8f);
+                });
+                t.row();
+                t.table(b -> {
+                    b.defaults().left();
+                    addToggleButton(b, 0);
+                    b.row();
+                    b.table(f -> {
+                        f.defaults().left();
+                        addTextField(f, addColon("pm-sandbox-wall.lightning.chance"), "" + data.lightningChance, TextFieldFilter.floatsOnly, 4);
+                        f.row();
+                        addTextField(f, addColon("pm-sandbox-wall.lightning.damage"), "" + data.lightningDamage, TextFieldFilter.floatsOnly, 5);
+                        f.row();
+                        addTextField(f, addColon("pm-sandbox-wall.lightning.length"), "" + data.lightningLength, TextFieldFilter.digitsOnly, 6);
+                        f.row();
+                    });
+                }).padLeft(32f);
+                t.row();
+
+                t.table(i -> {
+                    i.defaults().left();
+                    i.image(Icon.rotate.getRegion()).size(32f).scaling(Scaling.fit);
+                    i.add("@pm-sandbox-wall.mode-deflection").padLeft(8f);
+                });
+                t.row();
+                t.table(b -> {
+                    b.defaults().left();
+                    addToggleButton(b, 1);
+                    b.row();
+                    b.table(f -> {
+                        f.defaults().left();
+                        addTextField(f, addColon("pm-sandbox-wall.deflection.chance"), "" + data.deflectChance, TextFieldFilter.floatsOnly, 7);
+                    });
+                }).padLeft(32f);
+                t.row();
+
+                t.table(i -> {
+                    i.defaults().left();
+                    i.image(Icon.eyeOff.getRegion()).size(32f).scaling(Scaling.fit);
+                    i.add("@pm-sandbox-wall.mode-insulation").padLeft(8f);
+                });
+                t.row();
+                t.table(b -> {
+                    b.defaults().left();
+                    addToggleButton(b, 2);
+                }).padLeft(32f);
+                t.row();
+
+                t.table(i -> {
+                    i.defaults().left();
+                    i.image(Icon.modePvp.getRegion()).size(32f).scaling(Scaling.fit);
+                    i.add("@pm-sandbox-wall.mode-dpstesting").padLeft(8f);
+                });
+                t.row();
+                t.table(b -> {
+                    b.defaults().left();
+                    addToggleButton(b, 3);
+                    b.row();
+                    b.table(f -> {
+                        f.defaults().left();
+                        addTextField(f, addColon("stat.armor"), "" + data.armor, TextFieldFilter.floatsOnly, 8);
+                    });
+                }).padLeft(32f);
+            }).top().grow().margin(8f);
         }
 
-        public void rebuild(){
-            gui.clear();
-
-            gui.table(b -> {
-                addButton(b, Items.surgeAlloy.fullIcon, 0);
-                addButton(b, Items.phaseFabric.fullIcon, 1);
-                addButton(b, Items.plastanium.fullIcon, 2);
-                addButton(b, Icon.modePvp.getRegion(), 3);
-            });
-
-            if(!DPSTesting()) return;
-            gui.row();
-            gui.table(a -> {
-                a.image(new TextureRegionDrawable(Icon.defense.getRegion()), Pal.accent).size(32f);
-                a.field(Integer.toString(modes[4]), TextFieldFilter.digitsOnly, text -> configure(Strings.parseFloat(text, 0)));
-            });
+        public void addToggleButton(Table t, int mode){
+            CheckBox box = new CheckBox("@mod.enable");
+            box.changed(() -> configure(mode));
+            box.setChecked(data.activeMode(mode));
+            box.update(() -> box.setChecked(data.activeMode(mode)));
+            box.left();
+            t.add(box);
         }
 
-        public void addButton(Table t, TextureRegion icon, int index){
-            ImageButton button = t.button(
-                new TextureRegionDrawable(icon),
-                Styles.clearNoneTogglei,
-                32f, () -> {}
-            ).tooltip(buttonLabels[index]).get();
-            button.changed(() -> configure(index));
-            button.update(() -> button.setChecked(activeMode(index)));
+        public void addTextField(Table t, String title, String text, TextFieldFilter filter, int mode){
+            t.add(title);
+            t.field(text, filter, s -> configure(configVec.set(mode, Strings.parseFloat(s)))).width(200f).padLeft(8f);
+        }
+
+        public String addColon(String entry){
+            return Core.bundle.get(entry) + ":";
         }
 
         @Override
@@ -301,11 +355,11 @@ public class SandboxWall extends Wall{
 
         @Override
         public Object config(){
-            return modes;
+            return data.toIntArray();
         }
 
         public void toggle(int i){
-            modes[i] = (byte)(1 - modes[i]);
+            data.toggle(i);
 
             //Reset DPS testing
             if(i == 3 && DPSTesting()){
@@ -316,47 +370,49 @@ public class SandboxWall extends Wall{
             }
         }
 
-        public boolean activeMode(int i){
-            return modes[i] == 1;
+        public boolean lightning(){
+            return data.lightning && data.lightningChance > 0f;
         }
 
-        public boolean sparking(){
-            return modes[0] == 1;
-        }
-
-        public boolean reflecting(){
-            return modes[1] == 1;
+        public boolean deflection(){
+            return data.deflecting && data.deflectChance > 0f;
         }
 
         public boolean insulating(){
-            return modes[2] == 1;
+            return data.insulated;
         }
 
         public boolean DPSTesting(){
-            return modes[3] == 1;
+            return data.dpsTesting;
         }
 
         public boolean armored(){
-            return modes[4] > 0;
+            return data.dpsTesting && data.armor > 0f;
         }
 
         public void resetModes(){
-            Arrays.fill(modes, 0);
+            data.reset();
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             
-            TypeIO.writeInts(write, modes);
+            data.write(write);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision >= 3){
-                modes = TypeIO.readInts(read);
+            if(revision >= 4){
+                data.read(read);
+                return;
+            }
+
+            //Discard old data
+            if(revision == 3){
+                TypeIO.readInts(read);
                 return;
             }
 
@@ -367,14 +423,90 @@ public class SandboxWall extends Wall{
             if(revision == 2){
                 read.b(oldModes);
             }
-            for(int i = 0; i < 4; i++){
-                modes[i] = oldModes[i];
-            }
         }
 
         @Override
         public byte version(){
-            return 3;
+            return 4;
+        }
+    }
+
+    public static class SandboxWallData{
+        public boolean lightning, deflecting, insulated, dpsTesting;
+        public float lightningChance = 0.05f, lightningDamage = 20f;
+        public int lightningLength = 17;
+        public float deflectChance = 10f;
+        public float armor;
+
+        public boolean activeMode(int mode){
+            return switch(mode){
+                case 0 -> lightning;
+                case 1 -> deflecting;
+                case 2 -> insulated;
+                case 3 -> dpsTesting;
+                default -> false;
+            };
+        }
+
+        public void toggle(int mode){
+            switch(mode){
+                case 0 -> lightning = !lightning;
+                case 1 -> deflecting = !deflecting;
+                case 2 -> insulated = !insulated;
+                case 3 -> dpsTesting = !dpsTesting;
+            };
+        }
+
+        public void reset(){
+            lightning = deflecting = insulated = dpsTesting = false;
+        }
+
+        public int[] toIntArray(){
+            return new int[]{
+                Mathf.num(lightning), Mathf.num(deflecting), Mathf.num(insulated), Mathf.num(dpsTesting),
+                Float.floatToIntBits(lightningChance), Float.floatToIntBits(lightningDamage), lightningLength,
+                Float.floatToIntBits(deflectChance),
+                Float.floatToIntBits(armor)
+            };
+        }
+
+        public void readIntArray(int[] data){
+            if(data.length != 9) return;
+
+            lightning = !Mathf.booleans[data[0]];
+            deflecting = !Mathf.booleans[data[1]];
+            insulated = !Mathf.booleans[data[2]];
+            dpsTesting = !Mathf.booleans[data[3]];
+
+            lightningChance = Float.intBitsToFloat(data[4]);
+            lightningDamage = Float.intBitsToFloat(data[5]);
+            lightningLength = data[6];
+
+            deflectChance = Float.intBitsToFloat(data[7]);
+
+            armor = Float.intBitsToFloat(data[8]);
+        }
+
+        public void configure(int value, float data){
+            switch(value){
+                case 4 -> lightningChance = data;
+                case 5 -> lightningDamage = data;
+                case 6 -> lightningLength = (int)data;
+
+                case 7 -> deflectChance = data;
+
+                case 8 -> armor = data;
+            }
+        }
+
+        public void write(Writes write){
+            TypeIO.writeInts(write, toIntArray());
+        }
+
+        public void read(Reads read){
+            int[] data = TypeIO.readInts(read);
+
+            readIntArray(data);
         }
     }
 }
