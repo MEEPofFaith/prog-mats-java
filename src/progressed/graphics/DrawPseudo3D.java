@@ -185,7 +185,16 @@ public class DrawPseudo3D{
 
     public static float layerOffset(float x, float y){
         float max = Math.max(camera.width, camera.height);
-        return -Mathf.dst(x, y, camera.position.x, camera.position.y) / max / 1000f;
+        return -dst(x, y, camera.position.x, camera.position.y) / max / 1000f;
+    }
+
+    public static float layerOffset(float cx, float cy, float tx, float ty){
+        float angleTo = Angles.angle(cx, cy, tx, ty),
+            angleCam = Angles.angle(cx, cy, camera.position.x, camera.position.y);
+        float angleDist = Angles.angleDist(angleTo, angleCam);
+        float max = Math.max(camera.width, camera.height);
+
+        return layerOffset(cx, cy) + dst(cx, cy, tx, ty) * Mathf.cosDeg(angleDist) / max / 1000f;
     }
 
     /**

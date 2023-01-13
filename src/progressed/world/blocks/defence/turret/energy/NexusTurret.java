@@ -12,6 +12,7 @@ public class NexusTurret extends ItemTurret{
 
         shootEffect = smokeEffect = Fx.none;
         recoil = 0f;
+        minRange = 0f;
     }
 
     public class NexusTurretBuild extends ItemTurretBuild{
