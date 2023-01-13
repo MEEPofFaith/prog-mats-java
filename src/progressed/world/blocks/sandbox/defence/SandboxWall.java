@@ -43,7 +43,16 @@ public class SandboxWall extends Block{
         requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        insulated = absorbLasers = true;
+        solid = true;
+        destructible = true;
+        group = BlockGroup.walls;
+        canOverdrive = false;
+        drawDisabled = false;
+        priority = TargetPriority.wall;
+
+        //it's a wall of course it's supported everywhere
+        envEnabled = Env.any;
+
         schematicPriority = 10;
         configurable = saveConfig = update = noUpdateDisabled = true;
 
