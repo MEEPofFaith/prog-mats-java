@@ -19,7 +19,7 @@ import progressed.graphics.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(
-        OrbitalStrikeBulletType.class,
+        NexusLaserBulletType.class,
         BallisticMissileBulletType.class,
         BlackHoleBulletType.class,
         MagmaBulletType.class,

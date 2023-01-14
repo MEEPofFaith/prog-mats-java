@@ -964,9 +964,10 @@ public class PMBlocks{
             size = 6;
 
             float brange = range = 100f * 8f;
-            OrbitalStrikeBulletType bullet = new OrbitalStrikeBulletType(){{ //TODO hit effect
+            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
                 speed = brange;
-                splashDamage = 2000f;
+                drawSize = speed * 2f;
+                splashDamage = 1900f;
                 splashDamageRadius = 32f;
                 height = starHeight;
                 alwaysBloom = true;
@@ -1025,6 +1026,8 @@ public class PMBlocks{
 
             reload = 20f;
 
+            shootSound = Sounds.shootSmite;
+
             consumePower(25f);
         }};
 
@@ -1034,9 +1037,10 @@ public class PMBlocks{
 
             float brange = range = 100f * 8f;
             float shootRadius = 10f * 8f;
-            OrbitalStrikeBulletType bullet = new OrbitalStrikeBulletType(){{ //TODO hit effect
+            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
                 speed = brange;
-                splashDamage = 2000f;
+                drawSize = speed * 2f;
+                splashDamage = 2400f;
                 splashDamageRadius = 32f;
                 strikeInaccuracy = shootRadius;
                 height = starHeight;
@@ -1108,6 +1112,8 @@ public class PMBlocks{
             warmupMaintainTime = shoot.shots * shoot.shotDelay + bullet.lifetime + 30f;
 
             reload = 90f;
+
+            shootSound = Sounds.malignShoot;
 
             consumePower(25f);
         }};

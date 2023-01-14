@@ -10,13 +10,13 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 
-public class OrbitalStrikeBulletType extends BulletType{
+public class NexusLaserBulletType extends BulletType{
     public float height = 1f, radius = 4f;
     public Color baseColorLight = PMPal.nexusLaser, baseColorDark = PMPal.nexusLaserDark, topColorLight, topColorDark;
     public boolean alwaysBloom;
     public float strikeInaccuracy;
 
-    public OrbitalStrikeBulletType(){
+    public NexusLaserBulletType(){
         lifetime = 30f;
         layer = Layer.weather + 0.5f;
         scaleLife = true;
@@ -31,7 +31,7 @@ public class OrbitalStrikeBulletType extends BulletType{
         if(topColorLight == null) topColorLight = baseColorLight;
         if(topColorDark == null) topColorDark = baseColorDark;
 
-        drawSize = Math.max(drawSize, radius * 2f);
+        drawSize += (radius + strikeInaccuracy) * 2f;
         super.init();
     }
 
