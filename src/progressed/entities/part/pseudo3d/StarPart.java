@@ -66,8 +66,8 @@ public class StarPart extends DrawPart{
 
     public void drawSide(float x, float y, float heightScl, float sizeScl, int side){
         float h = height * heightScl,
-            th = h + spikeWidth/2f * horiToVerti * sizeScl,
-            ph = h + spikeLen * horiToVerti * sizeScl;
+            th = h + (spikeWidth/2f * sizeScl * sizeScl),
+            ph = h + (spikeLen * sizeScl * sizeScl);
 
         Draw.color(getColor(side));
 

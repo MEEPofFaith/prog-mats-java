@@ -955,8 +955,8 @@ public class PMBlocks{
             .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusHeightGrowStop));
         PartProgress nexusBeamSize = PartProgress.warmup.shorten(0.5f).clamp().curve(Interp.smooth).mul(nexusSizeGrowStop)
             .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusSizeGrowStop));
-        float starLen = 24f;
-        float starWidth = 16f;
+        float starLen = 28f;
+        float starWidth = 12f;
         float starHeight = 50f;
         float beamLayer = Layer.weather + 0.5f;
         solstice = new NexusTurret("solstice"){{
