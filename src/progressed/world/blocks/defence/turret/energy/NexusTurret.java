@@ -24,15 +24,12 @@ public class NexusTurret extends ItemTurret{
 
             var offset = Tmp.v1.setZero();
 
-            if(pos instanceof Hitboxc h){
-                offset.set(h.deltaX(), h.deltaY()).scl(bullet.lifetime / Time.delta);
+            //when delay is accurate, assume unit has moved by chargeTime already
+            if(accurateDelay && pos instanceof Hitboxc h){
+                offset.set(h.deltaX(), h.deltaY()).scl(shoot.firstShotDelay / Time.delta);
             }
 
             targetPos.set(pos).add(offset);
-
-            if(targetPos.isZero()){
-                targetPos.set(pos);
-            }
         }
 
         @Override
