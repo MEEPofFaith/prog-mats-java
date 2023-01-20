@@ -73,7 +73,7 @@ public class DrawPseudo3D{
         int vert = Lines.circleVertices(rad);
 
         Draw.color(baseColor);
-        Fill.poly(x, y, vert, rad);
+        Fill.poly(x, y, vert, rad); //TODO polygon with shading
         Draw.color();
 
         tube(x, y, rad, height, baseColor, topColor);

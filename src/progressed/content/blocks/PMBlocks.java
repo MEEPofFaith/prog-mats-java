@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
@@ -632,7 +633,7 @@ public class PMBlocks{
         pinpoint = new SwingContinuousTurret("pinpoint"){{
             requirements(Category.turret, with());
 
-            shootType = new PMPointLaserBulletType(){{
+            shootType = new PointLaserBulletType(){{
                 damage = 200f;
                 sprite = "prog-mats-swing-laser";
 
