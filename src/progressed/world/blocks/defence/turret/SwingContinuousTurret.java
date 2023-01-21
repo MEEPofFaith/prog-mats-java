@@ -2,20 +2,26 @@ package progressed.world.blocks.defence.turret;
 
 import arc.math.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import progressed.util.*;
+import progressed.world.draw.*;
 
 public class SwingContinuousTurret extends ContinuousTurret{
     public float rotateSpeedAccel = 0.5f, rotateSpeedDrag = 0.3f;
     public float aimChangeSpeedAccel = 0.5f, aimChangeSpeedDrag = 0.3f;
+    public float rotateSpeedfSpeed = 0.1f;
 
     public SwingContinuousTurret(String name){
         super(name);
+
+        drawer = new DrawSwingTurret();
     }
 
     public class SwingContinuousTurretBuild extends ContinuousTurretBuild{
-        public float realRotateSpeed;
+        public float realRotateSpeed, rotateSpeedf;
+        public boolean slowing;
 
         @Override
         public void updateTile(){
@@ -23,12 +29,17 @@ public class SwingContinuousTurret extends ContinuousTurret{
 
             realRotateSpeed *= Math.max(1f - rotateSpeedDrag * Time.delta, 0);
             rotation = Mathf.mod(rotation + realRotateSpeed * Time.delta, 360f);
+
+            rotateSpeedf = Mathf.approachDelta(rotateSpeedf, (slowing && isShooting() && hasAmmo()) ? (1f - Math.abs(realRotateSpeed / rotateSpeed)) : 0f, rotateSpeedfSpeed);
         }
 
         @Override
         protected void turnToTarget(float targetRot){
             float targetSpeed = rotateSpeed * PMMathf.angleMoveDirection(rotation, targetRot);
             realRotateSpeed = Mathf.approachDelta(realRotateSpeed, targetSpeed, rotateSpeedAccel * efficiency);
+
+            slowing = Mathf.sign(targetSpeed) != Mathf.sign(realRotateSpeed);
+
         }
 
         protected void updateBullet(BulletEntry entry){
@@ -48,14 +59,14 @@ public class SwingContinuousTurret extends ContinuousTurret{
             float curLength = dst(entry.bullet.aimX, entry.bullet.aimY);
             float resultLength;
             if(aimChangeSpeed == Float.POSITIVE_INFINITY){
-                resultLength = shootLength;
+                resultLength = Math.max(shootLength, shootY);
             }else{
                 //update aim change speed
                 float targetSpeed = aimChangeSpeed * Mathf.sign(shootLength - curLength);
                 s.aimChangeSpeed = Mathf.approachDelta(s.aimChangeSpeed, targetSpeed, aimChangeSpeedAccel * efficiency);
                 s.aimChangeSpeed *= Math.max(1f - aimChangeSpeedDrag * Time.delta, 0);
                 //resulting length of the bullet (smoothed)
-                resultLength = curLength + s.aimChangeSpeed;
+                resultLength = Math.max(curLength + s.aimChangeSpeed, shootY);
             }
             //actual aim end point based on length
             Tmp.v1.trns(rotation, lastLength = resultLength).add(x, y);
@@ -79,6 +90,25 @@ public class SwingContinuousTurret extends ContinuousTurret{
                 bullet.aimX = Tmp.v1.x;
                 bullet.aimY = Tmp.v1.y;
             }
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(realRotateSpeed);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision >= 4) realRotateSpeed = read.f();
+        }
+
+        @Override
+        public byte version(){
+            return 4;
         }
     }
 

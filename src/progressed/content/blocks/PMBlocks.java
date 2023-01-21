@@ -645,13 +645,27 @@ public class PMBlocks{
                 trailSinScl = oscScl;
             }};
 
+            drawer = new DrawSwingTurret(){{
+                parts.add(new RegionPart("-break"){{
+                    x = 19f / 4f;
+                    y = 17f / 4f;
+                    moveRot = 90f;
+                    progress = PartProgress.life;
+                    mirror = true;
+                    under = true;
+                }});
+            }};
+
             shootSound = Sounds.none;
             loopSoundVolume = 1f;
             loopSound = Sounds.laserbeam;
 
-            aimChangeSpeed = rotateSpeed = 6f;
-            aimChangeSpeedAccel = rotateSpeedAccel = 0.5f;
-            aimChangeSpeedDrag = rotateSpeedDrag = 0.06f;
+            rotateSpeed = 6f;
+            rotateSpeedAccel = 0.2f;
+            rotateSpeedDrag = 0.02f;
+            aimChangeSpeed = 6f;
+            aimChangeSpeedAccel = 0.5f;
+            aimChangeSpeedDrag = 0.06f;
 
             size = 3;
             range = 16f * tilesize;
