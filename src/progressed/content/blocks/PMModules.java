@@ -1,6 +1,7 @@
 package progressed.content.blocks;
 
 import mindustry.content.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -10,6 +11,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
+import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
 import static mindustry.type.ItemStack.*;
@@ -41,8 +43,6 @@ public class PMModules{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
-            reload = 2.5f * 60f;
-            shootSound = Sounds.bolt;
 
             float brange = 14.5f * 8f;
             range = brange;
@@ -52,7 +52,7 @@ public class PMModules{
                 pierceArmor = true;
                 buildingDamageMultiplier = 0.3f;
                 lifetime = ModuleFx.abyssGrow.lifetime;
-                swirlEffects = 15;
+                swirlEffects = 10;
                 maxSwirlDelay = lifetime - ModuleFx.abyssSwirl.lifetime;
                 length = brange;
 
@@ -60,10 +60,30 @@ public class PMModules{
                 swirlEffect = ModuleFx.abyssSwirl;
                 growEffect = ModuleFx.abyssGrow;
 
-                swirlRad = 4f * 8f;
+                //swirlRad = 4f * 8f;
                 despawnEffect = ModuleFx.abyssBurst;
                 displayAmmoMultiplier = false;
             }};
+
+            drawer = new DrawTurretModule(){{
+                parts.add(new RegionPart("-shell"){{
+                    x = 3f/4f;
+                    y = -10f/4f;
+
+                    moveX = 0.9f;
+                    moveY = -2f/4f;
+                    moveRot = -6.5f;
+
+                    mirror = true;
+                }});
+            }};
+
+            reload = 2.5f * 60f;
+            shootSound = Sounds.bolt;
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1.5f / 60f;
+            shootY = -2f/4f;
 
             consumePower(8f);
         }};

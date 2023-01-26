@@ -29,7 +29,6 @@ public class PowerTurretModule extends PowerTurret{
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
 
-        outlinedIcon = 0;
         drawer = new DrawTurretModule();
     }
 
@@ -107,6 +106,18 @@ public class PowerTurretModule extends PowerTurret{
         @Override
         public Iterable<Func<Building, Bar>> listModuleBars(){
             return moduleBarMap.values();
+        }
+
+        @Override
+        public void pickedUp(){
+            module.progress = 0f;
+            reloadCounter = 0f;
+            rotation = 90f;
+        }
+
+        @Override
+        public boolean isValid(){
+            return super.isValid() || (parent() != null && parent().isValid());
         }
 
         @Override

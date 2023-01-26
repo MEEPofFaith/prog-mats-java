@@ -38,7 +38,6 @@ public class ModularTurret extends PayloadBlock{
     public TextureRegion[] mountBases = new TextureRegion[3];
 
     private static ModuleSize selSize;
-    private static int selNum, rowCount;
     private static final Table moduleDisplayTable = new Table();
 
     public ModularTurret(String name){
@@ -168,6 +167,7 @@ public class ModularTurret extends PayloadBlock{
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock{
         public Seq<TurretModule> modules = new Seq<>();
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
+        protected int selNum;
 
         @Override
         public Unit unit(){
@@ -200,14 +200,11 @@ public class ModularTurret extends PayloadBlock{
                 payload = null;
             }
 
-            unit.tile(this);
-            unit.team(team);
-
             modules.each(TurretModule::moduleUpdate);
 
-            if(isPayload()){
-                updatePos();
-            }
+            unit.tile(this); //Set the unit's building back to the base. Turret#updateTile sets the unit's building to itself. (Vanilla is very much not prepared for me making multiple buildings share the same unit.)
+            unit.team(team);
+            unit.ammo(1f); //No way to display the separate ammos of different turrets, so just don't bother.
         }
 
         @Override
@@ -389,7 +386,7 @@ public class ModularTurret extends PayloadBlock{
                 }
                 t.table(m -> {
                     m.left().top();
-                    rowCount = 0;
+                    int[] rowCount = {0};
                     modules.each(module -> module.checkSize(selSize), module -> {
                         ImageButton button = m.button(Tex.whiteui, Styles.clearTogglei, 32f, () -> {
                             int index = modules.indexOf(module);
@@ -399,12 +396,12 @@ public class ModularTurret extends PayloadBlock{
                             }
                         }).update(b -> b.setChecked(selNum == modules.indexOf(module))).size(40f).get();
                         button.getStyle().imageUp = new TextureRegionDrawable(module.icon());
-                        if(rowCount++ % 8 == 7){
+                        if(rowCount[0]++ % 8 == 7){
                             m.row();
                         }
                     });
-                    if(rowCount % 8 != 0){
-                        int remaining = 8 - (rowCount % 8);
+                    if(rowCount[0] % 8 != 0){
+                        int remaining = 8 - (rowCount[0] % 8);
                         for(int j = 0; j < remaining; j++){
                             m.image(Styles.none);
                         }

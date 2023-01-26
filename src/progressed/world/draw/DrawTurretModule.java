@@ -2,7 +2,6 @@ package progressed.world.draw;
 
 import arc.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.part.*;
@@ -15,12 +14,10 @@ import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.draw.*;
 
 public class DrawTurretModule extends DrawBlock{
-    protected static final Rand rand = new Rand();
-
     public Seq<DrawPart> parts = new Seq<>();
     /** Overrides the liquid to draw in the liquid region. */
     public Liquid liquidDraw;
-    public TextureRegion liquid, top, heat, preview, outline;
+    public TextureRegion base, liquid, top, heat, preview, outline;
 
     public DrawTurretModule(){}
 
@@ -41,6 +38,7 @@ public class DrawTurretModule extends DrawBlock{
         TurretBuild tb = (TurretBuild)build;
         float z = tb.isPayload() ? Draw.z() : Layer.turret;
 
+        Draw.rect(base, build.x, build.y);
         Draw.color();
 
         Draw.z(z - 0.5f);
@@ -102,16 +100,19 @@ public class DrawTurretModule extends DrawBlock{
         liquid = Core.atlas.find(block.name + "-liquid");
         top = Core.atlas.find(block.name + "-top");
         heat = Core.atlas.find(block.name + "-heat");
+        base = Core.atlas.find(block.name + "-base");
 
         for(var part : parts){
             part.turretShading = true;
             part.load(block.name);
         }
+
+        if(!base.found()) base = Core.atlas.find("prog-mats-blank-" + block.size);
     }
 
     /** @return the generated icons to be used for this block. */
     @Override
     public TextureRegion[] icons(Block block){
-        return top.found() ? new TextureRegion[]{preview, top} : new TextureRegion[]{preview};
+        return top.found() ? new TextureRegion[]{base, preview, top} : new TextureRegion[]{base, preview};
     }
 }

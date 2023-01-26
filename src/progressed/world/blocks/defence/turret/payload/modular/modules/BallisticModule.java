@@ -43,7 +43,6 @@ public class BallisticModule extends ItemTurret{
         shootY = 0f;
         shootEffect = smokeEffect = Fx.none;
 
-        outlinedIcon = 0;
         drawer = new DrawTurretModule();
     }
 
@@ -233,6 +232,17 @@ public class BallisticModule extends ItemTurret{
         }
 
         @Override
+        public void pickedUp(){
+            module.progress = 0f;
+            reloadCounter = 0f;
+        }
+
+        @Override
+        public boolean isValid(){
+            return super.isValid() || (parent() != null && parent().isValid());
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 
@@ -245,6 +255,5 @@ public class BallisticModule extends ItemTurret{
 
             (module == null ? new ModuleModule(self(), hasPower) : module).read(read);
         }
-
     }
 }

@@ -9,11 +9,8 @@ import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.content.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.payloads.*;
 import mindustry.world.modules.*;
 import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
@@ -104,13 +101,10 @@ public class ModuleModule extends BlockModule{
     public void tryPickUp(ModularTurretBuild parent){
         if(canPickUp()){ //jeez this is a mess
             Payloadc p = (Payloadc)player.unit();
-            BuildPayload modPay = new BuildPayload(module.build());
-            p.addPayload(modPay);
-            Fx.unitPickup.at(module.x(), module.y());
-            Events.fire(new PickupEvent(player.unit(), modPay.build));
-            boolean has = parent.modules.contains(m -> m.checkSize(module.size()));
+            p.pickup(module.build());
             parent.removeMount(module);
             parent.setSelection(module.size());
+            boolean has = parent.modules.contains(m -> m.checkSize(module.size()));
             parent.rebuild(true, !has, has);
         }else{
             showPickupFail();
@@ -121,7 +115,7 @@ public class ModuleModule extends BlockModule{
         Unit u = player.unit();
         if(!(u instanceof Payloadc p)) return false;
 
-        return p.payloadUsed() + module.block().size * module.block().size * tilePayload <= u.type.payloadCapacity + 0.01f
+        return p.canPickup(module.build())
             && u.within(module.x(), module.y(), tilesize * module.block().size * 1.2f);
     }
 

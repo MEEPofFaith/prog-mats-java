@@ -44,15 +44,15 @@ public class ModuleFx{
         };
     }).layer(Layer.effect + 1.004f),
 
-    abyssSwirl = EnergyFx.makeSwirlEffect(60f, 30f, 90f, false).layer(Layer.effect + 1.005f),
+    abyssSwirl = EnergyFx.makeSwirlEffect(Color.black, 30f, 5, 1.5f, 0f, 0f, 12f, 40f, false).layer(Layer.effect + 1.005f),
 
-    abyssGrow = new Effect(80f, e -> {
+    abyssGrow = new Effect(45f, e -> {
         float rad = 2f + e.fin(Interp.pow2Out) * 3f;
         Fill.light(e.x, e.y, Lines.circleVertices(rad), rad, Color.black, Color.darkGray);
     }).layer(Layer.effect + 1.006f),
 
     abyssBurst = new Effect(30f, e -> {
-        float rad = 5f + e.fin(Interp.pow2Out) * 16f;
-        Fill.light(e.x, e.y, Lines.circleVertices(rad), rad, Color.clear, Tmp.c1.set(Color.black).lerp(Color.clear, e.fin(Interp.pow2In)));
+        float rad = 5f + e.fin(Interp.pow3Out) * 16f;
+        Fill.light(e.x, e.y, Lines.circleVertices(rad), rad, Color.clear, Tmp.c1.set(Color.black).lerp(Color.clear, e.fin(Interp.pow3In)));
     }).layer(Layer.effect + 1.007f);
 }

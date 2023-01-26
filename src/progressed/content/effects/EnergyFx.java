@@ -69,7 +69,7 @@ public class EnergyFx{
         Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
     }).layer(Layer.effect + 0.01f),
 
-    blackHoleSwirl = makeSwirlEffect(90f, 90f, 720f, true).layer(Layer.effect + 0.005f),
+    blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
     blackHoleDespawn = new Effect(24f, e -> {
         color(Color.darkGray, Color.black, e.fin());
@@ -189,13 +189,17 @@ public class EnergyFx{
         Fill.circle(e.x + v1.x, e.y + v1.y, data[0] * e.fout());
     }).layer(Layer.bullet - 0.00999f);
 
-    public static Effect makeSwirlEffect(Color color, float eLifetime, float minRot, float maxRot, boolean lerp){
+    public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean lerp){
         return new Effect(eLifetime, 400f, e -> {
             if(e.time < 1f) return;
 
-            int length = 8;
             float lifetime = e.lifetime - length;
-            float dst = Math.abs(e.rotation);
+            float dst;
+            if(minDst < 0 || maxDst < 0){
+                dst = Math.abs(e.rotation);;
+            }else{
+                dst = Mathf.randomSeed(e.id, minDst, maxDst);
+            }
             if(lerp){
                 color(color, e.color, Mathf.clamp(e.time / lifetime));
             }else{
@@ -203,7 +207,7 @@ public class EnergyFx{
             }
 
             int points = (int)Math.min(e.time, length);
-            float width = Mathf.clamp(e.time / (e.lifetime - length)) * 3f;
+            float width = Mathf.clamp(e.time / (e.lifetime - length)) * maxWidth;
             float size = width / points;
             float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, minRot, maxRot) * Mathf.sign(e.rotation);
 
@@ -236,7 +240,7 @@ public class EnergyFx{
         });
     }
 
-    public static Effect makeSwirlEffect(float eLifetime, float minRot, float maxRot, boolean lerp){
-        return makeSwirlEffect(Color.black, eLifetime, minRot, maxRot, lerp);
+    public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean lerp){
+        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, lerp);
     }
 }

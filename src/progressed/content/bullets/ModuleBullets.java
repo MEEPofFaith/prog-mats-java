@@ -21,6 +21,7 @@ public class ModuleBullets{
             ammoMultiplier = 12;
 
             height = 32f;
+            heightRnd = 0.5f;
             trailLength = 15;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;

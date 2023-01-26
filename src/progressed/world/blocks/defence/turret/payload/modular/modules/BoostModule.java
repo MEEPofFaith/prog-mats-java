@@ -145,8 +145,7 @@ public class BoostModule extends Block{
 
         @Override
         public void pickedUp(){
-            super.pickedUp();
-
+            module.progress = 0f;
             mendHeat = overdriveHeat = 0;
         }
 
@@ -173,6 +172,11 @@ public class BoostModule extends Block{
         @Override
         public Iterable<Func<Building, Bar>> listModuleBars(){
             return moduleBarMap.values();
+        }
+
+        @Override
+        public boolean isValid(){
+            return super.isValid() || (parent() != null && parent().isValid());
         }
 
         @Override

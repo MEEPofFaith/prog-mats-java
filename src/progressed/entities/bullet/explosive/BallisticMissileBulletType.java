@@ -23,7 +23,7 @@ import static progressed.graphics.DrawPseudo3D.*;
 
 public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
-    public float height = 1f;
+    public float height = 1f, heightRnd;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float shadowOffset = -1f;
@@ -71,6 +71,7 @@ public class BallisticMissileBulletType extends BulletType{
         //Ensure that split missiles also have enough draw size, as limitRange only applies to the main missile.
         if(fragBullet instanceof BallisticMissileBulletType){
             fragBullet.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
+            heightRnd = 0f;
         }
     }
 
@@ -229,8 +230,14 @@ public class BallisticMissileBulletType extends BulletType{
     }
 
     public float hScl(Bullet b){
-        if(b.fdata == 0) return hInterp.apply(b.fin());
-        return hInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
+        float hScl;
+        if(b.fdata == 0){
+            hScl = hInterp.apply(b.fin());
+        }else{
+            hScl = hInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
+        }
+        if(heightRnd != 0) hScl *= 1 + Mathf.randomSeedRange(b.id, heightRnd);
+        return hScl;
     }
 
     public float posInterp(Bullet b){

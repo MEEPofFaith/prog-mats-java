@@ -23,7 +23,7 @@ public class AbyssBulletType extends BulletType{
     public AbyssBulletType(){
         super(0.01f, 0f);
 
-        despawnEffect = Fx.none;
+        hitEffect = despawnEffect = Fx.none;
         shootEffect = Fx.hitLancer;
         smokeEffect = Fx.none;
         keepVelocity = false;
