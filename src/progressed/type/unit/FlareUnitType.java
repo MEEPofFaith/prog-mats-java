@@ -43,6 +43,8 @@ public class FlareUnitType extends UnitType{
         flying = false;
         fallSpeed = 1f / 30f;
         hitSize = 1f;
+
+        EntityMapping.nameMap.put(name, constructor);
     }
 
     public FlareUnitType(String name){
@@ -52,7 +54,6 @@ public class FlareUnitType extends UnitType{
     @Override
     public void init(){
         super.init();
-        EntityMapping.nameMap.put(name, constructor);
 
         if(shadowSize < 0f) shadowSize = hitSize * 2f;
     }

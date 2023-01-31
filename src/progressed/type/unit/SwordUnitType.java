@@ -62,6 +62,8 @@ public class SwordUnitType extends UnitType{
         trailColor = Color.red.cpy().a(0.25f);
         trailLength = 5;
         trailScl = 2;
+
+        EntityMapping.nameMap.put(name, constructor);
     }
 
     @Override

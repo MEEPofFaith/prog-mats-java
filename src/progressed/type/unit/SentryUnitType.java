@@ -36,11 +36,7 @@ public class SentryUnitType extends ErekirUnitType{
         targetable = hittable = false;
         itemCapacity = 10;
         health = 200;
-    }
 
-    @Override
-    public void init(){
-        super.init();
         EntityMapping.nameMap.put(name, constructor);
     }
 
