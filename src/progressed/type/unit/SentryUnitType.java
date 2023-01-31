@@ -16,16 +16,15 @@ import mindustry.type.unit.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
-import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
 public class SentryUnitType extends ErekirUnitType{
-    public float duration = 600f, riseSpeed = 0.125f;
+    public float riseSpeed = 0.125f;
 
     public SentryUnitType(String name){
         super(name);
-        constructor = SentryUnit::new;
+        constructor = TimedKillUnit::create;
         aiController = SentryAI::new;
         
         speed = accel = 0f;
@@ -42,21 +41,16 @@ public class SentryUnitType extends ErekirUnitType{
 
     @Override
     public Color cellColor(Unit unit){
-        float f = Mathf.clamp(((SentryUnit)unit).durationf());
-        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, 2.5f, 1f - f));
+        float f = ((TimedKillUnit)unit).fout(), min = 0.5f;
+        return super.cellColor(unit).mul(min + (1 - min) * f);
     }
 
     @Override
     public void update(Unit unit){
         if(unit.elevation < 1 && !unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + riseSpeed * Time.delta);
 
-        if(unit.health < Float.POSITIVE_INFINITY){ //I want Testing Utilities invincibility to work.
-            SentryUnit sentry = ((SentryUnit)unit);
-            sentry.duration -= Time.delta;
-            sentry.clampDuration();
-            if(sentry.duration <= 0f){
-                sentry.kill();
-            }
+        if(unit.health == Float.POSITIVE_INFINITY){ //I want Testing Utilities invincibility to work.
+            ((TimedKillUnit)unit).time = 0;
         }
 
         super.update(unit);
@@ -67,7 +61,7 @@ public class SentryUnitType extends ErekirUnitType{
         Unit unit = super.create(team);
         unit.elevation = 0;
         unit.health = unit.maxHealth;
-        ((SentryUnit)unit).duration = duration;
+        //((SentryUnit)unit).duration = duration;
         return unit;
     }
 
@@ -75,7 +69,7 @@ public class SentryUnitType extends ErekirUnitType{
     public void setStats(){
         super.setStats();
         
-        stats.add(PMStat.sentryLifetime, (int)(duration / 60f), StatUnit.seconds);
+        stats.add(PMStat.sentryLifetime, (int)(lifetime / 60f), StatUnit.seconds);
 
         stats.remove(Stat.speed);
         stats.remove(Stat.itemCapacity);
@@ -95,12 +89,12 @@ public class SentryUnitType extends ErekirUnitType{
 
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
-            
-            SentryUnit sentry = ((SentryUnit)unit);
+
+            TimedKillUnit sentry = ((TimedKillUnit)unit);
             bars.add(new Bar(
-                () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(sentry.durationf() * 100f)),
+                () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(sentry.fout() * 100f)),
                 () -> Pal.accent,
-                sentry::durationf
+                sentry::fout
             ));
             bars.row();
 

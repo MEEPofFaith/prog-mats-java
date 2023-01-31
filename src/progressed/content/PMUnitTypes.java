@@ -24,22 +24,24 @@ import progressed.ui.*;
 public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(SentryUnit.class, SentryUnit::new),
-        prov(FlareUnit.class, FlareUnit::new),
+        prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
     public static UnitType
 
-        //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
-        echo, presence, ghoul, phantom, apparition,
+    //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
+    echo, presence, ghoul, phantom, apparition,
 
     //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
     puncture, penetration, incision, laceration, amputation,
 
     //sentry
     barrage, downpour,
+
+    //TODO Legged ground miner. Erekir.
+    namePending,
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
@@ -102,7 +104,7 @@ public class PMUnitTypes{
         //Region Sentry Units
         barrage = new SentryUnitType("barrage"){{
             health = 500f;
-            duration = 39f * 60f;
+            lifetime = 39f * 60f;
 
             weapons.add(new Weapon(name + "-gun"){{
                 top = false;
@@ -135,7 +137,7 @@ public class PMUnitTypes{
 
         downpour = new SentryUnitType("downpour"){{
             health = 300f;
-            duration = 32f * 60f;
+            lifetime = 32f * 60f;
 
             weapons.add(new RocketWeapon(name + "-rocket"){{
                 x = 19f / 4f;
@@ -168,14 +170,14 @@ public class PMUnitTypes{
             setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
         }};
 
-        flareSmall = new FlareUnitType("small-flare"){{
+        flareSmall = new SignalFlareUnitType("small-flare"){{
             health = 300f;
             hideDetails = false;
             attraction = 800f;
             flareY = 29f / 4f;
         }};
 
-        flareMedium = new FlareUnitType("medium-flare", 360f){{
+        flareMedium = new SignalFlareUnitType("medium-flare", 360f){{
             health = 900f;
             hideDetails = false;
             attraction = 11000f;
@@ -183,7 +185,7 @@ public class PMUnitTypes{
             flareEffectSize = 1.5f;
         }};
 
-        flareLarge = new FlareUnitType("large-flare", 420f){{
+        flareLarge = new SignalFlareUnitType("large-flare", 420f){{
             health = 2700f;
             hideDetails = false;
             attraction = 26000f;

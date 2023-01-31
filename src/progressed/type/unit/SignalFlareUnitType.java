@@ -3,11 +3,9 @@ package progressed.type.unit;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -21,18 +19,18 @@ import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
-public class FlareUnitType extends UnitType{
+public class SignalFlareUnitType extends UnitType{
     public Effect flareEffect = OtherFx.flare;
     public float flareX, flareY;
     public float flareEffectChance = 0.5f, flareEffectSize = 1f;
-    public float duration, growSpeed = 0.05f;
+    public float growSpeed = 0.05f;
     public float shadowSize = -1f;
     public float attraction;
 
-    public FlareUnitType(String name, float duration){
+    public SignalFlareUnitType(String name, float lifetime){
         super(name);
-        this.duration = duration;
-        constructor = FlareUnit::new;
+        this.lifetime = lifetime;
+        constructor = SignalFlareUnit::new;
         aiController = EmptyAI::new;
         hidden = true;
 
@@ -43,11 +41,12 @@ public class FlareUnitType extends UnitType{
         flying = false;
         fallSpeed = 1f / 30f;
         hitSize = 1f;
+        deathExplosionEffect = null;
 
         EntityMapping.nameMap.put(name, constructor);
     }
 
-    public FlareUnitType(String name){
+    public SignalFlareUnitType(String name){
         this(name, 300f);
     }
 
@@ -56,24 +55,7 @@ public class FlareUnitType extends UnitType{
         super.init();
 
         if(shadowSize < 0f) shadowSize = hitSize * 2f;
-    }
-
-    @Override
-    public void update(Unit unit){
-        FlareUnit flare = (FlareUnit)unit;
-        flare.duration -= Time.delta;
-        flare.clampDuration();
-
-        flare.height = Mathf.lerpDelta(flare.height, 1f, growSpeed);
-
-        if(Mathf.chanceDelta(flareEffectChance) && flareEffect != Fx.none && !(unit.dead || unit.health < 0f)){
-            flareEffect.at(
-                unit.x + flareX,
-                unit.y + flareY * flare.height,
-                flareEffectSize,
-                unit.team.color
-            );
-        }
+        if(deathExplosionEffect == null) deathExplosionEffect = OtherFx.flareFallEffect(this);
     }
 
     @Override
@@ -82,13 +64,11 @@ public class FlareUnitType extends UnitType{
     }
 
     @Override
-    public void drawSoftShadow(Unit unit){
-        FlareUnit flare = (FlareUnit)unit;
-
-        Draw.color(0, 0, 0, 0.4f * flare.animation);
+    public void drawSoftShadow(float x, float y, float rotation, float alpha){
+        Draw.color(0, 0, 0, 0.4f * alpha);
         float rad = 1.6f;
-        float size = shadowSize * Draw.scl * 16f;
-        Draw.rect(softShadowRegion, unit, size * rad * flare.height, size * rad * flare.height);
+        float size = shadowSize * region.scl();
+        Draw.rect(softShadowRegion, x, y, size * rad * Draw.xscl, size * rad * Draw.yscl, rotation - 90);
         Draw.color();
     }
 
@@ -97,9 +77,8 @@ public class FlareUnitType extends UnitType{
         Draw.reset();
 
         if(Core.atlas.isFound(outlineRegion)){
-            FlareUnit flare = (FlareUnit)unit;
+            SignalFlareUnit flare = (SignalFlareUnit)unit;
 
-            Draw.alpha(flare.animation);
             Draw.rect(outlineRegion, unit.x, unit.y, outlineRegion.width / 4f, outlineRegion.height / 4f * flare.height, unit.rotation - 90f);
             Draw.reset();
         }
@@ -108,9 +87,8 @@ public class FlareUnitType extends UnitType{
     @Override
     public void drawBody(Unit unit){
         applyColor(unit);
-        FlareUnit flare = (FlareUnit)unit;
+        SignalFlareUnit flare = (SignalFlareUnit)unit;
 
-        Draw.alpha(flare.animation);
         Draw.rect(region, unit.x, unit.y, region.width / 4f, region.height / 4f * flare.height, unit.rotation - 90f);
         Draw.reset();
     }
@@ -118,7 +96,7 @@ public class FlareUnitType extends UnitType{
     @Override
     public void drawCell(Unit unit){
         applyColor(unit);
-        FlareUnit flare = (FlareUnit)unit;
+        SignalFlareUnit flare = (SignalFlareUnit)unit;
 
         Draw.color(cellColor(unit));
         Draw.rect(cellRegion, unit.x, unit.y, cellRegion.width / 4f, cellRegion.height / 4f * flare.height, unit.rotation - 90);
@@ -127,7 +105,8 @@ public class FlareUnitType extends UnitType{
 
     @Override
     public Color cellColor(Unit unit){
-        return super.cellColor(unit).mul(1f, 1f, 1f, ((FlareUnit)unit).animation);
+        float f = ((SignalFlareUnit)unit).fout(), min = 0.5f;
+        return super.cellColor(unit).mul(min + (1 - min) * f);
     }
 
     @Override
@@ -136,7 +115,7 @@ public class FlareUnitType extends UnitType{
         unit.health = health;
         unit.maxHealth = attraction;
         unit.rotation = 90f;
-        ((FlareUnit)unit).duration = duration;
+        ((SignalFlareUnit)unit).lifetime = lifetime;
         return unit;
     }
 
@@ -151,7 +130,7 @@ public class FlareUnitType extends UnitType{
         stats.remove(Stat.range);
 
         stats.remove(Stat.health);
-        stats.add(Stat.health, PMStatValues.signalFlareHealth(health, attraction, duration));
+        stats.add(Stat.health, PMStatValues.signalFlareHealth(health, attraction, lifetime));
     }
 
     @Override
@@ -169,11 +148,11 @@ public class FlareUnitType extends UnitType{
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
-            FlareUnit flare = ((FlareUnit)unit);
+            SignalFlareUnit flare = ((SignalFlareUnit)unit);
             bars.add(new Bar(
-                () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.durationf() * 100f)),
+                () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.fout() * 100f)),
                 () -> Pal.accent,
-                flare::durationf
+                flare::fout
             ));
             bars.row();
         }).growX();

@@ -10,6 +10,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import progressed.graphics.*;
+import progressed.type.unit.*;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -257,4 +258,19 @@ public class OtherFx{
             });
         });
     }).layer(Layer.groundUnit - 1f);
+
+    public static Effect flareFallEffect(SignalFlareUnitType flare){
+        return new Effect(1f / flare.fallSpeed, e -> {
+            float rot = 90f * e.fout() - 90f;
+
+            //Shadow
+            flare.drawSoftShadow(e.x, e.y, rot, e.fout());
+            //Body
+            alpha(e.fout());
+            rect(flare.region, e.x, e.y, flare.region.width / 4f, flare.region.height / 4f * e.rotation, rot);
+            //Cell
+            color(e.color, e.fout());
+            rect(flare.cellRegion, e.x, e.y, flare.cellRegion.width / 4f, flare.cellRegion.height / 4f * e.rotation, rot);
+        }).layer(flare.groundLayer);
+    }
 }

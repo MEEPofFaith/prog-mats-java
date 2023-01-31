@@ -117,10 +117,10 @@ public class PMStatValues{
                             sep(bt, bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
                         }
 
-                        if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof FlareUnitType u){
+                        if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof SignalFlareUnitType u){
                             sep(bt, bundle.format("bullet.pm-flare-health", u.health));
                             sep(bt, bundle.format("bullet.pm-flare-attraction", u.attraction));
-                            sep(bt, bundle.format("bullet.pm-flare-lifetime", (int)(u.duration / 60f)));
+                            sep(bt, bundle.format("bullet.pm-flare-lifetime", (int)(u.lifetime / 60f)));
                         }
 
                         if(type.buildingDamageMultiplier != 1){
