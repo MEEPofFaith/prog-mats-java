@@ -86,8 +86,8 @@ public class PayloadCrafter extends PayloadBlock{
     public void load(){
         super.load();
 
-        inRegion = Core.atlas.find(name + "-in", Core.atlas.find("factory-in-" + size, "prog-mats-factory-in-" + size));
-        outRegion = Core.atlas.find(name + "-out", Core.atlas.find("factory-out-" + size, "prog-mats-factory-out-" + size));
+        inRegion = Core.atlas.find(name + "-in", Core.atlas.find("factory-in-" + size + regionSuffix, "prog-mats-factory-in-" + size + regionSuffix));
+        outRegion = Core.atlas.find(name + "-out", Core.atlas.find("factory-out-" + size + regionSuffix, "prog-mats-factory-out-" + size + regionSuffix));
         if(!hasTop) topRegion = Core.atlas.find("clear");
     }
 

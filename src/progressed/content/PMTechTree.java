@@ -11,8 +11,11 @@ import progressed.util.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
+import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
+import static progressed.content.PMUnitTypes.*;
 import static progressed.content.blocks.PMBlocks.*;
+import static progressed.content.blocks.PMErekirBlocks.*;
 import static progressed.content.blocks.PMPayloads.*;
 
 @SuppressWarnings("CodeBlock2Expr")
@@ -23,6 +26,8 @@ public class PMTechTree{
     static Seq<ItemStack[]> priceAddition = new Seq<>();
 
     public static void load(){
+        /// Serpulo
+        // Turrets
         vanillaNode(lancer, () -> {
             // Behold: a laser pointer
             //node(pinpoint);
@@ -215,9 +220,42 @@ public class PMTechTree{
         vanillaNode(surgeAlloy, () -> {
             nodeProduce(tenelium);
         });
+
+        /// Erekir
+        // Turrets
+        String erekir = "erekir";
+        vanillaNode(erekir, lustre, () -> {
+            //Anxiety-inducing aiming laser go brrr
+            node(sentinel);
+        });
+
+        vanillaNode(erekir, disperse, () -> {
+            //Sentries
+            node(sergeant, combineCosts(sergeant, sentryBuilder, basicSentry), Seq.with(
+                new Research(avert), new Research(unitCargoLoader)
+            ), () -> {
+                nodeFree(sentryBuilder, sergeant, () -> {
+                    nodeFree(basicSentry, sergeant, () -> {
+                        node(missileSentry, () -> {
+                            nodeFree(downpour, missileSentry);
+                        });
+                        nodeFree(barrage, sergeant);
+                    });
+                });
+            });
+        });
+
+        // Crafting
+        vanillaNode(erekir, surgeCrucible, () -> {
+            node(teneliumFuser);
+        });
+
+        // Items
+        vanillaNode(erekir, surgeAlloy, () -> {
+            node(tenelium);
+        });
     }
 
-    //"TODO: replace this with the standard TechTree API, it's public now -Anuke" -Betamindy
     private static void vanillaNode(UnlockableContent parent, Runnable children){
         vanillaNode("serpulo", parent, children);
     }

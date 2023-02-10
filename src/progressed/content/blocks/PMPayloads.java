@@ -174,20 +174,20 @@ public class PMPayloads{
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
-            requirements = with(Items.copper, 20, Items.lead, 25, Items.titanium, 10, Items.silicon, 20);
+            requirements = with(Items.beryllium, 20, Items.graphite, 25, Items.tungsten, 20,  Items.silicon, 20);
 
             size = 2;
-            powerUse = 4f;
+            powerUse = 3f;
             constructTime = 60f * 20f;
             unit = PMUnitTypes.barrage;
         }};
 
         missileSentry = new Sentry("missile-sentry"){{
-            requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 15, Items.silicon, 25, Items.blastCompound, 15);
+            requirements = with(Items.beryllium, 25, Items.graphite, 30, Items.tungsten, 25, Items.oxide, 15, Items.silicon, 25);
 
             size = 2;
             baseExplosiveness = 100f;
-            powerUse = 4.5f;
+            powerUse = 3.5f;
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
         }};

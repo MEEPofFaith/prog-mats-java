@@ -131,10 +131,10 @@ public class PMErekirBlocks{
 
         sergeant = new SinglePayloadAmmoTurret("sergeant"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, with(
-                Items.copper, 125,
-                Items.lead, 75,
-                Items.silicon, 30,
-                Items.titanium, 50
+                Items.beryllium, 300,
+                Items.tungsten, 150,
+                Items.silicon, 300,
+                Items.surgeAlloy, 50
             ));
             ammo(
                 basicSentry, PayloadBullets.barrageLaunch,
@@ -196,12 +196,18 @@ public class PMErekirBlocks{
         // region Crafting
 
         teneliumFuser = new HeatCrafter("tenelium-fuser"){{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting, with(
+                Items.silicon, 120,
+                Items.graphite, 60,
+                Items.tungsten, 100,
+                Items.oxide, 40,
+                Items.surgeAlloy, 60
+            ));
 
             size = 3;
 
             itemCapacity = 20;
-            heatRequirement = 15f;
+            heatRequirement = 25f;
             craftTime = 60f * 2f;
             liquidCapacity = 60f * 5;
             hasLiquids = true;
@@ -257,18 +263,19 @@ public class PMErekirBlocks{
 
         sentryBuilder = new PayloadCrafter("sentry-builder"){{
             requirements(Category.crafting, with(
-                Items.copper, 90,
-                Items.lead, 80,
-                Items.titanium, 60,
+                Items.beryllium, 100,
+                Items.graphite, 90,
+                Items.tungsten, 50,
+                Items.surgeAlloy, 30,
                 Items.silicon, 150
             ));
 
             size = 3;
+            regionSuffix = "-dark";
             recipes(
                 basicSentry,
                 missileSentry
             );
-
             recipes.each(r -> r.blockBuild = false);
         }};
 
