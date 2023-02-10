@@ -13,6 +13,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
@@ -129,7 +130,7 @@ public class PMErekirBlocks{
         }};
 
         sergeant = new SinglePayloadAmmoTurret("sergeant"){{
-            requirements(Category.turret, with(
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
                 Items.copper, 125,
                 Items.lead, 75,
                 Items.silicon, 30,
@@ -177,7 +178,7 @@ public class PMErekirBlocks{
         }};
 
         matrix = new ModularTurret("matrix"){{
-            requirements(Category.turret, with());
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
             size = 7;
             scaledHealth = 370;
             regionSuffix = "-dark";

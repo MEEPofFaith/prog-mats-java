@@ -943,27 +943,6 @@ public class PMBlocks{
             ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
             limitRange();
         }};
-        // endregion
-
-        // region Production
-        smartDrill = new SmartDrill("smart-drill"){{
-            requirements(Category.production, with(
-                Items.copper, 45,
-                Items.graphite, 40,
-                Items.silicon, 45,
-                PMItems.tenelium, 35
-            ));
-            size = 3;
-            drillTime = 260;
-            hasPower = true;
-            tier = 5;
-            updateEffect = Fx.pulverizeMedium;
-            drillEffect = Fx.mineBig;
-            rotateSpeed = -4f;
-
-            consumePower(1.8f);
-            consumeLiquid(Liquids.water, 0.09f).boost();
-        }};
 
         float nexusHeightGrowStop = 0.15f, nexusSizeGrowStop = 0.3f;
         PartProgress nexusBeamHeight = PartProgress.warmup.shorten(0.7f).clamp().curve(Interp.smooth).mul(nexusHeightGrowStop)
@@ -975,7 +954,7 @@ public class PMBlocks{
         float starHeight = 50f;
         float beamLayer = Layer.weather + 0.5f;
         solstice = new NexusTurret("solstice"){{
-            requirements(Category.turret, with());
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
             size = 6;
 
             float brange = range = 100f * 8f;
@@ -1047,7 +1026,7 @@ public class PMBlocks{
         }};
 
         starfall = new NexusTurret("starfall"){{
-            requirements(Category.turret, with());
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
             size = 6;
 
             float brange = range = 100f * 8f;
@@ -1131,6 +1110,27 @@ public class PMBlocks{
             shootSound = Sounds.malignShoot;
 
             consumePower(25f);
+        }};
+        // endregion
+
+        // region Production
+        smartDrill = new SmartDrill("smart-drill"){{
+            requirements(Category.production, with(
+                Items.copper, 45,
+                Items.graphite, 40,
+                Items.silicon, 45,
+                PMItems.tenelium, 35
+            ));
+            size = 3;
+            drillTime = 260;
+            hasPower = true;
+            tier = 5;
+            updateEffect = Fx.pulverizeMedium;
+            drillEffect = Fx.mineBig;
+            rotateSpeed = -4f;
+
+            consumePower(1.8f);
+            consumeLiquid(Liquids.water, 0.09f).boost();
         }};
         // endregion
 

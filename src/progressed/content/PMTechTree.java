@@ -105,7 +105,7 @@ public class PMTechTree{
             //Pixel
             node(bit);
             
-            //Coil
+            //Tesla
             node(shock, () -> {
                 node(spark, Seq.with(
                     new Research(differentialGenerator)
