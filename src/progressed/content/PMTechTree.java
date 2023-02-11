@@ -236,10 +236,7 @@ public class PMTechTree{
             ), () -> {
                 nodeFree(sentryBuilder, sergeant, () -> {
                     nodeFree(basicSentry, sergeant, () -> {
-                        node(missileSentry, () -> {
-                            nodeFree(downpour, missileSentry);
-                        });
-                        nodeFree(barrage, sergeant);
+                        node(missileSentry);
                     });
                 });
             });
