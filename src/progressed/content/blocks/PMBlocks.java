@@ -632,8 +632,9 @@ public class PMBlocks{
 
         pinpoint = new SwingContinuousTurret("pinpoint"){{
             requirements(Category.turret, with(
-                Items.copper, 210,
-                Items.titanium, 200,
+                Items.copper, 200,
+                Items.titanium, 150,
+                Items.plastanium, 125,
                 Items.silicon, 180,
                 PMItems.tenelium, 150
             ));

@@ -13,7 +13,6 @@ import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
 import static mindustry.content.UnitTypes.*;
 import static progressed.content.PMItems.*;
-import static progressed.content.PMUnitTypes.*;
 import static progressed.content.blocks.PMBlocks.*;
 import static progressed.content.blocks.PMErekirBlocks.*;
 import static progressed.content.blocks.PMPayloads.*;
@@ -29,8 +28,8 @@ public class PMTechTree{
         /// Serpulo
         // Turrets
         vanillaNode(lancer, () -> {
-            // Behold: a laser pointer
-            //node(pinpoint);
+            // Behold, a laser pointer
+            node(pinpoint);
 
             // Geomancy
             node(concretion, () -> {
