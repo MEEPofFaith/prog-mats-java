@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.graphics.*;
 
 public class EverythingLiquidSource extends Block{
@@ -22,7 +21,6 @@ public class EverythingLiquidSource extends Block{
         requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         update = true;
         solid = true;
         hasLiquids = true;
@@ -41,6 +39,13 @@ public class EverythingLiquidSource extends Block{
         centerRegion = Core.atlas.find(name + "-center", "center");
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        removeBar("liquid");
+    }
+
     public class EverythingLiquidSourceBuild extends Building{
         @Override
         public void draw(){
@@ -57,8 +62,6 @@ public class EverythingLiquidSource extends Block{
 
         @Override
         public void updateTile(){
-            super.updateTile();
-
             Vars.content.liquids().each(l -> {
                 liquids.add(l, liquidCapacity);
                 dumpLiquid(l);

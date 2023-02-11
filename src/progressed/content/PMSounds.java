@@ -1,14 +1,16 @@
 package progressed.content;
 
-import arc.*;
-import arc.assets.*;
-import arc.assets.loaders.SoundLoader.*;
 import arc.audio.*;
+import arc.files.*;
 import mindustry.*;
+import mindustry.gen.*;
+import mindustry.world.blocks.power.*;
+
+import static mindustry.Vars.*;
 
 /**
- * @author GlennFolker
  * For how to make this. Just copy over and adjust the code.
+ * @author GlennFolker
  */
 public class PMSounds{
     public static Sound
@@ -18,42 +20,41 @@ public class PMSounds{
     rockExplode = new Sound(),
     harbingerCharge = new Sound(),
     harbingerBlast = new Sound(),
-    riftSplit = new Sound(),
-    rocketLaunch = new Sound(),
     nuclearExplosion = new Sound(),
-    sentinelWarning = new Sound(),
     pulseBeam = new Sound(),
-    moonPiss = new Sound(),
-    loudMoonPiss = new Sound(),
+    funiBoom = new Sound(),
     gigaFard = new Sound();
 
     public static void load() {
         if(Vars.headless) return;
 
-        pixelShoot = loadSound("pixel-shoot");
-        pixelHit = loadSound("pixel-hit");
-        rockExplode = loadSound("rock-explode");
-        harbingerCharge = loadSound("harbinger-charge");
-        harbingerBlast = loadSound("harbinger-blast");
-        riftSplit = loadSound("rift-split");
-        nuclearExplosion = loadSound("nuclear-explosion");
-        rocketLaunch = loadSound("rocket");
-        sentinelWarning = loadSound("sentinel-warning");
-        pulseBeam = loadSound("pulse-beam");
-        moonPiss = loadSound("piss");
-        loudMoonPiss = loadSound("piss-loud");
-        gigaFard = loadSound("giga-fard");
+        pixelShoot = Vars.tree.loadSound("pixel-shoot");
+        pixelHit = Vars.tree.loadSound("pixel-hit");
+        rockExplode = Vars.tree.loadSound("rock-explode");
+        harbingerCharge = Vars.tree.loadSound("harbinger-charge");
+        harbingerBlast = Vars.tree.loadSound("harbinger-blast");
+        nuclearExplosion = Vars.tree.loadSound("nuclear-explosion");
+        pulseBeam = Vars.tree.loadSound("pulse-beam");
+        funiBoom = Vars.tree.loadSound("funi-boom");
+        gigaFard = Vars.tree.loadSound("giga-fard");
     }
 
-    protected static Sound loadSound(String soundName){
+    public static void overrideSounds(){
+        if(Vars.headless) return;
+
+        content.blocks().each(b -> b.destroySound = Sounds.wind3);
+        content.blocks().each(b -> b instanceof PowerGenerator, (PowerGenerator b) -> b.explodeSound = funiBoom);
+        content.units().each(u -> u.deathSound = Sounds.wind3);
+
+        Sounds.press.load(soundFile("press-boom"));
+    }
+
+    protected static String soundPath(String soundName){
         String name = "sounds/" + soundName;
-        String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
+        return Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
+    }
 
-        Sound sound = new Sound();
-
-        AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundParameter(sound));
-        desc.errored = Throwable::printStackTrace;
-
-        return sound;
+    protected static Fi soundFile(String soundName){
+        return Vars.tree.get(soundPath(soundName));
     }
 }

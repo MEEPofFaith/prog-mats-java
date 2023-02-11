@@ -2,14 +2,11 @@ package progressed.content.blocks;
 
 import arc.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
 import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
@@ -19,42 +16,31 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.part.pseudo3d.*;
+import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
-import progressed.world.blocks.defence.turret.apotheosis.*;
 import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.modular.*;
-import progressed.world.blocks.defence.turret.modular.ModularTurret.ModuleGroup.*;
-import progressed.world.blocks.defence.turret.modular.modules.BaseModule.*;
 import progressed.world.blocks.defence.turret.payload.*;
-import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
-import progressed.world.blocks.sandbox.defence.*;
-import progressed.world.blocks.sandbox.distribution.*;
-import progressed.world.blocks.sandbox.items.*;
-import progressed.world.blocks.sandbox.power.*;
-import progressed.world.blocks.sandbox.units.*;
 import progressed.world.blocks.storage.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
-import static progressed.content.blocks.PMModules.*;
 import static progressed.content.blocks.PMPayloads.*;
 
 public class PMBlocks{
@@ -83,29 +69,21 @@ public class PMBlocks{
     //Support
     allure, vaccinator,
 
-    //Anime sweep laser
-    incision, fissure,
+    //Behold: a laser pointer
+
+    pinpoint,
 
     //Swords
     dance, masquerade,
 
-    //Why do I hear anxiety piano
-    sentinel,
-
     //Misc
-    blackhole, excalibur,
-
-    //Modular
-    council, congress, pantheon,
+    kugelblitz, excalibur,
 
     //Payload
-    sergeant, arbalest,
+    arbalest, artemis, paragon,
 
-    //Missiles
-    strikedown, trinity,
-
-    //Apotheosis
-    apotheosisNexus, apotheosisCharger,
+    //Nexus
+    solstice, starfall,
 
     // endregion
     // region production
@@ -128,7 +106,7 @@ public class PMBlocks{
     mindronCollider, pyroclastForge,
 
     //Payloads
-    moduleAssembler, moduleFoundry, shellPress, missileFactory, sentryBuilder,
+    shellPress, missileFactory,
 
     // endregion
     // region defence
@@ -147,34 +125,7 @@ public class PMBlocks{
 
     fence, web,
 
-    systemBooster, ballisticProjector,
-
-    // endregion
-    // region Sandbox
-
-    //Turret
-    harbinger, everythingGun, omegaCharger, testTurret,
-
-    //Distribution
-    everythingItemSource, sandDriver,
-
-    //liquid
-    everythingLiquidSource,
-    
-    //Power
-    strobeNode, strobeInf, strobeBoost, 
-
-    //Defense
-    sandboxWall, sandboxWallLarge,
-
-    //Unit
-    godFactory, capBlock, harmacist,
-
-    //Items
-    multiSource, multiVoid, multiSourceVoid,
-
-    //Effect
-    infiniMender, infiniOverdrive;
+    ballisticProjector;
 
     // endregion
 
@@ -509,8 +460,7 @@ public class PMBlocks{
             shootY = 0.25f;
             rotateSpeed = 3.5f;
             recoil = 4f;
-            beamStroke = 4f;
-            beamWidth = 20f;
+            beamEffect = LightningFx.blazeBeam;
             shootType = new MagmaBulletType(76f, 24f){{
                 shake = 2f;
                 crackEffects = 6;
@@ -603,13 +553,12 @@ public class PMBlocks{
             size = 3;
             hideDetails = false;
             scaledHealth = 120;
-            reload = 450f;
-            inaccuracy = 0f;
+            reload = 150f;
             range = 544f;
             rotateSpeed = 2.5f;
             recoil = 5f;
             cooldownTime = 300f;
-            shootSound = Sounds.railgun;
+            shootSound = Sounds.cannon;
 
             coolant = consumeCoolant(0.2f);
         }};
@@ -681,151 +630,58 @@ public class PMBlocks{
             }
         };
 
-        incision = new SweepLaserTurret("incision"){
-            final float brange = range = 22f * tilesize;
-
-            final SweepLaserBulletType sweepLaser = new SweepLaserBulletType(){{
-                speed = brange;
-                drawSize = brange + 10f * tilesize;
-                length = 8f * tilesize;
-                startDelay = 0.125f;
-                extendTime += startDelay;
-                sweepTime += startDelay;
-                angleRnd = 25f;
-                blasts = 12;
-                blastBullet = new BombBulletType(20, 32f, "clear"){{
-                    lifetime = 0f;
-                    hitEffect = Fx.explosion;
-                    status = StatusEffects.blasted;
-                }};
-            }};
-
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 60,
-                    Items.lead, 50,
-                    Items.silicon, 60,
-                    Items.titanium, 50
-                ));
-                scaledHealth = 260;
-                size = 2;
-                reload = 1.5f * 60f;
-                shootY = 23f / 4f - recoil;
-                shootSound = Sounds.plasmadrop;
-                retractDelay = 0.125f;
-                hideDetails = false;
-                shootType = sweepLaser;
-
-                pointDrawer = t -> {
-                    if(t.bullet == null) return;
-
-                    Draw.z(Layer.effect + 1f);
-                    Draw.color(Color.red);
-                    Tmp.v1.trns(t.rotation, shootY);
-
-                    float x = t.x + Tmp.v1.x + t.recoilOffset.x,
-                        y = t.y + Tmp.v1.y + t.recoilOffset.y,
-                        fin = Mathf.curve(t.bullet.fin(), 0f, sweepLaser.startDelay),
-                        fout = 1f - Mathf.curve(t.bullet.fin(), sweepLaser.retractTime, sweepLaser.retractTime + 0.125f),
-                        scl = fin * fout;
-
-                    Fill.circle(x, y, (1.25f + Mathf.absin(Time.time, 1f, 0.25f)) * scl);
-                };
-
-                consumePower(5f);
-                coolant = consumeCoolant(0.2f);
-            }
-
-            @Override
-            public void setStats(){
-                super.setStats();
-
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, s -> {
-                    s.row();
-                    s.table(bt -> {
-                        bt.left().defaults().padRight(3).left();
-
-                        BulletType blast = sweepLaser.blastBullet;
-                        bt.add(
-                            Core.bundle.format("bullet.pm-multi-splash",
-                                sweepLaser.blasts,
-                                blast.splashDamage,
-                                Strings.fixed(blast.splashDamageRadius / tilesize, 1)
-                            )
-                        );
-                        bt.row();
-                        bt.add(
-                            (blast.status.minfo.mod == null ? blast.status.emoji() : "") + "[stat]" + blast.status.localizedName
-                        );
-                    }).padTop(-9).left().fillY().get().background(Tex.underline);
-                });
-            }
-        };
-
-        fissure = new SweepLaserTurret("fissure"){{
-            float brange = range = 25f * tilesize;
-
+        pinpoint = new SwingContinuousTurret("pinpoint"){{
             requirements(Category.turret, with(
-                Items.copper, 210,
-                Items.titanium, 200,
+                Items.copper, 200,
+                Items.titanium, 150,
+                Items.plastanium, 125,
                 Items.silicon, 180,
                 PMItems.tenelium, 150
             ));
-            scaledHealth = 230;
-            size = 3;
-            reload = 2f * 60f;
-            shootY = 46f / 4f - recoil;
-            shootSound = Sounds.plasmadrop;
-            retractDelay = 0.125f;
 
-            consumePower(8.5f);
-            coolant = consumeCoolant(0.2f);
+            shootType = new PointLaserBulletType(){{
+                damage = 200f;
+                sprite = "prog-mats-swing-laser";
 
-            RiftBulletType rift = new RiftBulletType(550f){{
-                speed = brange;
-                drawSize = brange + 10f * tilesize;
-                length = 12f * tilesize;
-                startDelay = 0.125f;
-                extendTime += startDelay;
-                sweepTime += startDelay;
-                angleRnd = 25f;
-                hitSound = PMSounds.riftSplit;
-                hitSoundVolume = 0.2f; //IT'S REALLY LOUD
-                layer = Layer.effect + 1f;
+                beamEffect = Fx.none;
+                trailLength = 6;
+                trailColor = hitColor = Color.valueOf("fd4f60");
+                trailWidth = 3f;
+                trailSinMag = oscMag;
+                trailSinScl = oscScl;
             }};
-            shootType = rift;
 
-            pointDrawer = t -> {
-                if(t.bullet == null) return;
+            drawer = new DrawSwingTurret(){{
+                parts.add(new RegionPart("-break"){{
+                    x = 19f / 4f;
+                    y = 17f / 4f;
+                    moveRot = 90f;
+                    progress = PartProgress.life;
+                    mirror = true;
+                    under = true;
+                }});
+            }};
 
-                Draw.z(Layer.bullet - 1f);
-                Draw.color(Color.black);
-                Tmp.v1.trns(t.rotation, shootY);
+            shootSound = Sounds.none;
+            loopSoundVolume = 1f;
+            loopSound = Sounds.laserbeam;
 
-                float x = t.x + Tmp.v1.x + t.recoilOffset.x,
-                    y = t.y + Tmp.v1.y + t.recoilOffset.y,
-                    fin = Mathf.curve(t.bullet.fin(), 0f, rift.startDelay),
-                    fout = 1f - Mathf.curve(t.bullet.fin(), rift.retractTime, rift.retractTime + 0.125f),
-                    scl = fin * fout,
-                    s = Mathf.absin(Time.time, 1f, 0.25f),
-                    w = 1.5f + s,
-                    l = 4.5f + s;
+            rotateSpeed = 6f;
+            rotateSpeedAccel = 0.2f;
+            rotateSpeedDrag = 0.02f;
+            aimChangeSpeed = 6f;
+            aimChangeSpeedAccel = 0.5f;
+            aimChangeSpeedDrag = 0.06f;
 
-                for(int i = 0; i < 4; i++){
-                    float a = t.rotation + 45 + 90 * i;
+            size = 3;
+            range = 16f * tilesize;
+            scaledHealth = 140;
+            shootY = 34f / 4f;
+            shootCone = 360f;
 
-                    Tmp.v1.trns(a, w * scl, 0f);
-                    Tmp.v2.trns(a, -w * scl, 0f);
-                    Tmp.v3.trns(a, 0f, l * scl);
+            unitSort = UnitSorts.strongest;
 
-                    Fill.tri(
-                        x + Tmp.v1.x, y + Tmp.v1.y,
-                        x + Tmp.v2.x, y + Tmp.v2.y,
-                        x + Tmp.v3.x, y + Tmp.v3.y
-                    );
-                }
-            };
+            consumePower(1.5f);
         }};
 
         //"lets dance"
@@ -876,49 +732,7 @@ public class PMBlocks{
             buildWaveOffset = 0.05f;
         }};
 
-        sentinel = new AimLaserTurret("sentinel"){{
-            requirements(Category.turret, with(
-                Items.copper, 900,
-                Items.lead, 375,
-                Items.graphite, 350,
-                Items.surgeAlloy, 450,
-                Items.silicon, 450,
-                PMItems.tenelium, 250
-            ));
-
-            size = 4;
-            hideDetails = false;
-            scaledHealth = 120;
-            
-            shootY = 34f / 4f;
-            range = 328f;
-            reload = 600f;
-
-            shoot.firstShotDelay = EnergyFx.aimChargeBegin.lifetime;
-
-            heatColor = Pal.lancerLaser;
-            chargingSound = Sounds.techloop;
-            shootSound = Sounds.laserblast;
-            chargeVolume = 2f;
-            minPitch = 0.75f;
-            maxPitch = 1.5f;
-            shootSoundVolume = 1f;
-            warningDelay = 33f;
-            warningVolume = 3f;
-            warningSound = PMSounds.sentinelWarning;
-
-            recoil = 3f;
-            aimRnd = 12f;
-            shootWarmupSpeed = 0.03f;
-
-            shootType = PMBullets.sentinelLaser;
-            unitSort = UnitSorts.strongest;
-
-            consumePower(29f);
-            coolant = consumeCoolant(1f);
-        }};
-
-        blackhole = new BlackHoleTurret("blackhole"){{
+        kugelblitz = new BlackHoleTurret("blackhole"){{
             requirements(Category.turret, with(
                 Items.titanium, 100,
                 Items.thorium, 150,
@@ -935,7 +749,7 @@ public class PMBlocks{
             reload = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
-            shoot.firstShotDelay = EnergyFx.kugelblitzChargeBegin.lifetime;
+            shoot.firstShotDelay = EnergyFx.kugelblitzCharge.lifetime;
             rotateSpeed = 2f;
             recoil = 2f;
             recoilTime = 240f;
@@ -971,7 +785,7 @@ public class PMBlocks{
             shootWarmupSpeed = 0.05f;
             minWarmup = 0.9f;
             heatColor = Pal.surge;
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.malignShoot;
             rotateSpeed = 2f;
             recoil = 8f;
             recoilTime = 300f;
@@ -1025,99 +839,7 @@ public class PMBlocks{
             }};
         }};
 
-        council = new ModularTurret("council"){{
-            requirements(Category.turret, with(
-                Items.copper, 200,
-                Items.lead, 170,
-                Items.graphite, 150,
-                Items.titanium, 120
-            ));
-            size = 5;
-            hideDetails = false;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 12f, 4f),
-                new ModuleGroup(ModuleSize.medium)
-            };
-        }};
-
-        congress = new ModularTurret("congress"){{
-            requirements(Category.turret, with(
-                Items.copper, 630,
-                Items.lead, 540,
-                Items.plastanium, 360,
-                PMItems.tenelium, 210
-            ));
-            size = 7;
-            hideDetails = false;
-            payloadSpeed = 0.9f;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 73f / 4f, 12f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 0f, 73f / 4f),
-                new ModuleGroup(ModuleSize.large)
-            };
-        }};
-
-        pantheon = new ModularTurret("pantheon"){{
-            requirements(Category.turret, with(
-                Items.copper, 1340,
-                Items.lead, 1270,
-                PMItems.tenelium, 980,
-                Items.surgeAlloy, 630
-            ));
-            size = 9;
-            hideDetails = false;
-            payloadSpeed = 1.2f;
-
-            moduleGroups = new ModuleGroup[]{
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 23f),
-                new ModuleGroup(ModuleSize.small, ModuleGroupType.oct, 31f, 15f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.quad, 19f, 19f),
-                new ModuleGroup(ModuleSize.medium, ModuleGroupType.single, 0f, 0f),
-                new ModuleGroup(ModuleSize.large, ModuleGroupType.quad, 0f, 65f / 4f)
-            };
-        }};
-
-        sergeant = new PayloadLaunchTurret("tinker"){
-            {
-                requirements(Category.turret, with(
-                    Items.copper, 125,
-                    Items.lead, 75,
-                    Items.silicon, 30,
-                    Items.titanium, 50
-                ));
-                ammo(
-                    basicSentry, PayloadBullets.barrageLaunch,
-                    missileSentry, PayloadBullets.downpourLaunch,
-                    dashSentry, PayloadBullets.rapierLaunch
-                );
-
-                size = 3;
-                hideDetails = false;
-                scaledHealth = 140;
-                minRange = 5f * tilesize;
-                range = 40 * tilesize;
-                velocityRnd = 0.2f;
-                cooldown = 0.03f;
-                recoil = 6f;
-                restitution = 0.02f;
-                shake = 2f;
-
-                chargeTime = 60f;
-                lineSpacing = 3.5f;
-
-                coolant = consumeCoolant(0.2f);
-            }
-
-            @Override
-            public void init(){
-                super.init();
-                shootY = -4f;
-            }
-        };
-
-        arbalest = new PayloadRocketTurret("arbalest"){{
+        arbalest = new SinglePayloadAmmoTurret("arbalest"){{
             requirements(Category.turret, with(
                 Items.copper, 150,
                 Items.graphite, 300,
@@ -1127,28 +849,49 @@ public class PMBlocks{
             ));
             ammo(
                 basicRocket, PayloadBullets.arbalestBasic,
-                incendiaryRocket, PayloadBullets.arbalestIncend,
-                bomberRocket, PayloadBullets.arbalestBomber
+                incendiaryRocket, PayloadBullets.arbalestIncend
             );
+
+            PartProgress baseProgress = PartProgress.warmup.shorten(0.3f);
+            drawer = new DrawMulti(
+                new DrawPayloadTurret(true){{
+                    parts.add(new RegionPart("-doors"){{
+                        progress = baseProgress.shorten(0.3f).clamp().curve(Interp.smooth);
+                        mirror = true;
+                        moveX = 6f;
+                    }});
+                }},
+                new DrawPayloadAmmo(){{
+                    progress = matProgress = baseProgress.delay(0.7f);
+                    layer = Layer.turret + 1f;
+                    materialize = false;
+                    rotation = 90f;
+                    xScl = yScl = 0.8f;
+                    growX = growY = 0.2f;
+                }}
+            );
+
             size = 5;
             hideDetails = false;
             scaledHealth = 180;
-            reload = 1.5f * 60f;
+            reload = 2f * 60f;
+            setWarmupTime(1.5f);
+            shootCone = 1f;
+            shootY = 0f;
             range = 800f;
-            recoil = 4f;
-            leadTargets = false;
-
-            shootY = doorOffset = 6f / 4f;
-            doorWidth = 32f / 4f;
-            doorLength = 116f / 4f;
-            rotOffset = 90f;
+            recoil = 0.5f;
+            rotateSpeed = 0.9f;
+            shootSound = Sounds.missileLaunch;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootSmokeMissile;
 
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            limitRange();
         }};
 
-        strikedown = new PayloadMissileTurret("strikedown"){{
+        artemis = new BallisticMissileTurret("artemis"){{
             requirements(Category.turret, with(
                 Items.copper, 70,
                 Items.lead, 350,
@@ -1158,112 +901,222 @@ public class PMBlocks{
                 PMItems.tenelium, 120
             ));
             ammo(
-                basicMissile, PayloadBullets.strikedownBasic,
-                recursiveMissile, PayloadBullets.strikedownRecursive
+                basicMissile, PayloadBullets.artemisBasic,
+                recursiveMissile, PayloadBullets.artemisRecursive
             );
-            size = 4;
-            hideDetails = false;
+            size = 5;
             scaledHealth = 160;
-            reload = 60f;
-            range = 656f;
-            shootSound = Sounds.artillery;
-            cooldown = 0.01f;
+            reload = 90f;
+            range = 85f * 8f;
+            minRange = 25f * 8f;
+            shootY = 0f;
+            shootSound = Sounds.missileLaunch;
+            cooldownTime = 3.5f * 60f;
             shake = 5f;
-            inaccuracy = 5f;
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            limitRange();
         }};
 
-        trinity = new PayloadMissileTurret("arbiter"){{
+        paragon = new BallisticMissileTurret("paragon"){{
             requirements(Category.turret, with(
-                Items.copper, 4000,
-                Items.graphite, 2200,
-                Items.silicon, 2000,
-                Items.titanium, 1300,
-                Items.thorium, 650,
-                Items.surgeAlloy, 200,
-                PMItems.tenelium, 800
+                Items.copper, 6000,
+                Items.graphite, 5200,
+                Items.silicon, 3500,
+                Items.titanium, 2500,
+                Items.thorium, 1250,
+                Items.surgeAlloy, 1000,
+                PMItems.tenelium, 1800
             ));
             ammo(
-                basicNuke, PayloadBullets.trinityBasic,
-                clusterNuke, PayloadBullets.trinityCluster,
+                basicNuke, PayloadBullets.paragonBasic,
+                clusterNuke, PayloadBullets.paragonCluster,
                 sandboxNuke, PayloadBullets.ohno
             );
             size = 7;
-            hideDetails = false;
             scaledHealth = 170;
-            range = 2800f;
-            shootSound = Sounds.explosionbig;
-            cooldown = 0.005f;
+            reload = 12f * 60f;
+            range = 180f * 8f;
+            minRange = 50f * 8f;
+            shootY = 0f;
+            shootSound = Sounds.missileLaunch;
+            cooldownTime = 6f * 60f;
             shake = 10f;
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
+            limitRange();
         }};
 
-        apotheosisNexus = new ApotheosisNexus("apotheosis-nexus"){{
-            requirements(Category.turret, with(
-                Items.copper, 10200,
-                Items.lead, 11600,
-                Items.silicon, 7200,
-                Items.titanium, 6300,
-                Items.thorium, 3100,
-                Items.surgeAlloy, 3600,
-                PMItems.tenelium, 5400
-            ));
-            size = 9;
-            scaledHealth = 480;
-            reload = 60f * 15f;
-            range = 200f * tilesize;
-            damage = 12000f / 12f;
-            damageRadius = 6f * tilesize;
-            buildingDamageMultiplier = 0.25f;
-            speed = 4f;
-            duration = 4f * 60f;
-            shake = laserShake = 5f;
-            outlineColor = Pal.darkOutline;
+        float nexusHeightGrowStop = 0.15f, nexusSizeGrowStop = 0.3f;
+        PartProgress nexusBeamHeight = PartProgress.warmup.shorten(0.7f).clamp().curve(Interp.smooth).mul(nexusHeightGrowStop)
+            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusHeightGrowStop));
+        PartProgress nexusBeamSize = PartProgress.warmup.shorten(0.5f).clamp().curve(Interp.smooth).mul(nexusSizeGrowStop)
+            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusSizeGrowStop));
+        float starLen = 28f;
+        float starWidth = 12f;
+        float starHeight = 50f;
+        float beamLayer = Layer.weather + 0.5f;
+        solstice = new NexusTurret("solstice"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
+            size = 6;
 
-            unitSort = UnitSorts.strongest;
+            float brange = range = 100f * 8f;
+            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
+                speed = brange;
+                drawSize = speed * 2f;
+                splashDamage = 1900f;
+                splashDamageRadius = 32f;
+                height = starHeight;
+                alwaysBloom = true;
+            }};
 
-            baseDst = new float[]{11f, 19f};
-            spinnerWidth = new float[]{49f / 4f, 82f / 4f};
-            fireEffect = new MultiEffect(EnergyFx.apotheosisClouds, EnergyFx.apotheosisBlast);
+            ammo(Items.phaseFabric, bullet);
 
-            consumePower(655f);
-            float cooleantUse = 8f;
-            coolantMultiplier = 1f / (cooleantUse * Liquids.water.heatCapacity);
-            coolant = consumeCoolant(cooleantUse);
+            drawer = new DrawMulti(
+                new DrawTurret(){{
+                    parts.add(new PillarPart(){{
+                        radius = starWidth / 4f;
+                        alphaProg = PartProgress.constant(1f);
+                        heightProg = nexusBeamHeight;
+                        radProg = nexusBeamSize;
+                        alwaysBloom = true;
+                        layer = beamLayer;
+                        height = starHeight;
+                    }});
+
+                    parts.add(new RingPart(){{
+                        height = starHeight * nexusHeightGrowStop;
+                        inRad = starLen * 2f;
+                        outRad = inRad * 2.5f;
+                        alwaysBloom = true;
+                        layer = beamLayer;
+                        radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
+                        alphaProg = radProg.inv();
+                    }});
+
+                    parts.add(new StarPart(){{
+                        heightProg = nexusBeamHeight;
+                        sizeProg = nexusBeamSize;
+                        spikeLen = starLen;
+                        spikeWidth = starWidth;
+                        alwaysBloom = true;
+                        layer = beamLayer + 0.1f;
+                        height = starHeight;
+                    }});
+                }},
+                new DrawNexusAim(){{
+                    height = starHeight;
+                    pointWidth = 3f;
+                    pointInLen = 6f;
+                    pointOutLen = 10f;
+                    alwaysBloom = true;
+                    layer = beamLayer;
+
+                    clipSize = (range + radius) * 2f;
+                }}
+            );
+
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (4f * 60f);
+            warmupMaintainTime = bullet.lifetime + 30f;
+
+            reload = 20f;
+
+            shootSound = Sounds.shootSmite;
+
+            consumePower(25f);
         }};
 
-        apotheosisCharger = new ApotheosisChargeTower("apotheosis-charger"){{
-            requirements(Category.turret, with(
-                Items.copper, 3200,
-                Items.lead, 4100,
-                Items.silicon, 4600,
-                Items.titanium, 2400,
-                Items.thorium, 2300,
-                Items.surgeAlloy, 1000,
-                PMItems.tenelium, 2500
-            ));
-            size = 7;
-            scaledHealth = 360;
-            range = 30f;
-            damageBoost = 6000f / 12f;
-            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
-            radiusBoost = 1f;
-            speedBoost = 1f / 8f;
-            durationBoost = 5f;
-            outlineColor = Pal.darkOutline;
+        starfall = new NexusTurret("starfall"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
+            size = 6;
 
-            startLength = size * tilesize / -4f - 5f;
-            endLength = size * tilesize / 2f - 2f;
-            effectLength = endLength - 4f;
+            float brange = range = 100f * 8f;
+            float shootRadius = 10f * 8f;
+            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
+                speed = brange;
+                drawSize = speed * 2f;
+                splashDamage = 2400f;
+                splashDamageRadius = 32f;
+                strikeInaccuracy = shootRadius;
+                height = starHeight;
+                baseColorLight = Pal.surge;
+                baseColorDark = PMPal.surgeDark;
+                alwaysBloom = true;
+            }};
 
-            consumePower(163f);
+            ammo(Items.phaseFabric, bullet);
+            shoot.shots = 10;
+            shoot.shotDelay = 5f;
+
+            drawer = new DrawMulti(
+                new DrawTurret(){{
+                    parts.add(new PillarPart(){{
+                        baseColorLight = topColorLight = Pal.surge;
+                        baseColorDark = topColorDark = PMPal.surgeDark;
+                        radius = starWidth / 4f;
+                        alphaProg = PartProgress.constant(1f);
+                        heightProg = nexusBeamHeight;
+                        radProg = nexusBeamSize;
+                        alwaysBloom = true;
+                        layer = beamLayer;
+                        height = starHeight;
+                    }});
+
+                    parts.add(new RingPart(){{
+                        inColor = Pal.surge;
+                        height = starHeight * nexusHeightGrowStop;
+                        inRad = starLen * 2f;
+                        outRad = inRad * 2.5f;
+                        alwaysBloom = true;
+                        layer = beamLayer;
+                        radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
+                        alphaProg = radProg.inv();
+                    }});
+
+                    parts.add(new StarPart(){{
+                        lightColor = Pal.surge;
+                        darkColor = PMPal.surgeDark;
+                        heightProg = nexusBeamHeight;
+                        sizeProg = nexusBeamSize;
+                        spikeLen = starLen;
+                        spikeWidth = starWidth;
+                        alwaysBloom = true;
+                        layer = beamLayer + 0.1f;
+                        height = starHeight;
+                    }});
+                }},
+                new DrawNexusAim(){{
+                    color = Pal.surge;
+                    beams = 6;
+                    radius = shootRadius + bullet.radius;
+                    pointWidth = 8f;
+                    pointInLen = 3f * 8f;
+                    pointOutLen = 5f * 8f;
+                    pointRotation = 45f;
+                    height = starHeight;
+                    alwaysBloom = true;
+                    layer = beamLayer;
+
+                    clipSize = (range + radius) * 2f;
+                }}
+            );
+
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (4f * 60f);
+            warmupMaintainTime = shoot.shots * shoot.shotDelay + bullet.lifetime + 30f;
+
+            reload = 90f;
+
+            shootSound = Sounds.malignShoot;
+
+            consumePower(25f);
         }};
-
-        ((ApotheosisNexus)apotheosisNexus).chargeTower = (ApotheosisChargeTower)apotheosisCharger;
         // endregion
 
         // region Production
@@ -1338,10 +1191,10 @@ public class PMBlocks{
             liquidCapacity = 50f;
             accelerationSpeed = 0.0004f;
             decelerationSpeed = 0.003125f;
-            drawer = new DrawImpact(){{
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawSpeedPlasma(){{
                 plasma1 = Items.titanium.color;
                 plasma2 = Items.thorium.color;
-            }};
+            }}, new DrawDefault());
             onCraft = tile -> {
                 Tmp.v1.setToRandomDirection().setLength(28f / 4f);
                 CrafterFx.colliderFusion.at(tile.x + Tmp.v1.x, tile.y + Tmp.v1.y);
@@ -1402,49 +1255,6 @@ public class PMBlocks{
             );
         }};
 
-        moduleAssembler = new PayloadCrafter("module-assembler"){{
-            requirements(Category.crafting, with(
-                Items.copper, 220,
-                Items.lead, 250,
-                Items.silicon, 100
-            ));
-            size = 3;
-
-            recipes(
-                new Recipe(shrapnel, 3f, 1.5f * 60f),
-                new Recipe(froth, 2.5f, 1.5f * 60f),
-                new Recipe(bifurcation, 3f, 1.5f * 60f),
-                new Recipe(iris, 4f, 2.5f * 60f),
-                new Recipe(bandage, 2f, 60f),
-                new Recipe(overclocker, 3.5f, 2f * 60f),
-                new Recipe(blunderbuss, shrapnel, 7f, 7f * 60f),
-                new Recipe(vulcan, 7.5f, 11.5f * 60f),
-                new Recipe(lotus, iris, 8f, 9f * 60f),
-                new Recipe(ambrosia, 6f, 8f * 60f)
-            );
-        }};
-
-        moduleFoundry = new PayloadCrafter("module-foundry"){{
-            requirements(Category.crafting, with(
-                Items.lead, 540,
-                Items.silicon, 430,
-                PMItems.tenelium, 300,
-                Items.plastanium, 240
-            ));
-            size = 5;
-
-            recipes(
-                new Recipe(pinpoint, 4f, 5f * 60f),
-                new Recipe(airburst, 7.5f, 12.5f * 60f),
-                new Recipe(vigilance, 6.5f, 9f * 60f),
-                new Recipe(gravity, 6.5f, 8.5f * 60f),
-                new Recipe(rebound, 10f, 17f * 60f),
-                new Recipe(trifecta, airburst, 12f, 16f * 60f),
-                new Recipe(jupiter, iris, 14f, 21.5f * 60f),
-                new Recipe(ares, vulcan, 14.5f, 24.5f * 60f)
-            );
-        }};
-
         shellPress = new PayloadCrafter("shell-press"){{
             requirements(Category.crafting, with(
                 Items.copper, 75,
@@ -1466,12 +1276,11 @@ public class PMBlocks{
 
         missileFactory = new PayloadCrafter("missile-factory"){{
             requirements(Category.crafting, with(
-                Items.copper, 300,
-                Items.lead, 200,
-                Items.silicon, 200,
-                Items.plastanium, 150,
-                Items.thorium, 100,
-                Items.surgeAlloy, 110
+                Items.copper, 350,
+                Items.lead, 250,
+                Items.silicon, 220,
+                Items.plastanium, 160,
+                Items.thorium, 110
             ));
 
             size = 5;
@@ -1479,29 +1288,11 @@ public class PMBlocks{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                basicRocket, incendiaryRocket, bomberRocket,
+                basicRocket, incendiaryRocket,
                 basicMissile, recursiveMissile,
                 basicNuke, clusterNuke
             );
-            recipes.get(1).liquidCost = new LiquidStack(Liquids.slag, 40f);
-        }};
-
-        sentryBuilder = new PayloadCrafter("sentry-builder"){{
-            requirements(Category.crafting, with(
-                Items.copper, 90,
-                Items.lead, 80,
-                Items.titanium, 60,
-                Items.silicon, 150
-            ));
-
-            size = 3;
-            recipes(
-                basicSentry,
-                missileSentry,
-                dashSentry
-            );
-
-            recipes.each(r -> r.blockBuild = false);
+            recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
         }};
         // endregion
 
@@ -1518,7 +1309,7 @@ public class PMBlocks{
 
         // region Units
         healZone = new EffectZone("rejuvenation-beacon"){
-            final float healing = 100f;
+            final float healing = 60f;
 
             {
                 requirements(Category.units, with(
@@ -1528,7 +1319,7 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
                 baseColor = Pal.heal;
                 reload = 40f;
 
@@ -1564,9 +1355,9 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
 
-                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 25f * tile.heat));
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 22f * tile.heat));
 
 
                 consumePower(3f);
@@ -1590,10 +1381,10 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 0.125f;
+                height = 16f;
                 baseColor = Pal.redderDust;
 
-                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 25f * tile.heat));
+                zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 22f * tile.heat));
 
                 consumePower(10f);
             }
@@ -1654,22 +1445,7 @@ public class PMBlocks{
             powerPerLink = 0.5f;
         }};
 
-        systemBooster = new SystemBooster("system-booster"){{
-            requirements(Category.effect, with(
-                Items.lead, 250,
-                Items.titanium, 200,
-                Items.silicon, 230,
-                Items.plastanium, 100,
-                Items.surgeAlloy, 130,
-                PMItems.tenelium, 170
-            ));
-            size = 3;
-            speedBoost = 1.2f;
-            basePowerUse = 2.4f;
-            powerPerBlock = 0.08f;
-        }};
-
-        ballisticProjector = new BallisticProjector("shield-projector"){{
+        ballisticProjector = new ShieldProjector("shield-projector"){{
             requirements(Category.effect, with(
                 Items.lead, 325,
                 Items.titanium, 225,
@@ -1686,175 +1462,12 @@ public class PMBlocks{
             cooldownBrokenBase *= 2f;
 
             consumePower(7f);
-            consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
+            itemConsumer = consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
         }};
         // endregion
 
-        // region Sandbox
-        /// Turret
-        harbinger = new ChaosTurret("harbinger"){
-            {
-                size = 8;
-                inaccuracy = 45f;
-                shake = 150f;
-                range = 560f;
-                recoil = 8f;
-                rotateSpeed = 0.3f;
-                shootCone = 20f;
-                cooldownTime = 600f;
-                recoilTime = 600f;
-                reload = 450f;
-                shoot.firstShotDelay = EnergyFx.harbingerCharge.lifetime;
-                chargeSound = PMSounds.harbingerCharge;
-                shootSound = PMSounds.harbingerBlast;
-                shootType = PMBullets.harbingerLaser;
-
-                shoot.shots = 100;
-
-                consumePower(300f);
-            }
-
-            @Override
-            public void init(){
-                super.init();
-                shootY -= 16f;
-            }
-
-            @Override
-            public void setStats(){
-                super.setStats();
-
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
-            }
-        };
-
-        everythingGun = new EverythingTurret("everything-gun"){{
-            size = 6;
-            rotateSpeed = 20f;
-            reload = 1f;
-            range = 4400f;
-            shootCone = 360f;
-        }};
-
-        omegaCharger = new ApotheosisChargeTower("omega-charger"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, empty);
-            size = 1;
-            health = ProgMats.sandboxBlockHealth;
-            range = 60f;
-            damageBoost = 500000f / 12f;
-            boostFalloff = ((ApotheosisNexus)apotheosisNexus).boostFalloff;
-            radiusBoost = 5f * tilesize;
-            speedBoost = 3f;
-            durationBoost = 18f;
-            outlineColor = Pal.darkOutline;
-
-            width = 0.25f;
-            startLength = -6f / 4f;
-            endLength = 4f;
-            effectLength = endLength - 1f;
-        }};
-
-        testTurret = new PowerTurret("test-turret"){{
-            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
-            size = 2;
-            health = ProgMats.sandboxBlockHealth;
-            range = 69 * tilesize;
-            reload = 60f;
-
-            shootType = Bullets.placeholder;
-
-            //Crashes
-            /*shootType = new SnakeBulletType(3f, 50f, "aflare"){{
-                length = 5;
-                lifetime = 300f;
-                weaveScale = 8f;
-                weaveMag = 2f;
-                homingPower = 0.3f;
-            }};*/
-        }};
-
-        /// Distribution
-        everythingItemSource = new EverythingItemSource("everything-item-source");
-
-        sandDriver = new SandDriver("sand-driver"){{
-            size = 3;
-            itemCapacity = 180;
-            reload = 120f;
-            shots = 90;
-            delay = 0.75f;
-            range = 560f;
-
-            consumePower(0.1f);
-        }};
-
-        /// Liquid
-        everythingLiquidSource = new EverythingLiquidSource("everything-liquid-source");
-
-        /// Power
-        strobeNode = new StrobeNode("rainbow-power-node");
-
-        strobeInf = new StrobeSource("rainbow-power-source");
-
-        strobeBoost = new StrobeSource("rainbow-power-boost"){{
-            size = 2;
-            speedBoost = 100f;
-        }};
-
-        /// Defense
-        sandboxWall = new SandboxWall("sandbox-wall");
-
-        sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
-            size = 2;
-            iconSize = 6f;
-            rotateRadius = 5f;
-        }};
-
-        /// Unit
-        godFactory = new UnitFactory("god-factory"){{
-            requirements(Category.units, ProgMats.everything() ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, empty);
-            alwaysUnlocked = true;
-            hasItems = false;
-            configurable = false;
-
-            size = 3;
-            health = ProgMats.sandboxBlockHealth;
-            plans = Seq.with(
-                new UnitPlan(PMUnitTypes.everythingUnit, 60f * 10f, empty)
-            );
-
-            consumePower(69f / 60f);
-        }};
-
-        capBlock = new CapBlock("cap-block"){{
-            unitCapModifier = 25;
-        }};
-
-        harmacist = new EffectZone("harmacist"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, empty);
-            alwaysUnlocked = true;
-
-            size = 2;
-            health = ProgMats.sandboxBlockHealth;
-            range = 32f * tilesize;
-            height = 0.125f;
-            baseColor = Color.red;
-            reload = 5f;
-            affectOwnTeam = false;
-            affectEnemyTeam = true;
-
-            zoneEffect = tile -> all.each(u -> PMBullets.harmanuke.create(tile, u.x, u.y, 0f));
-        }};
-
-        /// Items
-        multiSource = new MultiSource("multi-source");
-        multiVoid = new MultiVoid("multi-void");
-        multiSourceVoid = new MultiSourceVoid("multi-source-void");
-
-        /// Effect
-        infiniMender = new InfiniMendProjector("infini-mender");
-        infiniOverdrive = new InfiniOverdriveProjector("infini-overdrive");
-        // endregion
+        PMErekirBlocks.load();
+        PMSandboxBlocks.load();
     }
 }
 

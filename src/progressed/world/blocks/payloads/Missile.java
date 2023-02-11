@@ -19,6 +19,8 @@ import static mindustry.Vars.*;
 public class Missile extends Block{
     public BulletType explosion;
     public int explosions = 1;
+    /** Should the explosion use the frags of the explosion bullet? */
+    public boolean fragExplosion = true;
     public float explosionArea = 0f;
     public float maxDelay;
 
@@ -118,10 +120,9 @@ public class Missile extends Block{
             if(explosion != null){
                 for(int i = 0; i < explosions; i++){
                     Time.run(Mathf.random(maxDelay), () -> {
-                        float dst = explosionArea * Mathf.sqrt(Mathf.random());
-                        Tmp.v1.setToRandomDirection().setLength(dst);
-                        Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f);
-                        b.time = b.lifetime;
+                        Tmp.v1.setToRandomDirection().setLength(explosionArea * Mathf.sqrt(Mathf.random()));
+                        Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f, 0f, 0f);
+                        b.remove(); //Instantly explode
                     });
                 }
             }

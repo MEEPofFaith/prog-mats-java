@@ -239,7 +239,6 @@ public class SwordTurret extends BaseTurret{
 
         @Override
         public void updateTile(){
-            //Sword construction stuff
             for(int i = 0; i < Math.min(readUnitIds.size, maxSwords); i++){
                 int id = readUnitIds.get(i);
                 if(id != -1){
@@ -265,6 +264,7 @@ public class SwordTurret extends BaseTurret{
                 }
             }
 
+            //Sword construction stuff
             if(shouldConsume() && swordCount() < maxSwords){
                 buildProgress += edelta() / buildTime;
                 totalProgress += edelta();

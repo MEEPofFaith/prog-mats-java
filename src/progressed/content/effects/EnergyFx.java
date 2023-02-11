@@ -5,21 +5,15 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.entities.bullet.energy.*;
 import progressed.graphics.*;
-import progressed.world.blocks.defence.turret.energy.*;
-import progressed.world.blocks.defence.turret.energy.AimLaserTurret.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
-import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.util.PMUtls.*;
 
 public class EnergyFx{
     public static Effect
@@ -63,47 +57,19 @@ public class EnergyFx{
         }
     }),
 
-    kugelblitzChargeBegin = new Effect(80f, e -> {
-        Draw.z(Layer.max - 0.01f);
-        Fill.light(e.x, e.y, 60, 6f * e.fin(), Tmp.c1.set(e.color).lerp(Color.black, 0.5f + Mathf.absin(10f, 0.4f)), Color.black);
-    }),
-
-    kugelblitzCharge = new Effect(38f, e -> {
-        color(Tmp.c1.set(e.color).lerp(Color.black, 0.5f), Color.black, e.fin());
-        randLenVectors(e.id, 2, 45f * e.fout(), e.rotation, 180f, (x, y) -> {
+    kugelblitzCharge = new Effect(80f, e -> {
+        color(Color.black, e.color, e.fin());
+        randLenVectors(e.id, 8, 23f * e.fout(), e.rotation, 180f, (x, y) -> {
             float ang = angle(x, y);
-            Lines.lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
+            lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
         });
-    }),
 
-    blackHoleSwirl = new Effect(90f, e -> {
-        Bullet bullet = (Bullet)e.data;
+        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
+        z(Layer.effect + 0.03f);
+        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
+    }).layer(Layer.effect + 0.01f),
 
-        if(bullet != null && bullet.type instanceof BlackHoleBulletType b){
-            float a = Mathf.clamp(e.fin() * 8f);
-            Tmp.c1.set(bullet.team.color).lerp(Color.black, 0.5f + Mathf.absin(Time.time + Mathf.randomSeed(e.id), 10f, 0.4f)).a(a);
-            Tmp.c2.set(Color.black).a(a);
-            float startAngle = Mathf.randomSeed(e.id, 360f, 720f);
-
-            Fill.light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                bullet.y + trnsy(e.rotation + startAngle * e.fout(), b.suctionRadius * e.fout()),
-                60,
-                b.swirlSize * e.fout(),
-                Tmp.c1,
-                Tmp.c2
-            );
-
-            light(bullet.x + trnsx(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                bullet.y + trnsy(e.rotation + startAngle * e.fout(),
-                    b.suctionRadius * e.fout()),
-                b.swirlSize * e.fout(),
-                Tmp.c1,
-                0.7f * a
-            );
-        }
-    }).layer(Layer.max - 0.02f),
+    blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
     blackHoleDespawn = new Effect(24f, e -> {
         color(Color.darkGray, Color.black, e.fin());
@@ -120,30 +86,17 @@ public class EnergyFx{
         });
 
         color(e.color);
-        randLenVectors(e.id * 2, 4, e.fin() * 15f, (x, y) -> {
+        randLenVectors(e.id * 2L, 4, e.fin() * 15f, (x, y) -> {
             float ang = angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
-    }).layer(Layer.max - 0.03f),
+    }).layer(Layer.effect + 0.005f),
 
     blackHoleAbsorb = new Effect(20f, e -> {
         color(Color.black);
         stroke(2f * e.fout(Interp.pow3In));
         Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
-    }).layer(Layer.max - 0.04f),
-
-    aimChargeBegin = new Effect(300f, e -> {
-        if(e.data instanceof AimLaserTurretBuild d){
-            color(Pal.lancerLaser);
-
-            v1.trns(d.rotation, ((AimLaserTurret)(d.block)).shootY);
-            Fill.circle(d.x + v1.x, d.y + v1.y, 3f * e.fin());
-
-            randLenVectors(e.id, 12, 28f * e.fout(), (x, y) -> {
-                Fill.circle(d.x + v1.x + x, d.y + v1.y + y, 2f * e.fin());
-            });
-        }
-    }).layer(Layer.bullet - 0.01f),
+    }),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);
@@ -165,161 +118,6 @@ public class EnergyFx{
         randLenVectors(e.id + 1, 11, 2f + 73f * e.finpow(), (x, y) -> {
             lineAngle(e.x + x, e.y + y, angle(x, y), 2f + e.fout() * 5f);
         });
-    }),
-
-    apotheosisCharge = new Effect(5f * 60f, 500f, e -> {
-        color(PMPal.apotheosisLaserDark);
-        Fill.circle(e.x, e.y, e.fin() * 26);
-        color(PMPal.apotheosisLaser);
-        Fill.circle(e.x, e.y, e.fin() * 14);
-
-        stroke(e.fin() * 6f, PMPal.apotheosisLaserDark);
-        Lines.circle(e.x, e.y, 2f + 100f * e.fout());
-        Lines.circle(e.x, e.y, 5f + 120f * e.fout(Interp.pow3Out));
-        Lines.circle(e.x, e.y, 8f + 150f * e.fout(Interp.pow5Out));
-
-        color(PMPal.apotheosisLaser);
-        randLenVectors(e.id, 14, 92f * e.fout(), (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
-        });
-        randLenVectors(e.id + 1, 17,116f * e.fout(Interp.pow3Out), (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
-        });
-        randLenVectors(e.id + 2, 20,146f * e.fout(Interp.pow5Out), (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, e.fin() * 8f);
-            light(e.x + x, e.y + y, e.fin() * 24f, PMPal.apotheosisLaserDark, 0.7f);
-        });
-
-        light(e.x, e.y, e.fin() * 36f, PMPal.apotheosisLaserDark, 0.7f);
-    }),
-
-    apotheosisChargerBlast = new Effect(30f, e -> {
-        stroke(0.5f + 0.5f*e.fout(), PMPal.apotheosisLaser);
-        float spread = 3f;
-
-        rand.setSeed(e.id);
-        for(int i = 0; i < 20; i++){
-            float ang = e.rotation + rand.range(17f);
-            v1.trns(ang, rand.random(e.fin() * 55f));
-            lineAngle(e.x + v1.x + rand.range(spread), e.y + v1.y + rand.range(spread), ang, e.fout() * 5f * rand.random(1f) + 1f);
-        }
-    }),
-
-    apotheosisBlast = new Effect(300f, 400f, e -> {
-        float fin = Interp.pow3Out.apply(Mathf.curve(e.fin(), 0f, 0.5f));
-        float fade = 1f - Interp.pow2Out.apply(Mathf.curve(e.fin(), 0.6f, 1f));
-
-        z(Layer.effect - 0.0005f);
-        color(PMPal.apotheosisLaser);
-        stroke(fin * 6f * fade);
-        for(int dir : Mathf.signs){
-            for(int i = 0; i < 3; i++){
-                PMDrawf.ellipse(e.x, e.y, fin * 64f, 1f - 0.75f * fin, 1f + fin, fin * (375f + (i * 240f)) * dir);
-            }
-        }
-        stroke(fin * 8f * fade);
-        Lines.circle(e.x, e.y, fin * 80f);
-    }).layer(Layer.effect + 0.001f),
-
-    apotheosisClouds = new Effect(360f, 400f, e -> {
-        float intensity = 2f;
-        e.lifetime = 300f + intensity * 25f;
-
-        z(Layer.effect - 0.001f);
-        color(PMPal.apotheosisLaserDark);
-        alpha(0.9f);
-        for(int i = 0; i < 12; i++){
-            rand.setSeed(e.id * 2L + i);
-            float lenScl = rand.random(0.25f, 1f);
-            int fi = i;
-            e.scaled(e.lifetime * lenScl, s -> {
-                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(7.3f * intensity), 60f * intensity, (x, y, in, out) -> {
-                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
-                    float rad = fout * ((2f + intensity) * 3.52f);
-
-                    Fill.circle(s.x + x, s.y + y, rad);
-                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
-                });
-            });
-        }
-    }),
-
-    apotheosisDamage = new Effect(30f, 100f * tilesize, e -> {
-        if(!(e.data instanceof ApotheosisEffectData d)) return;
-        z(Layer.effect + d.layerOffset);
-
-        float intensity = 2f * d.scl;
-        float baseLifetime = 20f + intensity * 4f;
-        e.lifetime = 25f + intensity * 6f;
-
-        color(d.laserColorDark);
-        alpha(0.9f);
-        for(int i = 0; i < 5; i++){
-            rand.setSeed(e.id * 2L + i);
-            float lenScl = rand.random(0.25f, 1f);
-            int fi = i;
-            e.scaled(e.lifetime * lenScl, s -> {
-                randLenVectors(s.id + fi - 1, s.fin(Interp.pow10Out), (int)(3.1f * intensity), 30f * intensity, (x, y, in, out) -> {
-                    float fout = s.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
-                    float rad = fout * ((2f + intensity) * 2.35f);
-
-                    Fill.circle(s.x + x, s.y + y, rad);
-                    light(s.x + x, s.y + y, rad * 2.6f, getColor(), 0.7f);
-                });
-            });
-        }
-
-        e.scaled(baseLifetime, s -> {
-            color(d.laserColor, d.laserColorDark, s.fin());
-            stroke((2f * s.fout()));
-
-            z(Layer.effect + 0.001f);
-            randLenVectors(s.id + 1, s.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
-                lineAngle(s.x + x, s.y + y, angle(x, y), 1f + out * 4 * (4f + intensity));
-                light(s.x + x, s.y + y, (out * 4 * (3f + intensity)) * 3.5f, getColor(), 0.8f);
-            });
-        });
-    }),
-
-    apotheosisPuddle = new Effect(60f * 10f, 30f * tilesize, e -> {
-        if(!(e.data instanceof ApotheosisEffectData d)) return;
-        z(Layer.scorch + 1f); //Used in a MultiEffect, .layer() doesn't quite work.
-
-        float fin = Mathf.curve(e.time, 0, 10f);
-        float rad = 1f - Mathf.curve(e.time, 60f * 9f, 60f * 10f);
-
-        randLenVectors(e.id, 6, 32f * d.scl, (x, y) -> {
-            float px = e.x + x * fin,
-                py = e.y +  y * fin,
-                baseRad = 16f * d.scl,
-                radius = Mathf.randomSeed((long)(e.id + x + y), baseRad / 2f, baseRad) * rad;
-
-            color(d.laserColor);
-            Fill.circle(px, py, radius);
-            light(px, py, radius * 1.5f, getColor(), 0.8f);
-        });
-    }),
-
-    apotheosisPulse = new Effect(120f, 100f * tilesize, e -> {
-        if(!(e.data instanceof ApotheosisEffectData d)) return;
-        z(Layer.effect + d.layerOffset);
-
-        color(d.laserColor, 0.7f);
-        stroke(32f * d.scl * e.fout(Interp.pow5In));
-        Lines.circle(e.x, e.y, 16f * tilesize * d.scl * e.fin(Interp.pow5Out));
-    }),
-
-    apotheosisTouchdown = new Effect(720f, 300f * tilesize, e -> {
-        if(!(e.data instanceof ApotheosisEffectData d)) return;
-        z(Layer.effect + d.layerOffset);
-
-        color(d.laserColor, 0.7f);
-        stroke(64f * d.scl * e.fout(Interp.pow5In));
-        Lines.circle(e.x, e.y, 148f * tilesize * e.fin(Interp.pow3Out) * d.scl);
-        Lines.circle(e.x, e.y, (10f + 162f * tilesize * e.fin(Interp.pow5Out)) * d.scl);
-        Lines.circle(e.x, e.y, (16f + 178f * tilesize * e.fin(Interp.pow10Out)) * d.scl);
     }),
 
     redBomb = new Effect(40f, 100f, e -> {
@@ -391,16 +189,58 @@ public class EnergyFx{
         Fill.circle(e.x + v1.x, e.y + v1.y, data[0] * e.fout());
     }).layer(Layer.bullet - 0.00999f);
 
-    public static class ApotheosisEffectData{
-        public float layerOffset;
-        public float scl;
-        public Color laserColor, laserColorDark;
+    public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean lerp){
+        return new Effect(eLifetime, 400f, e -> {
+            if(e.time < 1f) return;
 
-        public ApotheosisEffectData(float layerOffset, float scl, Color c1, Color c2){
-            this.layerOffset = layerOffset;
-            this.scl = scl;
-            laserColor = c1;
-            laserColorDark = c2;
-        }
+            float lifetime = e.lifetime - length;
+            float dst;
+            if(minDst < 0 || maxDst < 0){
+                dst = Math.abs(e.rotation);;
+            }else{
+                dst = Mathf.randomSeed(e.id, minDst, maxDst);
+            }
+            if(lerp){
+                color(color, e.color, Mathf.clamp(e.time / lifetime));
+            }else{
+                color(color);
+            }
+
+            int points = (int)Math.min(e.time, length);
+            float width = Mathf.clamp(e.time / (e.lifetime - length)) * maxWidth;
+            float size = width / points;
+            float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, minRot, maxRot) * Mathf.sign(e.rotation);
+
+            float fout, lastAng = 0f;
+            for(int i = 0; i < points; i++){
+                fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
+                v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+                fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
+                v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+
+                float a2 = -v1.angleTo(v2) * Mathf.degRad;
+                float a1 = i == 0 ? a2 : lastAng;
+
+                float
+                    cx = Mathf.sin(a1) * i * size,
+                    cy = Mathf.cos(a1) * i * size,
+                    nx = Mathf.sin(a2) * (i + 1) * size,
+                    ny = Mathf.cos(a2) * (i + 1) * size;
+
+                Fill.quad(
+                    e.x + v1.x - cx, e.y + v1.y - cy,
+                    e.x + v1.x + cx, e.y + v1.y + cy,
+                    e.x + v2.x + nx, e.y + v2.y + ny,
+                    e.x + v2.x - nx, e.y + v2.y - ny
+                );
+
+                lastAng = a2;
+            }
+            Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
+        });
+    }
+
+    public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean lerp){
+        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, lerp);
     }
 }

@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.graphics.*;
 
 public class EverythingItemSource extends Block{
@@ -22,7 +21,6 @@ public class EverythingItemSource extends Block{
         requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        health = ProgMats.sandboxBlockHealth;
         hasItems = true;
         update = true;
         solid = true;
@@ -36,6 +34,13 @@ public class EverythingItemSource extends Block{
         super.load();
         strobeRegion = Core.atlas.find(name + "-strobe", "prog-mats-source-strobe");
         centerRegion = Core.atlas.find(name + "-center", "center");
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        removeBar("items");
     }
 
     public class EverythingItemSourceBuild extends Building{

@@ -2,10 +2,13 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import mindustry.content.*;
-import mindustry.entities.*;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.type.unit.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
@@ -17,359 +20,305 @@ import static mindustry.Vars.*;
 public class PayloadBullets{
     public static SentryBulletType
 
-    barrageLaunch, downpourLaunch, rapierLaunch;
+    barrageLaunch, downpourLaunch;
 
-    public static RocketBulletType
+    public static BulletType
 
-    arbalestBasic, arbalestIncend, arbalestBomber;
+    arbalestBasic, arbalestIncend; //TODO 3rd rocket
 
     public static BallisticMissileBulletType
-    strikedownBasic, strikedownRecursive,
-    trinityBasic, trinityCluster,
-
-    ohno; //Maniacal laughter
+    artemisBasic, artemisRecursive, //TODO 3rd missile
+    paragonBasic, paragonCluster, //TODO 3rd nuke
+    ohno;
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
         downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
-        rapierLaunch = new SentryBulletType(PMUnitTypes.rapier);
 
-        arbalestBasic = new RocketBulletType(4f, 45f, "prog-mats-basic-rocket"){{
-            lifetime = 70f;
-            acceleration = 0.03f;
-            backSpeed = thrustDelay = 0f;
-            trailWidth = thrusterSize = 6f / 4f;
-            trailParam = thrusterSize * 2f * 1.5f;
-            trailOffset = thrusterOffset = 43f / 4f;
-            rotOffset = 90f;
-            hitEffect = despawnEffect = MissileFx.missileExplosion;
-            trailInterval = 1f;
-            trailEffect = MissileFx.rocketTrail;
-            trailLength = 6;
-            drawSize = 60f * 80f;
-            layer = Layer.turret + 0.015f;
-            riseStart = thrusterGrowth;
-            riseEnd = thrusterGrowth + 10f;
-            targetLayer = Layer.bullet - 1;
+        arbalestBasic = new BulletType(0f, 0f){{
+            ammoMultiplier = 1f;
 
-            splashDamage = 526f;
-            splashDamageRadius = 8f * tilesize;
-            homingPower = 0.2f;
-            homingDelay = 5f;
-            homingRange = 100f * tilesize;
+            spawnUnit = new MissileUnitType("basic-rocket-b"){{
+                speed = 8f;
+                maxRange = 6f;
+                lifetime = 3.1f * 60f;
+                engineColor = trailColor = Pal.accent;
+                engineLayer = Layer.effect;
+                engineSize = 3.1f;
+                engineOffset = 10f;
+                rotateSpeed = 0.5f;
+                trailLength = 18;
+                missileAccelTime = 2f * 60f;
+                lowAltitude = true;
+                loopSound = Sounds.missileTrail;
+                loopSoundVolume = 0.6f;
+                deathSound = Sounds.largeExplosion;
 
-            unitSort = UnitSorts.strongest;
+                fogRadius = 6f;
+
+                health = 210;
+
+                weapons.add(new Weapon(){{
+                    shootCone = 360f;
+                    mirror = false;
+                    reload = 1f;
+                    deathExplosionEffect = MissileFx.missileExplosion;
+                    shootOnDeath = true;
+                    shake = 10f;
+                    bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                        hitColor = Pal.accent;
+                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                            lifetime = 10f;
+                            strokeFrom = 4f;
+                            sizeTo = 130f;
+                        }});
+                    }};
+                }});
+
+                abilities.add(new MoveEffectAbility(){{
+                    effect = MissileFx.rocketTrailSmoke;
+                    rotateEffect = true;
+                    y = -9f;
+                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                    interval = 4f;
+                }});
+            }};
         }};
 
-        arbalestIncend = new RocketBulletType(4f, 37f, "prog-mats-incendiary-rocket"){
-            {
-                lifetime = 70f;
-                acceleration = 0.03f;
-                backSpeed = thrustDelay = 0f;
-                trailWidth = thrusterSize = 6f / 4f;
-                trailParam = thrusterSize * 2f * 1.5f;
-                trailOffset = thrusterOffset = 43f / 4f;
-                rotOffset = 90f;
-                hitEffect = despawnEffect = MissileFx.missileExplosion;
-                trailInterval = 1f;
-                trailEffect = MissileFx.rocketTrail;
-                trailLength = 6;
-                drawSize = 60f * 80f;
-                layer = Layer.turret + 0.015f;
-                riseStart = thrusterGrowth;
-                riseEnd = thrusterGrowth + 10f;
-                targetLayer = Layer.bullet - 1;
+        arbalestIncend = new BulletType(0f, 0f){{
+            ammoMultiplier = 1f;
 
-                splashDamage = 276f;
-                splashDamageRadius = 88f;
-                makeFire = true;
-                status = PMStatusEffects.incendiaryBurn;
-                statusDuration = 15f * 60f;
-                homingPower = 0.2f;
-                homingDelay = 5f;
-                homingRange = 100f * tilesize;
+            spawnUnit = new MissileUnitType("incendiary-rocket-b"){{
+                speed = 8f;
+                maxRange = 6f;
+                lifetime = 3.1f * 60f;
+                engineColor = trailColor = Pal.remove;
+                engineLayer = Layer.effect;
+                engineSize = 3.1f;
+                engineOffset = 10f;
+                rotateSpeed = 0.5f;
+                trailLength = 18;
+                missileAccelTime = 2f * 60f;
+                lowAltitude = true;
+                loopSound = Sounds.missileTrail;
+                loopSoundVolume = 0.6f;
+                deathSound = Sounds.largeExplosion;
 
-                unitSort = UnitSorts.strongest;
-            }
+                fogRadius = 6f;
 
-            @Override
-            public void hit(Bullet b, float x, float y){
-                if(!b.absorbed) MissileFx.flameRing.at(x, y, b.rotation(), hitColor);
-                super.hit(b, x, y);
-            }
-        };
+                health = 210;
 
-        arbalestBomber = new RocketBulletType(4f, 12f, "prog-mats-bomber-rocket"){
-            {
-                lifetime = 70f;
-                acceleration = 0.03f;
-                backSpeed = thrustDelay = 0f;
-                trailWidth = thrusterSize = 6f / 4f;
-                trailParam = thrusterSize * 2f * 1.5f;
-                trailOffset = thrusterOffset = 43f / 4f;
-                rotOffset = 90f;
-                despawnEffect = MissileFx.missileExplosion;
-                trailInterval = 1f;
-                trailEffect = MissileFx.rocketTrail;
-                trailLength = 6;
-                drawSize = 60f * 80f;
-                layer = Layer.turret + 0.015f;
-                riseStart = thrusterGrowth;
-                riseEnd = thrusterGrowth + 10f;
-                targetLayer = Layer.bullet - 1;
+                weapons.add(new Weapon(){{
+                    shootCone = 360f;
+                    mirror = false;
+                    reload = 1f;
+                    deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
+                    shootOnDeath = true;
+                    shake = 10f;
+                    bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                        hitColor = Pal.remove;
+                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                            lifetime = 10f;
+                            strokeFrom = 4f;
+                            sizeTo = 130f;
+                        }});
 
-                collidesTiles = false;
-                pierce = true;
-                splashDamage = 135f;
-                splashDamageRadius = 6.5f * tilesize;
-                homingPower = 0.25f;
-                homingDelay = 5f;
-                homingRange = 100f * tilesize;
+                        makeFire = true;
+                        status = PMStatusEffects.incendiaryBurn;
+                    }};
+                }});
 
-                bombBullet = new BombBulletType(74f, 4.5f * tilesize){{
-                    lifetime = 15f;
-                    width =  8f;
-                    height = 10f;
-                    hitEffect = Fx.flakExplosion;
-                    status = StatusEffects.blasted;
-                    statusDuration = 60f;
-                    collidesAir = true;
-                    frontColor = Pal.sapBullet;
-                    backColor = Pal.sapBulletBack;
-                    layer = Layer.turret + 0.014f;
-                }};
-                bombInterval = 2f;
+                abilities.add(new MoveEffectAbility(){{
+                    effect = MissileFx.rocketTrailSmoke;
+                    rotateEffect = true;
+                    y = -9f;
+                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                    interval = 4f;
+                }});
+            }};
+        }};
 
-                unitSort = UnitSorts.weakest; //Target, bomb, and destroy low health units :)))
-            }
-
-            @Override
-            public void hit(Bullet b, float x, float y){
-                //no
-            }
-
-            @Override
-            public void despawned(Bullet b){
-                hitEffect.at(b.x, b.y, b.rotation(), hitColor);
-                hitSound.at(b.x, b.y, hitSoundPitch, hitSoundVolume);
-
-                Effect.shake(hitShake, hitShake, b);
-
-                Damage.damage(b.team, b.x, b.y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
-            }
-        };
-
-        float trinitySize = 1f,
-            strikedownRnd = 1.5f,
-            trinityRnd = 3f;
-
-        strikedownBasic = new BallisticMissileBulletType(2f, 80f, "prog-mats-basic-missile"){{
+        artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
             splashDamageRadius = 64f;
-            homingPower = 0.05f;
-            homingRange = 330f;
-            lifetime = 360f;
-            hitSound = Sounds.explosionbig;
+            buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
-            despawnEffect = MissileFx.missileExplosion;
-            blockEffect = MissileFx.missileBlocked;
 
-            targetColor = PMPal.missileBasic;
-
-            autoDropRadius = 15f;
-            stopRadius = 10f;
-            thrusterRadius = 16f;
-            elevation = 2f;
-            shadowOffset = 300f;
-            riseTime = 45f;
-            fallTime = 30f;
-            trailRnd = strikedownRnd;
-
-            unitSort = UnitSorts.strongest;
+            height = 24f;
+            trailLength = 25;
+            trailWidth = 1f;
+            trailColor = targetColor = PMPal.missileBasic;
         }};
 
-        strikedownRecursive = new BallisticMissileBulletType(2f, 80f, "prog-mats-recursive-missile"){{
-            splashDamage = 200f;
-            splashDamageRadius = 48f;
-            homingPower = 0.05f;
-            homingRange = 330f;
-            lifetime = 270f;
-            hitSound = Sounds.explosionbig;
-            hitShake = 5f;
-            despawnEffect = MissileFx.missileExplosion;
-            blockEffect = MissileFx.missileBlocked;
+        artemisRecursive = new BallisticMissileBulletType("prog-mats-recursive-missile"){{
+            status = StatusEffects.none;
 
-            targetColor = PMPal.missileFrag;
+            height = 36f;
+            zoneRadius = 5f * 8f;
+            trailLength = 25;
+            trailWidth = 1f;
+            trailColor = targetColor = PMPal.missileFrag;
 
-            autoDropRadius = 15f;
-            stopRadius = 10f;
-            thrusterRadius = 16f;
-            elevation = 2f;
-            shadowOffset = 300f;
-            riseTime = 45f;
-            fallTime = 30f;
-            trailRnd = strikedownRnd;
+            splitLifeMaxOffset = 30f;
+            fragRandomSpread = 80f;
+            fragBullets = 3;
+            fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
+                status = StatusEffects.none;
 
-            unitSort = UnitSorts.strongest;
+                height = 36f;
+                zoneRadius = 3.5f * 8f;
+                trailLength = 20;
+                trailWidth = 1f;
+                trailColor = targetColor = PMPal.missileFrag;
 
-            splitBullets = 3;
-            splitVelocityMin = 0.8f;
-            splitVelocityMax = 1.2f;
-            splitBullet = new BallisticMissileBulletType(2.5f, 80f, "prog-mats-recursive-missile"){{
-                splashDamage = 100f;
-                splashDamageRadius = 40f;
-                homingPower = 0.07f;
-                homingRange = 330f;
-                lifetime = 135f;
-                hitSound = Sounds.explosionbig;
-                hitShake = 5f;
-                despawnEffect = MissileFx.missileExplosion;
-                blockEffect = MissileFx.missileBlocked;
-
-                targetColor = PMPal.missileFrag;
-
-                autoDropRadius = 15f;
-                stopRadius = 10f;
-                stopDelay = 55f;
-                dropDelay = 35f;
-                thrusterRadius = 8f;
-                elevation = 2f;
-                shadowOffset = 260f;
-                riseTime = -1f;
-                fallTime = 30f;
-                randRot = true;
-
-                unitSort = UnitSorts.strongest;
-
-                splitBullets = 3;
-                splitVelocityMin = 0.8f;
-                splitVelocityMax = 1.2f;
-                splitBullet = new BallisticMissileBulletType(3f, 80f, "prog-mats-recursive-missile"){{
-                    splashDamage = 50f;
-                    splashDamageRadius = 32f;
-                    homingPower = 0.1f;
-                    homingRange = 330f;
-                    lifetime = 96f;
-                    hitSound = Sounds.explosionbig;
+                fragRandomSpread = 64f;
+                fragBullets = 3;
+                fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
+                    splashDamage = 260f;
+                    splashDamageRadius = 48f;
+                    buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
-                    despawnEffect = MissileFx.missileExplosion;
-                    blockEffect = MissileFx.missileBlocked;
 
-                    targetColor = PMPal.missileFrag;
+                    height = 36f;
+                    zoneRadius = 2f * 8f;
+                    trailLength = 15;
+                    trailWidth = 1f;
+                    trailColor = targetColor = PMPal.missileFrag;
 
-                    autoDropRadius = 15f;
-                    stopRadius = 10f;
-                    stopDelay = 35f;
-                    dropDelay = 25f;
-                    thrusterRadius = 8f;
-                    elevation = 2f;
-                    shadowOffset = 230f;
-                    riseTime = -1f;
-                    fallTime = 30f;
-                    randRot = true;
-
-                    unitSort = UnitSorts.strongest;
+                    blockEffect = MissileFx.missileBlockedSmall;
                 }};
             }};
         }};
 
-        trinityBasic = new BallisticMissileBulletType(1f, 300f, "prog-mats-basic-nuke"){{
+        paragonBasic = new BallisticMissileBulletType("prog-mats-basic-nuke"){{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
-            homingPower = 0.05f;
-            homingRange = 2200f;
-            lifetime = 3000f;
+            buildingDamageMultiplier = 0.5f;
+            lifetime = 5f * 60f;
+
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
             fartVolume = 200f;
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            targetColor = PMPal.missileBasic;
-
-            autoDropRadius = 30f;
-            stopRadius = 20f;
-            thrusterRadius = 24f;
-            elevation = 3f;
-            shadowOffset = 900f;
-            riseTime = 90f;
-            fallTime = 75f;
-            trailSize = trinitySize;
-            trailRnd = trinityRnd;
-            targetRadius = 2f;
-
-            unitSort = UnitSorts.strongest;
+            height = 100f;
+            zoneRadius = 8f * 8f;
+            trailLength = 35;
+            trailWidth = 1.5f;
+            trailColor = targetColor = PMPal.missileBasic;
         }};
 
-        trinityCluster = new BallisticMissileBulletType(1.25f, 0f, "prog-mats-cluster-nuke"){{
-            homingPower = 0.05f;
-            homingRange = 2200f;
-            lifetime = 2400f;
-            hitSound = Sounds.none;
-            hitShake = 0f;
-            despawnEffect = hitEffect = Fx.none;
+        paragonCluster = new BallisticMissileBulletType("prog-mats-cluster-nuke"){{
+            status = StatusEffects.none;
 
-            splitBullets = 20;
-            splitBullet = new BallisticMissileBulletType(1f, 80f, "prog-mats-recursive-missile"){{
-                splashDamage = 3000f;
+            lifetime = 5f * 60f;
+
+            height = 160f;
+            zoneRadius = 12f * 8f;
+            trailLength = 35;
+            trailWidth = 1.5f;
+            trailColor = targetColor = PMPal.missileFrag;
+
+            splitTime = 0.65f;
+            splitLifeMaxOffset = 45f;
+            fragRandomSpread = 20f * 8f;
+            fragBullets = 20;
+
+            fragBullet = new BallisticMissileBulletType("prog-mats-cluster-nuke-split"){{
+                splashDamage = 3500f;
                 splashDamageRadius = 40f;
-                lifetime = 150f;
-                hitSound = Sounds.explosionbig;
+                buildingDamageMultiplier = 0.5f;
+                lifetime = 5f * 60f;
+
+                homingPower = 0.5f;
+                homingRange = 30f * 8f;
+
                 hitShake = 5f;
                 despawnEffect = MissileFx.missileExplosion;
                 blockEffect = MissileFx.missileBlocked;
 
-                targetColor = PMPal.missileFrag;
-
-                autoDropRadius = stopRadius = -1f;
-                thrusterRadius = 8f;
-                elevation = 2f;
-                shadowOffset = 900f;
-                riseTime = -1f;
-                fallTime = 30;
+                height = 160f;
+                trailLength = 35;
+                trailWidth = 1f;
+                trailColor = targetColor = PMPal.missileFrag;
             }};
-            splitVelocityMin = 0.1f;
-            splitVelocityMax = 1f;
-            splitLifeMin = 0.5f;
-
-            targetColor = PMPal.missileFrag;
-
-            autoDropRadius = 30f;
-            stopRadius = 20f;
-            thrusterRadius = 24f;
-            elevation = 3f;
-            shadowOffset = 900f;
-            riseTime = 90f;
-            fallTime = -1f;
-            trailSize = trinitySize;
-            trailRnd = trinityRnd;
-            targetRadius = 2f;
-
-            unitSort = UnitSorts.strongest;
         }};
 
-        //aaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        ohno = (BallisticMissileBulletType)trinityCluster.copy();
-        ohno.sprite = "prog-mats-send-help";
-        ohno.targetColor = Color.red;
+        ohno = (BallisticMissileBulletType)paragonCluster.copy();
+        ohno.sprite = "prog-mats-sandbox-nuke";
+        ohno.targetColor = ohno.trailColor = Color.red;
+        ohno.rangeChange = 500 * 8;
 
-        RocketBulletType cease = (RocketBulletType)arbalestIncend.copy();
-        cease.layer = Layer.bullet - 1;
-        cease.homingRange = -1f;
-        cease.fragBullets = 1;
-        cease.fragBullet = strikedownRecursive;
-        cease.fragVelocityMin = 1f;
+        BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
+        stop.speed = 1;
 
-        BallisticMissileBulletType enough = (BallisticMissileBulletType)trinityBasic.copy();
-        enough.riseTime = -1f;
-        enough.speed = 2.5f;
-        enough.lifetime = 300f;
-        enough.homingRange = -1f;
-        enough.stopRadius = -1f;
-        enough.autoDropRadius = -1f;
+        BallisticMissileBulletType tooFar = (BallisticMissileBulletType)stop.fragBullet.fragBullet.copy();
+        tooFar.buildingDamageMultiplier = 1f;
+        stop.fragBullet.fragBullet = tooFar;
+
+        BulletType cease = arbalestIncend.copy();
+        cease.spawnUnit = new MissileUnitType("mistake-rocket-b"){{
+            speed = 8f;
+            maxRange = 6f;
+            lifetime = 3.1f * 60f;
+            engineColor = trailColor = Pal.remove;
+            engineLayer = Layer.effect;
+            engineSize = 3.1f;
+            engineOffset = 10f;
+            rotateSpeed = 0.5f;
+            trailLength = 18;
+            missileAccelTime = 2f * 60f;
+            lowAltitude = true;
+            loopSound = Sounds.missileTrail;
+            loopSoundVolume = 0.6f;
+            deathSound = Sounds.largeExplosion;
+
+            fogRadius = 6f;
+
+            health = 210;
+
+            weapons.add(new Weapon(){{
+                shootCone = 360f;
+                mirror = false;
+                reload = 1f;
+                deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
+                shootOnDeath = true;
+                shake = 10f;
+                bullet = new ExplosionBulletType(526f, 8f * tilesize){{
+                    hitColor = Pal.remove;
+                    shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                        lifetime = 10f;
+                        strokeFrom = 4f;
+                        sizeTo = 130f;
+                    }});
+
+                    makeFire = true;
+                    status = PMStatusEffects.incendiaryBurn;
+                    fragBullets = 1;
+                    fragLifeMin = 1.5f;
+                    fragLifeMax = 3f;
+                    fragBullet = stop;
+                }};
+            }});
+
+            abilities.add(new MoveEffectAbility(){{
+                effect = MissileFx.rocketTrailSmoke;
+                rotateEffect = true;
+                y = -9f;
+                color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
+                interval = 4f;
+            }});
+        }};
+
+        BallisticMissileBulletType enough = (BallisticMissileBulletType)paragonBasic.copy();
+        enough.buildingDamageMultiplier = 1f;
         enough.fragBullets = 10;
         enough.fragBullet = cease;
+        enough.height = ohno.height;
 
-        ohno.splitBullet = enough;
+        ohno.fragBullet = enough;
+        ohno.fragRandomSpread = 40f * 8f;
+        ohno.splitLifeMaxOffset = 45f;
     }
 }

@@ -42,7 +42,6 @@ public class EverythingTurret extends PowerTurret{
             ItemStack.empty
         );
         alwaysUnlocked = true;
-        health = ProgMats.sandboxBlockHealth;
 
         shootY = 0f;
         targetInterval = 1;

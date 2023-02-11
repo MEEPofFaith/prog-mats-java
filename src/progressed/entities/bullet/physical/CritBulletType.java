@@ -114,7 +114,7 @@ public class CritBulletType extends BasicBulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            UtilFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
+            TrailFadeFx.PMTrailFade.at(b.x, b.y, trailWidth, backColor, ((PMTrail)(b.trail)).copyPM());
         }
     }
 

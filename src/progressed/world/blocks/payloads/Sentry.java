@@ -14,7 +14,6 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -40,7 +39,8 @@ public class Sentry extends Missile{
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.output, s -> {
+        stats.add(PMStat.sentry, s -> {
+            s.add(unit.localizedName).top();
             PMStatValues.infoButton(s, unit, 4f * 8f);
         });
     }
@@ -101,13 +101,13 @@ public class Sentry extends Missile{
         public void updateTile(){
             super.updateTile();
             if(activated) return;
-            unitDrawer.set(x, y);
-            unitDrawer.rotation(drawRot() + 90f);
             unitDrawer.health(health);
         }
 
         @Override
         public void draw(){
+            unitDrawer.set(x, y);
+            unitDrawer.rotation(drawRot() + 90f);
             Draw.z(Layer.blockUnder - 1f);
             Drawf.shadow(unit.fullIcon, x - elevation, y - elevation, drawRot());
             Draw.z(Layer.block);

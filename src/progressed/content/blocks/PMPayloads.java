@@ -3,7 +3,6 @@ package progressed.content.blocks;
 import mindustry.content.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.world.blocks.payloads.*;
 
 import static mindustry.type.ItemStack.*;
@@ -15,7 +14,7 @@ public class PMPayloads{
 
     emptyRocket,
 
-    basicRocket, incendiaryRocket, bomberRocket,
+    basicRocket, incendiaryRocket, //TODO third rocket
 
     //Region Missiles
 
@@ -33,7 +32,7 @@ public class PMPayloads{
 
     //Region Sentries
 
-    basicSentry, missileSentry, dashSentry;
+    basicSentry, missileSentry;
 
     public static void load(){
         emptyRocket = new Missile("empty-rocket"){{
@@ -73,24 +72,12 @@ public class PMPayloads{
             explosion = PayloadBullets.arbalestIncend;
         }};
 
-        bomberRocket = new Missile("bomber-rocket"){{
-            requirements = with(Items.titanium, 2, Items.silicon, 3, Items.blastCompound, 10);
-
-            prev = emptyRocket;
-            size = 3;
-            powerUse = 1.25f;
-            constructTime = 60f * 6.5f;
-            elevation = 2f / 3f;
-            outlined = true;
-
-            explosionArea = -1f;
-            explosion = PayloadBullets.arbalestBomber.bombBullet;
-            explosions = 50;
-            maxDelay = 25f;
-        }};
-
         emptyMissile = new Missile("empty-missile"){{
-            requirements = with(Items.copper, 4, Items.lead, 4, Items.titanium, 6);
+            requirements = with(
+                Items.copper, 4,
+                Items.lead, 4,
+                Items.titanium, 6
+            );
 
             size = 2;
             powerUse = 0.75f;
@@ -98,32 +85,43 @@ public class PMPayloads{
         }};
 
         basicMissile = new Missile("basic-missile"){{
-            requirements = with(Items.titanium, 4, Items.blastCompound, 6);
+            requirements = with(
+                Items.titanium, 4,
+                Items.blastCompound, 6
+            );
 
             prev = emptyMissile;
             size = 2;
             powerUse = 1.5f;
             constructTime = 60f * 6f;
 
-            explosion = PayloadBullets.strikedownBasic;
+            explosion = PayloadBullets.artemisBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
-            requirements = with(Items.titanium, 3, Items.plastanium, 4, Items.silicon, 4, Items.blastCompound, 7);
+            requirements = with(
+                Items.plastanium, 4,
+                Items.silicon, 5,
+                Items.blastCompound, 7
+            );
 
             prev = emptyMissile;
             size = 2;
             powerUse = 2f;
             constructTime = 60f * 8f;
 
+            explosion = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
+            explosions = PayloadBullets.artemisRecursive.fragBullets * PayloadBullets.artemisRecursive.fragBullet.fragBullets;
             explosionArea = -1f;
-            explosion = ((BallisticMissileBulletType)(((PayloadBullets.strikedownRecursive)).splitBullet)).splitBullet;
-            explosions = 13;
             maxDelay = 20f;
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
-            requirements = with(Items.titanium, 25, Items.surgeAlloy, 18, PMItems.tenelium, 20);
+            requirements = with(
+                Items.titanium, 25,
+                Items.surgeAlloy, 18,
+                PMItems.tenelium, 20
+            );
 
             size = 3;
             powerUse = 5f;
@@ -131,76 +129,67 @@ public class PMPayloads{
         }};
 
         basicNuke = new Missile("basic-nuke"){{
-            requirements = with(Items.lead, 40,Items.titanium, 30, Items.thorium, 35);
+            requirements = with(
+                Items.lead, 40,
+                Items.titanium, 30,
+                Items.thorium, 35
+            );
 
             prev = emptyNuke;
             size = 3;
             powerUse = 6f;
-            constructTime = 60f * 25f;
+            constructTime = 60f * 40f;
 
-            explosion = PayloadBullets.trinityBasic;
+            explosion = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
             requirements = with(
-                Items.titanium, 35,
-                Items.plastanium, 25,
-                PMItems.tenelium, 15,
-                Items.silicon, 30,
-                Items.blastCompound, 25
+                Items.plastanium, 35,
+                PMItems.tenelium, 40,
+                Items.blastCompound, 40
             );
 
             prev = emptyNuke;
             size = 3;
             powerUse = 6.25f;
-            constructTime = 60f * 35f;
+            constructTime = 60f * 45f;
 
             explosionArea = -1f;
-            BallisticMissileBulletType b = PayloadBullets.trinityCluster;
-            explosion = b.splitBullet;
-            explosions = b.splitBullets;
+            explosion = PayloadBullets.paragonCluster.fragBullet;
+            explosions = explosion.fragBullets;
             maxDelay = 20f;
         }};
 
-        sandboxNuke = new Missile("send-help"){{
+        sandboxNuke = new Missile("sandbox-nuke"){{
             requirements = empty;
             displayCampaign = false;
 
             size = 3;
 
             explosionArea = -1f;
-            BallisticMissileBulletType b = PayloadBullets.ohno;
-            explosion = b.splitBullet;
-            explosions = b.splitBullets;
+            explosion = PayloadBullets.ohno.fragBullet;
+            explosions = explosion.fragBullets;
             maxDelay = 20f;
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
-            requirements = with(Items.copper, 20, Items.lead, 25, Items.titanium, 10, Items.silicon, 20);
+            requirements = with(Items.beryllium, 20, Items.graphite, 25, Items.tungsten, 20,  Items.silicon, 20);
 
             size = 2;
-            powerUse = 4f;
+            powerUse = 3f;
             constructTime = 60f * 20f;
             unit = PMUnitTypes.barrage;
         }};
 
-        missileSentry = new Sentry("strike-sentry"){{
-            requirements = with(Items.copper, 30, Items.lead, 30, Items.titanium, 15, Items.silicon, 25, Items.blastCompound, 15);
+        missileSentry = new Sentry("missile-sentry"){{
+            requirements = with(Items.beryllium, 25, Items.graphite, 30, Items.tungsten, 25, Items.oxide, 15, Items.silicon, 25);
 
             size = 2;
             baseExplosiveness = 100f;
-            powerUse = 4.5f;
+            powerUse = 3.5f;
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
-        }};
-
-        dashSentry = new Sentry("dash-sentry"){{
-            requirements = with(Items.copper, 20, Items.lead, 20, Items.titanium, 25, Items.graphite, 20, Items.silicon, 25);
-
-            size = 2;
-            powerUse = 5.25f;
-            constructTime = 60f * 23f;
-            unit = PMUnitTypes.rapier;
         }};
     }
 }

@@ -3,7 +3,6 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
@@ -26,7 +25,7 @@ public class PMBullets{
 
     pillarField,
     
-    blackHole, cataclysm, absorbed,
+    blackHole, absorbed,
     
     harbingerLaser, excaliburLaser, sentinelLaser,
 
@@ -111,11 +110,8 @@ public class PMBullets{
             backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
-            //TODO merge
-            chargeEffect = new MultiEffect(EnergyFx.kugelblitzChargeBegin, EnergyFx.kugelblitzCharge);
+            chargeEffect = EnergyFx.kugelblitzCharge;
         }};
-
-        cataclysm = new BlackHoleCataclysmType();
 
         absorbed = new BulletType(0f, 0f){
             @Override
@@ -176,7 +172,7 @@ public class PMBullets{
             }
         };
 
-        excaliburLaser = new CrossLaserBulletType(5000f){{
+        excaliburLaser = new CrossLaserBulletType(1500f){{
             length = 800f;
             width = 26f;
             growTime = 10f;
@@ -193,8 +189,9 @@ public class PMBullets{
 
         sentinelLaser = new LaserBlastBulletType(12f, 150f){{
             lifetime = 36f;
-            splashDamage = 1870f;
+            splashDamage = 950f;
             splashDamageRadius = 6f * 8f;
+            buildingDamageMultiplier = 0.3f;
             length = 8f;
             width = 3f;
             trailLength = 12;
@@ -202,9 +199,8 @@ public class PMBullets{
             hittable = false;
             trailColor = hitColor = Pal.lancerLaser;
             hitEffect = EnergyFx.sentinelBlast;
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.largeExplosion;
             hitSoundVolume = 4f;
-            chargeEffect = EnergyFx.aimChargeBegin;
 
             //Calculate ahead of time for Sentinel's init() checking the bullet's range.
             range = calculateRange();

@@ -55,16 +55,6 @@ public class PMDrawf{
         cross(x, y, size, size, angle);
     }
 
-    public static void stretch(TextureRegion region, float x, float y, float x2, float y2){
-        Lines.line(region, x, y, x2, y2, false);
-    }
-
-    public static void shadowAlpha(TextureRegion region, float x, float y, float rotation, float alpha){
-        color(Tmp.c1.set(Pal.shadow).mul(1f, 1f, 1f, alpha));
-        rect(region, x, y, rotation);
-        color();
-    }
-
     public static void vecLine(float x, float y, Vec2 v1, Vec2 v2, boolean cap){
         line(v1.x + x, v1.y + y, v2.x + x, v2.y + y, cap);
     }
@@ -114,29 +104,21 @@ public class PMDrawf{
         target(x, y, angle, radius, color, color, alpha);
     }
 
-    //Too much duplicated code, how to condense down laser drawing?
-    /** Meltdown laser drawing */
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float[] pullscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
-        for(int s = 0; s < colors.length; s++){
-            color(Tmp.c1.set(colors[s]).a(colors[s].a * alpha).mul(1f + absin(Time.time, 1f, 0.1f)));
-            for(int i = 0; i < tscales.length; i++){
-                vec1.trns(angle + 180f, (pullscales[i] - 1f) * spaceMag);
-                stroke((width + absin(Time.time, oscScl, oscMag / scale)) * strokes[s] * tscales[i] * scale);
-                lineAngle(x + vec1.x, y + vec1.y, angle, length * lenscales[i], false);
+    public static void ring(float x, float y, float rad1, float rad2){
+        if(Math.abs(rad1 - rad2) > 0.01f){
+            int sides = circleVertices(Math.max(rad1, rad2));
+            float space = 360f / sides;
+
+            for(int i = 0; i < sides; i++){
+                float a = space * i, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
+                Fill.quad(
+                    x + rad1 * cos, y + rad1 * sin,
+                    x + rad1 * cos2, y + rad1 * sin2,
+                    x + rad2 * cos2, y + rad2 * sin2,
+                    x + rad2 * cos, y + rad2 *  sin
+                );
             }
         }
-
-        vec1.trns(angle, (pullscales[pullscales.length - 1] - 1f) * spaceMag);
-        vec2.trns(angle, length * lenscales[lenscales.length - 1]);
-        Drawf.light(x + vec1.x, y + vec1.y, x + vec2.x, y + vec2.y, width * 2f, lightColor, 0.7f * alpha);
-    }
-
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor, float alpha){
-        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, alpha);
-    }
-
-    public static void laser(float x, float y, float length, float width, float angle, float scale, float[] tscales, float[] strokes, float[] lenscales, float oscScl, float oscMag, float spaceMag, Color[] colors, Color lightColor){
-        laser(x, y, length, width, angle, scale, tscales, strokes, lenscales, oscScl, oscMag, spaceMag, colors, lightColor, 1f);
     }
 
     public static void blockBuild(float x, float y, TextureRegion region, float rotation, float progress){
@@ -214,13 +196,42 @@ public class PMDrawf{
         reset();
     }
 
-    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape */
+    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape. */
     public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
         float mr = mod(r, 360f);
         alpha(1f);
         rect(dark, x, y, r);
         alpha(0.5f * (Mathf.cosDeg(mr) + 1f));
         rect(light, x, y, r);
+        alpha(1f);
+    }
+
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
+    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
+        float ar = mod(r - 135f, 360f);
+        float a = mod(ar, 90f) / 90f;
+        alpha(1f);
+        if(ar >= 270){ //Bottom Right
+            rect(bottomLeft, x, y, r);
+            alpha(a);
+            yscl *= -1;
+            rect(base, x, y, r);
+            yscl *= -1;
+        }else if(ar >= 180){ //Bottom Left
+            rect(base, x, y, r);
+            alpha(a);
+            rect(bottomLeft, x, y, r);
+        }else if(ar >= 90){ //Top Left
+            rect(topRight, x, y, r);
+            alpha(a);
+            rect(base, x, y, r);
+        }else{ //Top Right
+            yscl *= -1;
+            rect(base, x, y, r);
+            yscl *= -1;
+            alpha(a);
+            rect(topRight, x, y, r);
+        }
         alpha(1f);
     }
 
@@ -257,10 +268,8 @@ public class PMDrawf{
     }
 
     /**
-     * Color flash to entire screen made by
-     * @author sunny
-     * Customization with method made by
-     * @author MEEPofFaith
+     * Color flash over the entire screen
+     * @author sunny, customization by MEEP
      * */
     public static void flash(Color fromColor, Color toColor, float seconds, Interp fade){
         if(!headless){
@@ -374,5 +383,19 @@ public class PMDrawf{
         Pools.free(layout);
 
         return width;
+    }
+
+    public static void bloom(Runnable draw){
+        Bloom bloom = renderer.bloom;
+        float z = Draw.z();
+        if(bloom != null && (z < Layer.bullet - 0.02f || z > Layer.effect + 0.02f)){
+            Draw.draw(z, () -> {
+                bloom.capture();
+                draw.run();
+                bloom.render();
+            });
+        }else{
+            draw.run();
+        }
     }
 }

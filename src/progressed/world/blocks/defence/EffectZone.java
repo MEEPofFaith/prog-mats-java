@@ -19,6 +19,10 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class EffectZone extends Block{
+
+    public final int timerSearch = timers++;
+    /** Ticks between attempt at finding a target. */
+    public float searchInterval = 20;
     protected static final Seq<Unit> all = new Seq<>();
 
     public float reload = 20f;
@@ -28,7 +32,7 @@ public class EffectZone extends Block{
     public Color
         baseColor = Pal.lancerLaser,
         topColor;
-    public float height = 0.25f;
+    public float height = 1f;
     public float zoneLayer = -1f, ringLayer = Layer.flyingUnit + 0.5f;
 
     public Cons<EffectZoneBuild> zoneEffect = tile -> {};
@@ -93,23 +97,28 @@ public class EffectZone extends Block{
             heat = Mathf.lerpDelta(heat, Mathf.num(canConsume()), 0.08f);
             activeHeat = Mathf.lerpDelta(activeHeat, Mathf.num(canConsume() && active), 0.08f);
             activeHeight = Mathf.lerpDelta(activeHeight, Mathf.num(canConsume() && active) * smoothEfficiency, 0.08f);
-            charge += heat * Time.delta;
+            charge += heat * Time.delta * smoothEfficiency;
+
+            if(timer(timerSearch, searchInterval)){
+                findUnits();
+                active = activate.get();
+            }
 
             if(charge >= reload){
-                charge = 0f;
-
-                all.clear();
-                Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
-                    if(
-                        !other.dead &&
-                        !(other instanceof SwordUnit) &&
-                        (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
-                    ) all.add(other);
-                });
-                active = activate.get();
-
+                charge = 0;
+                findUnits();
                 zoneEffect.get(this);
             }
+        }
+
+        protected void findUnits(){
+            all.clear();
+            Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
+                if(
+                    !other.dead && !(other instanceof SwordUnit) &&
+                        (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
+                ) all.add(other);
+            });
         }
 
         @Override
@@ -133,8 +142,8 @@ public class EffectZone extends Block{
             if(activeHeat > 0.01f){
                 Draw.z(zoneLayer);
                 float a = activeHeat * smoothEfficiency * opacity;
-                Tmp.c1.set(baseColor).a(baseColor.a * scl * a);
-                Tmp.c2.set(baseColor).a(baseColor.a * (0.25f + scl) * a);
+                Tmp.c1.set(baseColor).mulA(scl * a);
+                Tmp.c2.set(baseColor).mulA((0.25f + scl) * a);
                 Fill.light(
                     x, y,
                     Lines.circleVertices(range),
@@ -145,12 +154,12 @@ public class EffectZone extends Block{
             if(smoothEfficiency > 0.01f){
                 Draw.z(ringLayer);
                 float a = smoothEfficiency * opacity;
-                Tmp.c1.set(baseColor).a(baseColor.a * a);
-                Tmp.c2.set(topColor).a(topColor.a * a);
+                Tmp.c1.set(baseColor).mulA(a);
+                Tmp.c2.set(topColor).mulA(a);
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);
-                Draw3D.cylinder(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
+                DrawPseudo3D.tube(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
             }
 
             Draw.color();
@@ -166,7 +175,7 @@ public class EffectZone extends Block{
             super.drawLight();
 
             if(activeHeat < 0.01f) return;
-            Drawf.light(x, y, lightRadius, baseColor,  0.8f * activeHeat);
+            Drawf.light(x, y, lightRadius, baseColor,  0.8f * activeHeat * smoothEfficiency);
         }
 
         @Override

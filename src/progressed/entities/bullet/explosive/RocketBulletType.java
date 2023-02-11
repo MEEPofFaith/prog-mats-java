@@ -13,7 +13,6 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
-import progressed.entities.bullet.explosive.BallisticMissileBulletType.*;
 
 import static mindustry.Vars.*;
 
@@ -28,19 +27,18 @@ public class RocketBulletType extends BasicBulletType{
 
     public float riseStart, riseEnd, targetLayer = -1;
 
-    public BulletType bombBullet;
-    public float bombInterval;
-
     public Sortf unitSort = Unit::dst2;
 
     public RocketBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite); //Speed means nothing
         layer = Layer.bullet - 1; //Don't bloom
         keepVelocity = false;
+        reflectable = false;
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = hitEffect = Fx.blastExplosion;
-        hitSound = Sounds.explosion;
+        hitSound = Sounds.largeExplosion;
         status = StatusEffects.blasted;
+        scaledSplashDamage = true;
     }
 
     @Override
@@ -71,31 +69,8 @@ public class RocketBulletType extends BasicBulletType{
                 b.vel.scl(Math.max(1f + acceleration * Time.delta, 0));
 
 
-                if(homingPower > 0.0001f && b.time >= homingDelay){
-                    Teamc target;
-                    //home in on allies if possible
-                    if(healPercent > 0){
-                        target = Units.bestTarget(null, b.x, b.y, homingRange,
-                            e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                            t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id),
-                            unitSort
-                        );
-                    }else{
-                        target = Units.bestTarget(b.team, b.x, b.y, homingRange,
-                            e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
-                            t -> collidesGround && !b.hasCollided(t.id),
-                            unitSort
-                        );
-                    }
-
-                    if(target != null){
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                    }
-                }
-
-                if(weaveMag > 0){
-                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
-                }
+                updateHoming(b);
+                updateWeaving(b);
 
                 float angle = r.thrust ? b.rotation() : r.angle,
                     x = b.x + Angles.trnsx(angle + 180, trailOffset),
@@ -114,14 +89,6 @@ public class RocketBulletType extends BasicBulletType{
                     }
                 }
 
-                if(bombBullet != null){
-                    if(b.time > thrustDelay + thrusterGrowth){
-                        if(b.timer(1, bombInterval * (speed / b.vel.len()))){
-                            bombBullet.create(b, b.x, b.y, b.rotation());
-                        }
-                    }
-                }
-
                 //updateTrail, but with the (x, y) above
                 if(!headless && trailLength > 0 && b.time >= trailDelay){
                     if(b.trail == null){
@@ -130,18 +97,6 @@ public class RocketBulletType extends BasicBulletType{
                     b.trail.length = trailLength;
                     b.trail.update(x, y, trailInterp.apply(b.fin()) * scale);
                 }
-            }
-        }
-    }
-
-    @Override
-    public void createFrags(Bullet b, float x, float y){
-        if(fragBullet != null){
-            for(int i = 0; i < fragBullets; i++){
-                float len = Mathf.random(1f, 7f);
-                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
-                Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x + Angles.trnsx(a, len), y + Angles.trnsy(a, len));
             }
         }
     }
@@ -192,7 +147,7 @@ public class RocketBulletType extends BasicBulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            UtilFx.rocketTrailFade.at(b.x, b.y, trailWidth, b.team.color, new RocketTrailData(b.trail.copy(), getLayer(b)));
+            TrailFadeFx.rocketTrailFade.at(b.x, b.y, trailWidth, b.team.color, new RocketTrailData(b.trail.copy(), getLayer(b)));
         }
     }
 

@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret;
 
 import arc.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -13,6 +14,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.unit.*;
+import progressed.entities.units.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -41,16 +43,18 @@ public class SignalFlareTurret extends ItemTurret{
         ));
 
         addBar("pm-flare-limit", (SignalFlareTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.pm-flare-limit", entity.flares, flareLimit),
+            () -> Core.bundle.format("bar.pm-flare-limit", entity.flares.size, flareLimit),
             () -> entity.team.color,
             entity::countf
         ));
     }
 
     public class SignalFlareTurretBuild extends ItemTurretBuild{
+        protected IntSeq readUnits = new IntSeq();
+
         public float tX, tY;
         public int count, amount;
-        public int flares;
+        public Seq<SignalFlareUnit> flares = new Seq<>();
         public boolean targetFound;
         public Bullet bullet;
 
@@ -71,6 +75,18 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         public void updateTile(){
+            if(!readUnits.isEmpty()){
+                flares.clear();
+                readUnits.each(i -> {
+                    var unit = Groups.unit.getByID(i);
+                    if(unit instanceof SignalFlareUnit f){
+                        flares.add(f);
+                    }
+                });
+                readUnits.clear();
+            }
+            //flares.remove(f -> !f.isAdded()); //Is this needed?
+
             wasShooting = false;
 
             curRecoil = Math.max(curRecoil - Time.delta / recoilTime , 0);
@@ -115,7 +131,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(flares < flareLimit && bullet == null){
+            if(flares.size < flareLimit && bullet == null){
                 if(reloadCounter >= reload && !charging()){
                     BulletType type = peekAmmo();
 
@@ -132,7 +148,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void updateCooling(){
-            if(flares < flareLimit && bullet == null){
+            if(flares.size < flareLimit && bullet == null){
                 super.updateCooling();
             }
         }
@@ -166,18 +182,17 @@ public class SignalFlareTurret extends ItemTurret{
         @Override
         protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset){
             if(bullet != null){
-                flares++;
                 this.bullet = bullet;
             }
         }
 
         @Override
         public BlockStatus status(){
-            return (flares >= flareLimit || bullet != null) ? BlockStatus.noOutput : super.status();
+            return (flares.size >= flareLimit || bullet != null) ? BlockStatus.noOutput : super.status();
         }
 
         public float countf(){
-            return (flares / (float)flareLimit);
+            return (flares.size / (float)flareLimit);
         }
 
         @Override
@@ -212,19 +227,29 @@ public class SignalFlareTurret extends ItemTurret{
         public void write(Writes write){
             super.write(write);
 
-            write.i(flares);
+            write.b(flares.size);
+            for(SignalFlareUnit f : flares){
+                write.i(f.id);
+            }
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            if(revision >= 4) flares = read.i();
+            if(revision == 4) read.i();
+            if(revision >= 5){
+                int count = read.b();
+                readUnits.clear();
+                for(int i = 0; i < count; i++){
+                    readUnits.add(read.i());
+                }
+            }
         }
 
         @Override
         public byte version(){
-            return 4;
+            return 5;
         }
     }
 }

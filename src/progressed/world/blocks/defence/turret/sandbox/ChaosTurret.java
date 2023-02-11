@@ -12,7 +12,6 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.*;
 import progressed.util.*;
 
 public class ChaosTurret extends PowerTurret{
@@ -22,7 +21,6 @@ public class ChaosTurret extends PowerTurret{
         super(name);
         requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
-        health = ProgMats.sandboxBlockHealth;
 
         drawer = new DrawTurret(){
             @Override

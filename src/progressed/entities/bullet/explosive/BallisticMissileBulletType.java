@@ -1,15 +1,13 @@
 package progressed.entities.bullet.explosive;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.Units.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.*;
@@ -17,52 +15,73 @@ import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.BallisticProjector.*;
+import progressed.world.blocks.defence.*;
+import progressed.world.blocks.defence.ShieldProjector.*;
 
-/** @author MEEP */
-public class BallisticMissileBulletType extends BasicBulletType{
-    public float autoDropRadius, stopRadius, dropDelay, stopDelay;
-    public boolean resumeSeek = true, randRot;
-    public Effect rocketEffect = MissileFx.missileSmoke;
-    public float trailChance = 0.5f, smokeTrailChance = 0.75f;
-    public float targetRadius = 1f;
-    public float thrusterRadius = 8f, thrusterLightRadius = -1f, thrusterLightOpacity = 0.5f;
-    public float trailRnd, trailSize = 0.375f;
-    public float riseTime = 60f, fallTime = 40f, elevation = 1f, shadowOffset, growScl = 4f;
-    public Color thrusterColor = Pal.engine;
-    public Color targetColor;
-    public Effect blockEffect = Fx.none;
+import static mindustry.Vars.*;
+import static progressed.graphics.DrawPseudo3D.*;
+
+public class BallisticMissileBulletType extends BulletType{
+    public boolean drawZone = true;
+    public float height = 1f, heightRnd;
+    public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
+    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
+    public float shadowOffset = -1f;
+    public float splitTime = 0.5f;
+    public float splitLifeMaxOffset = 10f;
+    public Color targetColor = Color.red;
+    public String sprite;
+    public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
-    public int splitBullets;
-    public float splitVelocityMin = 0.2f, splitVelocityMax = 1f, splitLifeMin = 1f, splitLifeMax = 1f;
-    public BulletType splitBullet;
+    public boolean spinShade = true;
+    public Interp hInterp = PMMathf.arc, posInterp = Interp.pow2In, rotInterp = Interp.circleOut;
 
-    public Sortf unitSort = UnitSorts.closest;
+    public TextureRegion region, blRegion, trRegion;
 
-    public BallisticMissileBulletType(float speed, float damage, String sprite){
-        super(speed, damage, sprite);
-        ammoMultiplier = 1;
-        collides = hittable = absorbable = reflectable = keepVelocity = false;
-        hitEffect = Fx.blockExplosionSmoke;
+    public BallisticMissileBulletType(String sprite){
+        super(1f, 0f);
+        this.sprite = sprite;
+
         shootEffect = smokeEffect = Fx.none;
-        lightRadius = 32f;
-        lightOpacity = 0.6f;
-        lightColor = Pal.engine;
-        trailEffect = Fx.none;
+        despawnEffect = MissileFx.missileExplosion;
+        hitSound = Sounds.largeExplosion;
+        layer = Layer.flyingUnit + 2;
+        ammoMultiplier = 1;
+        lifetime = 120f;
+        collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
+        scaleLife = true;
+        scaledSplashDamage = true;
         status = StatusEffects.blasted;
     }
 
     @Override
     public void init(){
-        super.init();
-
-        drawSize = elevation + 64f;
-        if(blockEffect == Fx.none) blockEffect = despawnEffect;
-        if(thrusterLightRadius < 0) thrusterLightRadius = thrusterRadius * 6.5f;
-
+        if(shadowOffset < 0) shadowOffset = height * 2f;
+        if(shrinkRad < 0) shrinkRad = zoneRadius / 6f;
         if(ProgMats.farting() && hitSound != Sounds.none){
             hitSound = PMSounds.gigaFard;
             hitSoundVolume = fartVolume;
+        }
+
+        super.init();
+
+        //Since the offset tilts it away from the camera, you only need the draw size to be the range of the missile.
+        drawSize = Math.max(drawSize, range);
+
+        //Ensure that split missiles also have enough draw size, as limitRange only applies to the main missile.
+        if(fragBullet instanceof BallisticMissileBulletType){
+            fragBullet.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
+            heightRnd = 0f;
+        }
+    }
+
+    @Override
+    public void load(){
+        region = Core.atlas.find(sprite);
+
+        if(spinShade){
+            blRegion = Core.atlas.find(sprite + "-bl");
+            trRegion = Core.atlas.find(sprite + "-tr");
         }
     }
 
@@ -70,263 +89,242 @@ public class BallisticMissileBulletType extends BasicBulletType{
     public void init(Bullet b){
         super.init(b);
 
-        if(b.data == null){
-            if(b.owner instanceof Unit unit){
-                b.data = new ArcMissileData(unit.x, unit.y);
+        float px = b.x + b.lifetime * b.vel.x,
+            py = b.y + b.lifetime * b.vel.y;
+
+        b.data = new float[]{b.x, b.y, b.x, b.y, 0f};
+        b.lifetime(lifetime);
+        b.set(px, py);
+        b.vel.setZero();
+    }
+
+    @Override
+    public void update(Bullet b){
+        super.update(b);
+
+        if(fragBullet instanceof BallisticMissileBulletType && b.fin() >= splitTime){
+            b.remove();
+        }
+    }
+
+    @Override
+    public void updateHoming(Bullet b){
+        if(homingPower > 0.0001f && b.time >= homingDelay){
+            float realAimX = b.aimX < 0 ? b.x : b.aimX;
+            float realAimY = b.aimY < 0 ? b.y : b.aimY;
+
+            Teamc target;
+            //home in on allies if possible
+            if(heals()){
+                target = Units.closestTarget(null, realAimX, realAimY, homingRange,
+                    e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                    t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
+                );
+            }else{
+                if(b.aimTile != null && b.aimTile.build != null && b.aimTile.build.team != b.team && collidesGround && !b.hasCollided(b.aimTile.build.id)){
+                    target = b.aimTile.build;
+                }else{
+                    target = Units.closestTarget(b.team, realAimX, realAimY, homingRange, e -> e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id), t -> collidesGround && !b.hasCollided(t.id));
+                }
             }
-            if(b.owner instanceof Building build){
-                b.data = new ArcMissileData(build.x, build.y);
+
+            if(target != null){ //Instead of rotating the bullet, shift towards the homing target.
+                Tmp.v1.setZero();
+                if(target instanceof Hitboxc h){
+                    Tmp.v1.set(h.deltaX(), h.deltaY()).scl(b.lifetime - b.time);
+                }
+                Tmp.v1.add(target);
+
+                Tmp.v2.trns(b.angleTo(Tmp.v1), b.dst(Tmp.v1)).limit(homingPower);
+                b.move(Tmp.v2);
             }
         }
     }
 
     @Override
-    public void update(Bullet b){
-        if(b.data instanceof ArcMissileData data){
-            float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime));
-            if(rise < 1f && Mathf.chanceDelta(smokeTrailChance)){
-                float x = data.x,
-                    y = data.y,
-                    scl = 1f + (growScl - 1f) * rise;
-                rocketEffect.at(x + Mathf.range(trailRnd * scl), y + Mathf.range(trailRnd * scl), trailSize * scl, new float[]{elevation * rise, 1f - rise});
+    public void updateTrail(Bullet b){
+        float x = tX(b), y = tY(b), h = hScl(b);
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new HeightTrail(trailLength);
             }
+            HeightTrail trail = (HeightTrail)b.trail;
+            trail.length = trailLength;
+            trail.update(x, y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), h * height);
+        }
 
-            //Find nearby target. Used for early dropping, starting and stopping, and homing.
-            float range = Math.max(autoDropRadius, Math.max(stopRadius, homingRange));
-            Teamc target = Units.bestTarget(b.team, b.x, b.y, range,
-                e -> !e.dead() && e.checkTarget(collidesAir, collidesGround),
-                t -> !t.dead() && collidesGround,
-                unitSort
-            );
+        float[] data = (float[])b.data;
+        data[2] = x;
+        data[3] = y;
+        data[4] = h;
+    }
 
-            //Instant drop
-            data.canDrop = riseTime < b.time && b.time < (b.lifetime - fallTime);
-            if(autoDropRadius > 0f && data.canDrop && b.time >= dropDelay){
-                if(target != null && b.within(target, autoDropRadius)){
-                    b.time = b.lifetime - fallTime;
-                }
-            }
+    @Override
+    public void draw(Bullet b){
+        float[] data = (float[])b.data;
 
-            //Start and stop
-            if(stopRadius > 0f && b.time >= stopDelay){
-                if(target != null && b.within(target, stopRadius)){
-                    if(!data.stopped){
-                        data.setVel(b.vel);
-                        data.stopped = true;
-                        b.vel.trns(b.vel.angle(), 0.001f);
-                    }else if(resumeSeek && (((Healthc)target).dead() || ((Healthc)target).health() < 0f) && data.stopped){
-                        b.vel.set(data.vel);
-                        data.stopped = false;
-                    }
-                }else if(resumeSeek && data.stopped){
-                    b.vel.set(data.vel);
-                    data.stopped = false;
-                }
-            }
+        float lerp = Mathf.lerp(b.fdata, 1f, b.fin());
+        //Target
+        Draw.z(zoneLayer - 0.01f);
+        if(drawZone && zoneRadius > 0f){
+            Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
+            Fill.circle(b.x, b.y, zoneRadius);
+            Draw.color(Color.red, 0.5f);
+            float subRad = lerp * (zoneRadius + shrinkRad),
+                inRad = Math.max(0, zoneRadius - subRad),
+                outRad = Math.min(zoneRadius, zoneRadius + shrinkRad - subRad);
 
-            if(!data.stopped){
-                if(homingPower > 0.0001f && b.time >= homingDelay){
-                    if(target != null && b.within(target, homingRange)){
-                        b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-                    }
-                }
+            PMDrawf.ring(b.x, b.y, inRad, outRad);
+        }
+        Draw.z(zoneLayer);
+        PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
 
-                if(weaveMag > 0){
-                    b.vel.rotate(Mathf.sin(b.time + Mathf.PI * weaveScale/2f, weaveScale, weaveMag * (Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
-                }
+        //Missile
+        float x = tX(b),
+            y = tY(b),
+            hScl = hScl(b),
+            shX = x - shadowOffset * hScl,
+            shY = y - shadowOffset * hScl,
+            lasthX = xHeight(data[2], data[4] * height),
+            lasthY = yHeight(data[3], data[4] * height),
+            hX = xHeight(x, hScl * height),
+            hY = yHeight(y, hScl * height),
+            hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
-                if(trailChance > 0){
-                    if(Mathf.chanceDelta(trailChance)){
-                        trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
-                    }
-                }
+        Draw.z(shadowLayer);
+        Draw.scl(1f + hScl);
+        Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
+        Draw.z(layer + DrawPseudo3D.layerOffset(x, y)); //Unsure that the trail is drawn underneath.
+        drawTrail(b);
+        Draw.scl(1f + hMul(hScl));
+        Draw.z(layer + hScl / 100f);
+        if(spinShade){
+            PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
+        }else{
+            Draw.rect(region, hX, hY, hRot);
+        }
+        Draw.scl();
+    }
 
-                if(trailInterval > 0f){
-                    if(b.timer(0, trailInterval)){
-                        trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, trailColor);
-                    }
-                }
-            }
+    @Override
+    public void drawLight(Bullet b){
+        if(lightOpacity <= 0f || lightRadius <= 0f) return;
+        float h = hScl(b) * height;
+        Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius, lightColor, lightOpacity);
+    }
 
-            if(splitBullet != null && !data.split && b.time >= (b.lifetime - fallTime)){
-                data.split = true;
-                for(int i = 0; i < splitBullets; i++){
-                    splitBullet.create(b.owner, b.team, b.x, b.y, Mathf.random(360f), -1f, Mathf.random(splitVelocityMin, splitVelocityMax), Mathf.random(splitLifeMin, splitLifeMax), new ArcMissileData(b.x, b.y));
-                }
-            }
+    @Override
+    public void drawTrail(Bullet b){
+        float scl = Draw.xscl;
+        Draw.scl();
+        super.drawTrail(b);
+        Draw.scl(scl);
+    }
+
+    public float tX(Bullet b){
+        return Mathf.lerp(((float[])b.data)[0], b.x, posInterp(b));
+    }
+
+    public float tY(Bullet b){
+        return Mathf.lerp(((float[])b.data)[1], b.y, posInterp(b));
+    }
+
+    public float hScl(Bullet b){
+        float hScl;
+        if(b.fdata == 0){
+            hScl = hInterp.apply(b.fin());
+        }else{
+            hScl = hInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
+        }
+        if(heightRnd != 0) hScl *= 1 + Mathf.randomSeedRange(b.id, heightRnd);
+        return hScl;
+    }
+
+    public float posInterp(Bullet b){
+        if(posInterp == Interp.linear) b.fin();
+        if(b.fdata == 0) return b.fin(posInterp);
+        float a = posInterp.apply(b.fdata);
+        return (posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) - a) / (1 - a);
+    }
+
+    public float shadowRot(Bullet b, float shX, float shY, float hScl){
+        float[] data = (float[])b.data;
+        boolean inc = hScl - data[4] > 0;
+        float ang = b.angleTo(data[0], data[1]) + 180f;
+        if(inc){
+            return Angles.moveToward(90f, ang, rotInterp.apply(hScl) * Angles.angleDist(90f, ang));
+        }else{
+            float to = b.angleTo(shX, shY) + 180f;
+            return Angles.moveToward(to, ang, hScl * Angles.angleDist(to, ang));
         }
     }
 
     @Override
     public void despawned(Bullet b){
-        ArcMissileData data = (ArcMissileData)b.data;
-        ShieldBuild s = data.shield;
-
-        if(s != null && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y)){
-            data.blocked = true;
-            blockEffect.at(b.x, b.y, b.rotation(), hitColor);
-        }else{
-            despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        if(fragBullet instanceof BallisticMissileBulletType){
+            createFrags(b, b.x, b.y);
+            return;
         }
-        hitSound.at(b);
+
+        ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, ShieldProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
+        if(shield != null){ //Ballistic Shield blocks the missile
+            blockEffect.at(b.x, b.y, b.rotation(), hitColor);
+            despawnSound.at(b);
+
+            Effect.shake(despawnShake, despawnShake, b);
+
+            shield.hit = 1f;
+            shield.buildup += (b.damage() + splashDamage * shield.realStrikeBlastResistance() * b.damageMultiplier()) * shield.warmup;
+
+            return;
+        }
+
+        if(!fragOnHit){
+            createFrags(b, b.x, b.y);
+        }
+
+        if(despawnHit){
+            hit(b);
+        }else{
+            createUnits(b, b.x, b.y);
+        }
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
 
         Effect.shake(despawnShake, despawnShake, b);
-
-        if(!b.hit && (fragBullet != null || splashDamageRadius > 0 || lightning > 0)){
-            hit(b);
-        }
     }
 
     @Override
-    public void hit(Bullet b, float x, float y){
-        b.hit = true;
-        hitEffect.at(x, y, b.rotation(), hitColor);
-        hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
-
-        Effect.shake(hitShake, hitShake, b);
-
-        createFrags(b, x, y);
-
-        ArcMissileData data = ((ArcMissileData)b.data);
-
-        if(!data.blocked){
-            createPuddles(b, x, y);
-            createIncend(b, x, y);
-
-            if(suppressionRange > 0){
-                //bullets are pooled, require separate Vec2 instance
-                Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
-            }
-
-            createSplashDamage(b, x, y);
-
-            for(int i = 0; i < lightning; i++){
-                Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-            }
-        }else{
-            ShieldBuild s = data.shield;
-            s.buildup += (b.damage() + splashDamage * s.realStrikeBlastResistance() * b.damageMultiplier()) * s.warmup;
+    public void removed(Bullet b){
+        if(trailLength > 0 && b.trail instanceof HeightTrail trail && trail.size() > 0){
+            TrailFadeFx.heightTrailFade.at(tX(b), tY(b), trailWidth, trailColor, trail.copy());
         }
     }
 
     @Override
     public void createFrags(Bullet b, float x, float y){
-        if(fragBullet != null){
+        if(fragBullet instanceof BallisticMissileBulletType){
+            float sx = tX(b), sy = tY(b);
+            float dst = b.dst(sx, sy);
+
+            float offset = (1f + b.fdata) * splitTime;
             for(int i = 0; i < fragBullets; i++){
-                float len = Mathf.random(1f, 7f);
-                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
-                Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof BallisticMissileBulletType) f.data = new ArcMissileData(x, y);
-            }
-        }
-    }
-
-    @Override
-    public void draw(Bullet b){
-        if(b.data instanceof ArcMissileData data){
-            float x = data.x;
-            float y = data.y;
-
-            float rise = Interp.pow5In.apply(Mathf.curve(b.time, 0f, riseTime)),
-                fadeOut = 1f - rise,
-                fadeIn = Mathf.curve(b.time, b.lifetime - fallTime, b.lifetime),
-                fall = 1f - fadeIn,
-                rot = randRot ? Mathf.randomSeed(b.id, 360f) : 0f;
-            Tmp.v1.trns(225f, rise * fall * shadowOffset * 2f);
-
-            //Target
-            Draw.z(Layer.bullet - 0.03f);
-            if(autoDropRadius > 0f){
-                float dropAlpha = Mathf.curve(b.time, riseTime * 2f/3f, riseTime) - Mathf.curve(b.time, b.lifetime - 8f, b.lifetime);
-                Draw.color(Color.red, (0.25f + 0.5f * Mathf.absin(16f, 1f)) * dropAlpha);
-                Fill.circle(b.x, b.y, autoDropRadius);
-            }
-            if(targetRadius > 0){
-                float target = Mathf.curve(b.time, 0f, riseTime / 2f) - Mathf.curve(b.time, b.lifetime - fallTime / 2f, b.lifetime);
-                float radius = targetRadius * target;
-                PMDrawf.target(b.x, b.y, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), radius, targetColor != null ? targetColor : b.team.color, b.team.color, target);
-            }
-
-            //Missile
-            if(fadeOut > 0 && fadeIn == 0){
-                float rX = x + Draw3D.cameraXOffset(x, rise * elevation),
-                    rY = y + Draw3D.cameraYOffset(y, rise * elevation),
-                    scl = 1f + (growScl - 1f) * rise;
-                Draw.scl(scl);
-                //Engine stolen from launchpad
-                if(thrusterRadius > 0f){
-                    Draw.z(Layer.effect + 0.001f);
-                    drawEngine(b.team, rX, rY, thrusterRadius, thrusterLightRadius, scl, fadeOut, b.id);
+                Tmp.v1.setToRandomDirection().setLength(fragRandomSpread * Mathf.sqrt(Mathf.random())).add(b.x, b.y);
+                float lifeScl = Mathf.dst(sx, sy, Tmp.v1.x, Tmp.v1.y) / fragBullet.range;
+                Bullet frag = fragBullet.create(b, b.team, sx, sy, Tmp.v1.angleTo(sx, sy) + 180f, 1f, lifeScl);
+                frag.fdata = offset;
+                frag.lifetime *= 1 - offset;
+                if(splitLifeMaxOffset != 0){ //Closer = shorter lifetime, farther = longer lifetime
+                    float scl = (frag.dst(sx, sy) - dst) / fragRandomSpread;
+                    frag.lifetime += scl * splitLifeMaxOffset;
                 }
-                //Missile itself
-                Draw.z(Layer.weather - 1);
-                drawMissile(frontRegion, rX, rY, rot, fadeOut);
-                //Missile shadow
-                Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(frontRegion, x + Tmp.v1.x, y + Tmp.v1.y, rot, fadeOut);
-            }else if(fadeOut == 0f && fadeIn > 0f){
-                float fX = b.x + Draw3D.cameraXOffset(b.x, fall * elevation),
-                    fY = b.y + Draw3D.cameraYOffset(b.y, fall * elevation),
-                    rot2 = rot + (randRot ? Mathf.randomSeed(b.id + 1, 360f) : 0f),
-                    scl = growScl - (growScl - 1f) * fadeIn;
-                Draw.scl(scl);
-                //Missile itself
-                Draw.z(Layer.weather - 2f);
-                drawMissile(backRegion, fX, fY, rot2, fadeIn);
-                //Engine stolen from launchpad
-                if(thrusterRadius > 0f){
-                    Draw.z(Layer.weather - 1f);
-                    drawEngine(b.team, fX, fY, thrusterRadius, thrusterLightRadius, scl, fadeIn, b.id + 2);
+                if(fragBullet.trailLength > 0 && b.trail != null){
+                    frag.trail = b.trail.copy();
                 }
-                //Missile shadow
-                Draw.z(Layer.flyingUnit + 1f);
-                drawShadow(backRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, rot, fadeIn);
             }
-
-            Draw.reset();
-        }
-    }
-
-    public void drawMissile(TextureRegion region, float x, float y, float rot, float a){
-        Draw.color();
-        Draw.alpha(a);
-        Draw.rect(region, x, y, rot);
-    }
-
-    public void drawEngine(Team team, float x, float y, float size, float lightRadius, float scl, float alpha, long seed){
-        Draw.color(thrusterColor, alpha);
-        Fill.light(x, y, 10,
-            size * 1.5625f * scl,
-            Tmp.c1.set(Pal.engine).mul(1f, 1f, 1f, alpha),
-            Tmp.c2.set(Pal.engine).mul(1, 1f, 1f, 0f)
-        );
-        PMDrawf.cross(x, y, size * 0.375f, size * 2.5f * scl, Time.time * 1.5f + Mathf.randomSeed(seed, 360f));
-        Drawf.light(x, y, lightRadius * scl, thrusterColor, thrusterLightOpacity * alpha);
-    }
-
-    public void drawShadow(TextureRegion region, float x, float y, float rot, float a){
-        Draw.color(0f, 0f, 0f, 0.22f * a);
-        Draw.rect(region, x, y, rot);
-    }
-
-    @Override
-    public void drawLight(Bullet b){
-        //Do nothing
-    }
-
-    public static class ArcMissileData{
-        public float x, y;
-        public Vec2 vel;
-        public boolean stopped, blocked, split, canDrop;
-        public ShieldBuild shield;
-
-        public ArcMissileData(float x, float y){
-            this.x = x;
-            this.y = y;
-        }
-
-        public void setVel(Vec2 vel){
-            this.vel = vel.cpy();
+        }else{
+            super.createFrags(b, x, y);
         }
     }
 }

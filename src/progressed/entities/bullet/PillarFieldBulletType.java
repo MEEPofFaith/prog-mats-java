@@ -13,7 +13,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import progressed.content.effects.*;
-import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -33,9 +32,8 @@ public class PillarFieldBulletType extends BulletType{
     public float ringEffectInterval = 2f;
 
     public int crackEffects = 1;
-    public float crackStroke = 1.5f, crackWidth = 10f;
     public Color crackColor = PMPal.darkBrown;
-    public Effect crackEffect = UtilFx.groundCrack;
+    public LightningEffect crackEffect = LightningFx.groundCrack;
 
     public Effect placeEffect = OtherFx.pillarPlace;
 
@@ -92,7 +90,7 @@ public class PillarFieldBulletType extends BulletType{
             for(int i = 0; i < crackEffects; i++){
                 PMMathf.randomCirclePoint(Tmp.v1, radius).add(b);
                 PMMathf.randomCirclePoint(Tmp.v2, radius).add(b);
-                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v1.angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, false, crackWidth));
+                crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, crackColor);
             }
 
             if(b.time <= (b.lifetime - ringEffect.lifetime - fadeTime)){

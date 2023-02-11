@@ -14,8 +14,12 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.type.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
+import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
 import progressed.content.bullets.*;
@@ -24,16 +28,18 @@ import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.turret.modular.*;
+import progressed.world.blocks.defence.turret.payload.modular.*;
+import progressed.world.blocks.defence.turret.sandbox.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
+import static mindustry.content.Blocks.*;
+import static progressed.content.blocks.PMSandboxBlocks.*;
 
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
-    public static ModuleInfoDialog moduleInfoDialog;
     public static Seq<BulletData> allBullets = new Seq<>();
-    public static int sandboxBlockHealth = 1000000;
+    public static int sandboxBlockHealthMultiplier = 1000000;
     boolean hasProc;
 
     public ProgMats(){
@@ -50,24 +56,40 @@ public class ProgMats extends Mod{
         }));
 
         if(!headless){
+            Events.on(ContentInitEvent.class, e -> content.blocks().each(b -> b instanceof ModularTurret, (ModularTurret b) -> b.setClip(PMModules.maxClip)));
+        }
+
+        //Sandbox utilities: Make sandbox blocks have a ton of health.
+        if(settings.getBool("pm-sandbox-health", true)){
             Events.on(ContentInitEvent.class, e -> {
-                float clip = PMModules.maxClip;
-                ((ModularTurret)(PMBlocks.council)).setClip(clip);
-                ((ModularTurret)(PMBlocks.congress)).setClip(clip);
-                ((ModularTurret)(PMBlocks.pantheon)).setClip(clip);
+                Seq<Block> sandboxBlocks = Seq.with(
+                    //Vanilla
+                    itemSource, itemVoid,
+                    liquidSource, liquidVoid,
+                    powerSource, powerVoid,
+                    payloadSource, payloadVoid,
+                    heatSource,
+
+                    //PM
+                    eviscerator, everythingGun, testTurret,
+                    everythingItemSource, sandDriver,
+                    everythingLiquidSource,
+                    strobeNode, strobeInf, strobeBoost,
+                    sandboxWall, sandboxWallLarge,
+                    infiniHeatSource,
+                    godFactory, capBlock, harmacist,
+                    multiSource, multiVoid, multiSourceVoid, multiEverythingSourceVoid,
+                    infiniMender, infiniOverdrive
+                );
+                //Can't use b.buildVisibility == BuildVisibility.sandboxOnly because some things, like scrap walls, are also sandbox only.
+
+                sandboxBlocks.each(b -> b.health *= sandboxBlockHealthMultiplier);
             });
         }
     }
 
     @Override
     public void init(){
-        //Sandbox utilities: Make sandbox blocks have a ton of health.
-        Blocks.itemSource.health = Blocks.itemVoid.health =
-            Blocks.liquidSource.health = Blocks.liquidVoid.health =
-            Blocks.powerSource.health = Blocks.powerVoid.health =
-            Blocks.payloadSource.health = Blocks.payloadVoid.health =
-            Blocks.heatSource.health = sandboxBlockHealth;
-
         if(!headless){
             if(OS.username.equals("MEEP")) experimental = true;
 
@@ -89,16 +111,13 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 if(everything()){
                     godHood(PMUnitTypes.everythingUnit);
-                    setupEveryBullets((Turret)PMBlocks.everythingGun);
+                    setupEveryBullets((EverythingTurret)everythingGun);
                 }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
-                moduleInfoDialog = new ModuleInfoDialog();
 
                 if(farting()){
-                    content.blocks().each(b -> b.destroySound = Sounds.wind3);
-
-                    content.units().each(u -> u.deathSound = Sounds.wind3);
+                    PMSounds.overrideSounds();
 
                     Events.run(Trigger.newGame, () -> {
                         if(settings.getBool("skipcoreanimation")) return;
@@ -120,7 +139,7 @@ public class ProgMats extends Mod{
 
                 Events.on(WorldLoadEvent.class, e -> {
                     //reset
-                    hasProc = Groups.build.contains(b -> b.block.privileged);
+                    hasProc = Groups.build.contains(b -> b.block.privileged); //Check for world procs
                     renderer.minZoom = 0.667f;
                     renderer.maxZoom = 24f;
                 });
@@ -156,11 +175,15 @@ public class ProgMats extends Mod{
 
     void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.pm-title"), "prog-mats-settings-icon", t -> {
+            t.pref(new Separator("pm-graphics-settings"));
             t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
             t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
-            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
             t.checkPref("pm-tesla-range", true);
+            t.pref(new Separator("pm-sandbox-settings"));
+            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
+            t.checkPref("pm-sandbox-health", true);
             t.checkPref("pm-sandbox-everything", false);
+            t.pref(new Separator("pm-other-settings"));
             t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
         });
     }
@@ -273,6 +296,31 @@ public class ProgMats extends Mod{
 
         public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
             this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
+        }
+    }
+
+    static class Separator extends Setting{
+        float height;
+
+        public Separator(String name){
+            super(name);
+        }
+
+        public Separator(float height){
+            this("");
+            this.height = height;
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            if(name.isEmpty()){
+                table.image(Tex.clear).height(height).padTop(3f);
+            }else{
+                table.table(t -> {
+                    t.add(title).padTop(3f);
+                }).get().background(Tex.underline);
+            }
+            table.row();
         }
     }
 }

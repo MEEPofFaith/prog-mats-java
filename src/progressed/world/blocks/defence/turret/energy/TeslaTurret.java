@@ -18,7 +18,6 @@ import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
-import progressed.content.effects.UtilFx.*;
 import progressed.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -42,14 +41,16 @@ public class TeslaTurret extends Block{
 
     public int maxTargets;
     public float range, damage;
+    public float placeOverlapMargin = 8 * 7f;
     public StatusEffect status;
     public float statusDuration = 10f * 60f;
 
-    public float spinUp = 0.01f, spinDown = 0.0125f, lightningStroke = 3.5f;
+    public float spinUp = 0.01f, spinDown = 0.0125f;
     public float sectionRad = 0.14f, blinkScl = 20f;
     public int sections = 5;
 
     public Sound shootSound = Sounds.spark;
+    public LightningEffect lightningEffect = LightningFx.teslaLightning;
     public Effect shootEffect = Fx.sparkShoot;
     public Effect hitEffect = Fx.hitLaserBlast;
     public Effect coolEffect = Fx.fuelburn;
@@ -130,6 +131,9 @@ public class TeslaTurret extends Block{
             coolant.booster = true;
             coolant.optional = true;
         }
+
+        placeOverlapRange = Math.max(placeOverlapRange, range + placeOverlapMargin);
+        fogRadius = Math.max(Mathf.round(range / tilesize), fogRadius);
 
         super.init();
     }
@@ -318,7 +322,7 @@ public class TeslaTurret extends Block{
                             shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
                             shootEffect.at(shootX, shootY, shootAngle, lightningColor);
                             hitEffect.at(other.x(), other.y(), lightningColor);
-                            UtilFx.lightning.at(shootX, shootY, shootAngle, lightningColor, new LightningData(other, lightningStroke));
+                            lightningEffect.at(shootX, shootY, other.x(), other.y(), lightningColor);
                         }
 
                         Effect.shake(shake, shake, this);

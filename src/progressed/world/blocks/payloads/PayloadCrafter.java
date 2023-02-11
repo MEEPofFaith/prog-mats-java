@@ -22,7 +22,6 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
-import progressed.ui.*;
 import progressed.world.blocks.consumers.*;
 import progressed.world.meta.*;
 
@@ -71,11 +70,11 @@ public class PayloadCrafter extends PayloadBlock{
         if(recipes.contains(r -> r.powerUse > 0)){
             consumePowerDynamic(b -> ((PayloadCrafterBuild)b).powerUse());
         }
-        if(recipes.contains(r -> r.buildCost != null)){
-            consume(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().buildCost != null ? e.recipe().buildCost : ItemStack.empty));
+        if(recipes.contains(r -> r.itemRequirements != null)){
+            consume(new ConsumeItemDynamic((PayloadCrafterBuild e) -> e.hasRecipe() && e.recipe().itemRequirements != null ? e.recipe().itemRequirements : ItemStack.empty));
         }
-        if(recipes.contains(r -> r.liquidCost != null)){
-            consume(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidCost : null));
+        if(recipes.contains(r -> r.liquidRequirements != null)){
+            consume(new ConsumeLiquidDynamic((PayloadCrafterBuild e) -> e.hasRecipe() ? e.recipe().liquidRequirements : null));
         }
         if(recipes.contains(r -> r.inputBlock != null)) acceptsPayload = true;
         if(recipes.contains(r -> r.outputBlock != null)) outputsPayload = true;
@@ -87,8 +86,8 @@ public class PayloadCrafter extends PayloadBlock{
     public void load(){
         super.load();
 
-        inRegion = Core.atlas.find(name + "-in", Core.atlas.find("factory-in-" + size, "prog-mats-factory-in-" + size));
-        outRegion = Core.atlas.find(name + "-out", Core.atlas.find("factory-out-" + size, "prog-mats-factory-out-" + size));
+        inRegion = Core.atlas.find(name + "-in", Core.atlas.find("factory-in-" + size + regionSuffix, "prog-mats-factory-in-" + size + regionSuffix));
+        outRegion = Core.atlas.find(name + "-out", Core.atlas.find("factory-out-" + size + regionSuffix, "prog-mats-factory-out-" + size + regionSuffix));
         if(!hasTop) topRegion = Core.atlas.find("clear");
     }
 
@@ -140,10 +139,8 @@ public class PayloadCrafter extends PayloadBlock{
     }
 
     public boolean canProduce(Block b){
-        boolean hasRecipe = recipes.contains(r -> r.outputBlock == b);
-        if(hasRecipe){
-            Recipe recipe = recipes.find(r -> r.outputBlock == b);
-            return !recipe.requiresUnlock || recipe.outputBlock.unlockedNow();
+        if(recipes.contains(r -> r.outputBlock == b)){
+            return recipes.find(r -> r.outputBlock == b).unlocked();
         }
         return false;
     }
@@ -273,7 +270,7 @@ public class PayloadCrafter extends PayloadBlock{
         @Override
         public int getMaximumAccepted(Item item){
             if(recipe() == null) return 0;
-            for(ItemStack stack : recipe().buildCost){
+            for(ItemStack stack : recipe().itemRequirements){
                 if(stack.item == item) return stack.amount * 2;
             }
             return 0;
@@ -295,19 +292,17 @@ public class PayloadCrafter extends PayloadBlock{
 
             for(Block b : content.blocks()){
                 if(recipes.contains(r -> r.outputBlock == b)){
-                    Cell<ImageButton> cell = cont.button(Tex.whiteui, Styles.clearTogglei, 24, () -> {}).group(group);
+                    Cell<ImageButton> cell = cont.button(Tex.clear, Styles.clearTogglei, 24, () -> {}).group(group);
                     ImageButton button = cell.get();
                     Recipe r = recipes.find(rec -> rec.outputBlock == b);
                     button.update(() -> button.setChecked(recipe == b));
 
-                    TextureRegionDrawable reg = new TextureRegionDrawable();
-                    if(r.requiresUnlock && !r.outputBlock.unlockedNow()){
-                        button.getStyle().imageUp = reg.set(Core.atlas.find("clear"));
-                        button.replaceImage(PMElements.imageStack(b.uiIcon, Icon.tree.getRegion(), Color.red));
-                        cell.tooltip("@pm-missing-research");
-                    }else{
-                        button.getStyle().imageUp = reg.set(b.uiIcon);
+                    if(r.unlocked()){
+                        button.getStyle().imageUp = new TextureRegionDrawable(b.uiIcon);
                         cell.tooltip(b.localizedName);
+                    }else{
+                        button.getStyle().imageUp = Icon.lock;
+                        cell.tooltip("@pm-missing-research");
                     }
                     button.changed(() -> configure(button.isChecked() ? b : null));
 

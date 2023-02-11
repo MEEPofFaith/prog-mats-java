@@ -2,6 +2,8 @@ package progressed.content.effects;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 
@@ -32,5 +34,15 @@ public class CrafterFx{
             color(Color.white, e.color, e.fin());
             Fill.square(e.x + x, e.y + y, 0.5f + e.fout() * 3f, 45);
         });
-    });
+    }),
+
+    teneliumFuse = new Effect(50f, e -> {
+        color(Liquids.slag.color);
+        alpha(e.fslope() * 0.8f);
+
+        Mathf.rand.setSeed(e.id + 2);
+        randLenVectors(e.id, 5, 3f, 9f * e.fin(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, Mathf.rand.random(0.65f, 1.5f));
+        });
+    }).layer(Layer.bullet - 1f);
 }

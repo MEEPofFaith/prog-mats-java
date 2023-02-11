@@ -9,17 +9,16 @@ public class PMPal{
     //Single colors
     public static Color
 
-    lightGray = valueOf("B0BAC0"),
-    midGray = valueOf("989AA4"),
-    darkGray = valueOf("6E7080"),
     darkBrown = valueOf("4d2c0c"),
 
-    heal = Color.valueOf("84f491"),
+    heal = valueOf("84f491"),
     overdrive = valueOf("feb380"),
 
     outline = valueOf("404049"),
 
     magma = valueOf("ff9c5a"),
+
+    surgeDark = valueOf("d99f6b"),
 
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
@@ -27,18 +26,13 @@ public class PMPal{
     missileBasic = valueOf("D4816B"),
     missileFrag = valueOf("9CB664"),
 
-    apotheosisLaser = valueOf("CE5EE5"),
-    apotheosisLaserDark = valueOf("9A27C4"),
-    pissbeam = valueOf("e5c85e"),
-    pissbeamDark = valueOf("c4b427");
+    nexusLaser = valueOf("CE5EE5"),
+    nexusLaserDark = valueOf("9A27C4");
 
     //Color sets
     public static Color[]
     itemColors,
-    liquidColors,
-
-    apotheosisLaserColors = {Color.valueOf("9A27C455"), Color.valueOf("9A27C4aa"), apotheosisLaser, white},
-    pissbeamColors = {valueOf("c4b42755"), valueOf("c4b427aa"), valueOf("e5c85e"), white};
+    liquidColors;
 
     public static void init(){
         int items = content.items().size;

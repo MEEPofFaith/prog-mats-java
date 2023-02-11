@@ -12,7 +12,7 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.DrawPseudo3D.*;
 import static progressed.util.PMUtls.*;
 
 public class MissileFx{
@@ -22,15 +22,25 @@ public class MissileFx{
 
     public static Effect
 
-    rocketTrail = new Effect(60, e -> {
-        if(e.data instanceof float[] f){
-            z(f[2]);
-            color(e.color, Pal.lightishGray, Pal.darkerGray, e.fin());
-            randLenVectors(e.id, 4, 24f * e.finpow() * f[1], f[0] + 180f, 15f * f[1], (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, (e.rotation - e.fin() * e.rotation) / 2f);
+    rocketTrailSmoke = new Effect(180f, 300f, b -> {
+        float intensity = 2f;
+
+        color(b.color, 0.7f);
+        for(int i = 0; i < 4; i++){
+            rand.setSeed(b.id * 2 + i);
+            float lenScl = rand.random(0.5f, 1f);
+            int fi = i;
+            b.scaled(b.lifetime * lenScl, e -> {
+                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.9f * intensity), 28f * intensity, e.rotation - 180, 15, (x, y, in, out) -> {
+                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+                    float rad = fout * ((1f + intensity) * 1.65f);
+
+                    Fill.circle(e.x + x, e.y + y, rad);
+                    Drawf.light(e.x + x, e.y + y, rad * 2.5f, b.color, 0.5f);
+                });
             });
         }
-    }).layer(Layer.turret + 0.014f),
+    }).layer(Layer.bullet - 1f),
 
     flameRing = new Effect(45f, e -> {
         if(fireFrames[0] == null){
@@ -60,8 +70,8 @@ public class MissileFx{
 
     missileSmoke = new Effect(120, e -> {
         if(e.data instanceof float[] data){
-            float x = e.x + cameraXOffset(e.x, data[0]),
-                y = e.y + cameraYOffset(e.y, data[0]);
+            float x = xHeight(e.x, data[0]),
+                y = yHeight(e.y, data[0]);
             color(Color.gray, Mathf.clamp(e.fout() * 1.2f) * data[1]);
             Fill.circle(x, y, (1f + 10f * e.rotation) - e.fin() * 2f);
         }

@@ -17,7 +17,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.effects.*;
-import progressed.content.effects.UtilFx.*;
+import progressed.entities.*;
 import progressed.entities.bullet.*;
 import progressed.graphics.*;
 import progressed.world.meta.*;
@@ -26,9 +26,8 @@ public class GeomancyTurret extends PowerTurret{
     public float armX = 4f, armY;
 
     public int crackEffects = 2;
-    public float crackStroke = 1.5f, crackWidth = 16f;
     public Color crackColor = PMPal.darkBrown;
-    public Effect crackEffect = UtilFx.groundCrack;
+    public LightningEffect crackEffect = LightningFx.groundCrack;
     public Effect slamEffect = OtherFx.concretionSlam;
 
     public GeomancyTurret(String name){
@@ -163,7 +162,7 @@ public class GeomancyTurret extends PowerTurret{
                     if(mdst > 0){
                         Tmp.v2.set(Tmp.v1).lerp(strikePos, mdst / dst);
                         for(int i = 0; i < crackEffects; i++){
-                            crackEffect.at(Tmp.v1.x, Tmp.v1.y, angleTo(Tmp.v2), crackColor, new LightningData(Tmp.v2.cpy(), crackStroke, shoot.firstShotDelay / 2f, true, crackWidth));
+                            crackEffect.at(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, crackColor);
                         }
                     }
                 }
