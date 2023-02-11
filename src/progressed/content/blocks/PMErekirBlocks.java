@@ -153,6 +153,7 @@ public class PMErekirBlocks{
             recoilTime = 60f;
             shake = 2f;
             shootY = -1f;
+            shootSound = Sounds.artillery;
             setWarmupTime(0.75f);
 
             drawer = new DrawMulti(
