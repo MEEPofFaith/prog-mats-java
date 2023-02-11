@@ -631,7 +631,12 @@ public class PMBlocks{
         };
 
         pinpoint = new SwingContinuousTurret("pinpoint"){{
-            requirements(Category.turret, with());
+            requirements(Category.turret, with(
+                Items.copper, 210,
+                Items.titanium, 200,
+                Items.silicon, 180,
+                PMItems.tenelium, 150
+            ));
 
             shootType = new PointLaserBulletType(){{
                 damage = 200f;
