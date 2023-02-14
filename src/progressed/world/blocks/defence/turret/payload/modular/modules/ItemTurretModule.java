@@ -6,12 +6,14 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.content.blocks.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
+import progressed.world.blocks.defence.turret.payload.modular.modules.PowerTurretModule.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
 import progressed.world.module.*;
@@ -20,12 +22,12 @@ import progressed.world.module.ModuleModule.*;
 import static mindustry.Vars.tilesize;
 
 @SuppressWarnings("unchecked")
-public class PowerTurretModule extends PowerTurret{
+public class ItemTurretModule extends ItemTurret{
     public ModuleSize moduleSize = ModuleSize.small;
 
     OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
 
-    public PowerTurretModule(String name){
+    public ItemTurretModule(String name){
         super(name);
         update = false;
         destructible = true;
@@ -52,7 +54,7 @@ public class PowerTurretModule extends PowerTurret{
         super.setStats();
 
         stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
+        stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
     }
 
     @Override
@@ -61,13 +63,20 @@ public class PowerTurretModule extends PowerTurret{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
+        addModuleBar("ammo", (PowerTurretModuleBuild entity) ->
+            new Bar(
+                "stat.ammo",
+                Pal.ammo,
+                () -> (float)entity.totalAmmo / maxAmmo
+            )
+        );
     }
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
-    public class PowerTurretModuleBuild extends PowerTurretBuild implements TurretModule{
+    public class ItemTurretModuleBuild extends ItemTurretBuild implements TurretModule{
         public ModuleModule module;
 
         @Override

@@ -1,36 +1,19 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
-import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
-import mindustry.world.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import progressed.content.blocks.*;
 import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
-import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
-import progressed.world.module.*;
-import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.*;
-
-@SuppressWarnings("unchecked")
-public class BallisticModule extends ItemTurret{
-    public ModuleSize moduleSize = ModuleSize.small;
-
-    OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
-
+public class BallisticModule extends ItemTurretModule{
     public BallisticModule(String name){
         super(name);
         update = false;
@@ -47,46 +30,6 @@ public class BallisticModule extends ItemTurret{
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
-        drawPotentialLinks(x, y);
-        drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
-    }
-
-    @Override
-    public void init(){
-        super.init();
-
-        PMModules.setClip(clipSize);
-    }
-
-    @Override
-    public void setStats(){
-        super.setStats();
-
-        stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
-    }
-
-    @Override
-    public void setBars(){
-        super.setBars();
-
-        moduleBarMap.putAll(barMap);
-        moduleBarMap.remove("health");
-        addModuleBar("ammo", (BallisticModuleBuild entity) ->
-            new Bar(
-                "stat.ammo",
-                Pal.ammo,
-                () -> (float)entity.totalAmmo / maxAmmo
-            )
-        );
-    }
-
-    public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
-        moduleBarMap.put(name, (Func<Building, Bar>)sup);
-    }
-
-    @Override
     public void limitRange(float margin){
         for(var entry : ammoTypes.copy().entries()){
             limitRange(entry.value, margin);
@@ -98,31 +41,8 @@ public class BallisticModule extends ItemTurret{
         bullet.speed = range + bullet.rangeChange + margin;
     }
 
-    public class BallisticModuleBuild extends ItemTurretBuild implements TurretModule{
-        public ModuleModule module;
+    public class BallisticModuleBuild extends ItemTurretModuleBuild{
         protected Seq<Posc> targets = new Seq<>();
-
-        @Override
-        public Building create(Block block, Team team){
-            super.create(block, team);
-            module = new ModuleModule(self(), hasPower);
-            return self();
-        }
-
-        @Override
-        public Unit unit(){
-            if(parent() != null){
-                unit = (BlockUnitc)parent().unit();
-                return (Unit)unit;
-            }
-
-            return super.unit();
-        }
-
-        @Override
-        public boolean canControl(){
-            return super.canControl() && isDeployed();
-        }
 
         @Override
         public void targetPosition(Posc pos){
@@ -152,25 +72,15 @@ public class BallisticModule extends ItemTurret{
         }
 
         @Override
-        public void updateTile(){
-            if(!isDeployed()) return;
-
-            super.updateTile();
-        }
-
-        @Override
         protected void updateReload(){
             if(queuedBullets > 0) return;
-
             super.updateReload();
         }
 
         @Override
         public void drawSelect(){
             if(!isModule()) return;
-
             super.drawSelect();
-
             Drawf.dashCircle(x, y, minRange, Pal.accentBack);
         }
 
@@ -204,56 +114,6 @@ public class BallisticModule extends ItemTurret{
         @Override
         public float drawrot(){
             return 0;
-        }
-
-        @Override
-        public ModuleModule module(){
-            return module;
-        }
-
-        @Override
-        public Building build(){
-            return self();
-        }
-
-        @Override
-        public ModuleSize size(){
-            return moduleSize;
-        }
-
-        @Override
-        public Iterable<Func<Building, Bar>> listModuleBars(){
-            return moduleBarMap.values();
-        }
-
-        @Override
-        public void moduleRemoved(){
-            unit = (BlockUnitc)UnitTypes.block.create(team);
-        }
-
-        @Override
-        public void pickedUp(){
-            module.progress = 0f;
-            reloadCounter = 0f;
-        }
-
-        @Override
-        public boolean isValid(){
-            return super.isValid() || (parent() != null && parent().isValid());
-        }
-
-        @Override
-        public void write(Writes write){
-            super.write(write);
-
-            module.write(write);
-        }
-
-        @Override
-        public void read(Reads read, byte revision){
-            super.read(read, revision);
-
-            (module == null ? new ModuleModule(self(), hasPower) : module).read(read);
         }
     }
 }

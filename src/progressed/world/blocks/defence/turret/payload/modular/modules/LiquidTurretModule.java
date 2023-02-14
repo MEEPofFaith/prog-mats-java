@@ -20,12 +20,12 @@ import progressed.world.module.ModuleModule.*;
 import static mindustry.Vars.tilesize;
 
 @SuppressWarnings("unchecked")
-public class PowerTurretModule extends PowerTurret{
+public class LiquidTurretModule extends LiquidTurret{
     public ModuleSize moduleSize = ModuleSize.small;
 
     OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
 
-    public PowerTurretModule(String name){
+    public LiquidTurretModule(String name){
         super(name);
         update = false;
         destructible = true;
@@ -52,7 +52,7 @@ public class PowerTurretModule extends PowerTurret{
         super.setStats();
 
         stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
+        stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class PowerTurretModule extends PowerTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
-    public class PowerTurretModuleBuild extends PowerTurretBuild implements TurretModule{
+    public class LiquidTurretModuleBuild extends LiquidTurretBuild implements TurretModule{
         public ModuleModule module;
 
         @Override
