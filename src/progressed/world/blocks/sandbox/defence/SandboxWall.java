@@ -2,7 +2,6 @@ package progressed.world.blocks.sandbox.defence;
 
 import arc.*;
 import arc.audio.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -23,6 +22,7 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.ui.*;
+import progressed.util.*;
 
 import static mindustry.Vars.*;
 
@@ -177,8 +177,8 @@ public class SandboxWall extends Block{
 
                 Draw.z(Layer.overlayUI);
                 float dm = state.rules.blockHealth(team);
-                String text = (time > 0 ? (Mathf.zero(dm) ? "Infinity" : Strings.autoFixed(DPS, 2)) : "---") + " DPS";
-                PMDrawf.text(x, y + size * tilesize / 2f + 3f, team.color, text);
+                String text = (time > 0 ? (Mathf.zero(dm) ? "Infinity" : PMUtls.round(DPS)) : "---") + " DPS";
+                PMDrawf.text(x, y, false, size * tilesize, team.color, text);
             }
         }
 
