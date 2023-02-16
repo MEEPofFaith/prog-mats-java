@@ -16,11 +16,6 @@ import progressed.world.meta.*;
 public class BallisticModule extends ItemTurretModule{
     public BallisticModule(String name){
         super(name);
-        update = false;
-        destructible = true;
-        breakable = rebuildable = false;
-        group = BlockGroup.turrets;
-
         consumeAmmoOnce = false;
         recoil = 0f;
         shootY = 0f;

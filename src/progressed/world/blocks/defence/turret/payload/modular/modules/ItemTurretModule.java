@@ -63,13 +63,15 @@ public class ItemTurretModule extends ItemTurret{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
-        addModuleBar("ammo", (PowerTurretModuleBuild entity) ->
+        addModuleBar("ammo", (ItemTurretModuleBuild entity) -> //TODO remove this after next mindus version
             new Bar(
                 "stat.ammo",
                 Pal.ammo,
                 () -> (float)entity.totalAmmo / maxAmmo
             )
         );
+        removeBar("power");
+        removeBar("heat");
     }
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){

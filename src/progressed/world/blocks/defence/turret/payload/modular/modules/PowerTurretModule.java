@@ -61,6 +61,8 @@ public class PowerTurretModule extends PowerTurret{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
+        removeBar("power");
+        removeBar("heat");
     }
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){

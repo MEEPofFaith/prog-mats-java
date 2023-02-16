@@ -76,6 +76,7 @@ public class BoostModule extends Block{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
+        removeBar("power");
     }
 
     public class BoostModuleBuild extends Building implements TurretModule{

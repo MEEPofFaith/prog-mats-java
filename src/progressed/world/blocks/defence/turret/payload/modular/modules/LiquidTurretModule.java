@@ -61,6 +61,8 @@ public class LiquidTurretModule extends LiquidTurret{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
+        removeBar("power");
+        removeBar("heat");
     }
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
