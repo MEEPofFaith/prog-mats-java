@@ -247,7 +247,7 @@ public class PMUnitTypes{
 
                 if(!ProgMats.everything()){
                     Draw.z(Layer.overlayUI);
-                    PMDrawf.text(unit.x, unit.y, false, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
+                    PMDrawf.text(unit.x, unit.y, false, -1, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
                 }
             }
         };

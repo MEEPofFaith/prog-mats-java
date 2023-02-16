@@ -355,14 +355,21 @@ public class PMDrawf{
     }
 
     public static float text(float x, float y, Color color, CharSequence text){
-        return text(x, y, true, color, text);
+        return text(x, y, true, -1, color, text);
     }
 
-    public static float text(float x, float y, boolean underline, Color color, CharSequence text){
+    public static float text(float x, float y, boolean underline, float maxWidth, Color color, CharSequence text){
         boolean ints = font.usesIntegerPositions();
         font.setUseIntegerPositions(false);
-        font.getData().setScale(1f / 3f);
-        layout.setText(font, text);
+        if(maxWidth <= 0){
+            font.getData().setScale(1f / 3f);
+            layout.setText(font, text);
+        }else{
+            font.getData().setScale(1f);
+            layout.setText(font, text);
+            font.getData().setScale(Math.min(1f / 3f, maxWidth / layout.width));
+            layout.setText(font, text);
+        }
 
         font.setColor(color);
         font.draw(text, x, y + (underline ? layout.height + 1 : layout.height / 2f), Align.center);
