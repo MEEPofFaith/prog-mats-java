@@ -28,7 +28,7 @@ public class PMModules{
     abyss,
 
     //Large
-    firestorm;
+    firestorm, judgement;
 
     public static void load(){
         augment = new BoostModule("augment"){{
@@ -116,6 +116,24 @@ public class PMModules{
                 shots = 9;
                 shotDelay = 10f;
             }};
+        }};
+
+        judgement = new SweepLaserTurretModule("judgement"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+
+            reload = 3f * 60f;
+            moduleSize = ModuleSize.large;
+            size = 3;
+            range = 14f * 8f;
+
+            shootType = new MagmaBulletType(62f, 4f){{ //Temp bullet for testing. Copied from Flame.
+                shake = 0f;
+                crackEffects = 0;
+                puddleLiquid = null;
+                makeFire = false;
+            }};
+
+            consumePower(12f);
         }};
     }
 
