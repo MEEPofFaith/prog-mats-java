@@ -24,7 +24,7 @@ public class PayloadBullets{
 
     public static BulletType
 
-    arbalestBasic, arbalestIncend; //TODO 3rd rocket
+    arbalestBasic, arbalestIncend, arbalestSplitter;
 
     public static BallisticMissileBulletType
     artemisBasic, artemisRecursive, //TODO 3rd missile
@@ -136,6 +136,10 @@ public class PayloadBullets{
                     interval = 4f;
                 }});
             }};
+        }};
+
+        arbalestSplitter = new BulletType(0f, 0f){{
+            ammoMultiplier = 1f;
         }};
 
         artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{
