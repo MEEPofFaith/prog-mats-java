@@ -110,9 +110,9 @@ public class Missile extends Block{
         }
 
         @Override
-        public void onDestroyed(){
+        public void afterDestroyed(){
             if(exploded) return;
-            super.onDestroyed();
+            super.afterDestroyed();
 
             //Kaboom
             explode();
