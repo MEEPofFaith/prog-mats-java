@@ -13,13 +13,12 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.content.blocks.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
-import progressed.world.blocks.defence.turret.payload.modular.modules.PowerTurretModule.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
 public class ItemTurretModule extends ItemTurret{

@@ -7,11 +7,9 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.meta.*;
 import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.world.draw.*;
-import progressed.world.meta.*;
 
 public class BallisticModule extends ItemTurretModule{
     public BallisticModule(String name){

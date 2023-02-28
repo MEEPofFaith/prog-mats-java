@@ -3,7 +3,6 @@ package progressed.entities.part.pseudo3d;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
