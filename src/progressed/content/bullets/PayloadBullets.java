@@ -259,8 +259,10 @@ public class PayloadBullets{
         BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
         stop.speed = 1;
 
+        BallisticMissileBulletType why = (BallisticMissileBulletType)stop.fragBullet.copy();
         BallisticMissileBulletType tooFar = (BallisticMissileBulletType)stop.fragBullet.fragBullet.copy();
         tooFar.buildingDamageMultiplier = 1f;
+        stop.fragBullet = why;
         stop.fragBullet.fragBullet = tooFar;
 
         BulletType cease = arbalestIncend.copy();

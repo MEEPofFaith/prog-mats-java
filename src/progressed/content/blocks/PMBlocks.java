@@ -1468,10 +1468,12 @@ public class PMBlocks{
 
         PMErekirBlocks.load();
         PMSandboxBlocks.load();
+
+        PMPayloads.afterLoad();
     }
 }
 
-//Oops, someone dropped their colons
+//Oops, someone spilled their colons
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;

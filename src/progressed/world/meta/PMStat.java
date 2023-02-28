@@ -8,5 +8,7 @@ public class PMStat{
     sentry = new Stat("pm-sentry"),
     sentryLifetime = new Stat("pm-sentry-lifetime"),
 
-    fuel = new Stat("pm-fuel", StatCat.crafting);
+    fuel = new Stat("pm-fuel", StatCat.crafting),
+
+    used = new Stat("pm-used");
 }

@@ -169,7 +169,7 @@ public class PMPayloads{
 
             explosionArea = -1f;
             explosionBullet = PayloadBullets.ohno.fragBullet;
-            explosions = explosionBullet.fragBullets;
+            explosions = PayloadBullets.ohno.fragBullets;
             maxDelay = 20f;
         }};
 
@@ -191,5 +191,24 @@ public class PMPayloads{
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
         }};
+    }
+
+    public static void afterLoad(){
+        basicRocket.user = PMBlocks.arbalest;
+        basicRocket.bullet = basicRocket.explosionBullet;
+        incendiaryRocket.user = PMBlocks.arbalest;
+        incendiaryRocket.bullet = incendiaryRocket.explosionBullet;
+
+        basicMissile.user = PMBlocks.artemis;
+        basicMissile.bullet = basicMissile.explosionBullet;
+        recursiveMissile.user = PMBlocks.artemis;
+        recursiveMissile.bullet = PayloadBullets.artemisRecursive;
+
+        basicNuke.user = PMBlocks.paragon;
+        basicNuke.bullet = basicNuke.explosionBullet;
+        clusterNuke.user = PMBlocks.paragon;
+        clusterNuke.bullet = PayloadBullets.paragonCluster;
+        sandboxNuke.user = PMBlocks.paragon;
+        sandboxNuke.bullet = PayloadBullets.ohno;
     }
 }

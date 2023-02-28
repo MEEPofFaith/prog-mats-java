@@ -70,9 +70,9 @@ public class PMStatValues{
                 if(!compact && !(t instanceof PowerTurret)){
                     if(payload){
                         if(t.unlockedNow()){
-                            table.image(icon(t)).padRight(4).right().top();
+                            table.image(icon(t)).size(96f).padRight(4).right().top();
                         }else{
-                            table.add(PMElements.imageStack(icon(t), Icon.tree.getRegion(), Color.red)).padRight(4).right().top();
+                            table.add(PMElements.imageStack(icon(t), Icon.tree.getRegion(), Color.red)).size(64f * 4f).padRight(4).right().top();
                         }
                     }else{
                         table.image(icon(t)).size(3 * 8).padRight(4).right().top();
@@ -484,6 +484,17 @@ public class PMStatValues{
                     }
                 }
             }).padLeft(24f);
+        };
+    }
+
+    public static StatValue content(UnlockableContent content){
+        return table -> {
+            table.row();
+            table.table(t -> {
+                t.image(icon(content)).size(3 * 8);
+                t.add("[lightgray]" + content.localizedName).padLeft(6);
+                infoButton(t, content, 4 * 8).padLeft(6);
+            });
         };
     }
 

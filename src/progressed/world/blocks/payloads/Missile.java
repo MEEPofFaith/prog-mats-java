@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
@@ -14,6 +15,7 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
 import progressed.util.*;
+import progressed.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -30,6 +32,9 @@ public class Missile extends Block{
     public float elevation = -1f;
 
     public boolean outlined;
+
+    public Block user;
+    public BulletType bullet;
 
     public TextureRegion topRegion, outlineRegion;
 
@@ -63,6 +68,15 @@ public class Missile extends Block{
 
         outlineRegion = Core.atlas.find(name + "-outline");
         topRegion = Core.atlas.find(name + "-top", region);
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        if(user != null && bullet != null){
+            stats.add(PMStat.used, PMStatValues.ammo(ObjectMap.of(user, bullet)));
+        }
     }
 
     @Override
