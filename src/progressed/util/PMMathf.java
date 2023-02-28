@@ -6,8 +6,6 @@ import arc.math.geom.*;
 public class PMMathf{
     private static final Vec2 bezOut = new Vec2(), p1 = new Vec2(), p2 = new Vec2(), p3 = new Vec2(), p4 = new Vec2(), tmp = new Vec2();
 
-    public static final Interp arc = a -> Interp.sineOut.apply(Interp.slope.apply(a));
-
     /** @return whether x,y is inside the square with radius d centered at cx, cy. */
     public static boolean isInSquare(float cx, float cy, float d, float x, float y){
         return x > cx - d && x < cx + d && y > cy - d && y < cy + d;
@@ -33,6 +31,11 @@ public class PMMathf{
         }else{
             return 1;
         }
+    }
+
+    /** Lerp from one angle to another. */
+    public static float lerpAngle(float from, float to, float progress){
+        return Angles.moveToward(from, to, progress * Angles.angleDist(from, to));
     }
 
     public static Vec2 bezier(float t, float x1, float y1, float x2, float y2, Vec2 h1, Vec2 h2){

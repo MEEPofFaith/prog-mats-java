@@ -33,8 +33,8 @@ public class BallisticMissileBulletType extends BulletType{
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
-    public boolean spinShade = true;
-    public Interp hInterp = PMMathf.arc, posInterp = Interp.pow2In, rotInterp = Interp.circleOut;
+    public boolean spinShade = true, vertical = false;
+    public Interp hInterp = PMInterp.flightArc, posInterp = Interp.pow2In, rotInterp = PMInterp.sineInverse;
 
     public TextureRegion region, blRegion, trRegion;
 
@@ -69,9 +69,17 @@ public class BallisticMissileBulletType extends BulletType{
         drawSize = Math.max(drawSize, range);
 
         //Ensure that split missiles also have enough draw size, as limitRange only applies to the main missile.
-        if(fragBullet instanceof BallisticMissileBulletType){
-            fragBullet.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
-            heightRnd = 0f;
+        if(fragBullet instanceof BallisticMissileBulletType m){
+            m.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
+
+            //Ensure that the visual positions also match up.
+            m.lifetime = lifetime;
+            m.height = height;
+            m.heightRnd = heightRnd = 0f;
+            m.vertical = vertical;
+            m.hInterp = hInterp;
+            m.posInterp = posInterp;
+            m.rotInterp = rotInterp;
         }
     }
 
@@ -193,7 +201,7 @@ public class BallisticMissileBulletType extends BulletType{
 
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl);
-        Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY, hScl));
+        Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY));
         Draw.z(layer + DrawPseudo3D.layerOffset(x, y)); //Unsure that the trail is drawn underneath.
         drawTrail(b);
         Draw.scl(1f + hMul(hScl));
@@ -241,22 +249,18 @@ public class BallisticMissileBulletType extends BulletType{
     }
 
     public float posInterp(Bullet b){
-        if(posInterp == Interp.linear) b.fin();
         if(b.fdata == 0) return b.fin(posInterp);
         float a = posInterp.apply(b.fdata);
         return (posInterp.apply(b.fdata + b.fin() * (1f - b.fdata)) - a) / (1 - a);
     }
 
-    public float shadowRot(Bullet b, float shX, float shY, float hScl){
+    public float shadowRot(Bullet b, float shX, float shY){
         float[] data = (float[])b.data;
-        boolean inc = hScl - data[4] > 0;
         float ang = b.angleTo(data[0], data[1]) + 180f;
-        if(inc){
-            return Angles.moveToward(90f, ang, rotInterp.apply(hScl) * Angles.angleDist(90f, ang));
-        }else{
-            float to = b.angleTo(shX, shY) + 180f;
-            return Angles.moveToward(to, ang, hScl * Angles.angleDist(to, ang));
-        }
+        float fin = b.fdata == 0 ? rotInterp.apply(b.fin()) : rotInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
+        return fin < 0.5f ?
+            PMMathf.lerpAngle(90f, ang, fin * 2) :
+            PMMathf.lerpAngle(ang, vertical ? -90f : (b.angleTo(shX, shY) + 180), fin * 2 - 1);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -157,11 +158,14 @@ public class PayloadBullets{
         artemisRecursive = new BallisticMissileBulletType("prog-mats-recursive-missile"){{
             status = StatusEffects.none;
 
+            lifetime *= 1.5f;
             height = 36f;
             zoneRadius = 5f * 8f;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileFrag;
+            posInterp = Interp.smoother;
+            vertical = true;
 
             splitLifeMaxOffset = 30f;
             fragRandomSpread = 80f;
@@ -169,7 +173,6 @@ public class PayloadBullets{
             fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
 
-                height = 36f;
                 zoneRadius = 3.5f * 8f;
                 trailLength = 20;
                 trailWidth = 1f;
@@ -183,7 +186,6 @@ public class PayloadBullets{
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
 
-                    height = 36f;
                     zoneRadius = 2f * 8f;
                     trailLength = 15;
                     trailWidth = 1f;
@@ -198,7 +200,7 @@ public class PayloadBullets{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
             buildingDamageMultiplier = 0.5f;
-            lifetime = 5f * 60f;
+            lifetime = 3f * 60f;
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
@@ -206,7 +208,7 @@ public class PayloadBullets{
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            height = 100f;
+            height = 70f;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
@@ -223,6 +225,8 @@ public class PayloadBullets{
             trailLength = 35;
             trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileFrag;
+            posInterp = Interp.smoother;
+            vertical = true;
 
             splitTime = 0.65f;
             splitLifeMaxOffset = 45f;
@@ -233,7 +237,6 @@ public class PayloadBullets{
                 splashDamage = 3500f;
                 splashDamageRadius = 40f;
                 buildingDamageMultiplier = 0.5f;
-                lifetime = 5f * 60f;
 
                 homingPower = 0.5f;
                 homingRange = 30f * 8f;
@@ -242,7 +245,6 @@ public class PayloadBullets{
                 despawnEffect = MissileFx.missileExplosion;
                 blockEffect = MissileFx.missileBlocked;
 
-                height = 160f;
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
