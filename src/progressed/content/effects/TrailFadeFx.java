@@ -57,7 +57,7 @@ public class TrailFadeFx{
         if(!state.isPaused()){
             trail.shorten();
         }
-        trail.draw(e.color, e.rotation);
         trail.drawCap(e.color, e.rotation);
+        trail.draw(e.color, e.rotation);
     }).layer(Layer.flyingUnit + 1.9f);
 }

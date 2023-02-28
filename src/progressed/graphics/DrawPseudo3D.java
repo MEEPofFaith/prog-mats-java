@@ -160,11 +160,11 @@ public class DrawPseudo3D{
     }
 
     public static float xOffset(float x, float height){
-        return (x - camera.position.x) * height(height) * Vars.renderer.getDisplayScale();
+        return (x - camera.position.x) * hMul(height);
     }
 
     public static float yOffset(float y, float height){
-        return (y - camera.position.y) * height(height) * Vars.renderer.getDisplayScale();
+        return (y - camera.position.y) * hMul(height);
     }
 
     public static float hScale(float height){

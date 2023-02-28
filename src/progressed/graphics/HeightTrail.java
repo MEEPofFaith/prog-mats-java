@@ -45,12 +45,14 @@ public class HeightTrail extends Trail{
 
     @Override
     public void drawCap(Color color, float width){
-        if(points.size > 0){
+        if(points.size > 4){
             Draw.color(color);
             int i = points.size - 4;
-            float x1 = x(i), y1 = y(i), w1 = w(i), w = w1 * width / (points.size/4) * i / 4f * 2f;
+            float x1 = x(i - 4), y1 = y(i - 4),
+                x2 = x(i), y2 = y(i),
+                w1 = w(i), w = w1 * width / (points.size / 4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
-            Draw.rect("hcircle", x1, y1, w, w, Mathf.radDeg * lastAngle + 180f);
+            Draw.rect("hcircle", x2, y2, w, w, Angles.angle(x1, y1, x2, y2));
             Draw.reset();
         }
     }
@@ -58,6 +60,7 @@ public class HeightTrail extends Trail{
     @Override
     public void draw(Color color, float width){
         Draw.color(color);
+        float lastAngle = 0;
         float size = width / (points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
@@ -116,7 +119,6 @@ public class HeightTrail extends Trail{
     }
 
     public void update(float x, float y, float width, float height){
-        //TODO fix longer trails at low FPS
         if((counter += Time.delta) >= 1f){
             if(points.size > length * 4){
                 points.removeRange(0, 3);
