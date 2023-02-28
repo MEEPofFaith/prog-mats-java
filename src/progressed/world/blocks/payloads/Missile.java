@@ -127,7 +127,7 @@ public class Missile extends Block{
                         PMMathf.randomCirclePoint(Tmp.v1, explosionArea);
 
                         if(explosionBullet.spawnUnit != null){ //Spawn and kill spawnUnit, if it exists
-                            Unit spawned = explosionBullet.spawnUnit.create(team);
+                            Unit spawned = explosionBullet.spawnUnit.create(Team.derelict);
                             spawned.set(x + Tmp.v1.x, y + Tmp.v1.y);
                             spawned.add();
                             spawned.kill();
