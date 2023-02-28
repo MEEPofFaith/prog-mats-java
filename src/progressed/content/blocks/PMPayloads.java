@@ -56,7 +56,7 @@ public class PMPayloads{
             elevation = 2f / 3f;
             outlined = true;
 
-            explosion = PayloadBullets.arbalestBasic;
+            explosionBullet = PayloadBullets.arbalestBasic;
         }};
 
         incendiaryRocket = new Missile("incendiary-rocket"){{
@@ -69,7 +69,7 @@ public class PMPayloads{
             elevation = 2f / 3f;
             outlined = true;
 
-            explosion = PayloadBullets.arbalestIncend;
+            explosionBullet = PayloadBullets.arbalestIncend;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
@@ -95,7 +95,7 @@ public class PMPayloads{
             powerUse = 1.5f;
             constructTime = 60f * 6f;
 
-            explosion = PayloadBullets.artemisBasic;
+            explosionBullet = PayloadBullets.artemisBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
@@ -110,7 +110,7 @@ public class PMPayloads{
             powerUse = 2f;
             constructTime = 60f * 8f;
 
-            explosion = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
+            explosionBullet = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
             explosions = PayloadBullets.artemisRecursive.fragBullets * PayloadBullets.artemisRecursive.fragBullet.fragBullets;
             explosionArea = -1f;
             maxDelay = 20f;
@@ -140,7 +140,7 @@ public class PMPayloads{
             powerUse = 6f;
             constructTime = 60f * 40f;
 
-            explosion = PayloadBullets.paragonBasic;
+            explosionBullet = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
@@ -156,8 +156,8 @@ public class PMPayloads{
             constructTime = 60f * 45f;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.paragonCluster.fragBullet;
-            explosions = explosion.fragBullets;
+            explosionBullet = PayloadBullets.paragonCluster.fragBullet;
+            explosions = PayloadBullets.paragonCluster.fragBullets;
             maxDelay = 20f;
         }};
 
@@ -168,8 +168,8 @@ public class PMPayloads{
             size = 3;
 
             explosionArea = -1f;
-            explosion = PayloadBullets.ohno.fragBullet;
-            explosions = explosion.fragBullets;
+            explosionBullet = PayloadBullets.ohno.fragBullet;
+            explosions = explosionBullet.fragBullets;
             maxDelay = 20f;
         }};
 

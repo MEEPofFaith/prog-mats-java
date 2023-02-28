@@ -161,7 +161,7 @@ public class Sentry extends Missile{
                 }
             }
 
-            if(explosion != null){
+            if(explosionBullet != null){
                 explode();
             }
         }

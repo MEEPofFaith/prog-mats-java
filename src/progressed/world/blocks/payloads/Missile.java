@@ -13,14 +13,13 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.graphics.*;
+import progressed.util.*;
 
 import static mindustry.Vars.*;
 
 public class Missile extends Block{
-    public BulletType explosion;
+    public BulletType explosionBullet;
     public int explosions = 1;
-    /** Should the explosion use the frags of the explosion bullet? */
-    public boolean fragExplosion = true;
     public float explosionArea = 0f;
     public float maxDelay;
 
@@ -89,6 +88,8 @@ public class Missile extends Block{
     }
 
     public class MissileBuild extends Building{
+        boolean exploded = false; //Temporary measure against setting a `killShooter = true` bullet as the explosion bullet.
+
         @Override
         public void draw(){
             TextureRegion reg = outlined ? outlineRegion : region;
@@ -100,7 +101,7 @@ public class Missile extends Block{
 
         @Override
         public void drawCracks(){
-            if(explosion != null){
+            if(explosionBullet != null){
                 float f = Mathf.clamp(healthf());
                 Tmp.c1.set(Color.red).lerp(Color.white, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
                 Draw.color(Tmp.c1);
@@ -110,18 +111,30 @@ public class Missile extends Block{
 
         @Override
         public void onDestroyed(){
+            if(exploded) return;
             super.onDestroyed();
 
             //Kaboom
             explode();
+
+            exploded = true;
         }
 
         public void explode(){
-            if(explosion != null){
+            if(explosionBullet != null){
                 for(int i = 0; i < explosions; i++){
                     Time.run(Mathf.random(maxDelay), () -> {
-                        Tmp.v1.setToRandomDirection().setLength(explosionArea * Mathf.sqrt(Mathf.random()));
-                        Bullet b = explosion.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f, 0f, 0f);
+                        PMMathf.randomCirclePoint(Tmp.v1, explosionArea);
+
+                        if(explosionBullet.spawnUnit != null){ //Spawn and kill spawnUnit, if it exists
+                            Unit spawned = explosionBullet.spawnUnit.create(team);
+                            spawned.set(x + Tmp.v1.x, y + Tmp.v1.y);
+                            spawned.add();
+                            spawned.kill();
+                            return;
+                        }
+
+                        Bullet b = explosionBullet.create(this, Team.derelict, x + Tmp.v1.x, y + Tmp.v1.y, 0f, 0f, 0f);
                         b.remove(); //Instantly explode
                     });
                 }
