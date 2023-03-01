@@ -6,7 +6,6 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -62,15 +61,9 @@ public class ItemTurretModule extends ItemTurret{
 
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
-        addModuleBar("ammo", (ItemTurretModuleBuild entity) -> //TODO remove this after next mindus version
-            new Bar(
-                "stat.ammo",
-                Pal.ammo,
-                () -> (float)entity.totalAmmo / maxAmmo
-            )
-        );
         removeBar("power");
         removeBar("heat");
+        removeBar("ammo");
     }
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
