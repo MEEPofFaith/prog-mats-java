@@ -173,7 +173,6 @@ public class PMStatValues{
                             sep(bt, "@bullet.armorpierce");
                         }
 
-
                         if(type.status != StatusEffects.none){
                             sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + bundle.get("unit.seconds")));
                         }
@@ -238,10 +237,6 @@ public class PMStatValues{
 
                         if(type instanceof CritBulletType stype && stype.bouncing){
                             sep(bt, "@bullet.pm-bouncing");
-                        }
-
-                        if(type.lightning > 0){
-                            sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
                         }
 
                         if(type instanceof TargetBulletType stype){

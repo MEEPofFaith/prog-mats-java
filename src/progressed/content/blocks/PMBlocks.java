@@ -535,33 +535,43 @@ public class PMBlocks{
             }
         };
 
-        caliber = new ItemTurret("caliber"){{
-            requirements(Category.turret, with(
-                Items.copper, 220,
-                Items.titanium, 200,
-                Items.thorium, 150,
-                Items.plastanium, 110,
-                PMItems.tenelium, 60
-            ));
-            ammo(
-                Items.titanium, SniperBullets.sniperBoltTitanium,
-                Items.thorium, SniperBullets.sniperBoltThorium,
-                Items.silicon, SniperBullets.sniperBoltSilicon,
-                PMItems.tenelium, SniperBullets.sniperBoltTenelium,
-                Items.surgeAlloy, SniperBullets.sniperBoltSurge
-            );
-            size = 3;
-            hideDetails = false;
-            scaledHealth = 120;
-            reload = 150f;
-            range = 544f;
-            rotateSpeed = 2.5f;
-            recoil = 5f;
-            cooldownTime = 300f;
-            shootSound = Sounds.cannon;
+        caliber = new ItemTurret("caliber"){
+            {
+                requirements(Category.turret, with(
+                    Items.copper, 220,
+                    Items.titanium, 200,
+                    Items.thorium, 150,
+                    Items.plastanium, 110,
+                    PMItems.tenelium, 60
+                ));
+                ammo(
+                    Items.titanium, SniperBullets.sniperBoltTitanium,
+                    Items.thorium, SniperBullets.sniperBoltThorium,
+                    Items.silicon, SniperBullets.sniperBoltSilicon,
+                    PMItems.tenelium, SniperBullets.sniperBoltTenelium,
+                    Items.surgeAlloy, SniperBullets.sniperBoltSurge
+                );
+                size = 3;
+                hideDetails = false;
+                scaledHealth = 120;
+                reload = 150f;
+                range = 544f;
+                rotateSpeed = 2.5f;
+                recoil = 5f;
+                cooldownTime = 300f;
+                shootSound = Sounds.cannon;
 
-            coolant = consumeCoolant(0.2f);
-        }};
+                coolant = consumeCoolant(0.2f);
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
+            }
+        };
 
         allure = new SignalFlareTurret("signal"){{
             requirements(Category.turret, with(
