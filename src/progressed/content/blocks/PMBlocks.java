@@ -859,7 +859,8 @@ public class PMBlocks{
             ));
             ammo(
                 basicRocket, PayloadBullets.arbalestBasic,
-                incendiaryRocket, PayloadBullets.arbalestIncend
+                incendiaryRocket, PayloadBullets.arbalestIncend,
+                splitterRocket, PayloadBullets.arbalestSplitter
             );
 
             PartProgress baseProgress = PartProgress.warmup.shorten(0.3f);

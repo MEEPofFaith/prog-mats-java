@@ -15,6 +15,8 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
+import progressed.type.unit.*;
+import progressed.type.weapons.*;
 
 import static mindustry.Vars.*;
 
@@ -28,7 +30,7 @@ public class PayloadBullets{
     arbalestBasic, arbalestIncend, arbalestSplitter;
 
     public static BallisticMissileBulletType
-    artemisBasic, artemisRecursive, //TODO 3rd missile
+    artemisBasic, artemisRecursive, artemisBombing,
     paragonBasic, paragonCluster, //TODO 3rd nuke
     ohno;
 
@@ -39,25 +41,8 @@ public class PayloadBullets{
         arbalestBasic = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
 
-            spawnUnit = new MissileUnitType("basic-rocket-b"){{
-                speed = 8f;
-                maxRange = 6f;
-                lifetime = 3.1f * 60f;
+            spawnUnit = new RocketUnitType("basic-rocket-b", true){{
                 engineColor = trailColor = Pal.accent;
-                engineLayer = Layer.effect;
-                engineSize = 3.1f;
-                engineOffset = 10f;
-                rotateSpeed = 0.5f;
-                trailLength = 18;
-                missileAccelTime = 2f * 60f;
-                lowAltitude = true;
-                loopSound = Sounds.missileTrail;
-                loopSoundVolume = 0.6f;
-                deathSound = Sounds.largeExplosion;
-
-                fogRadius = 6f;
-
-                health = 210;
 
                 weapons.add(new Weapon(){{
                     shootCone = 360f;
@@ -68,20 +53,8 @@ public class PayloadBullets{
                     shake = 10f;
                     bullet = new ExplosionBulletType(526f, 8f * tilesize){{
                         hitColor = Pal.accent;
-                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
-                            lifetime = 10f;
-                            strokeFrom = 4f;
-                            sizeTo = 130f;
-                        }});
+                        shootEffect = RocketUnitType.rocketShoot;
                     }};
-                }});
-
-                abilities.add(new MoveEffectAbility(){{
-                    effect = MissileFx.rocketTrailSmoke;
-                    rotateEffect = true;
-                    y = -9f;
-                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
-                    interval = 4f;
                 }});
             }};
         }};
@@ -89,25 +62,8 @@ public class PayloadBullets{
         arbalestIncend = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
 
-            spawnUnit = new MissileUnitType("incendiary-rocket-b"){{
-                speed = 8f;
-                maxRange = 6f;
-                lifetime = 3.1f * 60f;
+            spawnUnit = new RocketUnitType("incendiary-rocket-b", true){{
                 engineColor = trailColor = Pal.remove;
-                engineLayer = Layer.effect;
-                engineSize = 3.1f;
-                engineOffset = 10f;
-                rotateSpeed = 0.5f;
-                trailLength = 18;
-                missileAccelTime = 2f * 60f;
-                lowAltitude = true;
-                loopSound = Sounds.missileTrail;
-                loopSoundVolume = 0.6f;
-                deathSound = Sounds.largeExplosion;
-
-                fogRadius = 6f;
-
-                health = 210;
 
                 weapons.add(new Weapon(){{
                     shootCone = 360f;
@@ -118,29 +74,83 @@ public class PayloadBullets{
                     shake = 10f;
                     bullet = new ExplosionBulletType(526f, 8f * tilesize){{
                         hitColor = Pal.remove;
-                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
-                            lifetime = 10f;
-                            strokeFrom = 4f;
-                            sizeTo = 130f;
-                        }});
+                        shootEffect = RocketUnitType.rocketShoot;
 
                         makeFire = true;
                         status = PMStatusEffects.incendiaryBurn;
                     }};
-                }});
-
-                abilities.add(new MoveEffectAbility(){{
-                    effect = MissileFx.rocketTrailSmoke;
-                    rotateEffect = true;
-                    y = -9f;
-                    color = Color.grays(0.6f).lerp(Pal.redLight, 0.5f).a(0.4f);
-                    interval = 4f;
                 }});
             }};
         }};
 
         arbalestSplitter = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
+
+            spawnUnit = new RocketUnitType("splitter-rocket-b", true){{
+                engineColor = trailColor = PMPal.missileFrag;
+
+                weapons.add(new MissileOwnerWeapon(){{
+                    shootCone = 360f;
+                    mirror = false;
+                    reload = 1f;
+                    deathExplosionEffect = MissileFx.missileExplosion;
+                    shootOnDeath = true;
+                    shake = 10f;
+                    bullet = new ExplosionBulletType(150f, 8f * tilesize){{
+                        hitColor = PMPal.missileFrag;
+                        shootEffect = RocketUnitType.rocketShoot;
+
+                        fragBullets = 3;
+                        fragAngle = 180f;
+                        fragRandomSpread = 120f;
+                        fragBullet = new BulletType(){{
+                            spawnUnit = new RocketUnitType("splitter-rocket-split", false){{
+                                engineColor = trailColor = PMPal.missileFrag;
+                                homingDelay = 60f;
+                                rotateSpeed = 1f;
+
+                                weapons.add(new MissileOwnerWeapon(){{
+                                    shootCone = 360f;
+                                    mirror = false;
+                                    reload = 1f;
+                                    deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
+                                    shootOnDeath = true;
+                                    shake = 10f;
+                                    bullet = new ExplosionBulletType(150f, 8f * tilesize){{
+                                        hitColor = PMPal.missileFrag;
+                                        //shootEffect = RocketUnitType.rocketShoot; TODO smaller effect
+
+
+                                        fragBullets = 3;
+                                        fragAngle = 180f;
+                                        fragRandomSpread = 120f;
+                                        fragBullet = new BulletType(){{
+                                            spawnUnit = new RocketUnitType("splitter-rocket-bit", false){{
+                                                engineColor = trailColor = PMPal.missileFrag;
+                                                homingDelay = 60f;
+                                                rotateSpeed = 1.5f;
+
+                                                weapons.add(new MissileOwnerWeapon(){{
+                                                    shootCone = 360f;
+                                                    mirror = false;
+                                                    reload = 1f;
+                                                    deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
+                                                    shootOnDeath = true;
+                                                    shake = 10f;
+                                                    bullet = new ExplosionBulletType(150f, 8f * tilesize){{
+                                                        hitColor = PMPal.missileFrag;
+                                                        //shootEffect = RocketUnitType.rocketShoot; TODO smaller effect
+                                                    }}; //Oh jeez
+                                                }});
+                                            }};
+                                        }};
+                                    }};
+                                }});
+                            }};
+                        }};
+                    }};
+                }});
+            }};
         }};
 
         artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{

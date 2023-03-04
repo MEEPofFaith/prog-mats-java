@@ -14,7 +14,7 @@ public class PMPayloads{
 
     emptyRocket,
 
-    basicRocket, incendiaryRocket, //TODO third rocket
+    basicRocket, incendiaryRocket, splitterRocket,
 
     //Region Missiles
 
@@ -70,6 +70,17 @@ public class PMPayloads{
             outlined = true;
 
             explosionBullet = PayloadBullets.arbalestIncend;
+        }};
+
+        splitterRocket = new Missile("splitter-rocket"){{
+            requirements = with(Items.blastCompound, 69);
+
+            prev = emptyRocket; //TODO proper costs
+            size = 3;
+            powerUse = 1.25f;
+            constructTime = 60f * 6.5f;
+            elevation = 2f / 3f;
+            outlined = true;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
