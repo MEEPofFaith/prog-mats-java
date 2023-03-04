@@ -20,7 +20,7 @@ public class PMPayloads{
 
     emptyMissile,
 
-    basicMissile, recursiveMissile, //TODO third missile
+    basicMissile, recursiveMissile, bombingMissile,
 
     //Region Nukes
 
@@ -125,6 +125,13 @@ public class PMPayloads{
             explosions = PayloadBullets.artemisRecursive.fragBullets * PayloadBullets.artemisRecursive.fragBullet.fragBullets;
             explosionArea = -1f;
             maxDelay = 20f;
+        }};
+
+        bombingMissile = new Missile("bombing-missile"){{
+            requirements = with();
+
+            prev = emptyMissile;
+            size = 2;
         }};
 
         emptyNuke = new Missile("empty-nuke"){{

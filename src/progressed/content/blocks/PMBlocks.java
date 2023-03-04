@@ -913,7 +913,8 @@ public class PMBlocks{
             ));
             ammo(
                 basicMissile, PayloadBullets.artemisBasic,
-                recursiveMissile, PayloadBullets.artemisRecursive
+                recursiveMissile, PayloadBullets.artemisRecursive,
+                bombingMissile, PayloadBullets.artemisBombing
             );
             size = 5;
             scaledHealth = 160;

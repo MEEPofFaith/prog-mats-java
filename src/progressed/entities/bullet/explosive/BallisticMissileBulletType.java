@@ -81,6 +81,11 @@ public class BallisticMissileBulletType extends BulletType{
             m.posInterp = posInterp;
             m.rotInterp = rotInterp;
         }
+
+        if(intervalBullet instanceof DropBombBulletType b){
+            b.height = height;
+            b.shadowOffset = shadowOffset;
+        }
     }
 
     @Override
@@ -91,6 +96,9 @@ public class BallisticMissileBulletType extends BulletType{
             blRegion = Core.atlas.find(sprite + "-bl");
             trRegion = Core.atlas.find(sprite + "-tr");
         }
+
+        //Set draw size to the max distance the shadow can travel
+        drawSize = Math.max(drawSize, (shadowOffset + PMMathf.cornerDst(region.width / 4f, region.height / 4f)) * (1f + heightRnd));
     }
 
     @Override
@@ -165,6 +173,21 @@ public class BallisticMissileBulletType extends BulletType{
         data[2] = x;
         data[3] = y;
         data[4] = h;
+    }
+
+    @Override
+    public void updateBulletInterval(Bullet b){
+        if(intervalBullet != null && b.timer.get(2, bulletInterval)){
+            float x = tX(b), y = tY(b);
+            float ang = Angles.angle(((float[])b.data)[0], ((float[])b.data)[1], x, y);
+            for(int i = 0; i < intervalBullets; i++){
+                Bullet spawned = intervalBullet.create(b, x, y, ang + Mathf.range(intervalRandomSpread) + intervalAngle + ((i - (intervalBullets - 1f)/2f) * intervalSpread));
+                if(intervalBullet instanceof DropBombBulletType){
+                    spawned.fdata = hScl(b);
+                    spawned.lifetime *= spawned.fdata;
+                }
+            }
+        }
     }
 
     @Override

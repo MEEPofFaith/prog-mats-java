@@ -45,6 +45,7 @@ public class PayloadBullets{
                 engineColor = trailColor = Pal.accent;
 
                 weapons.add(new Weapon(){{
+                    rotate = false;
                     shootCone = 360f;
                     mirror = false;
                     reload = 1f;
@@ -66,6 +67,7 @@ public class PayloadBullets{
                 engineColor = trailColor = Pal.remove;
 
                 weapons.add(new Weapon(){{
+                    rotate = false;
                     shootCone = 360f;
                     mirror = false;
                     reload = 1f;
@@ -91,6 +93,7 @@ public class PayloadBullets{
 
                 weapons.add(new MissileOwnerWeapon(){{
                     shootCone = 360f;
+                    rotateSpeed = 0f;
                     mirror = false;
                     reload = 1f;
                     deathExplosionEffect = MissileFx.missileExplosion;
@@ -106,11 +109,14 @@ public class PayloadBullets{
                         fragBullet = new BulletType(){{
                             spawnUnit = new RocketUnitType("splitter-rocket-split", false){{
                                 engineColor = trailColor = PMPal.missileFrag;
-                                homingDelay = 60f;
-                                rotateSpeed = 1f;
+                                homingDelay = 20f;
+                                missileAccelTime = 30f;
+                                lifetime /= 2;
+                                rotateSpeed = 3f;
 
                                 weapons.add(new MissileOwnerWeapon(){{
                                     shootCone = 360f;
+                                    rotateSpeed = 0f;
                                     mirror = false;
                                     reload = 1f;
                                     deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
@@ -127,11 +133,14 @@ public class PayloadBullets{
                                         fragBullet = new BulletType(){{
                                             spawnUnit = new RocketUnitType("splitter-rocket-bit", false){{
                                                 engineColor = trailColor = PMPal.missileFrag;
-                                                homingDelay = 60f;
-                                                rotateSpeed = 1.5f;
+                                                homingDelay = 15f;
+                                                missileAccelTime = 20f;
+                                                lifetime /= 3;
+                                                rotateSpeed = 5f;
 
                                                 weapons.add(new MissileOwnerWeapon(){{
                                                     shootCone = 360f;
+                                                    rotateSpeed = 0f;
                                                     mirror = false;
                                                     reload = 1f;
                                                     deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
@@ -140,7 +149,7 @@ public class PayloadBullets{
                                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                                         hitColor = PMPal.missileFrag;
                                                         //shootEffect = RocketUnitType.rocketShoot; TODO smaller effect
-                                                    }}; //Oh jeez
+                                                    }}; //Oh jeez that's a lot of closings
                                                 }});
                                             }};
                                         }};
@@ -203,6 +212,28 @@ public class PayloadBullets{
 
                     blockEffect = MissileFx.missileBlockedSmall;
                 }};
+            }};
+        }};
+
+        artemisBombing = new BallisticMissileBulletType("prog-mats-bombing-missile"){{
+            splashDamage = 250f;
+            splashDamageRadius = 64f;
+            buildingDamageMultiplier = 0.5f;
+            hitShake = 5f;
+            lifetime = 240;
+            scaleLife = false;
+
+            height = 48f;
+            trailLength = 25;
+            trailWidth = 1f;
+            trailColor = targetColor = Pal.suppress; //TODO proper color
+            posInterp = Interp.linear;
+
+            bulletInterval = 15f;
+            intervalBullet = new DropBombBulletType(150f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
+                trailColor = targetColor = Pal.suppress;
+                lifetime = 45f;
+                //TODO any other stats?
             }};
         }};
 

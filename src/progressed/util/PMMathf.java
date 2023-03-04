@@ -12,7 +12,11 @@ public class PMMathf{
     }
 
     public static float cornerDst(float r){
-        return (float)Math.sqrt(r * r * 2f);
+        return cornerDst(r, r);
+    }
+
+    public static float cornerDst(float w, float h){
+        return (float)Math.sqrt(w * h * 2f);
     }
 
     public static Vec2 randomCirclePoint(Vec2 v, float radius){

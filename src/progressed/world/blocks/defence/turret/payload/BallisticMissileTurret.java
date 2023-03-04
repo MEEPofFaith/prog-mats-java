@@ -46,7 +46,8 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
 
     @Override
     public void limitRange(BulletType bullet, float margin){
-        bullet.speed = range + bullet.rangeChange + margin;
+        float r = range + bullet.rangeChange + margin;
+        bullet.speed = bullet.scaleLife ? r : r / bullet.lifetime;
     }
 
     public class BallisticMissileTurretBuild extends SinglePayloadAmmoTurretBuild{
@@ -54,6 +55,10 @@ public class BallisticMissileTurret extends SinglePayloadAmmoTurret{
         public void targetPosition(Posc pos){
             if(!hasAmmo() || pos == null) return;
             BulletType bullet = peekAmmo();
+            if(!bullet.scaleLife){
+                super.targetPosition(pos);
+                return;
+            }
 
             var offset = Tmp.v1.setZero();
 
