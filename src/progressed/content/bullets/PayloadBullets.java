@@ -217,7 +217,7 @@ public class PayloadBullets{
 
         artemisBombing = new BallisticMissileBulletType("prog-mats-bombing-missile"){{
             splashDamage = 200f;
-            splashDamageRadius = 64f;
+            splashDamageRadius = 32f;
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
             lifetime = 240;
