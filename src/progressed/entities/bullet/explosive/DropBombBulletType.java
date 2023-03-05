@@ -16,7 +16,7 @@ import progressed.util.*;
 import static mindustry.Vars.headless;
 import static progressed.graphics.DrawPseudo3D.*;
 
-public class DropBombBulletType extends BulletType{
+public class DropBombBulletType extends BulletType{ //TODO shield projector absorption
     public float height = 1f;
     public boolean drawZone = true;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
@@ -33,11 +33,11 @@ public class DropBombBulletType extends BulletType{
         splashDamageRadius = radius;
         splashDamage = damage;
 
-        despawnEffect = MissileFx.smallBoom;
+        hitEffect = MissileFx.smallBoom;
         hitSound = Sounds.explosion;
         layer = Layer.flyingUnit + 1.8f;
         lifetime = 30f;
-        collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
+        collides = hittable = absorbable = reflectable = keepVelocity = false;
         scaledSplashDamage = true;
         status = StatusEffects.blasted;
     }
@@ -101,7 +101,7 @@ public class DropBombBulletType extends BulletType{
             hRot = b.angleTo(hX, hY) + 180f;
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl);
-        Drawf.shadow(region, shX, shY, 135f);
+        Drawf.shadow(region, shX, shY, 45f);
         Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y) + hScl / 100f);
         drawTrail(b);
         Draw.scl(1f + hMul(hScl));

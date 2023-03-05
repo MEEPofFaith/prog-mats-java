@@ -236,11 +236,11 @@ public class PayloadBullets{
                 speed = 2.5f;
                 drag = 0.03f;
                 lifetime = 45f;
+                homingPower = 0.04f;
 
                 trailColor = targetColor = Pal.suppress;
                 trailLength = 12;
                 trailWidth = 1f;
-                //TODO any other stats?
             }};
         }};
 

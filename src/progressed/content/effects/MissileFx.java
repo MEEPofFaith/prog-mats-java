@@ -12,7 +12,6 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.graphics.DrawPseudo3D.*;
 import static progressed.util.PMUtls.*;
 
 public class MissileFx{
@@ -68,15 +67,6 @@ public class MissileFx{
         });
     }),
 
-    missileSmoke = new Effect(120, e -> {
-        if(e.data instanceof float[] data){
-            float x = xHeight(e.x, data[0]),
-                y = yHeight(e.y, data[0]);
-            color(Color.gray, Mathf.clamp(e.fout() * 1.2f) * data[1]);
-            Fill.circle(x, y, (1f + 10f * e.rotation) - e.fin() * 2f);
-        }
-    }).layer(Layer.effect + 0.21f),
-
     smallBoom = new Effect(30f, e -> {
         color(Pal.missileYellow);
 
@@ -85,19 +75,17 @@ public class MissileFx{
             Lines.circle(e.x, e.y, 2f + s.fin() * 15f);
         });
 
-        color(Color.gray);
-
-        randLenVectors(e.id, 8, 1f + 15f * e.finpow(), (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 0.25f + e.fout() * 2f);
+        color(Color.darkGray);
+        alpha(0.9f);
+        randLenVectors(e.id, 13, 1f + 27f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.5f + e.fout() * 7f);
         });
 
-        color(Pal.missileYellowBack);
-        stroke(e.fout() * 0.5f);
-
-        randLenVectors(e.id + 1, 6, 0.5f + 14.5f * e.finpow(), (x, y) -> {
+        stroke(e.fout() * 0.75f, Pal.missileYellowBack);
+        randLenVectors(e.id + 1, 6, 0.5f + 32f * e.finpow(), (x, y) -> {
             lineAngle(e.x + x, e.y + y, angle(x, y), 0.5f + e.fout() * 2f);
         });
-    }),
+    }).layer(Layer.bullet - 0.021f),
 
     missileExplosion = new Effect(30, 500f, e -> {
         float intensity = 2f;
