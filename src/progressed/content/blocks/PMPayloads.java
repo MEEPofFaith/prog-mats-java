@@ -77,10 +77,11 @@ public class PMPayloads{
 
             prev = emptyRocket; //TODO proper costs
             size = 3;
-            powerUse = 1.25f;
-            constructTime = 60f * 6.5f;
+
             elevation = 2f / 3f;
             outlined = true;
+
+            //TODO kaboom. uhhhhhhh, it has many different kaboom
         }};
 
         emptyMissile = new Missile("empty-missile"){{
@@ -130,8 +131,13 @@ public class PMPayloads{
         bombingMissile = new Missile("bombing-missile"){{
             requirements = with();
 
-            prev = emptyMissile;
+            prev = emptyMissile; //TODO proper costs
             size = 2;
+
+            explosionBullet = PayloadBullets.artemisBombing.intervalBullet;
+            explosions = 13; //Some value
+            explosionArea = -1f;
+            maxDelay = 20f;
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
@@ -209,24 +215,5 @@ public class PMPayloads{
             constructTime = 60f * 25f;
             unit = PMUnitTypes.downpour;
         }};
-    }
-
-    public static void afterLoad(){
-        basicRocket.user = PMBlocks.arbalest;
-        basicRocket.bullet = basicRocket.explosionBullet;
-        incendiaryRocket.user = PMBlocks.arbalest;
-        incendiaryRocket.bullet = incendiaryRocket.explosionBullet;
-
-        basicMissile.user = PMBlocks.artemis;
-        basicMissile.bullet = basicMissile.explosionBullet;
-        recursiveMissile.user = PMBlocks.artemis;
-        recursiveMissile.bullet = PayloadBullets.artemisRecursive;
-
-        basicNuke.user = PMBlocks.paragon;
-        basicNuke.bullet = basicNuke.explosionBullet;
-        clusterNuke.user = PMBlocks.paragon;
-        clusterNuke.bullet = PayloadBullets.paragonCluster;
-        sandboxNuke.user = PMBlocks.paragon;
-        sandboxNuke.bullet = PayloadBullets.ohno;
     }
 }

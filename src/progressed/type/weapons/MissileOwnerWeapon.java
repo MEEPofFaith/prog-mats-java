@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 
 /** A weapon which sets the shot bullet's owner to the missile unit's shooter. */
-public class MissileOwnerWeapon extends Weapon{
+public class MissileOwnerWeapon extends Weapon{ //TODO remove after my PR
     @Override
     protected void bullet(Unit unit, WeaponMount mount, float xOffset, float yOffset, float angleOffset, Mover mover){
         if(!unit.isAdded()) return;

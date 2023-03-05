@@ -9,6 +9,7 @@ import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
+import progressed.world.blocks.payloads.*;
 import progressed.world.draw.*;
 import progressed.world.meta.*;
 
@@ -41,6 +42,15 @@ public class SinglePayloadAmmoTurret extends PayloadAmmoTurret{
         minWarmup = 1f;
         linearWarmup = true;
         shootWarmupSpeed = 1 / (seconds * 60f);
+    }
+
+    public void setUsers(){
+        for(var entry : ammoTypes.copy().entries()){
+            if(entry.key instanceof Missile m){
+                m.user = this;
+                m.bullet = entry.value;
+            }
+        }
     }
 
     public class SinglePayloadAmmoTurretBuild extends PayloadTurretBuild{

@@ -29,6 +29,7 @@ public class BallisticMissileBulletType extends BulletType{
     public float shadowOffset = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
+    public float intervalDelay = -1f; //TODO remove when pr merged
     public Color targetColor = Color.red;
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
@@ -177,7 +178,7 @@ public class BallisticMissileBulletType extends BulletType{
 
     @Override
     public void updateBulletInterval(Bullet b){
-        if(intervalBullet != null && b.timer.get(2, bulletInterval)){
+        if(intervalBullet != null && b.time > intervalDelay && b.timer.get(2, bulletInterval)){
             float x = tX(b), y = tY(b);
             float ang = Angles.angle(((float[])b.data)[0], ((float[])b.data)[1], x, y);
             for(int i = 0; i < intervalBullets; i++){

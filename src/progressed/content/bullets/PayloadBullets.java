@@ -200,7 +200,7 @@ public class PayloadBullets{
                 fragRandomSpread = 64f;
                 fragBullets = 3;
                 fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
-                    splashDamage = 260f;
+                    splashDamage = 220f;
                     splashDamageRadius = 48f;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
@@ -216,7 +216,7 @@ public class PayloadBullets{
         }};
 
         artemisBombing = new BallisticMissileBulletType("prog-mats-bombing-missile"){{
-            splashDamage = 250f;
+            splashDamage = 200f;
             splashDamageRadius = 64f;
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
@@ -230,10 +230,16 @@ public class PayloadBullets{
             posInterp = Interp.linear;
 
             bulletInterval = 15f;
-            intervalBullet = new DropBombBulletType(150f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
-                trailColor = targetColor = Pal.suppress;
+            intervalDelay = 45f;
+            intervalRandomSpread = 0f;
+            intervalBullet = new DropBombBulletType(170f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
+                speed = 2.5f;
+                drag = 0.03f;
                 lifetime = 45f;
-                trailLength = 9;
+
+                trailColor = targetColor = Pal.suppress;
+                trailLength = 12;
+                trailWidth = 1f;
                 //TODO any other stats?
             }};
         }};

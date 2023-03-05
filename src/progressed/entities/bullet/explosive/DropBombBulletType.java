@@ -22,10 +22,10 @@ public class DropBombBulletType extends BulletType{
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float shadowOffset = -1f;
-    public boolean trailOver = true;
+    public boolean spinShade = true, trailOver = true;
     public Color targetColor = Color.red;
     public String sprite;
-    public TextureRegion region;
+    public TextureRegion region, blRegion, trRegion;
 
     public DropBombBulletType(float damage, float radius, String sprite){
         super(0f, 0f);
@@ -45,6 +45,11 @@ public class DropBombBulletType extends BulletType{
     @Override
     public void load(){
         region = Core.atlas.find(sprite);
+
+        if(spinShade){
+            blRegion = Core.atlas.find(sprite + "-bl");
+            trRegion = Core.atlas.find(sprite + "-tr");
+        }
 
         //Set draw size to the max distance the shadow can travel
         drawSize = Math.max(drawSize, (shadowOffset + PMMathf.cornerDst(region.width / 4f, region.height / 4f)) * 2);
@@ -90,14 +95,22 @@ public class DropBombBulletType extends BulletType{
         //Bomb
         float hScl = b.fout() * b.fdata,
             shX = b.x - shadowOffset * hScl,
-            shY = b.y - shadowOffset * hScl;
+            shY = b.y - shadowOffset * hScl,
+            hX = xHeight(b.x, hScl * height),
+            hY = yHeight(b.y, hScl * height),
+            hRot = b.angleTo(hX, hY) + 180f;
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl);
-        Drawf.shadow(region, shX, shY, -45f);
+        Drawf.shadow(region, shX, shY, 135f);
         Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y) + hScl / 100f);
         drawTrail(b);
         Draw.scl(1f + hMul(hScl));
-        Draw.rect(region, xHeight(b.x, hScl * height), yHeight(b.y, hScl * height), 180);
+        if(spinShade){
+            PMDrawf.spinSprite(region, blRegion, trRegion, hX, hY, hRot);
+        }else{
+            Draw.rect(region, hX, hY, hRot);
+        }
+        Draw.scl();
     }
 
     public void drawTrail(Bullet b){

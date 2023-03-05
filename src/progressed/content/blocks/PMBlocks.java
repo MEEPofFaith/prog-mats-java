@@ -900,6 +900,7 @@ public class PMBlocks{
 
             coolant = consumeCoolant(0.2f);
             limitRange();
+            setUsers();
         }};
 
         artemis = new BallisticMissileTurret("artemis"){{
@@ -929,6 +930,7 @@ public class PMBlocks{
 
             coolant = consumeCoolant(0.2f);
             limitRange();
+            setUsers();
         }};
 
         paragon = new BallisticMissileTurret("paragon"){{
@@ -960,6 +962,7 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
             ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
             limitRange();
+            setUsers();
         }};
 
         float nexusHeightGrowStop = 0.15f, nexusSizeGrowStop = 0.3f;
@@ -1480,8 +1483,6 @@ public class PMBlocks{
 
         PMErekirBlocks.load();
         PMSandboxBlocks.load();
-
-        PMPayloads.afterLoad();
     }
 }
 
