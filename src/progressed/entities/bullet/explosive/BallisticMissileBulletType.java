@@ -66,11 +66,11 @@ public class BallisticMissileBulletType extends BulletType{
         super.init();
 
         //Since the offset tilts it away from the camera, you only need the draw size to be the range of the missile.
-        drawSize = Math.max(drawSize, range);
+        drawSize = Math.max(drawSize, range * 2);
 
         //Ensure that split missiles also have enough draw size, as limitRange only applies to the main missile.
         if(fragBullet instanceof BallisticMissileBulletType m){
-            m.drawSize = Math.max(fragBullet.drawSize, drawSize + fragRandomSpread);
+            m.drawSize = Math.max(fragBullet.drawSize, (drawSize + fragRandomSpread) * 2);
 
             //Ensure that the visual positions also match up.
             m.lifetime = lifetime;
@@ -98,7 +98,7 @@ public class BallisticMissileBulletType extends BulletType{
         }
 
         //Set draw size to the max distance the shadow can travel
-        drawSize = Math.max(drawSize, (shadowOffset + PMMathf.cornerDst(region.width / 4f, region.height / 4f)) * (1f + heightRnd));
+        drawSize = Math.max(drawSize, (shadowOffset + PMMathf.cornerDst(region.width / 4f, region.height / 4f)) * (1f + heightRnd) * 2);
     }
 
     @Override
@@ -225,10 +225,9 @@ public class BallisticMissileBulletType extends BulletType{
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl);
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY));
-        Draw.z(layer + DrawPseudo3D.layerOffset(x, y)); //Unsure that the trail is drawn underneath.
+        Draw.z(layer + DrawPseudo3D.layerOffset(x, y) + hScl / 100f);
         drawTrail(b);
         Draw.scl(1f + hMul(hScl));
-        Draw.z(layer + hScl / 100f);
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
         }else{
@@ -242,14 +241,6 @@ public class BallisticMissileBulletType extends BulletType{
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
         float h = hScl(b) * height;
         Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius, lightColor, lightOpacity);
-    }
-
-    @Override
-    public void drawTrail(Bullet b){
-        float scl = Draw.xscl;
-        Draw.scl();
-        super.drawTrail(b);
-        Draw.scl(scl);
     }
 
     public float tX(Bullet b){

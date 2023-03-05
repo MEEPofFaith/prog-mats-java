@@ -49,8 +49,8 @@ public class HeightTrail extends Trail{
             Draw.color(color);
             int i = points.size - 4;
             float x1 = x(i - 4), y1 = y(i - 4),
-                x2 = x(i), y2 = y(i),
-                w1 = w(i), w = w1 * width / (points.size / 4) * i / 4f * 2f;
+                x2 = x(-1), y2 = y(-1),
+                w1 = w(-1), w = w1 * width / (points.size / 4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
             Draw.rect("hcircle", x2, y2, w, w, Angles.angle(x1, y1, x2, y2));
             Draw.reset();
@@ -137,16 +137,22 @@ public class HeightTrail extends Trail{
     }
 
     public float x(int index){
+        if(index < 0) return xHeight(lastX, lastH);
+
         float[] items = points.items;
         return xHeight(items[index], items[index + 3]);
     }
 
     public float y(int index){
+        if(index < 0) return yHeight(lastY, lastH);
+
         float[] items = points.items;
         return yHeight(items[index + 1], items[index + 3]);
     }
 
     public float w(int index){
+        if(index < 0) return lastW * hScale(lastH);
+
         float[] items = points.items;
         return items[index + 2] * hScale(items[index + 3]);
     }

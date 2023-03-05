@@ -233,6 +233,7 @@ public class PayloadBullets{
             intervalBullet = new DropBombBulletType(150f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
                 trailColor = targetColor = Pal.suppress;
                 lifetime = 45f;
+                trailLength = 9;
                 //TODO any other stats?
             }};
         }};
