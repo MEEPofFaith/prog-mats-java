@@ -271,11 +271,11 @@ public class BallisticMissileBulletType extends BulletType{
 
     public float shadowRot(Bullet b, float shX, float shY){
         float[] data = (float[])b.data;
-        float ang = b.angleTo(data[0], data[1]) + 180f;
+        float flat = b.angleTo(data[0], data[1]) + 180f;
         float fin = b.fdata == 0 ? rotInterp.apply(b.fin()) : rotInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
         return fin < 0.5f ?
-            PMMathf.lerpAngle(90f, ang, fin * 2) :
-            PMMathf.lerpAngle(ang, vertical ? -90f : (b.angleTo(shX, shY) + 180), fin * 2 - 1);
+            PMMathf.lerpAngle(-135, flat, fin * 2) :
+            PMMathf.lerpAngle(flat, vertical ? 45f : (b.angleTo(shX, shY) + 180), fin * 2 - 1);
     }
 
     @Override

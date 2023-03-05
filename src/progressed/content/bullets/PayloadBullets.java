@@ -226,11 +226,10 @@ public class PayloadBullets{
             height = 48f;
             trailLength = 25;
             trailWidth = 1f;
-            trailColor = targetColor = Pal.suppress; //TODO proper color
-            posInterp = Interp.linear;
+            trailColor = targetColor = Pal.suppress;
 
-            bulletInterval = 15f;
-            intervalDelay = 45f;
+            bulletInterval = 10f;
+            intervalDelay = 105f;
             intervalRandomSpread = 0f;
             intervalBullet = new DropBombBulletType(170f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
                 speed = 2.5f;
