@@ -6,10 +6,12 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
+import progressed.game.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
@@ -24,6 +26,7 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
     public float shadowOffset = -1f;
     public boolean spinShade = true, trailOver = true;
     public Color targetColor = Color.red;
+    public Effect blockEffect = MissileFx.missileBlockedSmall;
     public String sprite;
     public TextureRegion region, blRegion, trRegion;
 
@@ -121,6 +124,15 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
             b.trail.drawCap(trailColor, trailWidth); //Also draw cap since the trail is on top
             Draw.z(z);
         }
+    }
+
+    @Override
+    public void despawned(Bullet b){
+        Events.fire(new PMEventType.BallisticMissileLand(b, blockEffect));
+
+        if(b.absorbed) return;
+
+        super.despawned(b);
     }
 
     @Override

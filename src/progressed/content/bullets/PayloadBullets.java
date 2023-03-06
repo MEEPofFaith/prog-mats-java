@@ -204,6 +204,8 @@ public class PayloadBullets{
                     splashDamageRadius = 48f;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
+                    hitEffect = MissileFx.smallBoom;
+                    hitSound = Sounds.explosion;
 
                     zoneRadius = 2f * 8f;
                     trailLength = 15;

@@ -13,10 +13,9 @@ import mindustry.graphics.*;
 import progressed.*;
 import progressed.content.*;
 import progressed.content.effects.*;
+import progressed.game.*;
 import progressed.graphics.*;
 import progressed.util.*;
-import progressed.world.blocks.defence.*;
-import progressed.world.blocks.defence.ShieldProjector.*;
 
 import static mindustry.Vars.*;
 import static progressed.graphics.DrawPseudo3D.*;
@@ -285,18 +284,9 @@ public class BallisticMissileBulletType extends BulletType{
             return;
         }
 
-        ShieldBuild shield = (ShieldBuild)Units.findEnemyTile(b.team, b.x, b.y, ShieldProjector.maxShieldRange, build -> build instanceof ShieldBuild s && !s.broken && PMMathf.isInSquare(s.x, s.y, s.realRadius(), b.x, b.y));
-        if(shield != null){ //Ballistic Shield blocks the missile
-            blockEffect.at(b.x, b.y, b.rotation(), hitColor);
-            despawnSound.at(b);
+        Events.fire(new PMEventType.BallisticMissileLand(b, blockEffect));
 
-            Effect.shake(despawnShake, despawnShake, b);
-
-            shield.hit = 1f;
-            shield.buildup += (b.damage() + splashDamage * shield.realStrikeBlastResistance() * b.damageMultiplier()) * shield.warmup;
-
-            return;
-        }
+        if(b.absorbed) return;
 
         if(!fragOnHit){
             createFrags(b, b.x, b.y);

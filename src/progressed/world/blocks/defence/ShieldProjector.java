@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import progressed.content.effects.*;
+import progressed.game.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -39,6 +40,14 @@ public class ShieldProjector extends ForceProjector{
         super(name);
 
         radius = 80f; //Make it square based because I'm too lazy to do math
+    }
+
+    static{
+        Events.on(PMEventType.BallisticMissileLand.class, l -> {
+            Groups.build.each(b -> b instanceof ShieldBuild, b -> {
+                ((ShieldBuild)b).deflectBallisticMissle(l.bullet, l.blockEffect);
+            });
+        });
     }
 
     @Override
@@ -159,9 +168,30 @@ public class ShieldProjector extends ForceProjector{
             float realRadius = realRadius();
 
             if(realRadius > 0 && !broken){
-                paramEntity = this;
-                paramEffect = absorbEffect;
-                Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
+                Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, b -> {
+                    if(b.team != team && b.type.absorbable){
+                        b.absorb();
+                        paramEffect.at(b);
+                        hit = 1f;
+                        buildup += b.damage;
+                    }
+                });
+            }
+        }
+
+        public void deflectBallisticMissle(Bullet b, Effect blockEffect){
+            float realRadius = realRadius();
+
+            if(realRadius > 0 && !broken && b.team != team && !b.absorbed && PMMathf.isInSquare(x, y, realRadius, b.x, b.y)){
+                b.absorbed = true;
+                blockEffect.at(b.x, b.y, b.rotation(), b.type.hitColor);
+                b.type.despawnSound.at(b);
+
+                Effect.shake(b.type.despawnShake, b.type.despawnShake, b);
+
+                hit = 1f;
+
+                buildup += (b.damage() + b.type.splashDamage * realStrikeBlastResistance() * b.damageMultiplier()) * warmup;
             }
         }
 
@@ -174,13 +204,13 @@ public class ShieldProjector extends ForceProjector{
             if(!broken){
                 float radius = realRadius();
 
-                Draw.z(Layer.shields);
-
                 Draw.color(getColor());
 
                 if(Core.settings.getBool("animatedshields")){
+                    Draw.z(Layer.shields + 0.001f * hit);
                     Fill.square(x, y, radius);
                 }else{
+                    Draw.z(Layer.shields);
                     Lines.stroke(1.5f);
                     Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
                     Fill.square(x, y, radius);
