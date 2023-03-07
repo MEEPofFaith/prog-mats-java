@@ -184,7 +184,6 @@ public class PayloadBullets{
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileFrag;
             posInterp = Interp.smoother;
-            vertical = true;
 
             splitLifeMaxOffset = 30f;
             fragRandomSpread = 80f;
@@ -275,7 +274,6 @@ public class PayloadBullets{
             trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileFrag;
             posInterp = Interp.smoother;
-            vertical = true;
 
             splitTime = 0.65f;
             splitLifeMaxOffset = 45f;

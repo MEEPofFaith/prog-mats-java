@@ -33,7 +33,7 @@ public class BallisticMissileBulletType extends BulletType{
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;
     public float fartVolume = 50f;
-    public boolean spinShade = true, vertical = false;
+    public boolean spinShade = true;
     public Interp hInterp = PMInterp.flightArc, posInterp = Interp.pow2In, rotInterp = PMInterp.sineInverse;
 
     public TextureRegion region, blRegion, trRegion;
@@ -76,7 +76,6 @@ public class BallisticMissileBulletType extends BulletType{
             m.lifetime = lifetime;
             m.height = height;
             m.heightRnd = heightRnd = 0f;
-            m.vertical = vertical;
             m.hInterp = hInterp;
             m.posInterp = posInterp;
             m.rotInterp = rotInterp;
@@ -274,7 +273,7 @@ public class BallisticMissileBulletType extends BulletType{
         float fin = b.fdata == 0 ? rotInterp.apply(b.fin()) : rotInterp.apply(Mathf.lerp(b.fdata, 1f, b.fin()));
         return fin < 0.5f ?
             PMMathf.lerpAngle(-135, flat, fin * 2) :
-            PMMathf.lerpAngle(flat, vertical ? 45f : (b.angleTo(shX, shY) + 180), fin * 2 - 1);
+            PMMathf.lerpAngle(flat, b.angleTo(shX, shY) + 180, fin * 2 - 1);
     }
 
     @Override
