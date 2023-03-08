@@ -72,12 +72,11 @@ public class CrashCore extends CoreBlock{
         }
 
         float fin = 1f - renderer.getLandTime() / coreLandDuration;
-        fin = Mathf.curve(fin, 0.625f, 1f);
-        fin = Interp.pow3In.apply(fin);
+        fin = Mathf.curve(fin, 0.875f, 1f);
         float fout = 1f - fin;
 
         float scl = Scl.scl(4f) / renderer.getDisplayScale();
-        float dst = PMMathf.cornerDst(Core.camera.width, Core.camera.height) * 0.75f * fout;
+        float dst = 400f * fout;
         float ang = Mathf.randomSeed(build.id, 112.5f, 157.5f);
         Tmp.v1.trns(ang, dst);
 
@@ -102,10 +101,11 @@ public class CrashCore extends CoreBlock{
         core.health = crashHealth;
         core.landed = true;
         core.tile.getLinkedTiles(t -> {
-            for(int i = 0; i < 4; i++){
+            //0 ~ 360 -> -360/16 ~ 360/16
+            float ang = core.angleTo(t.worldx(), t.worldy()) / 8f - 360f / 16f;
+            for(int i = 0; i < 8; i++){
                 if(Mathf.chance(0.8f)){
-                    float ang = core.angleTo(t) / 8f - 22.5f;
-                    Fx.coreLandDust.at(t.worldx(), t.worldy(), ang + Mathf.range(10f), Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
+                    Fx.coreLandDust.at(t.worldx(), t.worldy(), ang + Mathf.range(15f), Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                 }
             }
         });
