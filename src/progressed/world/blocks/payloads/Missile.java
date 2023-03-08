@@ -33,7 +33,7 @@ public class Missile extends Block{
 
     public boolean outlined;
 
-    public Block user;
+    public Block user, producer;
     public BulletType bullet;
 
     public TextureRegion topRegion, outlineRegion;
@@ -73,6 +73,22 @@ public class Missile extends Block{
     @Override
     public void setStats(){
         super.setStats();
+
+        if(producer != null){
+            stats.add(PMStat.producer, s -> {
+                s.row();
+                s.table(t -> {
+                    t.left().defaults().top().left();
+                    t.image(producer.fullIcon).size(96f);
+                    t.table(n -> {
+                        n.defaults().left();
+                        n.add(producer.localizedName);
+                        n.row();
+                        PMStatValues.infoButton(n, producer, 4f * 8f).padTop(4f);
+                    }).padLeft(8f);
+                });
+            });
+        }
 
         if(user != null && bullet != null){
             stats.add(PMStat.used, PMStatValues.ammo(ObjectMap.of(user, bullet)));

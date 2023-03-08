@@ -81,7 +81,7 @@ public class PMStatValues{
                         n.add(payload && !t.unlockedNow() ? "@pm-missing-research" : t.localizedName);
                         if(payload && t.unlockedNow()){
                             n.row();
-                            infoButton(n, t, 4f * 8f);
+                            infoButton(n, t, 4f * 8f).padTop(4f);
                         }
                     }).padRight(10).left().top();
                 }
@@ -386,13 +386,15 @@ public class PMStatValues{
                             t.table(i -> {
                                 i.left();
 
-                                i.image(recipe.inputBlock.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                                i.add(recipe.inputBlock.localizedName).pad(10f).left();
+                                i.image(recipe.inputBlock.fullIcon).size(40).left().scaling(Scaling.fit);
+                                i.add(recipe.inputBlock.localizedName).padLeft(8f).left();
+                                infoButton(i, recipe.inputBlock, 32).padLeft(8f).left();
 
-                                i.image(Icon.right).color(Pal.darkishGray).size(40).pad(10f);
+                                i.image(Icon.right).color(Pal.darkishGray).size(40).pad(8f).center();
 
-                                i.image(out.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                                i.add(out.localizedName).pad(10f).left();
+                                i.image(out.fullIcon).size(40).right().scaling(Scaling.fit);
+                                i.add(out.localizedName).padLeft(8f).right();
+                                infoButton(i, out, 32).padLeft(8f).right();
                             }).left().padTop(5).padBottom(5);
                             t.row();
                             t.add(Strings.autoFixed(recipe.craftTime / 60f, 1) + " " + StatUnit.seconds.localized()).color(Color.lightGray).padLeft(10f).left();
@@ -404,13 +406,16 @@ public class PMStatValues{
                         }else{
                             t.image(out.uiIcon).size(40).pad(10f).left().top();
                             t.table(info -> {
-                                info.defaults().top().left();
+                                info.top().defaults().left();
+
                                 info.add(out.localizedName);
+                                infoButton(info, out, 32).padLeft(8f).expandX();
+
                                 info.row();
-                                info.add(Strings.autoFixed(recipe.craftTime / 60f, 1) + " " + StatUnit.seconds.localized()).color(Color.lightGray);
+                                info.add(Strings.autoFixed(recipe.craftTime / 60f, 1) + " " + StatUnit.seconds.localized()).color(Color.lightGray).colspan(2);
                                 if(recipe.powerUse > 0){
                                     info.row();
-                                    info.add(Strings.autoFixed(recipe.powerUse * 60f, 1) + " " + StatUnit.powerSecond.localized()).color(Color.lightGray);
+                                    info.add(Strings.autoFixed(recipe.powerUse * 60f, 1) + " " + StatUnit.powerSecond.localized()).color(Color.lightGray).colspan(2);
                                 }
                             }).top();
                         }

@@ -10,5 +10,6 @@ public class PMStat{
 
     fuel = new Stat("pm-fuel", StatCat.crafting),
 
+    producer = new Stat("pm-producer"),
     used = new Stat("pm-used");
 }

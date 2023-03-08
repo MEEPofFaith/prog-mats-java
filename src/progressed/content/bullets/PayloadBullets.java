@@ -236,6 +236,7 @@ public class PayloadBullets{
                 speed = 2.5f;
                 drag = 0.03f;
                 lifetime = 45f;
+                buildingDamageMultiplier = 0.5f;
                 homingPower = 0.04f;
 
                 trailColor = targetColor = Pal.suppress;

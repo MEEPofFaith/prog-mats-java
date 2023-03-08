@@ -65,6 +65,12 @@ public class PayloadCrafter extends PayloadBlock{
         }
     }
 
+    public void setProducer(){
+        for(Recipe r : recipes){
+            if(r.outputBlock instanceof Missile m) m.producer = this;
+        }
+    }
+
     @Override
     public void init(){
         if(recipes.contains(r -> r.powerUse > 0)){
