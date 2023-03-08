@@ -194,6 +194,10 @@ public class PMTechTree{
         });
 
         // Effect
+        /*vanillaNode(coreShard, () -> { //check the block for why hidden
+            node(coreCripple);
+        });*/
+
         vanillaNode(coreFoundation, () -> {
             //Core link
             node(coreCovalence, Seq.with(

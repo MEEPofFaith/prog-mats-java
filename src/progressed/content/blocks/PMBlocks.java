@@ -16,6 +16,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
@@ -121,7 +122,7 @@ public class PMBlocks{
     // endregion
     // region Effect
 
-    coreCovalence,
+    coreCripple, coreCovalence,
 
     fence, web,
 
@@ -1416,6 +1417,24 @@ public class PMBlocks{
         // endregion
 
         // region Effect
+        coreCripple = new CrashCore("core-cripple"){{ //Hidden because the animation doesn't work right at the moment. The player unit spawns before the animation ends. Awaiting merge of my PR.
+            requirements(Category.effect, BuildVisibility.hidden, with(
+                Items.copper, 400,
+                Items.lead, 150
+            ));
+            isFirstTier = true;
+            unitType = UnitTypes.alpha;
+            health = 500;
+            itemCapacity = 1500;
+            size = 2;
+            explosionSoundVolume = 4f;
+            thrusterLength = 2f;
+
+            unitCapModifier = 3;
+        }};
+        //Blocks.coreShard.buildVisibility = BuildVisibility.shown;
+        //((CoreBlock)Blocks.coreShard).isFirstTier = false;
+
         coreCovalence = new CoreLink("core-covalence"){{
             requirements(Category.effect, with(
                 Items.copper, 6000,
