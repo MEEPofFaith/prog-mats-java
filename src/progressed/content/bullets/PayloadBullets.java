@@ -108,47 +108,55 @@ public class PayloadBullets{
                         fragRandomSpread = 120f;
                         fragBullet = new BulletType(){{
                             spawnUnit = new RocketUnitType("splitter-rocket-split", false){{
+                                health = 120;
                                 engineColor = trailColor = PMPal.missileFrag;
                                 homingDelay = 20f;
                                 missileAccelTime = 30f;
                                 lifetime /= 2;
                                 rotateSpeed = 3f;
 
+                                engineSize = 10f / 4f;
+                                engineOffset = 33f/ 4f;
+                                loopSoundVolume = 0.3f;
+
                                 weapons.add(new MissileOwnerWeapon(){{
                                     shootCone = 360f;
                                     rotateSpeed = 0f;
                                     mirror = false;
                                     reload = 1f;
-                                    deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
+                                    deathExplosionEffect = MissileFx.missileExplosion;
                                     shootOnDeath = true;
                                     shake = 10f;
                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                         hitColor = PMPal.missileFrag;
-                                        //shootEffect = RocketUnitType.rocketShoot; TODO smaller effect
-
 
                                         fragBullets = 3;
                                         fragAngle = 180f;
                                         fragRandomSpread = 120f;
                                         fragBullet = new BulletType(){{
                                             spawnUnit = new RocketUnitType("splitter-rocket-bit", false){{
+                                                health = 60;
                                                 engineColor = trailColor = PMPal.missileFrag;
                                                 homingDelay = 15f;
                                                 missileAccelTime = 20f;
                                                 lifetime /= 3;
                                                 rotateSpeed = 5f;
+                                                deathSound = Sounds.explosion;
+
+                                                engineSize = 7f / 4f;
+                                                engineOffset = 19f / 4f;
+                                                loopSoundVolume = 0.1f;
 
                                                 weapons.add(new MissileOwnerWeapon(){{
                                                     shootCone = 360f;
                                                     rotateSpeed = 0f;
                                                     mirror = false;
                                                     reload = 1f;
-                                                    deathExplosionEffect = MissileFx.missileExplosion; //TODO smaller effect
+                                                    deathExplosionEffect = MissileFx.smallBoom;
                                                     shootOnDeath = true;
                                                     shake = 10f;
                                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                                         hitColor = PMPal.missileFrag;
-                                                        //shootEffect = RocketUnitType.rocketShoot; TODO smaller effect
                                                     }}; //Oh jeez that's a lot of closings
                                                 }});
                                             }};
