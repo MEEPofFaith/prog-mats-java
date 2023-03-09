@@ -112,8 +112,9 @@ public class PayloadBullets{
                                 engineColor = trailColor = PMPal.missileFrag;
                                 homingDelay = 20f;
                                 missileAccelTime = 30f;
+                                targetDelay = 30f;
                                 lifetime /= 2;
-                                rotateSpeed = 3f;
+                                rotateSpeed = 6f;
 
                                 engineSize = 10f / 4f;
                                 engineOffset = 33f/ 4f;
@@ -139,8 +140,9 @@ public class PayloadBullets{
                                                 engineColor = trailColor = PMPal.missileFrag;
                                                 homingDelay = 15f;
                                                 missileAccelTime = 20f;
+                                                targetDelay = 20f;
                                                 lifetime /= 3;
-                                                rotateSpeed = 5f;
+                                                rotateSpeed = 10f;
                                                 deathSound = Sounds.explosion;
 
                                                 engineSize = 7f / 4f;

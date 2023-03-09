@@ -5,19 +5,21 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.effect.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.unit.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
 
-/** Field template for arbalest rockets. No new functionality. */
 public class RocketUnitType extends MissileUnitType{
     public static final Effect rocketShoot = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
         lifetime = 10f;
         strokeFrom = 4f;
         sizeTo = 130f;
     }});
+    
+    public float targetDelay = 0f;
 
     public RocketUnitType(String name, boolean addSmokeTrail){
         super(name);
@@ -33,6 +35,7 @@ public class RocketUnitType extends MissileUnitType{
         trailLength = 18;
         missileAccelTime = 2f * 60f;
         lowAltitude = true;
+        outlineColor = Pal.darkerMetal;
         loopSound = Sounds.missileTrail;
         loopSoundVolume = 0.6f;
         deathSound = Sounds.largeExplosion;
@@ -50,5 +53,15 @@ public class RocketUnitType extends MissileUnitType{
                 interval = 4f;
             }});
         }
+    }
+
+    @Override
+    public boolean targetable(Unit unit, Team targeter){
+        return super.targetable(unit, targeter) && ((TimedKillUnit)unit).time >= targetDelay;
+    }
+
+    @Override
+    public boolean hittable(Unit unit){
+        return super.hittable(unit) && ((TimedKillUnit)unit).time >= targetDelay;
     }
 }

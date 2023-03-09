@@ -3,13 +3,14 @@ package progressed.ai;
 import arc.math.*;
 import mindustry.ai.types.*;
 import mindustry.gen.*;
+import progressed.type.unit.*;
 
 public class DelayMissileAI extends MissileAI{
     @Override
     public void updateMovement(){
         unloadPayloads();
 
-        float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
+        float time = unit instanceof TimedKillc t ? t.time() : unit.type.homingDelay;
 
         if(time >= unit.type.homingDelay && shooter != null){
             unit.lookAt(shooter.aimX, shooter.aimY);
@@ -28,12 +29,12 @@ public class DelayMissileAI extends MissileAI{
 
     @Override
     public boolean retarget(){
-        return (!(unit instanceof TimedKillc t) || !(t.time() < unit.type.homingDelay)) && super.retarget();
+        return (!(unit instanceof TimedKillc t) || !(t.time() < ((RocketUnitType)unit.type).targetDelay)) && super.retarget();
     }
 
     @Override
     public Teamc target(float x, float y, float range, boolean air, boolean ground){
-        if(unit instanceof TimedKillc t && t.time() < unit.type.homingDelay) return null;
+        if(unit instanceof TimedKillc t && t.time() < ((RocketUnitType)unit.type).targetDelay) return null;
 
         return super.target(x, y, range, air, ground);
     }
