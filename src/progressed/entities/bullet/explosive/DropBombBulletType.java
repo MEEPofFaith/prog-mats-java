@@ -23,7 +23,7 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
     public boolean drawZone = true;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
-    public float shadowOffset = -1f;
+    public float shadowOffset = -1f, shadowGrowth = -1f;
     public boolean spinShade = true, trailOver = true;
     public Color targetColor = Color.red;
     public Effect blockEffect = MissileFx.missileBlockedSmall;
@@ -61,6 +61,7 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
     @Override
     public void init(){
         if(shadowOffset < 0) shadowOffset = height * 2f;
+        if(shadowGrowth < 0) shadowGrowth = height(height) / 2f;
         if(shrinkRad < 0) shrinkRad = zoneRadius / 6f;
 
         super.init();
@@ -104,7 +105,7 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
             hY = yHeight(b.y, h),
             hRot = b.angleTo(hX, hY) + 180f;
         Draw.z(shadowLayer);
-        Draw.scl(1f + hMul(h));
+        Draw.scl(1f + hScl * shadowGrowth);
         Drawf.shadow(region, shX, shY, 45f);
         Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y) + hScl / 100f);
         Draw.scl();
