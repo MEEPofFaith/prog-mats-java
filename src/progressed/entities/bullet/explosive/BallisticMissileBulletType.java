@@ -222,11 +222,12 @@ public class BallisticMissileBulletType extends BulletType{
             hRot = Angles.angle(lasthX, lasthY, hX, hY);
 
         Draw.z(shadowLayer);
-        Draw.scl(1f + hScl);
+        Draw.scl(1f + hMul(hScl * height));
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY));
         Draw.z(layer + DrawPseudo3D.layerOffset(x, y) + hScl / 100f);
+        Draw.scl();
         drawTrail(b);
-        Draw.scl(1f + hMul(hScl));
+        Draw.scl(1f + hMul(hScl * height));
         if(spinShade){
             PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, hRot);
         }else{
@@ -238,8 +239,9 @@ public class BallisticMissileBulletType extends BulletType{
     @Override
     public void drawLight(Bullet b){
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
-        float h = hScl(b) * height;
-        Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius, lightColor, lightOpacity);
+        float hScl = hScl(b),
+            h = hScl * height;
+        Drawf.light(xHeight(tX(b), h), yHeight(tY(b), h), lightRadius * (1f + hMul(h)), lightColor, lightOpacity);
     }
 
     public float tX(Bullet b){

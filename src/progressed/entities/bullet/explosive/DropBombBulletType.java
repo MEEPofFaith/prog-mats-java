@@ -99,15 +99,17 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
         float hScl = b.fout() * b.fdata,
             shX = b.x - shadowOffset * hScl,
             shY = b.y - shadowOffset * hScl,
-            hX = xHeight(b.x, hScl * height),
-            hY = yHeight(b.y, hScl * height),
+            h = hScl * height,
+            hX = xHeight(b.x, h),
+            hY = yHeight(b.y, h),
             hRot = b.angleTo(hX, hY) + 180f;
         Draw.z(shadowLayer);
-        Draw.scl(1f + hScl);
+        Draw.scl(1f + hMul(h));
         Drawf.shadow(region, shX, shY, 45f);
         Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y) + hScl / 100f);
+        Draw.scl();
         drawTrail(b);
-        Draw.scl(1f + hMul(hScl));
+        Draw.scl(1f + hMul(h));
         if(spinShade){
             PMDrawf.spinSprite(region, blRegion, trRegion, hX, hY, hRot);
         }else{
@@ -115,7 +117,6 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
         }
         Draw.scl();
     }
-
     public void drawTrail(Bullet b){
         if(trailLength > 0 && b.trail != null){
             float z = Draw.z();
@@ -124,6 +125,16 @@ public class DropBombBulletType extends BulletType{ //TODO shield projector abso
             b.trail.drawCap(trailColor, trailWidth); //Also draw cap since the trail is on top
             Draw.z(z);
         }
+    }
+
+    @Override
+    public void drawLight(Bullet b){
+        if(lightOpacity <= 0f || lightRadius <= 0f) return;
+        float hScl = b.fout() * b.fdata,
+            h = hScl * height,
+            hX = xHeight(b.x, h),
+            hY = yHeight(b.y, h);
+        Drawf.light(hX, hY, lightRadius * (1f + hMul(h)), lightColor, lightOpacity);
     }
 
     @Override
