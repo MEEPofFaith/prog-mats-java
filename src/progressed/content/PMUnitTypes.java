@@ -10,8 +10,10 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.unit.*;
 import mindustry.world.meta.*;
 import progressed.*;
+import progressed.ai.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
@@ -25,23 +27,24 @@ public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
-        prov(SwordUnit.class, SwordUnit::new)
+        prov(SwordUnit.class, SwordUnit::new),
+        prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
     public static UnitType
 
-    //TODO A chain of air units with DriftTrail shenanigans. Serpulo or Erekir? Steal crab unit cyan pallet.
+    //TODO A chain of air units with DriftTrail shenanigans. Serpulo. Steal crab unit cyan pallet.
     echo, presence, ghoul, phantom, apparition,
 
-    //TODO A chain of sword-based units. Ground or air? Serpulo or Erekir? Red pallet.
+    //TODO A chain of sword-based units. Ground. Serpulo or Erekir? Red pallet.
     puncture, penetration, incision, laceration, amputation,
 
     //sentry
     barrage, downpour,
 
-    //TODO Legged ground miner. Erekir.
-    namePending,
+    //legged ground miner.
+    swell,
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
@@ -168,6 +171,37 @@ public class PMUnitTypes{
             engineSize = 3f;
             engineOffset = 5f;
             setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
+        }};
+
+        swell = new ErekirUnitType("swell"){{
+            constructor = BuildingTetherLegsUnit::new;
+            controller = u -> new DepotMinerAI();
+            isEnemy = false;
+            allowedInPayloads = false;
+            logicControllable = false;
+            playerControllable = false;
+            hidden = true;
+
+            //TODO stats
+            itemCapacity = 50;
+            mineTier = 5;
+            mineSpeed = 6f;
+            mineWalls = true;
+            mineItems = Seq.with(Items.beryllium, Items.tungsten);
+
+            allowLegStep = true;
+            legCount = 4;
+            legLength = 14f; //TODO copied from cleroi
+            lockLegBase = true;
+            legContinuousMove = true;
+            legExtension = -3f;
+            legBaseOffset = 5f;
+            legMaxLength = 1.1f;
+            legMinLength = 0.2f;
+            legLengthScl = 0.95f;
+            legForwardScl = 0.7f;
+            legMoveSpace = 1f;
+            hovering = true;
         }};
 
         flareSmall = new SignalFlareUnitType("small-flare"){{

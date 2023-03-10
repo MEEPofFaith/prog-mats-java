@@ -114,8 +114,26 @@ public class SignalFlareUnit extends UnitEntity implements Scaled{
     }
 
     @Override
+    public void writeSync(Writes write){
+        super.writeSync(write);
+        write.f(time);
+        write.f(lifetime);
+        write.f(height);
+        TypeIO.writeBuilding(write, building);
+    }
+
+    @Override
     public void read(Reads read){
         super.read(read);
+        time = read.f();
+        lifetime = read.f();
+        height = read.f();
+        building = TypeIO.readBuilding(read);
+    }
+
+    @Override
+    public void readSync(Reads read){
+        super.readSync(read);
         time = read.f();
         lifetime = read.f();
         height = read.f();

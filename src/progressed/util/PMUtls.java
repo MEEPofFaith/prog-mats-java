@@ -11,6 +11,8 @@ import mindustry.type.*;
 import mindustry.world.*;
 import progressed.entities.bullet.energy.*;
 
+import static mindustry.Vars.*;
+
 public class PMUtls{
     public static final Rand rand = new Rand();
     static final Seq<ItemStack> rawStacks = new Seq<>();
@@ -35,22 +37,6 @@ public class PMUtls{
         }
     }
 
-    public static ItemStack[] randomizedItems(int[] repeatAmounts, int minAmount, int maxAmount){
-        Seq<ItemStack> stacks = new Seq<>();
-
-        Vars.content.items().each(item -> {
-            int repeats = repeatAmounts[Mathf.random(repeatAmounts.length - 1)];
-            if(repeats > 0){
-                for(int i = 0; i < repeats; i++){
-                    stacks.add(new ItemStack(item, Mathf.random(minAmount, maxAmount)));
-                }
-            }
-        });
-
-        stacks.shuffle();
-        return stacks.toArray(ItemStack.class);
-    }
-
     //Is this really necessary?
     public static String stringsFixed(float value){
         return Strings.autoFixed(value, 2);
@@ -66,10 +52,6 @@ public class PMUtls{
         }
 
         return out;
-    }
-
-    public static ItemStack[] researchRequirements(ItemStack[] requirements){
-        return researchRequirements(requirements, 1f);
     }
 
     /** Adds ItemStack arrays together. Combines duplicate items into one stack. */
@@ -98,42 +80,6 @@ public class PMUtls{
         return result;
     }
 
-    public static float equalArcLen(float r1, float r2, float length){
-        return (r1 / r2) * length;
-    }
-
-    public static int boolArrToInt(boolean[] arr){
-        int i = 0;
-        for(boolean value : arr){
-            if(value) i++;
-        }
-        return i;
-    }
-
-    public static float moveToward(float from, float to, float speed, float min, float max){
-        float target = Mathf.clamp(to, min, max);
-        if(Math.abs(target - from) < speed) return target;
-        if(from > target){
-            return from - speed;
-        }
-        if(from < target){
-            return from + speed;
-        }
-
-        return from;
-    }
-
-    public static float multiLerp(float[] values, float progress){ //No idea how this works, just stole it from Color
-        int l = values.length;
-        float s = Mathf.clamp(progress);
-        float a = values[(int)(s * (l - 1))];
-        float b = values[Mathf.clamp((int)(s * (l - 1) + 1), 0, l - 1)];
-
-        float n = s * (l - 1) - (int)(s * (l - 1));
-        float i = 1f - n;
-        return a * i + b * n;
-    }
-
     /**
      * {@link Tile#relativeTo(int, int)} does not account for building rotation.
      * Taken from Goobrr/esoterum.
@@ -145,6 +91,16 @@ public class PMUtls{
         if(from.x > to.x && from.y == to.y) return (6 - from.rotation) % 4;
         if(from.x < to.x && from.y == to.y) return (4 - from.rotation) % 4;
         return -1;
+    }
+
+    public static Item oreDrop(Tile tile){
+        if(tile == null) return null;
+
+        if(tile.block() != null){
+            return tile.wallDrop();
+        }else{
+            return tile.drop();
+        }
     }
 
     public static String round(float f){

@@ -3,6 +3,7 @@ package progressed.content.blocks;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -16,7 +17,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.storage.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
@@ -90,6 +90,8 @@ public class PMBlocks{
     // region production
 
     smartDrill,
+
+    unitMinerDepot,
 
     // endregion
     // region Distribution
@@ -1153,6 +1155,20 @@ public class PMBlocks{
 
             consumePower(1.8f);
             consumeLiquid(Liquids.water, 0.09f).boost();
+        }};
+
+        unitMinerDepot = new UnitMinerDepot("unit-miner-depot"){{
+            requirements(Category.production, BuildVisibility.sandboxOnly, with());
+
+            size = 3;
+            buildTime = 60f * 8f;
+
+            consumePower(8f / 60f);
+
+            //intentionally set absurdly high to make this block not overpowered
+            consumeLiquid(Liquids.nitrogen, 10f / 60f);
+
+            itemCapacity = 100;
         }};
         // endregion
 
