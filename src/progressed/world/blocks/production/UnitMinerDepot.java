@@ -11,6 +11,7 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -195,6 +196,7 @@ public class UnitMinerDepot extends Block{
             super.write(write);
 
             write.i(unit == null ? -1 : unit.id);
+            TypeIO.writeItem(write, targetItem);
 
             write.i(oreTiles.size);
             for(var entry : oreTiles.entries()){
@@ -208,6 +210,7 @@ public class UnitMinerDepot extends Block{
             super.read(read, revision);
 
             readUnitId = read.i();
+            targetItem = TypeIO.readItem(read);
 
             int size = read.i();
             for(int i = 0; i < size; i++){
