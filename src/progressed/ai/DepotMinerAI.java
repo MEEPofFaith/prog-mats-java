@@ -1,7 +1,6 @@
 package progressed.ai;
 
 import arc.math.geom.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
@@ -12,7 +11,7 @@ import progressed.world.blocks.production.UnitMinerDepot.*;
 import static mindustry.Vars.*;
 
 public class DepotMinerAI extends AIController{
-    protected static final Vec2 targetPos = new Vec2(), vecOut = new Vec2();
+    protected final Vec2 targetPos = new Vec2(), vecOut = new Vec2();
     protected int pathId = -1;
 
     public boolean mining = true;
