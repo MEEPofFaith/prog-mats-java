@@ -21,7 +21,7 @@ import progressed.content.*;
 import static mindustry.Vars.*;
 
 public class UnitMinerDepot extends Block{
-    public UnitType unitType = PMUnitTypes.swell;
+    public UnitType unitType = PMUnitTypes.draug;
     public float buildTime = 60f * 8f;
 
     public UnitMinerDepot(String name){

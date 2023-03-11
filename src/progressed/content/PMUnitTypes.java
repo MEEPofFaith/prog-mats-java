@@ -44,7 +44,7 @@ public class PMUnitTypes{
     barrage, downpour,
 
     //legged ground miner.
-    swell,
+    draug,
 
     //signal flare
     flareSmall, flareMedium, flareLarge,
@@ -173,7 +173,7 @@ public class PMUnitTypes{
             setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
         }};
 
-        swell = new ErekirUnitType("swell"){{
+        draug = new ErekirUnitType("draug"){{
             constructor = BuildingTetherLegsUnit::new;
             controller = u -> new DepotMinerAI();
             isEnemy = false;
