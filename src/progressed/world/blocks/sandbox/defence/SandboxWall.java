@@ -192,7 +192,7 @@ public class SandboxWall extends Block{
                 return "[lightgray]" + Iconc.cancel;
             }else if(time > 0){
                 float dm = state.rules.blockHealth(team);
-                return (Mathf.zero(dm) ? "Infinity" : (round ? PMUtls.round(DPS) : String.valueOf(DPS))) + " DPS";
+                return (Mathf.zero(dm) ? "Infinity" : (round ? (DPS > 0 ? PMUtls.round(DPS) : "---") : Strings.autoFixed(total / time * 60f, 2))) + " DPS";
             }else{
                 return "--- DPS";
             }
