@@ -101,7 +101,7 @@ public class PMModules{
             size = 3;
             range = 27f * 8f;
             minRange = 7f * 8f;
-            shootSound = Sounds.missile;
+            shootSound = Sounds.missileSmall;
             hideDetails = false;
 
             shoot = new ShootBarrel(){{

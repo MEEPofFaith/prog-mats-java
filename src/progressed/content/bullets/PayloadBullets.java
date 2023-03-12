@@ -52,6 +52,7 @@ public class PayloadBullets{
                     deathExplosionEffect = MissileFx.missileExplosion;
                     shootOnDeath = true;
                     shake = 10f;
+                    shootSound = Sounds.none;
                     bullet = new ExplosionBulletType(526f, 8f * tilesize){{
                         hitColor = Pal.accent;
                         shootEffect = RocketUnitType.rocketShoot;
@@ -74,6 +75,7 @@ public class PayloadBullets{
                     deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
                     shootOnDeath = true;
                     shake = 10f;
+                    shootSound = Sounds.none;
                     bullet = new ExplosionBulletType(526f, 8f * tilesize){{
                         hitColor = Pal.remove;
                         shootEffect = RocketUnitType.rocketShoot;
@@ -99,6 +101,7 @@ public class PayloadBullets{
                     deathExplosionEffect = MissileFx.missileExplosion;
                     shootOnDeath = true;
                     shake = 10f;
+                    shootSound = Sounds.missileLarge;
                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                         hitColor = PMPal.missileFrag;
                         shootEffect = RocketUnitType.rocketShoot;
@@ -127,7 +130,8 @@ public class PayloadBullets{
                                     reload = 1f;
                                     deathExplosionEffect = MissileFx.missileExplosion;
                                     shootOnDeath = true;
-                                    shake = 10f;
+                                    shake = 5f;
+                                    shootSound = Sounds.missileSmall;
                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                         hitColor = PMPal.missileFrag;
 
@@ -156,7 +160,8 @@ public class PayloadBullets{
                                                     reload = 1f;
                                                     deathExplosionEffect = MissileFx.smallBoom;
                                                     shootOnDeath = true;
-                                                    shake = 10f;
+                                                    shake = 1f;
+                                                    shootSound = Sounds.none;
                                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                                         hitColor = PMPal.missileFrag;
                                                     }}; //Oh jeez that's a lot of closings
@@ -286,7 +291,7 @@ public class PayloadBullets{
             trailColor = targetColor = PMPal.missileFrag;
             posInterp = Interp.smoother;
 
-            splitTime = 0.65f;
+            splitTime = 0.5f;
             splitLifeMaxOffset = 45f;
             fragRandomSpread = 20f * 8f;
             fragBullets = 20;
