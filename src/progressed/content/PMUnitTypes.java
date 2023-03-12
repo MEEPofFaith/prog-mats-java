@@ -28,7 +28,8 @@ public class PMUnitTypes{
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
-        prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new)
+        prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new),
+        prov(TargetDummyUnit.class, TargetDummyUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -51,6 +52,9 @@ public class PMUnitTypes{
 
     //swords
     danceSword, masqueradeSword,
+
+    //oof
+    targetDummy,
 
     //sandy
     everythingUnit;
@@ -243,6 +247,19 @@ public class PMUnitTypes{
             trailLength = 8;
             trailScl = 4;
             trailVel = 8;
+        }};
+
+        targetDummy = new UnitType("dummy"){{
+            constructor = TargetDummyUnit::new;
+            controller = u -> new EmptyAI();
+            isEnemy = false;
+            allowedInPayloads = false;
+            logicControllable = false;
+            playerControllable = false;
+            hidden = true;
+            hoverable = false;
+            canBoost = true;
+            drag = 0.33f;
         }};
 
         everythingUnit = new UnitType("god"){

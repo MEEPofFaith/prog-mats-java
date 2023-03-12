@@ -28,6 +28,8 @@ import progressed.type.unit.*;
 
 import java.util.*;
 
+import static mindustry.Vars.net;
+
 public class SwordTurret extends BaseTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
@@ -281,9 +283,7 @@ public class SwordTurret extends BaseTurret{
                     u.add();
 
                     swords.add(u);
-
-                    Fx.spawn.at(spawnX, spawnY);
-                    buildProgress = 0f;
+                    spawned(spawnX, spawnY, u.id); //TODO custom call
                 }
             }
 
@@ -333,6 +333,14 @@ public class SwordTurret extends BaseTurret{
 
         public int swordCount(){
             return swords.size;
+        }
+
+        public void spawned(float x, float y, int id){
+            Fx.spawn.at(x, y);
+            buildProgress = 0f;
+            if(net.client()){
+                readUnitIds.add(id);
+            }
         }
 
         protected boolean validateTarget(){

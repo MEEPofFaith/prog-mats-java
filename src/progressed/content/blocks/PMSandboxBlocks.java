@@ -42,7 +42,7 @@ public class PMSandboxBlocks{
     strobeNode, strobeInf, strobeBoost,
 
     //Defense
-    sandboxWall, sandboxWallLarge,
+    sandboxWall, sandboxWallLarge, targetDummyBase,
 
     //Heat
     infiniHeatSource,
@@ -145,6 +145,10 @@ public class PMSandboxBlocks{
         sandboxWall = new SandboxWall("sandbox-wall");
 
         sandboxWallLarge = new SandboxWall("sandbox-wall-large"){{
+            size = 2;
+        }};
+
+        targetDummyBase = new TargetDummyBase("target-dummy-base"){{
             size = 2;
         }};
 
