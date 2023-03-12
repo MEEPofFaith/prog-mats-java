@@ -4,6 +4,7 @@ import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.entities.units.*;
 
@@ -21,6 +22,17 @@ public class DummyUnitType extends UnitType{
         hoverable = false;
         canBoost = true;
         useUnitCap = false;
+    }
+    
+    @Override
+    public void setStats(){
+        super.setStats();
+        
+        stats.remove(Stat.health);
+        stats.remove(Stat.armor);
+        stats.remove(Stat.itemCapacity);
+        stats.remove(Stat.speed);
+        stats.remove(Stat.range);
     }
 
     @Override
