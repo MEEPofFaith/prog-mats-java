@@ -252,6 +252,7 @@ public class PMUnitTypes{
 
         targetDummy = new DummyUnitType("dummy"){{
             drag = 0.33f;
+            hideDetails = false;
             hitSize = 52f / 4f;
             engineOffset = 7f;
             engineSize = 2f;
