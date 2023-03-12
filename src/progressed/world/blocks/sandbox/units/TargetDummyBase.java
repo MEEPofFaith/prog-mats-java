@@ -3,9 +3,12 @@ package progressed.world.blocks.sandbox.units;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -14,6 +17,7 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.graphics.*;
+import progressed.ui.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -32,10 +36,13 @@ public class TargetDummyBase extends Block{
         alwaysUnlocked = true;
 
         update = true;
-        configurable = logicConfigurable = saveConfig = true;
+        configurable = logicConfigurable = true;
+        saveConfig = copyConfig = false;
         targetable = false;
 
         config(Boolean.class, (TargetDummyBaseBuild tile, Boolean b) -> tile.boosting = b);
+        config(Integer.class, (TargetDummyBaseBuild tile, Integer i) -> tile.unitTeam = Team.get(i));
+        config(Float.class, (TargetDummyBaseBuild tile, Float f) -> tile.unitArmor = f);
     }
 
     @Override
@@ -64,6 +71,8 @@ public class TargetDummyBase extends Block{
         public Unit unit;
         public float total, reset = resetTime, time, DPS;
         public boolean boosting;
+        public float unitArmor;
+        public Team unitTeam;
 
         @Override
         public void updateTile(){
@@ -78,6 +87,8 @@ public class TargetDummyBase extends Block{
                     readUnitId = -1;
                 }
             }
+
+            if(unitTeam == null) unitTeam = team;
 
             if(unit == null){
                 if(!net.client()){
@@ -94,8 +105,9 @@ public class TargetDummyBase extends Block{
             }
 
             if(unit != null){
-                //TODO setting armor
                 unit.updateBoosting(boosting);
+                unit.armor(unitArmor);
+                unit.team(unitTeam);
 
                 //similar to impulseNet, does not factor in mass
                 Tmp.v1.set(this).sub(unit).limit(dst(unit) * pullScale * Time.delta);
@@ -104,6 +116,7 @@ public class TargetDummyBase extends Block{
                 //manually move units to simulate velocity for remote players
                 if(unit.isRemote()) unit.move(Tmp.v1);
 
+                //TODO should the unit be locked to facing upwards?
                 if(unit.moving()) unit.lookAt(unit.vel().angle());
             }
 
@@ -178,17 +191,42 @@ public class TargetDummyBase extends Block{
 
         @Override
         public void buildConfiguration(Table table){
-            //TODO setting armor
+            table.table(t -> {
+                t.background(Styles.black6);
+                t.button(Icon.upload, PMStyles.boxTogglei, 32f, () -> configure(!boosting)).update(b -> b.setChecked(boosting)).size(40f);
+
+                t.button(Icon.modePvp, PMStyles.boxTogglei, 32f, () -> configure(dummyTeam())).update(b -> b.setChecked(unitTeam != team)).size(40f);
+
+                t.add(Core.bundle.get("stat.armor") + ": ").padLeft(8f);
+                t.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configure(Strings.parseFloat(s))).width(200f).padLeft(8f);
+            });
+        }
+
+        public int dummyTeam(){
+            if(unitTeam != team) return team.id; //Return to own team
+
+            if(team == state.rules.defaultTeam) return state.rules.waveTeam.id; //Set to wave team if player team
+            if(team == state.rules.waveTeam) return state.rules.defaultTeam.id; //Set to player team if wave team
+            if(team != Team.crux) return Team.crux.id; //Set to crux if not crux
+            return Team.sharded.id; //Set to sharded if crux
         }
 
         @Override
-        public boolean onConfigureBuildTapped(Building other){
-            if(this == other){
-                configure(!boosting);
-                deselect();
-                return false;
-            }
-            return true;
+        public void write(Writes write){
+            super.write(write);
+
+            write.i(unit == null ? -1 : unit.id);
+            write.bool(boosting);
+            write.f(unitArmor);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            readUnitId = read.i();
+            boosting = read.bool();
+            unitArmor = read.f();
         }
     }
 }

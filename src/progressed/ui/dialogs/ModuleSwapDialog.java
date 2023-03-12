@@ -57,7 +57,7 @@ public class ModuleSwapDialog extends BaseDialog{
                 int c = 0;
                 for(int i = 0; i < base.getMaxMounts(mSize); i++){
                     int ii = i;
-                    Cell<ImageButton> button = b.button(Tex.clear, PMStyles.squarei, 48f, () -> {
+                    Cell<ImageButton> button = b.button(Tex.clear, PMStyles.squareTogglei, 48f, () -> {
                         if(selSize != mSize) deselect();
                         selSize = mSize;
                         if(selFirst != ii){

@@ -259,6 +259,7 @@ public class PMUnitTypes{
             hidden = true;
             hoverable = false;
             canBoost = true;
+            useUnitCap = false;
             drag = 0.33f;
         }};
 
