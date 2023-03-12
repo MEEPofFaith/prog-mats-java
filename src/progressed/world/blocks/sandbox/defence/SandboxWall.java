@@ -94,6 +94,12 @@ public class SandboxWall extends Block{
     public void setBars(){
         super.setBars();
         removeBar("health");
+
+        addBar("pm-dps", (SandboxWallBuild entity) -> new Bar(
+            () -> entity.displayDPS(false),
+            () -> Pal.ammo,
+            () -> 1f - (entity.reset / resetTime)
+        ));
     }
 
     @Override
@@ -176,9 +182,19 @@ public class SandboxWall extends Block{
                 }
 
                 Draw.z(Layer.overlayUI);
-                float dm = state.rules.blockHealth(team);
-                String text = (time > 0 ? (Mathf.zero(dm) ? "Infinity" : PMUtls.round(DPS)) : "---") + " DPS";
+                String text = displayDPS(true);
                 PMDrawf.text(x, y, false, size * tilesize, team.color, text);
+            }
+        }
+
+        public String displayDPS(boolean round){
+            if(!DPSTesting()){
+                return "[lightgray]" + Iconc.cancel;
+            }else if(time > 0){
+                float dm = state.rules.blockHealth(team);
+                return (Mathf.zero(dm) ? "Infinity" : (round ? PMUtls.round(DPS) : String.valueOf(DPS))) + " DPS";
+            }else{
+                return "--- DPS";
             }
         }
 
