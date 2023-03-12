@@ -56,6 +56,7 @@ public class DepotMinerAI extends AIController{
 
             if(unit.stack.amount == 0){
                 mining = true;
+                if(pathId != -1) move();
                 return;
             }
 
@@ -79,11 +80,15 @@ public class DepotMinerAI extends AIController{
     }
 
     public void move(){
-        vecOut.set(targetPos);
+        if(unit.type.flying){ //Unit flies, no need for pathfinding
+            moveTo(targetPos, mining ? unit.type.mineRange / 2f : 0, 20f);
+        }else{
+            vecOut.set(targetPos);
 
-        boolean move = Vars.controlPath.getPathPosition(unit, pathId, targetPos, vecOut);
-        if(move){
-            moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0f);
+            boolean move = Vars.controlPath.getPathPosition(unit, pathId, targetPos, vecOut);
+            if(move){
+                moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0f);
+            }
         }
     }
 

@@ -154,15 +154,6 @@ public class UnitMinerDepot extends Block{
                     Drawf.construct(this, unitType.fullIcon, 0f, buildProgress, warmup, totalProgress);
                 });
             }
-
-            //Debug
-            /*Tile target = oreTiles.getNull(targetItem);
-            if(target != null){
-                Draw.z(Layer.overlayUI);
-                Lines.stroke(2, Pal.accent);
-                Lines.line(x, y, target.worldx(), target.worldy());
-                Lines.square(target.worldx(), target.worldy(), 4f);
-            }*/
         }
 
         @Override
