@@ -23,8 +23,6 @@ import static progressed.graphics.PMShaders.*;
 
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
-    private static final Font font = Fonts.outline;
-    private static final GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
     public static void light(float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
         float res = color.toFloatBits();
@@ -359,6 +357,8 @@ public class PMDrawf{
     }
 
     public static float text(float x, float y, boolean underline, float maxWidth, Color color, CharSequence text){
+        Font font = Fonts.outline;
+        GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
         boolean ints = font.usesIntegerPositions();
         font.setUseIntegerPositions(false);
         if(maxWidth <= 0){
