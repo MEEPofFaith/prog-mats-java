@@ -150,6 +150,7 @@ public class PMSandboxBlocks{
 
         targetDummyBase = new TargetDummyBase("target-dummy-base"){{
             size = 2;
+            pullScale = 0.1f;
         }};
 
         // Heat

@@ -8,6 +8,7 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -54,6 +55,11 @@ public class TargetDummyBase extends Block{
     }
 
     @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{region, Core.atlas.find(unitType.name + "-full")};
+    }
+
+    @Override
     public void setBars(){
         super.setBars();
         removeBar("health");
@@ -63,6 +69,13 @@ public class TargetDummyBase extends Block{
             () -> Pal.ammo,
             () -> 1f - (entity.reset / resetTime)
         ));
+    }
+
+    @Override
+    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        super.drawDefaultPlanRegion(plan, list);
+
+        Draw.rect(unitType.fullIcon, plan.drawx(), plan.drawy());
     }
 
     public class TargetDummyBaseBuild extends Building{
@@ -116,7 +129,6 @@ public class TargetDummyBase extends Block{
                 //manually move units to simulate velocity for remote players
                 if(unit.isRemote()) unit.move(Tmp.v1);
 
-                //TODO should the unit be locked to facing upwards?
                 if(unit.moving()) unit.lookAt(unit.vel().angle());
             }
 
@@ -197,7 +209,7 @@ public class TargetDummyBase extends Block{
 
                 t.button(Icon.modePvp, PMStyles.boxTogglei, 32f, () -> configure(dummyTeam())).update(b -> b.setChecked(unitTeam != team)).size(40f);
 
-                t.add(Core.bundle.get("stat.armor") + ": ").padLeft(8f);
+                t.add(Core.bundle.get("stat.armor") + ":").padLeft(8f);
                 t.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configure(Strings.parseFloat(s))).width(200f).padLeft(8f);
             });
         }

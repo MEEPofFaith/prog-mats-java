@@ -3,6 +3,7 @@ package progressed.content;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import mindustry.content.*;
@@ -249,18 +250,14 @@ public class PMUnitTypes{
             trailVel = 8;
         }};
 
-        targetDummy = new UnitType("dummy"){{
-            constructor = TargetDummyUnit::new;
-            controller = u -> new EmptyAI();
-            isEnemy = false;
-            allowedInPayloads = false;
-            logicControllable = false;
-            playerControllable = false;
-            hidden = true;
-            hoverable = false;
-            canBoost = true;
-            useUnitCap = false;
+        targetDummy = new DummyUnitType("dummy"){{
             drag = 0.33f;
+            hitSize = 52f / 4f;
+            engineOffset = 7f;
+            engineSize = 2f;
+            for(int i = 0; i < 3; i++){
+                engines.add(new UnitEngine(Geometry.d4x(i) * engineOffset, Geometry.d4y(i) * engineOffset, engineSize, i * 90));
+            }
         }};
 
         everythingUnit = new UnitType("god"){

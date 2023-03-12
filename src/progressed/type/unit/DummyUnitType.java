@@ -1,0 +1,34 @@
+package progressed.type.unit;
+
+import arc.graphics.g2d.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import progressed.ai.*;
+import progressed.entities.units.*;
+
+public class DummyUnitType extends UnitType{
+    public DummyUnitType(String name){
+        super(name);
+
+        constructor = TargetDummyUnit::new;
+        controller = u -> new EmptyAI();
+        isEnemy = false;
+        allowedInPayloads = false;
+        logicControllable = false;
+        playerControllable = false;
+        hidden = true;
+        hoverable = false;
+        canBoost = true;
+        useUnitCap = false;
+    }
+
+    @Override
+    public void drawBody(Unit unit){
+        applyColor(unit);
+
+        Drawf.spinSprite(region, unit.x, unit.y, unit.rotation - 90);
+
+        Draw.reset();
+    }
+}

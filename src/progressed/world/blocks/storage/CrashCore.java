@@ -14,7 +14,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.storage.*;
 import progressed.content.effects.*;
-import progressed.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;

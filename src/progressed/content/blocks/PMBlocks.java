@@ -3,7 +3,6 @@ package progressed.content.blocks;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -124,7 +123,7 @@ public class PMBlocks{
     // endregion
     // region Effect
 
-    coreCripple, coreCovalence,
+    coreShatter, coreCovalence,
 
     fence, web,
 
@@ -1433,7 +1432,7 @@ public class PMBlocks{
         // endregion
 
         // region Effect
-        coreCripple = new CrashCore("core-cripple"){{ //Hidden because the animation doesn't work right at the moment. The player unit spawns before the animation ends. Awaiting merge of my PR.
+        coreShatter = new CrashCore("core-cripple"){{ //Hidden because the animation doesn't work right at the moment. The player unit spawns before the animation ends. Awaiting merge of my PR.
             requirements(Category.effect, BuildVisibility.hidden, with(
                 Items.copper, 400,
                 Items.lead, 150
