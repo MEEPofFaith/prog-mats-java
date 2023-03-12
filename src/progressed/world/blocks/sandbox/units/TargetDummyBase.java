@@ -1,6 +1,9 @@
 package progressed.world.blocks.sandbox.units;
 
+import arc.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -21,6 +24,7 @@ public class TargetDummyBase extends Block{
     public float resetTime = 120f;
     public UnitType unitType = PMUnitTypes.targetDummy;
     public float pullScale = 0.33f;
+    public TextureRegion tether, tetherEnd;
 
     public TargetDummyBase(String name){
         super(name);
@@ -32,6 +36,14 @@ public class TargetDummyBase extends Block{
         targetable = false;
 
         config(Boolean.class, (TargetDummyBaseBuild tile, Boolean b) -> tile.boosting = b);
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        tether = Core.atlas.find(name + "-tether");
+        tetherEnd = Core.atlas.find(name + "-tether-end");
     }
 
     @Override
@@ -82,8 +94,8 @@ public class TargetDummyBase extends Block{
             }
 
             if(unit != null){
-                unit.updateBoosting(boosting);
                 //TODO setting armor
+                unit.updateBoosting(boosting);
 
                 //similar to impulseNet, does not factor in mass
                 Tmp.v1.set(this).sub(unit).limit(dst(unit) * pullScale * Time.delta);
@@ -91,6 +103,8 @@ public class TargetDummyBase extends Block{
 
                 //manually move units to simulate velocity for remote players
                 if(unit.isRemote()) unit.move(Tmp.v1);
+
+                if(unit.moving()) unit.lookAt(unit.vel().angle());
             }
 
             time += Time.delta;
@@ -115,6 +129,14 @@ public class TargetDummyBase extends Block{
         @Override
         public void draw(){
             super.draw();
+
+            if(tether.found() && unit != null){
+                float z = unit.elevation > 0.5f ? (unitType.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : unitType.groundLayer + Mathf.clamp(unitType.hitSize / 4000f, 0, 0.01f);
+                Draw.z(z - 0.01f);
+                Draw.color(team.color);
+                Drawf.laser(tether, tetherEnd, x, y, unit.x, unit.y);
+                Draw.color();
+            }
 
             Draw.z(Layer.overlayUI);
             String text = displayDPS(true);
@@ -152,6 +174,11 @@ public class TargetDummyBase extends Block{
         @Override
         public void kill(){
             //just in case
+        }
+
+        @Override
+        public void buildConfiguration(Table table){
+            //TODO setting armor
         }
 
         @Override
