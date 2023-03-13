@@ -54,9 +54,8 @@ public class DepotMinerAI extends AIController{
         }else{
             unit.mineTile = null;
 
-            if(unit.stack.amount == 0){
+            if(unit.stack.amount == 0 && targetItem() != null){
                 mining = true;
-                if(pathId != -1) move();
                 return;
             }
 
