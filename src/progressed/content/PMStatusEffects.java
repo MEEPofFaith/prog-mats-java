@@ -44,8 +44,8 @@ public class PMStatusEffects{
 
         empStun = new PMStatusEffect("emp-stun"){{
             color = Pal.lancerLaser;
-            effect = Fx.hitLancer;
-            effectChance = 0.05f;
+            effect = MissileFx.hitEmpSpark;
+            effectChance = 0.1f;
             speedMultiplier = 0.05f;
             reloadMultiplier = 0.05f;
             buildSpeedMultiplier = 0.05f;

@@ -220,5 +220,15 @@ public class MissileFx{
         stroke(2f * out + 3f * e.fout());
 
         Lines.circle(e.x, e.y, 6f * out + 57f * in * out);
+    }),
+
+    hitEmpSpark = new Effect(40, e -> {
+        color(e.color);
+        stroke(e.fout() * 1.2f);
+
+        randLenVectors(e.id, 11, e.finpow() * 18f, e.rotation, 360f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+        });
     });
 }

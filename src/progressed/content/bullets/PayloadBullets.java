@@ -12,6 +12,7 @@ import mindustry.type.*;
 import mindustry.type.unit.*;
 import progressed.content.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
@@ -333,28 +334,31 @@ public class PayloadBullets{
             fragRandomSpread = 0;
             fragSpread = 360f / fragBullets;
             fragVelocityMin = fragVelocityMax = fragLifeMin = fragLifeMax = 1f;
-            //TODO special emp spark bullet type. Damages power buildings like navanax does.
-            fragBullet = new BasicBulletType(2.5f, 0, "large-orb"){{ //TODO different visuals? Maybe release obviate orbs instead?
+            fragBullet = new SparkingBulletType(2.5f, 0, "large-orb"){{
                 //Distance to travel... ~40 tiles?
-                lifetime = (40 * 8) / speed * 3f;
+                lifetime = (40 * 8) / speed * 4f;
                 drag = 0.01f;
+
+                empRadius = 6f * 8f;
+                empDamage = 150f;
 
                 width = height = 15f;
                 shrinkX = shrinkY = 0f;
-                frontColor = Pal.lancerLaser;
+                frontColor = hitColor = Pal.lancerLaser;
                 backColor = trailColor = PMPal.lancerlaserDark;
                 //trailWidth = 3.25f;
                 //trailLength = 24;
+                hitEffect = Fx.none;
 
                 status = PMStatusEffects.empStun;
-                suppressionRange = 3f * 8f;
-                statusDuration = suppressionDuration = 15f * 60f;
-                pierce = pierceBuilding = true;
+                suppressionRange = 10f * 8f;
+                statusDuration = suppressionDuration = 7f * 60f;
+                collides = false;
                 hittable = absorbable = false;
 
                 trailInterval = 2f;
-                trailEffect = Fx.hitLancer;
-                hitSound = Sounds.spark;
+                trailEffect = MissileFx.hitEmpSpark;
+                //hitSound = Sounds.spark;
 
                 despawnEffect = new WaveEffect(){{
                     lifetime = 10f;
