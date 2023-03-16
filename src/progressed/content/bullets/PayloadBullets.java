@@ -31,7 +31,7 @@ public class PayloadBullets{
 
     public static BallisticMissileBulletType
     artemisBasic, artemisRecursive, artemisBombing,
-    paragonBasic, paragonCluster, //TODO 3rd nuke
+    paragonBasic, paragonCluster, paragonEMP,
     ohno;
 
     public static void load(){
@@ -311,6 +311,56 @@ public class PayloadBullets{
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
+            }};
+        }};
+
+        paragonEMP = new BallisticMissileBulletType("prog-mats-emp-nuke"){{
+            lifetime = 3f * 60f;
+
+            hitSound = PMSounds.nuclearExplosion;
+            hitShake = 30f;
+            fartVolume = 200f;
+            despawnEffect = MissileFx.nuclearExplosion;
+            blockEffect = MissileFx.missileBlockedLarge;
+
+            height = 70f;
+            zoneRadius = 8f * 8f;
+            trailLength = 35;
+            trailWidth = 1.5f;
+            trailColor = targetColor = Pal.lancerLaser;
+
+            fragBullets = 60;
+            fragRandomSpread = 0;
+            fragSpread = 360f / fragBullets;
+            fragVelocityMin = fragVelocityMax = fragLifeMin = fragLifeMax = 1f;
+            //TODO special emp spark bullet type. Damages power buildings like navanax does.
+            fragBullet = new BasicBulletType(2.5f, 0, "large-orb"){{ //TODO different visuals? Maybe release obviate orbs instead?
+                //Distance to travel... ~40 tiles?
+                lifetime = (40 * 8) / speed * 3f;
+                drag = 0.01f;
+
+                width = height = 15f;
+                shrinkX = shrinkY = 0f;
+                frontColor = Pal.lancerLaser;
+                backColor = trailColor = PMPal.lancerlaserDark;
+                //trailWidth = 3.25f;
+                //trailLength = 24;
+
+                status = PMStatusEffects.empStun;
+                suppressionRange = 3f * 8f;
+                statusDuration = suppressionDuration = 15f * 60f;
+                pierce = pierceBuilding = true;
+                hittable = absorbable = false;
+
+                trailInterval = 2f;
+                trailEffect = Fx.hitLancer;
+                hitSound = Sounds.spark;
+
+                despawnEffect = new WaveEffect(){{
+                    lifetime = 10f;
+                    sizeTo = 30f;
+                    colorFrom = colorTo = Pal.lancerLaser;
+                }};
             }};
         }};
 

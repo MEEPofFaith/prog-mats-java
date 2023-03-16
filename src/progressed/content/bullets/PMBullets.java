@@ -199,7 +199,7 @@ public class PMBullets{
             hittable = false;
             trailColor = hitColor = Pal.lancerLaser;
             hitEffect = EnergyFx.sentinelBlast;
-            hitSound = Sounds.largeExplosion;
+            hitSound = Sounds.shockBlast;
             hitSoundVolume = 4f;
 
             //Calculate ahead of time for Sentinel's init() checking the bullet's range.

@@ -17,7 +17,7 @@ import static mindustry.content.StatusEffects.*;
 public class PMStatusEffects{
     public static StatusEffect
     //Misc
-    incendiaryBurn, pinpointTarget,
+    incendiaryBurn, empStun, pinpointTarget,
 
     //Anti-vaxxers are quivering in fear
     vcFrenzy, vcDisassembly, vcWeaken, vcCorvus,
@@ -40,6 +40,16 @@ public class PMStatusEffects{
                     result.set(incendiaryBurn, Math.min(time + result.time, 450f));
                 });
             });
+        }};
+
+        empStun = new PMStatusEffect("emp-stun"){{
+            color = Pal.lancerLaser;
+            effect = Fx.hitLancer;
+            effectChance = 0.05f;
+            speedMultiplier = 0.05f;
+            reloadMultiplier = 0.05f;
+            buildSpeedMultiplier = 0.05f;
+            parentizeEffect = true;
         }};
 
         pinpointTarget = new PMStatusEffect("pinpoint-target"){

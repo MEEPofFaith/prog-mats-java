@@ -118,7 +118,7 @@ public class PMErekirBlocks{
             shootWarmupSpeed = 0.03f;
             minWarmup = 1f;
             warmupMaintainTime = 30f;
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.pulseBlast;
             rotateSpeed = 1.5f;
 
             shootType = PMBullets.sentinelLaser;

@@ -948,6 +948,7 @@ public class PMBlocks{
             ammo(
                 basicNuke, PayloadBullets.paragonBasic,
                 clusterNuke, PayloadBullets.paragonCluster,
+                empNuke, PayloadBullets.paragonEMP,
                 sandboxNuke, PayloadBullets.ohno
             );
             size = 7;

@@ -26,7 +26,7 @@ public class PMPayloads{
 
     emptyNuke,
 
-    basicNuke, clusterNuke, //TODO third nuke
+    basicNuke, clusterNuke, empNuke,
 
     sandboxNuke,
 
@@ -183,6 +183,13 @@ public class PMPayloads{
             explosionBullet = PayloadBullets.paragonCluster.fragBullet;
             explosions = PayloadBullets.paragonCluster.fragBullets;
             maxDelay = 20f;
+        }};
+
+        empNuke = new Missile("emp-nuke"){{
+            requirements = with(Items.surgeAlloy, 69);
+
+            prev = emptyNuke;
+            size = 3;
         }};
 
         sandboxNuke = new Missile("sandbox-nuke"){{

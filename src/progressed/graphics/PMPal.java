@@ -18,6 +18,7 @@ public class PMPal{
 
     magma = valueOf("ff9c5a"),
 
+    lancerlaserDark = valueOf("8aa3f4"),
     surgeDark = valueOf("d99f6b"),
 
     pixelFront = valueOf("FF84C1"),
