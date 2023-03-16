@@ -317,6 +317,7 @@ public class PayloadBullets{
 
         paragonEMP = new BallisticMissileBulletType("prog-mats-emp-nuke"){{
             lifetime = 3f * 60f;
+            status = StatusEffects.none;
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;

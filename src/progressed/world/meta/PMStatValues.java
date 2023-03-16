@@ -1,6 +1,5 @@
 package progressed.world.meta;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -125,11 +124,11 @@ public class PMStatValues{
 
                         if(type.buildingDamageMultiplier != 1){
                             int val = (int)(type.buildingDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("bullet.buildingdamage", ammoStat(val)));
+                            sep(bt, bundle.format("bullet.buildingdamage", ammoStat(val)));
                         }
 
                         if(type.rangeChange != 0 && !compact){
-                            sep(bt, Core.bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
+                            sep(bt, bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
                         }
 
                         if(type.splashDamage > 0){
@@ -142,7 +141,7 @@ public class PMStatValues{
 
                         if(!compact && !Mathf.equal(type.reloadMultiplier, 1f)){
                             int val = (int)(type.reloadMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("bullet.reload", ammoStat(val)));
+                            sep(bt, bundle.format("bullet.reload", ammoStat(val)));
                         }
 
                         if(type.knockback > 0){
@@ -171,6 +170,10 @@ public class PMStatValues{
 
                         if(type.pierceArmor){
                             sep(bt, "@bullet.armorpierce");
+                        }
+
+                        if(type.suppressionRange > 0){
+                            sep(bt, bundle.format("bullet.suppression",  Strings.autoFixed(type.suppressionDuration / 60f, 2)));
                         }
 
                         if(type.status != StatusEffects.none){
@@ -249,6 +252,10 @@ public class PMStatValues{
                             }
                         }
 
+                        if(type instanceof SparkingBulletType stype){
+                            sep(bt, bundle.format("bullet.pm-sparking", Strings.autoFixed(60f / stype.empInterval, 2)));
+                        }
+
                         if(type.intervalBullet != null){
                             bt.row();
 
@@ -260,7 +267,7 @@ public class PMStatValues{
                             bt.table(it -> {
                                 it.left().defaults().left();
 
-                                it.add(Core.bundle.format("bullet.interval", Strings.autoFixed(type.intervalBullets / type.bulletInterval * 60, 2)));
+                                it.add(bundle.format("bullet.interval", Strings.autoFixed(type.intervalBullets / type.bulletInterval * 60, 2)));
                                 it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
                             });
                             bt.row();
@@ -278,7 +285,7 @@ public class PMStatValues{
                             bt.table(ft -> {
                                 ft.left().defaults().left();
 
-                                ft.add(Core.bundle.format("bullet.frags", type.fragBullets));
+                                ft.add(bundle.format("bullet.frags", type.fragBullets));
                                 ft.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
                             });
                             bt.row();
