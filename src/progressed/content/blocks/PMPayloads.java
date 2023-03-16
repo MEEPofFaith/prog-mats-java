@@ -81,7 +81,11 @@ public class PMPayloads{
             elevation = 2f / 3f;
             outlined = true;
 
-            //TODO kaboom. uhhhhhhh, it has many different kaboom
+            //madness
+            explosionBullet = PayloadBullets.arbalestSplitter.spawnUnit.weapons.first().bullet.fragBullet.spawnUnit.weapons.first().bullet.fragBullet;
+            explosions = 12;
+            explosionArea = -1f;
+            maxDelay = 20f;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
@@ -188,8 +192,10 @@ public class PMPayloads{
         empNuke = new Missile("emp-nuke"){{
             requirements = with(Items.surgeAlloy, 69);
 
-            prev = emptyNuke;
+            prev = emptyNuke; //TODO proper costs
             size = 3;
+
+            explosionBullet = PayloadBullets.paragonEMP;
         }};
 
         sandboxNuke = new Missile("sandbox-nuke"){{
