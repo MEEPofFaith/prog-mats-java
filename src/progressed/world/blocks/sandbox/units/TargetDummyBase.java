@@ -36,7 +36,7 @@ public class TargetDummyBase extends Block{
         requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
-        update = true;
+        update = alwaysUpdateInUnits = true;
         configurable = logicConfigurable = true;
         saveConfig = copyConfig = false;
         targetable = false;

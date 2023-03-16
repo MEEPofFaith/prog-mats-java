@@ -13,7 +13,7 @@ public class TargetDummyUnit extends UnitEntity implements BuildingTetherc{
     @Override
     public void update(){
         super.update();
-        if(building == null || !building.isValid()){ //Don't despawn if the building is on another team
+        if(building == null || (!building.isPayload() && !building.isValid())){ //Don't despawn if the building is on another team
             Call.unitDespawn(self());
         }
     }
