@@ -18,7 +18,6 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.graphics.*;
-import progressed.ui.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -205,13 +204,17 @@ public class TargetDummyBase extends Block{
         public void buildConfiguration(Table table){
             table.table(t -> {
                 t.background(Styles.black6);
-                t.button(Icon.upload, PMStyles.boxTogglei, 32f, () -> configure(!boosting)).update(b -> b.setChecked(boosting)).size(40f);
+                t.defaults().left();
 
-                t.button(Icon.modePvp, PMStyles.boxTogglei, 32f, () -> configure(dummyTeam())).update(b -> b.setChecked(unitTeam != team)).size(40f);
-
-                t.add(Core.bundle.get("stat.armor") + ":").padLeft(8f);
-                t.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configure(Strings.parseFloat(s))).width(200f).padLeft(8f);
-            });
+                t.check("@pm-target-dummy.enemy", unitTeam != team, b -> configure(dummyTeam()));
+                t.row();
+                t.check("@stat.flying", boosting, this::configure);
+                t.row();
+                t.table(a -> {
+                    a.add(Core.bundle.get("stat.armor") + ":");
+                    a.field("" + unitArmor, TextFieldFilter.floatsOnly, s -> configure(Strings.parseFloat(s))).width(200f).padLeft(8f);
+                });
+            }).top().grow().margin(8f);
         }
 
         public int dummyTeam(){
