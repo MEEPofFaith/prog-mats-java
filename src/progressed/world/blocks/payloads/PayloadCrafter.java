@@ -25,8 +25,6 @@ import progressed.graphics.*;
 import progressed.world.blocks.consumers.*;
 import progressed.world.meta.*;
 
-import java.util.*;
-
 import static mindustry.Vars.*;
 
 public class PayloadCrafter extends PayloadBlock{
@@ -67,13 +65,18 @@ public class PayloadCrafter extends PayloadBlock{
         }
     }
 
-    public void setOutputsProducerStat(){
+    public void setRecipeProductionStats(){
         for(Recipe r : recipes){
             if(r.outputBlock != null){
                 r.outputBlock.stats.add(PMStat.producer, s -> {
                     s.row();
                     s.table(t -> {
                         t.left().defaults().top().left();
+                        if(state.rules.bannedBlocks.contains(this)){
+                            t.image(Icon.cancel).color(Pal.remove).size(40);
+                            return;
+                        }
+
                         t.image(fullIcon).size(96f);
                         t.table(n -> {
                             n.defaults().left();
@@ -81,8 +84,34 @@ public class PayloadCrafter extends PayloadBlock{
                             n.row();
                             PMStatValues.infoButton(n, this, 4f * 8f).padTop(4f);
                         }).padLeft(8f);
-                    });
+                    }).left().top();
                 });
+
+                if(r.hasInputBlock()){
+                    r.inputBlock.stats.add(PMStat.produce, s -> {
+                        s.row();
+                        s.table(t -> {
+                            t.left().defaults().top().left();
+                            if(state.rules.bannedBlocks.contains(r.outputBlock)){
+                                t.image(Icon.cancel).color(Pal.remove).size(40);
+                                return;
+                            }
+                            if(!r.outputBlock.unlockedNow()){
+                                t.image(Icon.lock).color(Pal.darkerGray).size(40);
+                                t.add("@pm-missing-research").center().left();
+                                return;
+                            }
+
+                            t.image(r.outputBlock.fullIcon).size(96f);
+                            t.table(n -> {
+                                n.defaults().left();
+                                n.add(r.outputBlock.localizedName);
+                                n.row();
+                                PMStatValues.infoButton(n, this, 4f * 8f).padTop(4f);
+                            }).padLeft(8f);
+                        }).left().top();
+                    });
+                }
             }
         }
     }
@@ -125,8 +154,10 @@ public class PayloadCrafter extends PayloadBlock{
     public void setStats(){
         super.setStats();
         stats.remove(Stat.powerUse);
+        stats.remove(Stat.itemCapacity);
+        stats.remove(Stat.liquidCapacity);
 
-        stats.add(Stat.output, PMStatValues.payloadProducts(recipes));
+        stats.add(PMStat.recipes, PMStatValues.payloadProducts(recipes));
     }
 
     @Override

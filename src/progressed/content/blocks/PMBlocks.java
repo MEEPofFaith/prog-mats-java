@@ -1304,7 +1304,7 @@ public class PMBlocks{
                 emptyNuke
             );
             recipes.each(r -> r.centerBuild = true);
-            setOutputsProducerStat();
+            setRecipeProductionStats();
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
@@ -1326,7 +1326,7 @@ public class PMBlocks{
                 basicNuke, clusterNuke, empNuke
             );
             recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
-            setOutputsProducerStat();
+            setRecipeProductionStats();
         }};
         // endregion
 

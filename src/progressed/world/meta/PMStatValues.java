@@ -70,229 +70,227 @@ public class PMStatValues{
                     if(payload){
                         if(t.unlockedNow()){
                             table.image(icon(t)).size(96f).padRight(4).right().top();
+                            table.table(n -> {
+                                n.add(t.localizedName);
+                                n.row();
+                                infoButton(n, t, 4f * 8f).padTop(4f);
+                            }).padRight(10).left().top();
                         }else{
-                            table.add(PMElements.imageStack(icon(t), Icon.tree.getRegion(), Color.red)).size(64f * 4f).padRight(4).right().top();
+                            table.image(Icon.lock).color(Pal.darkerGray).size(40).padRight(4).right().top();
+                            table.add("@pm-missing-research").left().colspan(2);
+                            continue;
                         }
                     }else{
                         table.image(icon(t)).size(3 * 8).padRight(4).right().top();
                     }
-                    table.table(n -> {
-                        n.add(payload && !t.unlockedNow() ? "@pm-missing-research" : t.localizedName);
-                        if(payload && t.unlockedNow()){
-                            n.row();
-                            infoButton(n, t, 4f * 8f).padTop(4f);
-                        }
-                    }).padRight(10).left().top();
                 }
 
-                if(!payload || t.unlockedNow()){
-                    table.table(bt -> {
-                        bt.left().top().defaults().padRight(3).left();
+                table.table(bt -> {
+                    bt.left().top().defaults().padRight(3).left();
 
-                        if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-                            if(type instanceof BlackHoleBulletType stype){
-                                bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.damageRadius / tilesize));
-                                sep(bt, bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
-                            }else if(type instanceof PillarFieldBulletType stype){
-                                bt.add(bundle.format("bullet.pm-multi-splash", stype.amount, stype.pillar.damage, stype.pillar.radius / tilesize));
-                            }else if(type instanceof MagmaBulletType stype){
-                                bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.radius / tilesize));
-                            }else if(type.continuousDamage() > 0){
-                                bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+                    if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+                        if(type instanceof BlackHoleBulletType stype){
+                            bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.damageRadius / tilesize));
+                            sep(bt, bundle.format("bullet.pm-suction-radius", stype.suctionRadius / tilesize));
+                        }else if(type instanceof PillarFieldBulletType stype){
+                            bt.add(bundle.format("bullet.pm-multi-splash", stype.amount, stype.pillar.damage, stype.pillar.radius / tilesize));
+                        }else if(type instanceof MagmaBulletType stype){
+                            bt.add(bundle.format("bullet.pm-continuous-splash-damage", stype.continuousDamage(), stype.radius / tilesize));
+                        }else if(type.continuousDamage() > 0){
+                            bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+                        }else{
+                            if(Float.isInfinite(type.damage)){
+                                bt.add(PMElements.infiniteDamage());
                             }else{
-                                if(Float.isInfinite(type.damage)){
-                                    bt.add(PMElements.infiniteDamage());
-                                }else{
-                                    bt.add(bundle.format("bullet.damage", type.damage));
-                                }
-                                if(type instanceof MagnetBulletType stype){
-                                    sep(bt, bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
-                                }
+                                bt.add(bundle.format("bullet.damage", type.damage));
+                            }
+                            if(type instanceof MagnetBulletType stype){
+                                sep(bt, bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
                             }
                         }
+                    }
 
-                        if(type instanceof CritBulletType stype){
-                            sep(bt, bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
-                            sep(bt, bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
-                        }
+                    if(type instanceof CritBulletType stype){
+                        sep(bt, bundle.format("bullet.pm-crit-chance", (int)(stype.critChance * 100f)));
+                        sep(bt, bundle.format("bullet.pm-crit-multiplier", (int)stype.critMultiplier));
+                    }
 
-                        if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof SignalFlareUnitType u){
-                            sep(bt, bundle.format("bullet.pm-flare-health", u.health));
-                            sep(bt, bundle.format("bullet.pm-flare-attraction", u.attraction));
-                            sep(bt, bundle.format("bullet.pm-flare-lifetime", (int)(u.lifetime / 60f)));
-                        }
+                    if(type instanceof SignalFlareBulletType stype && stype.spawn instanceof SignalFlareUnitType u){
+                        sep(bt, bundle.format("bullet.pm-flare-health", u.health));
+                        sep(bt, bundle.format("bullet.pm-flare-attraction", u.attraction));
+                        sep(bt, bundle.format("bullet.pm-flare-lifetime", (int)(u.lifetime / 60f)));
+                    }
 
-                        if(type.buildingDamageMultiplier != 1){
-                            int val = (int)(type.buildingDamageMultiplier * 100 - 100);
-                            sep(bt, bundle.format("bullet.buildingdamage", ammoStat(val)));
-                        }
+                    if(type.buildingDamageMultiplier != 1){
+                        int val = (int)(type.buildingDamageMultiplier * 100 - 100);
+                        sep(bt, bundle.format("bullet.buildingdamage", ammoStat(val)));
+                    }
 
-                        if(type.rangeChange != 0 && !compact){
-                            sep(bt, bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
-                        }
+                    if(type.rangeChange != 0 && !compact){
+                        sep(bt, bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
+                    }
 
-                        if(type.splashDamage > 0){
-                            sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
-                        }
+                    if(type.splashDamage > 0){
+                        sep(bt, bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+                    }
 
-                        if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)){
-                            sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
-                        }
+                    if(!compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)){
+                        sep(bt, bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
+                    }
 
-                        if(!compact && !Mathf.equal(type.reloadMultiplier, 1f)){
-                            int val = (int)(type.reloadMultiplier * 100 - 100);
-                            sep(bt, bundle.format("bullet.reload", ammoStat(val)));
-                        }
+                    if(!compact && !Mathf.equal(type.reloadMultiplier, 1f)){
+                        int val = (int)(type.reloadMultiplier * 100 - 100);
+                        sep(bt, bundle.format("bullet.reload", ammoStat(val)));
+                    }
 
-                        if(type.knockback > 0){
-                            sep(bt, bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
-                        }
+                    if(type.knockback > 0){
+                        sep(bt, bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
+                    }
 
-                        if(type.healPercent > 0f){
-                            sep(bt, bundle.format("bullet.healpercent", (int)type.healPercent));
-                        }
+                    if(type.healPercent > 0f){
+                        sep(bt, bundle.format("bullet.healpercent", (int)type.healPercent));
+                    }
 
-                        if(type.pierce || type.pierceCap != -1){
-                            sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : bundle.format("bullet.pierce", type.pierceCap));
-                        }
+                    if(type.pierce || type.pierceCap != -1){
+                        sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : bundle.format("bullet.pierce", type.pierceCap));
+                    }
 
-                        if(type.incendAmount > 0){
-                            sep(bt, "@bullet.incendiary");
-                        }
+                    if(type.incendAmount > 0){
+                        sep(bt, "@bullet.incendiary");
+                    }
 
-                        if(type.homingPower > 0.01f){
-                            sep(bt, "@bullet.homing");
-                        }
+                    if(type.homingPower > 0.01f){
+                        sep(bt, "@bullet.homing");
+                    }
 
-                        if(type.lightning > 0){
-                            sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
-                        }
+                    if(type.lightning > 0){
+                        sep(bt, bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+                    }
 
-                        if(type.pierceArmor){
-                            sep(bt, "@bullet.armorpierce");
-                        }
+                    if(type.pierceArmor){
+                        sep(bt, "@bullet.armorpierce");
+                    }
 
-                        if(type.suppressionRange > 0){
-                            sep(bt, bundle.format("bullet.suppression",  Strings.autoFixed(type.suppressionDuration / 60f, 2)));
-                        }
+                    if(type.suppressionRange > 0){
+                        sep(bt, bundle.format("bullet.suppression",  Strings.autoFixed(type.suppressionDuration / 60f, 2)));
+                    }
 
-                        if(type.status != StatusEffects.none){
-                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + bundle.get("unit.seconds")));
-                        }
+                    if(type.status != StatusEffects.none){
+                        sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + bundle.get("unit.seconds")));
+                    }
 
-                        if(type instanceof PillarFieldBulletType stype && stype.pillar.status != StatusEffects.none){
-                            sep(bt, (stype.pillar.status.minfo.mod == null ? stype.pillar.status.emoji() : "") + "[stat]" + stype.pillar.status.localizedName);
-                        }
+                    if(type instanceof PillarFieldBulletType stype && stype.pillar.status != StatusEffects.none){
+                        sep(bt, (stype.pillar.status.minfo.mod == null ? stype.pillar.status.emoji() : "") + "[stat]" + stype.pillar.status.localizedName);
+                    }
 
-                        if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but whatever
-                            Vaccine[] v = stype.vaccines;
-                            StringBuilder str = new StringBuilder();
-                            str.append("[lightgray]");
+                    if(type instanceof InjectorBulletType stype){ //This could probably be optimized, but whatever
+                        Vaccine[] v = stype.vaccines;
+                        StringBuilder str = new StringBuilder();
+                        str.append("[lightgray]");
 
-                            if(v.length == 1){ //Single
-                                StatusEffect s = v[0].status;
-                                str.append(s.minfo.mod == null ? s.emoji() : "")
-                                    .append("[stat]")
-                                    .append(s.localizedName);
-                            }else if(v.length == 2){ //Double
-                                StatusEffect s = v[0].status;
+                        if(v.length == 1){ //Single
+                            StatusEffect s = v[0].status;
+                            str.append(s.minfo.mod == null ? s.emoji() : "")
+                                .append("[stat]")
+                                .append(s.localizedName);
+                        }else if(v.length == 2){ //Double
+                            StatusEffect s = v[0].status;
+                            str.append(s.minfo.mod == null ? s.emoji() : "")
+                                .append("[stat]")
+                                .append(s.localizedName)
+                                .append("[] or ");
+
+                            s = v[1].status;
+                            str.append(s.minfo.mod == null ? s.emoji() : "")
+                                .append("[stat]")
+                                .append(s.localizedName);
+                        }else if(v.length > 2){ //3 or more
+                            for(int i = 0; i < v.length - 1; i++){
+                                StatusEffect s = v[i].status;
                                 str.append(s.minfo.mod == null ? s.emoji() : "")
                                     .append("[stat]")
                                     .append(s.localizedName)
-                                    .append("[] or ");
-
-                                s = v[1].status;
-                                str.append(s.minfo.mod == null ? s.emoji() : "")
-                                    .append("[stat]")
-                                    .append(s.localizedName);
-                            }else if(v.length > 2){ //3 or more
-                                for(int i = 0; i < v.length - 1; i++){
-                                    StatusEffect s = v[i].status;
-                                    str.append(s.minfo.mod == null ? s.emoji() : "")
-                                        .append("[stat]")
-                                        .append(s.localizedName)
-                                        .append("[], ");
-                                }
-
-                                StatusEffect s = v[v.length - 1].status;
-                                str.append("or ")
-                                    .append(s.minfo.mod == null ? s.emoji() : "")
-                                    .append("[stat]")
-                                    .append(s.localizedName);
+                                    .append("[], ");
                             }
 
-                            sep(bt, str.toString());
-                            if(stype.nanomachines){
-                                bt.row();
-                                bt.image(atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
-                            }
+                            StatusEffect s = v[v.length - 1].status;
+                            str.append("or ")
+                                .append(s.minfo.mod == null ? s.emoji() : "")
+                                .append("[stat]")
+                                .append(s.localizedName);
                         }
 
-                        if(type instanceof SentryBulletType){
+                        sep(bt, str.toString());
+                        if(stype.nanomachines){
                             bt.row();
-                            bt.table(ut -> {
-                                ut.add("@bullet.pm-sentry-spawn");
-                                ut.image(icon(type.despawnUnit)).size(3 * 8);
-                                ut.add("[lightgray]" + type.despawnUnit.localizedName).padLeft(6);
-                                infoButton(ut, type.despawnUnit, 4 * 8).padLeft(6);
-                            });
+                            bt.image(atlas.find("prog-mats-nanomachines")).padTop(8f).scaling(Scaling.fit);
                         }
+                    }
 
-                        if(type instanceof CritBulletType stype && stype.bouncing){
-                            sep(bt, "@bullet.pm-bouncing");
+                    if(type instanceof SentryBulletType){
+                        bt.row();
+                        bt.table(ut -> {
+                            ut.add("@bullet.pm-sentry-spawn");
+                            ut.image(icon(type.despawnUnit)).size(3 * 8);
+                            ut.add("[lightgray]" + type.despawnUnit.localizedName).padLeft(6);
+                            infoButton(ut, type.despawnUnit, 4 * 8).padLeft(6);
+                        });
+                    }
+
+                    if(type instanceof CritBulletType stype && stype.bouncing){
+                        sep(bt, "@bullet.pm-bouncing");
+                    }
+
+                    if(type instanceof TargetBulletType stype){
+                        sep(bt, "@bullet.pm-target");
+                        if(stype.tDamage > 0){
+                            sep(bt, bundle.format("bullet.damage", stype.tDamage)).padLeft(8f);
                         }
-
-                        if(type instanceof TargetBulletType stype){
-                            sep(bt, "@bullet.pm-target");
-                            if(stype.tDamage > 0){
-                                sep(bt, bundle.format("bullet.damage", stype.tDamage)).padLeft(8f);
-                            }
-                            if(stype.tStatus != StatusEffects.none){
-                                sep(bt, (stype.tStatus.minfo.mod == null ? stype.tStatus.emoji() : "") + "[stat]" + stype.tStatus.localizedName).padLeft(8f);
-                            }
+                        if(stype.tStatus != StatusEffects.none){
+                            sep(bt, (stype.tStatus.minfo.mod == null ? stype.tStatus.emoji() : "") + "[stat]" + stype.tStatus.localizedName).padLeft(8f);
                         }
+                    }
 
-                        if(type instanceof SparkingBulletType stype){
-                            sep(bt, bundle.format("bullet.pm-sparking", Strings.autoFixed(60f / stype.empInterval, 2)));
-                        }
+                    if(type instanceof SparkingBulletType stype){
+                        sep(bt, bundle.format("bullet.pm-sparking", Strings.autoFixed(60f / stype.empInterval, 2)));
+                    }
 
-                        if(type.intervalBullet != null){
-                            bt.row();
+                    if(type.intervalBullet != null){
+                        bt.row();
 
-                            Table ic = new Table();
-                            ammo(ObjectMap.of(t, type.intervalBullet), indent + 1, false).display(ic);
-                            Collapser coll = new Collapser(ic, true);
-                            coll.setDuration(0.1f);
+                        Table ic = new Table();
+                        ammo(ObjectMap.of(t, type.intervalBullet), indent + 1, false).display(ic);
+                        Collapser coll = new Collapser(ic, true);
+                        coll.setDuration(0.1f);
 
-                            bt.table(it -> {
-                                it.left().defaults().left();
+                        bt.table(it -> {
+                            it.left().defaults().left();
 
-                                it.add(bundle.format("bullet.interval", Strings.autoFixed(type.intervalBullets / type.bulletInterval * 60, 2)));
-                                it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
-                            });
-                            bt.row();
-                            bt.add(coll);
-                        }
+                            it.add(bundle.format("bullet.interval", Strings.autoFixed(type.intervalBullets / type.bulletInterval * 60, 2)));
+                            it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                        });
+                        bt.row();
+                        bt.add(coll);
+                    }
 
-                        if(type.fragBullet != null){
-                            bt.row();
+                    if(type.fragBullet != null){
+                        bt.row();
 
-                            Table fc = new Table();
-                            ammo(ObjectMap.of(t, type.fragBullet), indent + 1, false).display(fc);
-                            Collapser coll = new Collapser(fc, true);
-                            coll.setDuration(0.1f);
+                        Table fc = new Table();
+                        ammo(ObjectMap.of(t, type.fragBullet), indent + 1, false).display(fc);
+                        Collapser coll = new Collapser(fc, true);
+                        coll.setDuration(0.1f);
 
-                            bt.table(ft -> {
-                                ft.left().defaults().left();
+                        bt.table(ft -> {
+                            ft.left().defaults().left();
 
-                                ft.add(bundle.format("bullet.frags", type.fragBullets));
-                                ft.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
-                            });
-                            bt.row();
-                            bt.add(coll);
-                        }
-                    }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
-                }
+                            ft.add(bundle.format("bullet.frags", type.fragBullets));
+                            ft.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                        });
+                        bt.row();
+                        bt.add(coll);
+                    }
+                }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
 
                 table.row();
             }
@@ -455,6 +453,7 @@ public class PMStatValues{
                         }
                     }else{
                         t.image(Icon.lock).color(Pal.darkerGray).size(40);
+                        t.add("@pm-missing-research");
                     }
                 }).growX().pad(5);
                 table.row();
