@@ -25,6 +25,8 @@ import progressed.graphics.*;
 import progressed.world.blocks.consumers.*;
 import progressed.world.meta.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
 public class PayloadCrafter extends PayloadBlock{

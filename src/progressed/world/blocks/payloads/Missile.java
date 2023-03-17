@@ -17,6 +17,8 @@ import progressed.graphics.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
 public class Missile extends Block{
@@ -77,6 +79,11 @@ public class Missile extends Block{
         if(user != null && bullet != null){
             stats.add(PMStat.used, PMStatValues.ammo(ObjectMap.of(user, bullet)));
         }
+    }
+
+    public void buildCost(Object... items){
+        requirements = ItemStack.with(items);
+        Arrays.sort(requirements, Structs.comparingInt(i -> i.item.id));
     }
 
     @Override

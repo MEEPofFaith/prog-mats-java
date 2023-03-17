@@ -1321,9 +1321,9 @@ public class PMBlocks{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                basicRocket, incendiaryRocket,
-                basicMissile, recursiveMissile,
-                basicNuke, clusterNuke
+                basicRocket, incendiaryRocket, splitterRocket,
+                basicMissile, recursiveMissile, bombingMissile,
+                basicNuke, clusterNuke, empNuke
             );
             recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
             setOutputsProducerStat();

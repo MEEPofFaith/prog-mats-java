@@ -74,18 +74,21 @@ public class PMTechTree{
                     nodeFree(emptyRocket, arbalest, () -> {
                         nodeFree(basicRocket, arbalest, () -> {
                             node(incendiaryRocket);
+                            node(splitterRocket);
                         });
                     });
                     //Missiles
                     nodeFree(emptyMissile, artemis, () -> {
                         nodeFree(basicMissile, artemis, () -> {
                             node(recursiveMissile);
+                            node(bombingMissile);
                         });
                     });
                     //Nukes
                     nodeFree(emptyNuke, paragon, () -> {
                         nodeFree(basicNuke, paragon, () -> {
                             node(clusterNuke);
+                            node(empNuke);
                         });
                     });
                     nodeFree(missileFactory, arbalest);

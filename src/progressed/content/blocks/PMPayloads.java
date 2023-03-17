@@ -36,7 +36,7 @@ public class PMPayloads{
 
     public static void load(){
         emptyRocket = new Missile("empty-rocket"){{
-            requirements = with(Items.copper, 3, Items.lead, 3, Items.titanium, 4);
+            buildCost(Items.copper, 3, Items.lead, 3, Items.titanium, 4);
 
             size = 3;
             powerUse = 0.5f;
@@ -47,12 +47,13 @@ public class PMPayloads{
         }};
 
         basicRocket = new Missile("basic-rocket"){{
-            requirements = with(Items.titanium, 3, Items.blastCompound, 4);
+            buildCost(Items.titanium, 3, Items.blastCompound, 4);
 
             prev = emptyRocket;
             size = 3;
             powerUse = 1f;
             constructTime = 60f * 6f;
+
             elevation = 2f / 3f;
             outlined = true;
 
@@ -60,12 +61,13 @@ public class PMPayloads{
         }};
 
         incendiaryRocket = new Missile("incendiary-rocket"){{
-            requirements = with(Items.titanium, 4, Items.pyratite, 6);
+            buildCost(Items.titanium, 4, Items.pyratite, 6);
 
             prev = emptyRocket;
             size = 3;
             powerUse = 1.25f;
             constructTime = 60f * 6.5f;
+
             elevation = 2f / 3f;
             outlined = true;
 
@@ -73,23 +75,29 @@ public class PMPayloads{
         }};
 
         splitterRocket = new Missile("splitter-rocket"){{
-            requirements = with(Items.blastCompound, 69);
+            buildCost(Items.titanium, 4, Items.silicon, 4, Items.blastCompound, 6);
 
-            prev = emptyRocket; //TODO proper costs
+            prev = emptyRocket;
             size = 3;
+            powerUse = 1.2f;
+            constructTime = 60f * 8f;
 
             elevation = 2f / 3f;
             outlined = true;
 
             //madness
-            explosionBullet = PayloadBullets.arbalestSplitter.spawnUnit.weapons.first().bullet.fragBullet.spawnUnit.weapons.first().bullet.fragBullet;
+            explosionBullet = PayloadBullets.arbalestSplitter
+                .spawnUnit.weapons.first().bullet
+                .fragBullet
+                .spawnUnit.weapons.first().bullet
+                .fragBullet;
             explosions = 12;
             explosionArea = -1f;
             maxDelay = 20f;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
-            requirements = with(
+            buildCost(
                 Items.copper, 4,
                 Items.lead, 4,
                 Items.titanium, 6
@@ -101,9 +109,9 @@ public class PMPayloads{
         }};
 
         basicMissile = new Missile("basic-missile"){{
-            requirements = with(
+            buildCost(
                 Items.titanium, 4,
-                Items.blastCompound, 6
+                Items.blastCompound, 4
             );
 
             prev = emptyMissile;
@@ -115,16 +123,16 @@ public class PMPayloads{
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
-            requirements = with(
+            buildCost(
                 Items.plastanium, 4,
                 Items.silicon, 5,
-                Items.blastCompound, 7
+                Items.blastCompound, 6
             );
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 2f;
-            constructTime = 60f * 8f;
+            powerUse = 1.75f;
+            constructTime = 60f * 7.5f;
 
             explosionBullet = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
             explosions = PayloadBullets.artemisRecursive.fragBullets * PayloadBullets.artemisRecursive.fragBullet.fragBullets;
@@ -133,10 +141,16 @@ public class PMPayloads{
         }};
 
         bombingMissile = new Missile("bombing-missile"){{
-            requirements = with();
+            buildCost(
+                PMItems.tenelium, 6,
+                Items.silicon, 4,
+                Items.blastCompound, 7
+            );
 
-            prev = emptyMissile; //TODO proper costs
+            prev = emptyMissile;
             size = 2;
+            powerUse = 1.7f;
+            constructTime = 60f * 7f;
 
             explosionBullet = PayloadBullets.artemisBombing.intervalBullet;
             explosions = 13; //Some value
@@ -145,7 +159,7 @@ public class PMPayloads{
         }};
 
         emptyNuke = new Missile("empty-nuke"){{
-            requirements = with(
+            buildCost(
                 Items.titanium, 25,
                 Items.surgeAlloy, 18,
                 PMItems.tenelium, 20
@@ -157,7 +171,7 @@ public class PMPayloads{
         }};
 
         basicNuke = new Missile("basic-nuke"){{
-            requirements = with(
+            buildCost(
                 Items.lead, 40,
                 Items.titanium, 30,
                 Items.thorium, 35
@@ -166,13 +180,13 @@ public class PMPayloads{
             prev = emptyNuke;
             size = 3;
             powerUse = 6f;
-            constructTime = 60f * 40f;
+            constructTime = 60f * 32f;
 
             explosionBullet = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
-            requirements = with(
+            buildCost(
                 Items.plastanium, 35,
                 PMItems.tenelium, 40,
                 Items.blastCompound, 40
@@ -190,10 +204,16 @@ public class PMPayloads{
         }};
 
         empNuke = new Missile("emp-nuke"){{
-            requirements = with(Items.surgeAlloy, 69);
+            buildCost(
+                PMItems.tenelium, 40,
+                Items.surgeAlloy, 25,
+                Items.silicon, 30
+            );
 
-            prev = emptyNuke; //TODO proper costs
+            prev = emptyNuke;
             size = 3;
+            powerUse = 7.5f;
+            constructTime = 60f * 39f;
 
             explosionBullet = PayloadBullets.paragonEMP;
         }};
@@ -211,7 +231,7 @@ public class PMPayloads{
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
-            requirements = with(Items.beryllium, 20, Items.graphite, 25, Items.tungsten, 20,  Items.silicon, 20);
+            buildCost(Items.beryllium, 20, Items.graphite, 25, Items.tungsten, 20,  Items.silicon, 20);
 
             size = 2;
             powerUse = 3f;
@@ -220,7 +240,7 @@ public class PMPayloads{
         }};
 
         missileSentry = new Sentry("missile-sentry"){{
-            requirements = with(Items.beryllium, 25, Items.graphite, 30, Items.tungsten, 25, Items.oxide, 15, Items.silicon, 25);
+            buildCost(Items.beryllium, 25, Items.graphite, 30, Items.tungsten, 25, Items.oxide, 15, Items.silicon, 25);
 
             size = 2;
             baseExplosiveness = 100f;
