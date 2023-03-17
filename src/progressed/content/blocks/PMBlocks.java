@@ -16,6 +16,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
@@ -1303,7 +1304,7 @@ public class PMBlocks{
                 emptyNuke
             );
             recipes.each(r -> r.centerBuild = true);
-            setProducer();
+            setOutputsProducerStat();
         }};
 
         missileFactory = new PayloadCrafter("missile-factory"){{
@@ -1325,7 +1326,7 @@ public class PMBlocks{
                 basicNuke, clusterNuke
             );
             recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
-            setProducer();
+            setOutputsProducerStat();
         }};
         // endregion
 
@@ -1433,8 +1434,8 @@ public class PMBlocks{
         // endregion
 
         // region Effect
-        coreShatter = new CrashCore("core-cripple"){{ //Hidden because the animation doesn't work right at the moment. The player unit spawns before the animation ends. Awaiting merge of my PR.
-            requirements(Category.effect, BuildVisibility.hidden, with(
+        coreShatter = new CrashCore("core-cripple"){{
+            requirements(Category.effect, with(
                 Items.copper, 400,
                 Items.lead, 150
             ));
@@ -1448,8 +1449,8 @@ public class PMBlocks{
 
             unitCapModifier = 3;
         }};
-        //Blocks.coreShard.buildVisibility = BuildVisibility.shown;
-        //((CoreBlock)Blocks.coreShard).isFirstTier = false;
+        Blocks.coreShard.buildVisibility = BuildVisibility.shown;
+        ((CoreBlock)Blocks.coreShard).isFirstTier = false;
 
         coreCovalence = new CoreLink("core-covalence"){{
             requirements(Category.effect, with(

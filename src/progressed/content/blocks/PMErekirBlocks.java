@@ -245,7 +245,7 @@ public class PMErekirBlocks{
                 recipes(
                     new Recipe(Blocks.duo, 3f, 1.5f * 60f) //Placeholder
                 );
-                setProducer();
+                setOutputsProducerStat();
             }};
 
             moduleFoundry = new PayloadCrafter("module-foundry"){{
@@ -260,7 +260,7 @@ public class PMErekirBlocks{
                 recipes(
                     new Recipe(Blocks.duo, 4f, 5f * 60f) //Placeholder
                 );
-                setProducer();
+                setOutputsProducerStat();
             }};
         }
 
@@ -280,7 +280,7 @@ public class PMErekirBlocks{
                 missileSentry
             );
             recipes.each(r -> r.blockBuild = false);
-            setProducer();
+            setOutputsProducerStat();
         }};
 
         // endregion

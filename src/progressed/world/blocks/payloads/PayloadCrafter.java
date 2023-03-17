@@ -65,9 +65,23 @@ public class PayloadCrafter extends PayloadBlock{
         }
     }
 
-    public void setProducer(){
+    public void setOutputsProducerStat(){
         for(Recipe r : recipes){
-            if(r.outputBlock instanceof Missile m) m.producer = this;
+            if(r.outputBlock != null){
+                r.outputBlock.stats.add(PMStat.producer, s -> {
+                    s.row();
+                    s.table(t -> {
+                        t.left().defaults().top().left();
+                        t.image(fullIcon).size(96f);
+                        t.table(n -> {
+                            n.defaults().left();
+                            n.add(localizedName);
+                            n.row();
+                            PMStatValues.infoButton(n, this, 4f * 8f).padTop(4f);
+                        }).padLeft(8f);
+                    });
+                });
+            }
         }
     }
 
