@@ -36,13 +36,18 @@ public class TargetDummyBase extends Block{
         alwaysUnlocked = true;
 
         update = alwaysUpdateInUnits = true;
-        configurable = logicConfigurable = true;
-        saveConfig = copyConfig = false;
+        configurable = logicConfigurable = saveConfig = true;
         targetable = false;
 
         config(Boolean.class, (TargetDummyBaseBuild tile, Boolean b) -> tile.boosting = b);
         config(Integer.class, (TargetDummyBaseBuild tile, Integer i) -> tile.unitTeam = Team.get(i));
         config(Float.class, (TargetDummyBaseBuild tile, Float f) -> tile.unitArmor = f);
+        config(int[].class, (TargetDummyBaseBuild tile, int[] config) -> {
+            tile.unitTeam = tile.team; //set default to config off of
+            if(config[0] == 1) tile.unitTeam = Team.get(tile.dummyTeam());
+            tile.boosting = config[1] == 1;
+            tile.unitArmor = Float.intBitsToFloat(config[2]);
+        });
     }
 
     @Override
@@ -224,6 +229,11 @@ public class TargetDummyBase extends Block{
             if(team == state.rules.waveTeam) return state.rules.defaultTeam.id; //Set to player team if wave team
             if(team != Team.crux) return Team.crux.id; //Set to crux if not crux
             return Team.sharded.id; //Set to sharded if crux
+        }
+
+        @Override
+        public Object config(){
+            return new int[]{Mathf.num(unitTeam != team), Mathf.num(boosting), Float.floatToIntBits(unitArmor)};
         }
 
         @Override
