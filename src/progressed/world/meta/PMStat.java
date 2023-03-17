@@ -10,8 +10,8 @@ public class PMStat{
 
     fuel = new Stat("pm-fuel", StatCat.crafting),
 
-    recipes = new Stat("pm-recipes"),
-    producer = new Stat("pm-producer"),
-    produce = new Stat("pm-produce"),
-    used = new Stat("pm-used");
+    recipes = new Stat("pm-recipes", StatCat.crafting),
+    producer = new Stat("pm-producer", StatCat.crafting),
+    produce = new Stat("pm-produce", StatCat.crafting),
+    used = new Stat("pm-used", StatCat.crafting);
 }
