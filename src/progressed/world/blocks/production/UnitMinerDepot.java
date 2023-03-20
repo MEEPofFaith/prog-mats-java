@@ -19,6 +19,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -184,6 +185,16 @@ public class UnitMinerDepot extends Block{
                 Draw.draw(Layer.blockOver, () -> {
                     Drawf.construct(this, unitType.fullIcon, 0f, buildProgress, warmup, totalProgress);
                 });
+            }
+        }
+
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
+
+            if(targetItem != null){
+                Tile ore = oreTiles.get(targetItem);
+                PMDrawf.targetLine(x, y, ore.worldx(), ore.worldy(), hitSize() / 1.4f + 1f, 8f / 2f, targetItem.color);
             }
         }
 
