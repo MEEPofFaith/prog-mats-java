@@ -25,24 +25,26 @@ public class DepotMinerAI extends AIController{
             unit.mineTile(null);
         }
 
+        UnitMinerDepotBuild home = home();
         if(mining){
             if(targetItem() == null || //No targetted item
-                home().oreTiles.getNull(targetItem()) == null || //No ore target tile
+                home.oreTiles.getNull(targetItem()) == null || //No ore target tile
                 unit.stack.amount >= unit.type.itemCapacity ||
                 (targetItem() != null && !unit.acceptsItem(targetItem())) || //Inventory full
-                home().acceptStack(targetItem(), 1, unit) == 0 //Depot is full
+                home.acceptStack(targetItem(), 1, unit) == 0 //Depot is full
             ){
                 mining = false;
             }else{
-                if(timer.get(timerTarget, 40)){ //Closer ore was passed on the way to the original target, save it as new closer target.
+                //(When target not manually set) Closer ore was passed on the way to the original target, save it as new closer target.
+                if(!home.targetSet && timer.get(timerTarget, 40)){
                     Tile ore = indexer.findClosestOre(unit, targetItem());
                     if(ore != targetTile && unit.within(ore.worldx(), ore.worldy(), unit.type.mineRange)){
-                        home().oreTiles.put(targetItem(), ore);
+                        home.oreTiles.put(targetItem(), ore);
                     }
                 }
 
-                if(targetTile != home().oreTiles.get(targetItem())){
-                    targetTile = home().oreTiles.get(targetItem());
+                if(targetTile != home.oreTiles.get(targetItem())){
+                    targetTile = home.oreTiles.get(targetItem());
                     targetPos.set(targetTile.worldx(), targetTile.worldy());
                     pathId = Vars.controlPath.nextTargetId();
                 }
@@ -59,15 +61,15 @@ public class DepotMinerAI extends AIController{
                 return;
             }
 
-            if(targetTile != home().tile){
-                targetTile = home().tile;
-                targetPos.set(home());
+            if(targetTile != home.tile){
+                targetTile = home.tile;
+                targetPos.set(home);
                 pathId = Vars.controlPath.nextTargetId();
             }
 
-            if(unit.within(home(), unit.type.range)){
-                if(home().acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
-                    Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, home());
+            if(unit.within(home, unit.type.range)){
+                if(home.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
+                    Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, home);
                 }
 
                 unit.clearItem();

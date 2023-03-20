@@ -3,6 +3,7 @@ package progressed.world.blocks.production;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.io.*;
@@ -18,6 +19,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
+import progressed.util.*;
 
 import static mindustry.Vars.*;
 
@@ -33,12 +35,21 @@ public class UnitMinerDepot extends Block{
         hasItems = true;
         configurable = true;
         clearOnDoubleTap = true;
+        commandable = true;
         itemCapacity = 200;
         ambientSound = Sounds.respawning;
         flags = EnumSet.of(BlockFlag.drill); //Technically
 
-        config(Item.class, (UnitMinerDepotBuild build, Item item) -> build.targetItem = item);
-        configClear((UnitMinerDepotBuild build) -> build.targetItem = null);
+        config(Item.class, (UnitMinerDepotBuild build, Item item) -> {
+            build.targetItem = item;
+            build.commandPos = null;
+            build.targetSet = false;
+        });
+        configClear((UnitMinerDepotBuild build) -> {
+            build.targetItem = null;
+            build.commandPos = null;
+            build.targetSet = false;
+        });
     }
 
     @Override
@@ -77,10 +88,11 @@ public class UnitMinerDepot extends Block{
         public float buildProgress, totalProgress;
         public float warmup, readyness;
         public Unit unit;
+        public Vec2 commandPos;
 
         public Item targetItem;
         public ObjectMap<Item, Tile> oreTiles = new ObjectMap<>();
-        public boolean oresFound;
+        public boolean oresFound, targetSet;
 
         @Override
         public void updateTile(){
@@ -98,6 +110,14 @@ public class UnitMinerDepot extends Block{
 
             warmup = Mathf.approachDelta(warmup, efficiency, 1f / 60f);
             readyness = Mathf.approachDelta(readyness, unit != null ? 1f : 0f, 1f / 60f);
+
+            if(!targetSet && targetItem != null && commandPos != null){
+                Tile ore = world.tileWorld(commandPos.x, commandPos.y);
+                if(ore != null && PMUtls.oreDrop(ore) == targetItem){
+                    oreTiles.put(targetItem, ore);
+                    targetSet = true;
+                }
+            }
 
             if(!oresFound){
                 oresFound = true;
@@ -126,6 +146,17 @@ public class UnitMinerDepot extends Block{
             }
 
             dump();
+        }
+
+        @Override
+        public Vec2 getCommandPosition(){
+            return commandPos;
+        }
+
+        @Override
+        public void onCommand(Vec2 target){
+            commandPos = target;
+            targetSet = false;
         }
 
         public void spawned(int id){
@@ -188,6 +219,7 @@ public class UnitMinerDepot extends Block{
 
             write.i(unit == null ? -1 : unit.id);
             TypeIO.writeItem(write, targetItem);
+            TypeIO.writeVecNullable(write, commandPos);
 
             write.i(oreTiles.size);
             for(var entry : oreTiles.entries()){
@@ -202,6 +234,7 @@ public class UnitMinerDepot extends Block{
 
             readUnitId = read.i();
             targetItem = TypeIO.readItem(read);
+            commandPos = TypeIO.readVecNullable(read);
 
             int size = read.i();
             for(int i = 0; i < size; i++){

@@ -3,15 +3,13 @@ package progressed.util;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import progressed.entities.bullet.energy.*;
-
-import static mindustry.Vars.*;
 
 public class PMUtls{
     public static final Rand rand = new Rand();
@@ -96,7 +94,7 @@ public class PMUtls{
     public static Item oreDrop(Tile tile){
         if(tile == null) return null;
 
-        if(tile.block() != null){
+        if(tile.block() != Blocks.air){
             return tile.wallDrop();
         }else{
             return tile.drop();

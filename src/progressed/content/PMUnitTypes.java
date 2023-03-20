@@ -192,7 +192,7 @@ public class PMUnitTypes{
             mineTier = 5;
             mineSpeed = 6f;
             mineWalls = true;
-            mineItems = Seq.with(Items.beryllium, Items.tungsten);
+            mineItems = Seq.with(Items.beryllium, Items.graphite, Items.tungsten);
 
             allowLegStep = true;
             legCount = 4;
