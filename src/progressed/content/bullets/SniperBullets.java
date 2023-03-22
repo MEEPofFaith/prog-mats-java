@@ -96,7 +96,7 @@ public class SniperBullets{
             @Override
             public void removed(Bullet b){
                 super.removed(b);
-                if(!((CritBulletData)b.data).despawned) createFrags(b, b.x, b.y);
+                if(b.fdata != 1f) createFrags(b, b.x, b.y);
             }
         };
     }

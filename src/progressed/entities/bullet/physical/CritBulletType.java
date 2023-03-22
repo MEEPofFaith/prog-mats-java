@@ -45,14 +45,8 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void init(Bullet b){
-        if(b.data == null){
-            if(Mathf.chance(critChance)){
-                b.data = new CritBulletData(true);
-            }else{
-                b.data = new CritBulletData(false);
-            }
-        }
-        if(((CritBulletData)b.data).crit) b.damage *= critMultiplier;
+        if(b.data == null) b.data = Mathf.chance(critChance);
+        if((boolean)b.data) b.damage *= critMultiplier;
 
         super.init(b);
     }
@@ -67,7 +61,7 @@ public class CritBulletType extends BasicBulletType{
             ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
         }
 
-        if(Mathf.chanceDelta(1) && ((CritBulletData)b.data).crit){
+        if(Mathf.chanceDelta(1) && (boolean)b.data){
             critEffect.at(b.x, b.y, b.rotation(), b.team.color);
         }
 
@@ -107,7 +101,7 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void despawned(Bullet b){
-        ((CritBulletData)b.data).despawned = true;
+        b.fdata = 1f;
         super.despawned(b);
     }
 
@@ -120,11 +114,8 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void hit(Bullet b, float x, float y){
-        CritBulletData data = (CritBulletData)b.data;
-        boolean crit = data.crit;
-        float critBonus = crit ? this.critMultiplier : 1f;
         b.hit = true;
-        if(!data.despawned || despawnHitEffects){
+        if(b.fdata != 1f || despawnHitEffects){
             hitEffect.at(x, y, b.rotation(), hitColor);
             hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
         }
@@ -145,43 +136,26 @@ public class CritBulletType extends BasicBulletType{
         createSplashDamage(b, x, y);
 
         for(int i = 0; i < lightning; i++){
-            Lightning.create(b, lightningColor, (lightningDamage < 0 ? damage : lightningDamage) * critBonus, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+            Lightning.create(b, lightningColor, (lightningDamage < 0 ? damage : lightningDamage) * b.damageMultiplier(), b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
         }
+    }
+
+    @Override
+    public float damageMultiplier(Bullet b){
+        float critMul = 1f;
+        if(b.isAdded() && (boolean)b.data) critMul = critMultiplier;
+
+        return super.damageMultiplier(b) * critMul;
     }
 
     @Override
     public void createFrags(Bullet b, float x, float y){
         if(fragBullet != null){
-            boolean crit = ((CritBulletData)b.data).crit;
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets / 2) * fragSpread);
                 Bullet f = fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-                if(f.type instanceof CritBulletType) f.data = new CritBulletData(crit);
-            }
-        }
-    }
-
-    @Override
-    public void createSplashDamage(Bullet b, float x, float y){
-        float critBonus = ((CritBulletData)b.data).crit ? this.critMultiplier : 1f;
-
-        if(splashDamageRadius > 0 && !b.absorbed){
-            Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier() * critBonus, false, collidesAir, collidesGround, scaledSplashDamage, b);
-
-            if(status != StatusEffects.none){
-                Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
-            }
-
-            if(heals()){
-                indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
-                    healEffect.at(other.x, other.y, 0f, healColor, other.block);
-                    other.heal((healPercent / 100f * other.maxHealth() + healAmount) * critBonus);
-                });
-            }
-
-            if(makeFire){
-                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
+                if(f.type instanceof CritBulletType) f.data = b.data;
             }
         }
     }
@@ -195,14 +169,6 @@ public class CritBulletType extends BasicBulletType{
             if(target != null){
                 b.vel.setAngle(b.angleTo(target));
             }
-        }
-    }
-
-    public static class CritBulletData{
-        public boolean crit, despawned;
-
-        public CritBulletData(boolean crit){
-            this.crit = crit;
         }
     }
 }

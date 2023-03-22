@@ -237,8 +237,8 @@ public class PMBullets{
         burstDriverOrb = new BurstDriverOrb();
 
         MinigunBullets.load();
-        ModuleBullets.load();
         SniperBullets.load();
+        ModuleBullets.load();
         PayloadBullets.load();
     }
 }
