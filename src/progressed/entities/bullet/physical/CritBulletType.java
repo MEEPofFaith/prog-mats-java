@@ -136,7 +136,7 @@ public class CritBulletType extends BasicBulletType{
         createSplashDamage(b, x, y);
 
         for(int i = 0; i < lightning; i++){
-            Lightning.create(b, lightningColor, (lightningDamage < 0 ? damage : lightningDamage) * b.damageMultiplier(), b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
         }
     }
 
