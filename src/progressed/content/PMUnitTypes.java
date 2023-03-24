@@ -20,7 +20,6 @@ import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
-import progressed.type.weapons.*;
 import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
@@ -30,7 +29,8 @@ public class PMUnitTypes{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
         prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new),
-        prov(TargetDummyUnit.class, TargetDummyUnit::new)
+        prov(TargetDummyUnit.class, TargetDummyUnit::new),
+        prov(SentryUnit.class, SentryUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -114,16 +114,17 @@ public class PMUnitTypes{
             health = 500f;
             lifetime = 39f * 60f;
 
-            weapons.add(new Weapon(name + "-gun"){{
+            Weapon gunL = new Weapon(name + "-gun-r"){{
                 top = false;
                 rotate = false;
+                mirror = false;
                 alternate = true;
+                otherSide = 1;
 
-                x = 11f / 4f;
-                y = 18f / 4f;
-                shootX = -2.5f / 4f;
-                shootY = 3f;
-                layerOffset = -0.01f;
+                x = 9.5f / 4f;
+                y = 22f / 4f;
+                shootX = -1f / 4f;
+                shootY = 6f / 4f;
 
                 reload = 6f;
                 recoil = 3f / 4f;
@@ -133,21 +134,30 @@ public class PMUnitTypes{
                     buildingDamageMultiplier = 0.3f;
                     width = 7f;
                     height = 9f;
+                    recoil = 0.1f;
                     homingPower = 0.03f;
                     homingRange = 120f;
                 }};
-            }});
+            }};
+            Weapon gunR = gunL.copy();
+            gunR.name = name + "-gun-l";
+            gunR.x *= -1;
+            gunR.shootX *= -1;
+            gunR.flipSprite = true;
+            gunR.otherSide = 0;
 
-            engineSize = 3f;
-            engineOffset = 5f;
-            setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
+            weapons.add(gunL, gunR);
+
+            for(int i = 0; i < 4; i++){
+                engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
+            }
         }};
 
         downpour = new SentryUnitType("downpour"){{
             health = 300f;
             lifetime = 32f * 60f;
 
-            weapons.add(new RocketWeapon(name + "-rocket"){{
+            weapons.add(new Weapon(name + "-rocket"){{
                 x = 19f / 4f;
                 y = -5f / 4f;
                 mirror = true;
@@ -155,11 +165,11 @@ public class PMUnitTypes{
                 reload = 60f;
                 shootCone = 5f;
                 shootSound = Sounds.missile;
-                layerOffset = -0.01f;
 
                 bullet = new RocketBulletType(4.5f, 48f, name){{
                     lifetime = 60f;
-                    backSpeed = 0.25f;
+                    //backSpeed = 0.25f;
+                    backSpeed = 0f;
                     splashDamage = 260f;
                     splashDamageRadius = 18f;
                     buildingDamageMultiplier = 0.3f;
