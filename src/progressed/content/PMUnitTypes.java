@@ -16,10 +16,10 @@ import mindustry.world.meta.*;
 import progressed.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.entities.units.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
+import progressed.type.weapons.*;
 import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class PMUnitTypes{
     puncture, penetration, incision, laceration, amputation,
 
     //sentry
-    barrage, downpour,
+    barrage, strikedown,
 
     //legged ground miner.
     draug,
@@ -111,7 +111,6 @@ public class PMUnitTypes{
 
         //Region Sentry Units
         barrage = new SentryUnitType("barrage"){{
-            health = 500f;
             lifetime = 39f * 60f;
 
             Weapon gunL = new Weapon(name + "-gun-r"){{
@@ -129,7 +128,7 @@ public class PMUnitTypes{
                 reload = 6f;
                 recoil = 3f / 4f;
                 ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(3f, 20f){{
+                bullet = new BasicBulletType(3f, 23f){{
                     lifetime = 80f;
                     buildingDamageMultiplier = 0.3f;
                     width = 7f;
@@ -153,39 +152,56 @@ public class PMUnitTypes{
             }
         }};
 
-        downpour = new SentryUnitType("downpour"){{
-            health = 300f;
+        strikedown = new SentryUnitType("downpour"){{
             lifetime = 32f * 60f;
+            range = maxRange = 40f * 8f;
 
-            weapons.add(new Weapon(name + "-rocket"){{
-                x = 19f / 4f;
-                y = -5f / 4f;
-                mirror = true;
-                alternate = false;
-                reload = 60f;
+            weapons.add(new RocketWeapon(name + "-rocket"){{
+                x = 0f;
+                shootY = 0f;
+                mirror = false;
+                rotate = false;
+                reload = 120f;
                 shootCone = 5f;
-                shootSound = Sounds.missile;
+                shootSound = Sounds.missileSmall;
+                layerOffset = -0.005f;
 
-                bullet = new RocketBulletType(4.5f, 48f, name){{
-                    lifetime = 60f;
-                    //backSpeed = 0.25f;
-                    backSpeed = 0f;
-                    splashDamage = 260f;
-                    splashDamageRadius = 18f;
-                    buildingDamageMultiplier = 0.3f;
-                    thrusterOffset = 5f;
-                    thrusterSize = 1f;
-                    homingPower = 0.25f;
-                    homingRange = 48f * 8f;
-                    trailLength = 3;
-                    layer = Layer.flyingUnit - 1f;
-                    hitSound = Sounds.explosion;
+                bullet = new BulletType(0, 0){{
+                    shootEffect = Fx.none;
+                    smokeEffect = MissileFx.shootSmokeDownpour;
+                    hitColor = Pal.sap;
+                    recoil = 1f;
+
+                    spawnUnit = new MissileUnitType("downpour-rocket"){{
+                        speed = 6.4f;
+                        maxRange = 6f;
+                        lifetime = 60f * 1.2f;
+                        missileAccelTime = 0.5f * 60f;
+                        outlineColor = Pal.darkOutline;
+                        engineColor = trailColor = Pal.sapBulletBack;
+                        engineLayer = Layer.effect;
+                        engineOffset = 10;
+                        engineSize = 1.5f;
+                        health = 45;
+                        loopSoundVolume = 0.1f;
+
+                        weapons.add(new Weapon(){{
+                            shootCone = 360f;
+                            mirror = false;
+                            reload = 1f;
+                            shootOnDeath = true;
+                            bullet = new ExplosionBulletType(260f, 18f){{
+                                shootEffect = Fx.massiveExplosion;
+                                buildingDamageMultiplier = 0.3f;
+                            }};
+                        }});
+                    }};
                 }};
             }});
 
-            engineSize = 3f;
-            engineOffset = 5f;
-            setEnginesMirror(new UnitEngine(24f / 4f, 21f / 4f, 2f, 45f));
+            for(int i = 0; i < 4; i++){
+                engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
+            }
         }};
 
         draug = new ErekirUnitType("draug"){{

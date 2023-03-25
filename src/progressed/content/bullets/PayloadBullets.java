@@ -37,7 +37,7 @@ public class PayloadBullets{
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
-        downpourLaunch = new SentryBulletType(PMUnitTypes.downpour);
+        downpourLaunch = new SentryBulletType(PMUnitTypes.strikedown);
 
         arbalestBasic = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;

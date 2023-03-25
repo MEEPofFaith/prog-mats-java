@@ -246,7 +246,7 @@ public class PMPayloads{
             baseExplosiveness = 100f;
             powerUse = 3.5f;
             constructTime = 60f * 25f;
-            unit = PMUnitTypes.downpour;
+            unit = PMUnitTypes.strikedown;
         }};
     }
 }

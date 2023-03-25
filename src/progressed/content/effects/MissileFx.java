@@ -4,7 +4,9 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.entities.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
@@ -15,11 +17,18 @@ import static mindustry.graphics.Drawf.*;
 import static progressed.util.PMUtls.*;
 
 public class MissileFx{
-    //From FireComp
-    static final int frames = 40, ticksPerFrame = 90 / frames;
-    static final TextureRegion[] fireFrames = new TextureRegion[frames];
-
     public static Effect
+
+    shootSmokeDownpour = new Effect(70f, e -> {
+        rand.setSeed(e.id);
+        for(int i = 0; i < 25; i++){
+            Tmp.v1.trns(e.rotation + 180f + rand.range(30f), rand.random(e.finpow() * 40f));
+            e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
+                color(e.color, Pal.lightishGray, b.fin());
+                Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, b.fout() * 3.4f + 0.3f);
+            });
+        }
+    }),
 
     rocketTrailSmoke = new Effect(180f, 300f, b -> {
         float intensity = 2f;
@@ -42,9 +51,9 @@ public class MissileFx{
     }).layer(Layer.bullet - 1f),
 
     flameRing = new Effect(45f, e -> {
-        if(fireFrames[0] == null){
-            for(int i = 0; i < frames; i++){
-                fireFrames[i] = Core.atlas.find("fire" + i);
+        if(Fire.regions[0] == null){
+            for(int i = 0; i < Fire.frames; i++){
+                Fire.regions[i] = Core.atlas.find("fire" + i);
             }
         }
 
@@ -52,9 +61,9 @@ public class MissileFx{
         float fin = e.fin(Interp.pow5Out);
         Draw.alpha(e.fout(Interp.pow3Out));
         for(int i = 0; i < amount; i++){
-            int frame = (int)Mathf.mod(e.time * ticksPerFrame + Mathf.randomSeed(e.id + i * 2L, frames), frames);
+            int frame = (int)Mathf.mod(e.time * ((float)Fire.duration / Fire.frames) + Mathf.randomSeed(e.id + i * 2L, Fire.frames), Fire.frames);
             v1.trns(i * (360f / amount) + Mathf.randomSeedRange(e.id, 180f), 88f * fin);
-            Draw.rect(fireFrames[frame], e.x + v1.x, e.y + v1.y);
+            Draw.rect(Fire.regions[frame], e.x + v1.x, e.y + v1.y);
         }
         Draw.color();
     }),

@@ -41,7 +41,7 @@ public class SentryUnitType extends ErekirUnitType{
         flying = true;
         isEnemy = false;
         useUnitCap = false;
-        targetable = hittable = false;
+        targetable = vulnerableWithPayloads = hittable = false;
         itemCapacity = 10;
         health = 200;
         engineSize = -1;
