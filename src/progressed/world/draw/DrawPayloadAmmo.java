@@ -51,8 +51,9 @@ public class DrawPayloadAmmo extends DrawBlock{
 
         Draw.scl(gx, gy);
         if(materialize){
+            float matProg = matProgress.getClamp(params);;
             Draw.draw(layer, () -> {
-                PMDrawf.materialize(rx, ry, pAmmo.fullIcon, tb.team.color, rot, 0.1f, matProgress.getClamp(params), -Time.time / 4f);
+                PMDrawf.materialize(rx, ry, pAmmo.fullIcon, tb.team.color, rot, 0.1f, matProg, -Time.time / 4f);
             });
         }else{
             Draw.z(layer);
