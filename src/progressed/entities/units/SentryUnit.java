@@ -77,6 +77,11 @@ public class SentryUnit extends TimedKillUnit{
     }
 
     @Override
+    public float prefRotation(){
+        return rotation;
+    }
+
+    @Override
     public void wobble() {
         anchorX += Mathf.sin(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
         anchorY += Mathf.cos(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
