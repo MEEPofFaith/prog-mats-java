@@ -3,8 +3,10 @@ package progressed.entities.units;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
 import mindustry.gen.*;
+import mindustry.io.*;
 import mindustry.type.*;
 import progressed.content.*;
 import progressed.type.unit.*;
@@ -68,6 +70,53 @@ public class SentryUnit extends TimedKillUnit{
     public void wobble() {
         anchorX += Mathf.sin(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
         anchorY += Mathf.cos(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
+    }
+
+    @Override
+    public void write(Writes write){
+        super.write(write);
+
+        TypeIO.writeVec2(write, anchorVel);
+        write.f(anchorRot);
+        write.f(anchorX);
+        write.f(anchorY);
+    }
+
+    @Override
+    public void writeSync(Writes write){
+        super.writeSync(write);
+
+        TypeIO.writeVec2(write, anchorVel);
+        write.f(anchorRot);
+        write.f(anchorX);
+        write.f(anchorY);
+    }
+
+    @Override
+    public void read(Reads read){
+        super.read(read);
+
+        anchorVel = TypeIO.readVec2(read, anchorVel);
+        anchorRot = read.f();
+        anchorX = read.f();
+        anchorY = read.f();
+    }
+
+    @Override
+    public void readSync(Reads read){
+        super.readSync(read);
+
+        if(!isLocal()){
+            anchorVel = TypeIO.readVec2(read, anchorVel);
+            anchorRot = read.f();
+            anchorX = read.f();
+            anchorY = read.f();
+        }else{
+            TypeIO.readVec2(read, anchorVel);
+            read.f();
+            read.f();
+            read.f();
+        }
     }
 
     @Override
