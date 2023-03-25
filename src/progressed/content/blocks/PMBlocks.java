@@ -955,7 +955,7 @@ public class PMBlocks{
             size = 7;
             scaledHealth = 170;
             reload = 12f * 60f;
-            range = 180f * 8f;
+            range = 240f * 8f;
             minRange = 50f * 8f;
             shootY = 0f;
             shootSound = Sounds.missileLaunch;
@@ -964,7 +964,6 @@ public class PMBlocks{
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
-            ((DrawPayloadTurret)drawer).basePrefix = "reinforced-";
             limitRange();
             setUsers();
         }};
