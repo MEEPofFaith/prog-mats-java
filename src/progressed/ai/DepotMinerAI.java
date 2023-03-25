@@ -78,6 +78,7 @@ public class DepotMinerAI extends AIController{
         }
         if(pathId != -1) move();
         faceMovement();
+        if(!unit.moving() && unit.mineTile != null) unit.lookAt(unit.mineTile);
     }
 
     public void move(){

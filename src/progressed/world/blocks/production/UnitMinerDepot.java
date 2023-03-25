@@ -117,6 +117,7 @@ public class UnitMinerDepot extends Block{
                 if(ore != null && PMUtls.oreDrop(ore) == targetItem){
                     oreTiles.put(targetItem, ore);
                     targetSet = true;
+                    if(unit != null) unit.mineTile = null;
                 }
             }
 

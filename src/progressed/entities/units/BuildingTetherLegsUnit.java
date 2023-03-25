@@ -3,6 +3,8 @@ package progressed.entities.units;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.io.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
+import progressed.ai.*;
 import progressed.content.*;
 
 public class BuildingTetherLegsUnit extends LegsUnit implements BuildingTetherc{
@@ -14,6 +16,11 @@ public class BuildingTetherLegsUnit extends LegsUnit implements BuildingTetherc{
         if(building == null || !building.isValid() || building.team != team){
             Call.unitDespawn(self());
         }
+    }
+
+    @Override
+    public CoreBuild closestCore(){
+        return controller instanceof DepotMinerAI ? null : super.closestCore();
     }
 
     @Override
