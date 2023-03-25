@@ -25,7 +25,7 @@ import progressed.world.meta.*;
 public class SentryUnitType extends ErekirUnitType{
     public float startElevation = 0.5f, riseSpeed = -1f;
     public float anchorDrag = 0.15f;
-    public float pullScale = 0.01f;
+    public float pullScale = 0.01f, anchorPullScale = 0.003f;
     public boolean anchorOver = true;
 
     public TextureRegion anchorRegion, anchorOutlineRegion, anchorCellRegion;
