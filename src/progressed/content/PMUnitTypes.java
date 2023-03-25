@@ -174,7 +174,7 @@ public class PMUnitTypes{
 
                     spawnUnit = new MissileUnitType("downpour-rocket"){{
                         speed = 6.4f;
-                        maxRange = 6f;
+                        maxRange = 9f;
                         lifetime = 60f * 1.2f;
                         missileAccelTime = 0.5f * 60f;
                         outlineColor = Pal.darkOutline;
@@ -190,7 +190,7 @@ public class PMUnitTypes{
                             mirror = false;
                             reload = 1f;
                             shootOnDeath = true;
-                            bullet = new ExplosionBulletType(260f, 18f){{
+                            bullet = new ExplosionBulletType(260f, 21f){{
                                 shootEffect = Fx.massiveExplosion;
                                 buildingDamageMultiplier = 0.3f;
                             }};

@@ -24,7 +24,7 @@ import static mindustry.Vars.*;
 public class PayloadBullets{
     public static SentryBulletType
 
-    barrageLaunch, downpourLaunch;
+    barrageLaunch, strikedownLaunch;
 
     public static BulletType
 
@@ -37,7 +37,7 @@ public class PayloadBullets{
 
     public static void load(){
         barrageLaunch = new SentryBulletType(PMUnitTypes.barrage);
-        downpourLaunch = new SentryBulletType(PMUnitTypes.strikedown);
+        strikedownLaunch = new SentryBulletType(PMUnitTypes.strikedown);
 
         arbalestBasic = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;

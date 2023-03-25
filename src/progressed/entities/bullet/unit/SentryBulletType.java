@@ -18,6 +18,7 @@ public class SentryBulletType extends BulletType{
         collidesGround = collidesAir = collidesTiles = collides = false;
         scaleLife = true;
         hitEffect = despawnEffect = Fx.none;
+        ammoMultiplier = 1f;
         layer = Layer.turret + 0.01f;
     }
 

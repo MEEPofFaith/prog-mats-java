@@ -138,7 +138,7 @@ public class PMErekirBlocks{
             ));
             ammo(
                 basicSentry, PayloadBullets.barrageLaunch,
-                missileSentry, PayloadBullets.downpourLaunch
+                missileSentry, PayloadBullets.strikedownLaunch
             );
 
             size = 3;

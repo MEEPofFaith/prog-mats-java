@@ -36,7 +36,11 @@ public class PMPayloads{
 
     public static void load(){
         emptyRocket = new Missile("empty-rocket"){{
-            buildCost(Items.copper, 3, Items.lead, 3, Items.titanium, 4);
+            buildCost(
+                Items.copper, 1,
+                Items.lead, 1,
+                Items.titanium, 2
+            );
 
             size = 3;
             powerUse = 0.5f;
@@ -47,12 +51,15 @@ public class PMPayloads{
         }};
 
         basicRocket = new Missile("basic-rocket"){{
-            buildCost(Items.titanium, 3, Items.blastCompound, 4);
+            buildCost(
+                Items.titanium, 1,
+                Items.blastCompound, 3
+            );
 
             prev = emptyRocket;
             size = 3;
             powerUse = 1f;
-            constructTime = 60f * 6f;
+            constructTime = 60f * 4f;
 
             elevation = 2f / 3f;
             outlined = true;
@@ -61,12 +68,15 @@ public class PMPayloads{
         }};
 
         incendiaryRocket = new Missile("incendiary-rocket"){{
-            buildCost(Items.titanium, 4, Items.pyratite, 6);
+            buildCost(
+                Items.titanium, 2,
+                Items.pyratite, 4
+            );
 
             prev = emptyRocket;
             size = 3;
-            powerUse = 1.25f;
-            constructTime = 60f * 6.5f;
+            powerUse = 1.2f;
+            constructTime = 60f * 4.5f;
 
             elevation = 2f / 3f;
             outlined = true;
@@ -75,12 +85,16 @@ public class PMPayloads{
         }};
 
         splitterRocket = new Missile("splitter-rocket"){{
-            buildCost(Items.titanium, 4, Items.silicon, 4, Items.blastCompound, 6);
+            buildCost(
+                Items.titanium, 2,
+                Items.silicon, 2,
+                Items.blastCompound, 5
+            );
 
             prev = emptyRocket;
             size = 3;
-            powerUse = 1.2f;
-            constructTime = 60f * 8f;
+            powerUse = 1.1f;
+            constructTime = 60f * 5f;
 
             elevation = 2f / 3f;
             outlined = true;
@@ -91,47 +105,47 @@ public class PMPayloads{
                 .fragBullet
                 .spawnUnit.weapons.first().bullet
                 .fragBullet;
-            explosions = 12;
+            explosions = 9 + 6 + 3;
             explosionArea = -1f;
             maxDelay = 20f;
         }};
 
         emptyMissile = new Missile("empty-missile"){{
             buildCost(
-                Items.copper, 4,
-                Items.lead, 4,
-                Items.titanium, 6
+                Items.copper, 1,
+                Items.lead, 1,
+                Items.titanium, 2
             );
 
             size = 2;
-            powerUse = 0.75f;
-            constructTime = 60f * 2.5f;
+            powerUse = 0.6f;
+            constructTime = 60f * 2f;
         }};
 
         basicMissile = new Missile("basic-missile"){{
             buildCost(
-                Items.titanium, 4,
-                Items.blastCompound, 4
+                Items.titanium, 1,
+                Items.blastCompound, 3
             );
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 1.5f;
-            constructTime = 60f * 6f;
+            powerUse = 1.1f;
+            constructTime = 60f * 4f;
 
             explosionBullet = PayloadBullets.artemisBasic;
         }};
 
         recursiveMissile = new Missile("recursive-missile"){{
             buildCost(
-                Items.plastanium, 4,
-                Items.silicon, 5,
-                Items.blastCompound, 6
+                Items.plastanium, 2,
+                Items.silicon, 3,
+                Items.blastCompound, 5
             );
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 1.75f;
+            powerUse = 1.25f;
             constructTime = 60f * 7.5f;
 
             explosionBullet = PayloadBullets.artemisRecursive.fragBullet.fragBullet;
@@ -142,14 +156,13 @@ public class PMPayloads{
 
         bombingMissile = new Missile("bombing-missile"){{
             buildCost(
-                PMItems.tenelium, 6,
-                Items.silicon, 4,
-                Items.blastCompound, 7
+                Items.silicon, 5,
+                Items.blastCompound, 6
             );
 
             prev = emptyMissile;
             size = 2;
-            powerUse = 1.7f;
+            powerUse = 1.2f;
             constructTime = 60f * 7f;
 
             explosionBullet = PayloadBullets.artemisBombing.intervalBullet;
@@ -160,42 +173,42 @@ public class PMPayloads{
 
         emptyNuke = new Missile("empty-nuke"){{
             buildCost(
-                Items.titanium, 25,
-                Items.surgeAlloy, 18,
-                PMItems.tenelium, 20
+                Items.titanium, 30,
+                Items.surgeAlloy, 20,
+                PMItems.tenelium, 25
             );
 
             size = 3;
             powerUse = 5f;
-            constructTime = 60f * 8f;
+            constructTime = 60f * 12f;
         }};
 
         basicNuke = new Missile("basic-nuke"){{
             buildCost(
-                Items.lead, 40,
-                Items.titanium, 30,
-                Items.thorium, 35
+                Items.lead, 100,
+                Items.titanium, 80,
+                Items.thorium, 120
             );
 
             prev = emptyNuke;
             size = 3;
-            powerUse = 6f;
-            constructTime = 60f * 32f;
+            powerUse = 9.5f;
+            constructTime = 60f * 45f;
 
             explosionBullet = PayloadBullets.paragonBasic;
         }};
 
         clusterNuke = new Missile("cluster-nuke"){{
             buildCost(
-                Items.plastanium, 35,
-                PMItems.tenelium, 40,
-                Items.blastCompound, 40
+                Items.plastanium, 80,
+                PMItems.tenelium, 90,
+                Items.blastCompound, 110
             );
 
             prev = emptyNuke;
             size = 3;
-            powerUse = 6.25f;
-            constructTime = 60f * 45f;
+            powerUse = 10f;
+            constructTime = 60f * 53f;
 
             explosionArea = -1f;
             explosionBullet = PayloadBullets.paragonCluster.fragBullet;
@@ -205,15 +218,15 @@ public class PMPayloads{
 
         empNuke = new Missile("emp-nuke"){{
             buildCost(
-                PMItems.tenelium, 40,
-                Items.surgeAlloy, 25,
-                Items.silicon, 30
+                PMItems.tenelium, 110,
+                Items.surgeAlloy, 65,
+                Items.silicon, 80
             );
 
             prev = emptyNuke;
             size = 3;
-            powerUse = 7.5f;
-            constructTime = 60f * 39f;
+            powerUse = 15f;
+            constructTime = 60f * 49f;
 
             explosionBullet = PayloadBullets.paragonEMP;
         }};
@@ -231,21 +244,30 @@ public class PMPayloads{
         }};
 
         basicSentry = new Sentry("basic-sentry"){{
-            buildCost(Items.beryllium, 20, Items.graphite, 25, Items.tungsten, 20,  Items.silicon, 20);
+            buildCost(
+                Items.graphite, 12,
+                Items.tungsten, 7,
+                Items.silicon, 7
+            );
 
             size = 2;
-            powerUse = 3f;
-            constructTime = 60f * 20f;
+            powerUse = 1.75f;
+            constructTime = 60f * 12f;
             unit = PMUnitTypes.barrage;
         }};
 
         missileSentry = new Sentry("missile-sentry"){{
-            buildCost(Items.beryllium, 25, Items.graphite, 30, Items.tungsten, 25, Items.oxide, 15, Items.silicon, 25);
+            buildCost(
+                Items.graphite, 15,
+                Items.tungsten, 10,
+                Items.oxide, 5,
+                Items.silicon, 10
+            );
 
             size = 2;
             baseExplosiveness = 100f;
-            powerUse = 3.5f;
-            constructTime = 60f * 25f;
+            powerUse = 2f;
+            constructTime = 60f * 16f;
             unit = PMUnitTypes.strikedown;
         }};
     }
