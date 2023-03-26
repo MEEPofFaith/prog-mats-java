@@ -70,7 +70,7 @@ public class PayloadCrafter extends PayloadBlock{
             if(r.outputBlock != null){
                 r.outputBlock.stats.add(PMStat.producer, s -> {
                     s.row();
-                    s.table(t -> {
+                    s.table(Styles.grayPanel, t -> {
                         t.left().defaults().top().left();
                         if(state.rules.bannedBlocks.contains(this)){
                             t.image(Icon.cancel).color(Pal.remove).size(40);
@@ -84,13 +84,13 @@ public class PayloadCrafter extends PayloadBlock{
                             n.row();
                             PMStatValues.infoButton(n, this, 4f * 8f).padTop(4f);
                         }).padLeft(8f);
-                    }).left().top();
+                    }).left().top().growX().margin(10f).padTop(5).padBottom(5);
                 });
 
                 if(r.hasInputBlock()){
                     r.inputBlock.stats.add(PMStat.produce, s -> {
                         s.row();
-                        s.table(t -> {
+                        s.table(Styles.grayPanel, t -> {
                             t.left().defaults().top().left();
                             if(state.rules.bannedBlocks.contains(r.outputBlock)){
                                 t.image(Icon.cancel).color(Pal.remove).size(40);
@@ -109,7 +109,7 @@ public class PayloadCrafter extends PayloadBlock{
                                 n.row();
                                 PMStatValues.infoButton(n, this, 4f * 8f).padTop(4f);
                             }).padLeft(8f);
-                        }).left().top();
+                        }).left().top().growX().margin(10f).padTop(5).padBottom(5);
                     });
                 }
             }

@@ -294,7 +294,7 @@ public class PMStatValues{
                         bt.row();
                         bt.add(coll);
                     }
-                }).padLeft(indent * 5).padTop(5).growX().margin(compact ? 0 : 10);
+                }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
 
                 table.row();
             }
