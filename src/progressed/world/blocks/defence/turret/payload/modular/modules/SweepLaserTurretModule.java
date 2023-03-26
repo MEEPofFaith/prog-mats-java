@@ -1,12 +1,12 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.util.*;
+import progressed.world.draw.*;
 
 public class SweepLaserTurretModule extends PowerTurretModule{
     public float angleRnd = 30f;
@@ -16,6 +16,8 @@ public class SweepLaserTurretModule extends PowerTurretModule{
 
     public SweepLaserTurretModule(String name){
         super(name);
+
+        drawer = new DrawTurretModule();
     }
 
     public class SweepLaserTurretModuleBuild extends PowerTurretModuleBuild{
@@ -26,7 +28,7 @@ public class SweepLaserTurretModule extends PowerTurretModule{
         public void draw(){ //TODO remove debug
             super.draw();
 
-            if(bullet != null){
+            /*if(bullet != null){
                 Tmp.v1.trns(rotation, dst);
                 float bx = x + Tmp.v1.x, by = y + Tmp.v1.y;
                 Fill.circle(bx, by, 2f);
@@ -39,7 +41,7 @@ public class SweepLaserTurretModule extends PowerTurretModule{
                 }
 
                 Lines.line(x, y, bullet.x, bullet.y);
-            }
+            }*/
         }
 
         @Override
@@ -56,12 +58,17 @@ public class SweepLaserTurretModule extends PowerTurretModule{
                 return;
             }
 
+
+            float bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+            bullet.set(bulletX, bulletY);
+
             Tmp.v1.trns(rotation, dst);
             float bx = x + Tmp.v1.x, by = y + Tmp.v1.y;
             path(Interp.smooth.apply(time), bx, by, rotation);
-            bullet.rotation(Tmp.v2.angle());
-            bullet.set(Tmp.v1);
-            bullet.time = Math.min(bullet.time, bullet.lifetime * bullet.type.optimalLifeFract);
+            bullet.aimX = Tmp.v1.x;
+            bullet.aimY = Tmp.v1.y;
+            bullet.time = Math.min(bullet.time + Time.delta, bullet.lifetime * bullet.type.optimalLifeFract);
             bullet.keepAlive = true;
 
             time += Time.delta / sweepDuration;
@@ -118,7 +125,6 @@ public class SweepLaserTurretModule extends PowerTurretModule{
             Tmp.v4.trns(pathRot + Mathf.rand.random(handleAngleRnd) * flip, Mathf.rand.random(handleLengthMin, handleLengthMax)); //Right
 
             Tmp.v1.set(PMMathf.bezier(t, x1, y1, x2, y2, Tmp.v3, Tmp.v4));
-            Tmp.v2.set(PMMathf.bezierDeriv(t, x1, y1, x2, y2, Tmp.v3, Tmp.v4));
         }
     }
 }

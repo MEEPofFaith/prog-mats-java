@@ -1,9 +1,11 @@
 package progressed.content.blocks;
 
 import mindustry.content.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -23,9 +25,13 @@ public class PMModules{
 
     //Small
     augment,
+    //TODO a short-mid range anti-air. shots similar to locus. purpose is missile defence
+    //TODO a mid-range shooty turret (a mini breach i guess?)
 
     //Medium
     abyss,
+    //TODO a weak, long range tractor beam. purpose is drawing in those pesky disrupts and quells
+    //TODO a neoplasm artillery cannon. leaves behind burning puddles of neoplasm that deal DOT
 
     //Large
     firestorm, judgement;
@@ -126,11 +132,13 @@ public class PMModules{
             size = 3;
             range = 14f * 8f;
 
-            shootType = new MagmaBulletType(62f, 4f){{ //Temp bullet for testing. Copied from Flame.
+            shootType = new PointLaserBulletType(){{
+                damageInterval = 2f;
+                damage = 800f / 60f * damageInterval;
+                beamEffect = Fx.none;
+                color = trailColor = Pal.remove;
                 shake = 0f;
-                crackEffects = 0;
-                puddleLiquid = null;
-                makeFire = false;
+                trailLength = 24;
             }};
 
             consumePower(12f);
