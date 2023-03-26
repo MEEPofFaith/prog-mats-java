@@ -65,28 +65,32 @@ public class PMStatValues{
                     continue;
                 }
 
-                //no point in displaying unit icon twice
-                if(!compact && !(t instanceof PowerTurret)){
-                    if(payload){
-                        if(t.unlockedNow()){
-                            table.image(icon(t)).size(96f).padRight(4).right().top();
-                            table.table(n -> {
-                                n.add(t.localizedName);
-                                n.row();
-                                infoButton(n, t, 4f * 8f).padTop(4f);
-                            }).padRight(10).left().top();
-                        }else{
-                            table.image(Icon.lock).color(Pal.darkerGray).size(40).padRight(4).right().top();
-                            table.add("@pm-missing-research").left().colspan(2);
-                            continue;
-                        }
-                    }else{
-                        table.image(icon(t)).size(3 * 8).padRight(4).right().top();
-                    }
-                }
-
-                table.table(bt -> {
+                table.table(compact ? null : Styles.grayPanel, bt -> {
                     bt.left().top().defaults().padRight(3).left();
+
+                    //no point in displaying unit icon twice
+                    if(!compact && !(t instanceof PowerTurret)){
+                        bt.table(title -> {
+                            if(payload){
+                                if(t.unlockedNow()){
+                                    title.image(icon(t)).size(96f).padRight(4).right().top();
+                                    title.table(n -> {
+                                        n.add(t.localizedName);
+                                        n.row();
+                                        infoButton(n, t, 4f * 8f).padTop(4f);
+                                    }).padRight(10).left().top();
+                                }else{
+                                    title.image(Icon.lock).color(Pal.darkerGray).size(40).padRight(4).right().top();
+                                    title.add("@pm-missing-research").left().colspan(2);
+                                }
+                            }else{
+                                title.image(icon(t)).size(3 * 8).padRight(4).right().scaling(Scaling.fit).top();
+                                title.add(t.localizedName).padRight(10).left().top();
+                            }
+                        });
+                        if(payload && !t.unlockedNow()) return;
+                        bt.row();
+                    }
 
                     if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                         if(type instanceof BlackHoleBulletType stype){
@@ -172,7 +176,7 @@ public class PMStatValues{
                     }
 
                     if(type.suppressionRange > 0){
-                        sep(bt, bundle.format("bullet.suppression",  Strings.autoFixed(type.suppressionDuration / 60f, 2)));
+                        sep(bt, bundle.format("bullet.suppression", Strings.autoFixed(type.suppressionDuration / 60f, 2), Strings.fixed(type.suppressionRange / tilesize, 1)));
                     }
 
                     if(type.status != StatusEffects.none){
@@ -290,7 +294,7 @@ public class PMStatValues{
                         bt.row();
                         bt.add(coll);
                     }
-                }).padTop(compact ? 0 : -9).padLeft(indent * 8).left().fillY().get().background(compact ? null : Tex.underline);
+                }).padLeft(indent * 5).padTop(5).growX().margin(compact ? 0 : 10);
 
                 table.row();
             }
