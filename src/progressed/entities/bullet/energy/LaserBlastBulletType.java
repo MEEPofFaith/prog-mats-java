@@ -14,8 +14,8 @@ import static mindustry.Vars.*;
 public class LaserBlastBulletType extends BulletType{
     public float length, width;
     
-    public LaserBlastBulletType(float damage, float speed){
-        super(damage, speed);
+    public LaserBlastBulletType(float speed, float damage){
+        super(speed, damage);
         trailWidth = -1f;
         shootEffect = smokeEffect = Fx.none;
         displayAmmoMultiplier = false;

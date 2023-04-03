@@ -189,21 +189,18 @@ public class PMBullets{
 
         sentinelLaser = new LaserBlastBulletType(12f, 150f){{
             lifetime = 36f;
-            splashDamage = 950f;
+            splashDamage = 450f;
             splashDamageRadius = 6f * 8f;
+            scaledSplashDamage = true;
             buildingDamageMultiplier = 0.3f;
             length = 8f;
             width = 3f;
             trailLength = 12;
             makeFire = true;
-            hittable = false;
             trailColor = hitColor = Pal.lancerLaser;
             hitEffect = EnergyFx.sentinelBlast;
             hitSound = Sounds.shockBlast;
             hitSoundVolume = 4f;
-
-            //Calculate ahead of time for Sentinel's init() checking the bullet's range.
-            range = calculateRange();
         }};
 
         harmanuke = new BasicBulletType(){{

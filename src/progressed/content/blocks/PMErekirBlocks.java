@@ -31,7 +31,7 @@ import static progressed.content.blocks.PMPayloads.*;
 
 public class PMErekirBlocks{
     public static Block
-        // region Turrets
+    // region Turrets
 
     //Why do I hear anxiety piano
     sentinel,
@@ -44,7 +44,6 @@ public class PMErekirBlocks{
 
     // endregion
     // region Crafting
-
     teneliumFuser,
     moduleAssembler, moduleFoundry,
     sentryBuilder;
@@ -56,12 +55,11 @@ public class PMErekirBlocks{
 
         sentinel = new PowerTurret("sentinel"){{
             requirements(Category.turret, with(
-                Items.beryllium, 900,
-                Items.tungsten, 375,
-                Items.graphite, 350,
-                Items.surgeAlloy, 450,
                 Items.silicon, 450,
-                PMItems.tenelium, 250
+                Items.graphite, 300,
+                Items.tungsten, 350,
+                Items.surgeAlloy, 150,
+                PMItems.tenelium, 200
             ));
 
             float aimLength = 48f;
@@ -123,10 +121,12 @@ public class PMErekirBlocks{
 
             shootType = PMBullets.sentinelLaser;
             unitSort = UnitSorts.strongest;
+            limitRange(12f);
 
-            consumePower(29f);
-            coolant = consumeLiquid(Liquids.water, 1f);
-            coolantMultiplier = 0.5f;
+            consumePower(820f / 60f);
+            consumeLiquid(Liquids.cyanogen, 8f / 60f);
+            coolant = consumeLiquid(Liquids.water, 40f / 60f);
+            coolantMultiplier = 0.75f;
         }};
 
         sergeant = new SinglePayloadAmmoTurret("sergeant"){{
