@@ -66,22 +66,22 @@ public class PMTechTree{
 
         vanillaNode(ripple, () -> {
             //Rockets
-            node(arbalest, combineCosts(arbalest, shellPress, emptyRocket, basicRocket), Seq.with(
+            node(javelin, combineCosts(javelin, shellPress, emptyCruiseMissile, basicCruiseMissile), Seq.with(
                 new SectorComplete(SectorPresets.impact0078)
             ), () -> {
-                nodeFree(shellPress, arbalest, () -> {
+                nodeFree(shellPress, javelin, () -> {
                     //Rockets
-                    nodeFree(emptyRocket, arbalest, () -> {
-                        nodeFree(basicRocket, arbalest, () -> {
-                            node(incendiaryRocket);
-                            node(splitterRocket);
+                    nodeFree(emptyCruiseMissile, javelin, () -> {
+                        nodeFree(basicCruiseMissile, javelin, () -> {
+                            node(incendiaryCruiseMissile);
+                            node(splitterCruiseMissile);
                         });
                     });
                     //Missiles
-                    nodeFree(emptyMissile, artemis, () -> {
-                        nodeFree(basicMissile, artemis, () -> {
-                            node(recursiveMissile);
-                            node(bombingMissile);
+                    nodeFree(emptyBallisticMissile, artemis, () -> {
+                        nodeFree(basicBallisticMissile, artemis, () -> {
+                            node(recursiveBallisticMissile);
+                            node(bombingBallisticMissile);
                         });
                     });
                     //Nukes
@@ -91,15 +91,15 @@ public class PMTechTree{
                             node(empNuke);
                         });
                     });
-                    nodeFree(missileFactory, arbalest);
+                    nodeFree(missileFactory, javelin);
                 });
             });
 
             //Missiles
-            node(artemis, combineCosts(artemis, emptyMissile, basicMissile), Seq.with(
+            node(artemis, combineCosts(artemis, emptyBallisticMissile, basicBallisticMissile), Seq.with(
                 new SectorComplete(SectorPresets.impact0078),
                 new Research(launchPad),
-                new Research(arbalest)
+                new Research(javelin)
             ), () -> {
                 //Nukes
                 node(paragon, combineCosts(paragon, emptyNuke, basicNuke), Seq.with(

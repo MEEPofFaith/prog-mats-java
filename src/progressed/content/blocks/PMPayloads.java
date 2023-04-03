@@ -12,15 +12,15 @@ public class PMPayloads{
 
     //Region Rockets
 
-    emptyRocket,
+    emptyCruiseMissile,
 
-    basicRocket, incendiaryRocket, splitterRocket,
+    basicCruiseMissile, incendiaryCruiseMissile, splitterCruiseMissile,
 
     //Region Missiles
 
-    emptyMissile,
+    emptyBallisticMissile,
 
-    basicMissile, recursiveMissile, bombingMissile,
+    basicBallisticMissile, recursiveBallisticMissile, bombingBallisticMissile,
 
     //Region Nukes
 
@@ -35,7 +35,7 @@ public class PMPayloads{
     basicSentry, missileSentry;
 
     public static void load(){
-        emptyRocket = new Missile("empty-rocket"){{
+        emptyCruiseMissile = new Missile("empty-rocket"){{
             buildCost(
                 Items.copper, 1,
                 Items.lead, 1,
@@ -50,13 +50,13 @@ public class PMPayloads{
             outlinedIcon = 0;
         }};
 
-        basicRocket = new Missile("basic-rocket"){{
+        basicCruiseMissile = new Missile("basic-rocket"){{
             buildCost(
                 Items.titanium, 1,
                 Items.blastCompound, 3
             );
 
-            prev = emptyRocket;
+            prev = emptyCruiseMissile;
             size = 3;
             powerUse = 1f;
             constructTime = 60f * 4f;
@@ -67,13 +67,13 @@ public class PMPayloads{
             explosionBullet = PayloadBullets.arbalestBasic;
         }};
 
-        incendiaryRocket = new Missile("incendiary-rocket"){{
+        incendiaryCruiseMissile = new Missile("incendiary-rocket"){{
             buildCost(
                 Items.titanium, 2,
                 Items.pyratite, 4
             );
 
-            prev = emptyRocket;
+            prev = emptyCruiseMissile;
             size = 3;
             powerUse = 1.2f;
             constructTime = 60f * 4.5f;
@@ -84,14 +84,14 @@ public class PMPayloads{
             explosionBullet = PayloadBullets.arbalestIncend;
         }};
 
-        splitterRocket = new Missile("splitter-rocket"){{
+        splitterCruiseMissile = new Missile("splitter-rocket"){{
             buildCost(
                 Items.titanium, 2,
                 Items.silicon, 2,
                 Items.blastCompound, 5
             );
 
-            prev = emptyRocket;
+            prev = emptyCruiseMissile;
             size = 3;
             powerUse = 1.1f;
             constructTime = 60f * 5f;
@@ -110,7 +110,7 @@ public class PMPayloads{
             maxDelay = 20f;
         }};
 
-        emptyMissile = new Missile("empty-missile"){{
+        emptyBallisticMissile = new Missile("empty-missile"){{
             buildCost(
                 Items.copper, 1,
                 Items.lead, 1,
@@ -122,13 +122,13 @@ public class PMPayloads{
             constructTime = 60f * 2f;
         }};
 
-        basicMissile = new Missile("basic-missile"){{
+        basicBallisticMissile = new Missile("basic-missile"){{
             buildCost(
                 Items.titanium, 1,
                 Items.blastCompound, 3
             );
 
-            prev = emptyMissile;
+            prev = emptyBallisticMissile;
             size = 2;
             powerUse = 1.1f;
             constructTime = 60f * 4f;
@@ -136,14 +136,14 @@ public class PMPayloads{
             explosionBullet = PayloadBullets.artemisBasic;
         }};
 
-        recursiveMissile = new Missile("recursive-missile"){{
+        recursiveBallisticMissile = new Missile("recursive-missile"){{
             buildCost(
                 Items.plastanium, 2,
                 Items.silicon, 3,
                 Items.blastCompound, 5
             );
 
-            prev = emptyMissile;
+            prev = emptyBallisticMissile;
             size = 2;
             powerUse = 1.25f;
             constructTime = 60f * 7.5f;
@@ -154,13 +154,13 @@ public class PMPayloads{
             maxDelay = 20f;
         }};
 
-        bombingMissile = new Missile("bombing-missile"){{
+        bombingBallisticMissile = new Missile("bombing-missile"){{
             buildCost(
                 Items.silicon, 5,
                 Items.blastCompound, 6
             );
 
-            prev = emptyMissile;
+            prev = emptyBallisticMissile;
             size = 2;
             powerUse = 1.2f;
             constructTime = 60f * 7f;

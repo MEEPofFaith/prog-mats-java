@@ -81,7 +81,7 @@ public class PMBlocks{
     kugelblitz, excalibur,
 
     //Payload
-    arbalest, artemis, paragon,
+    javelin, artemis, paragon,
 
     //Nexus
     solstice, starfall,
@@ -852,7 +852,7 @@ public class PMBlocks{
             }};
         }};
 
-        arbalest = new SinglePayloadAmmoTurret("arbalest"){{
+        javelin = new SinglePayloadAmmoTurret("arbalest"){{
             requirements(Category.turret, with(
                 Items.copper, 150,
                 Items.graphite, 300,
@@ -861,9 +861,9 @@ public class PMBlocks{
                 PMItems.tenelium, 160
             ));
             ammo(
-                basicRocket, PayloadBullets.arbalestBasic,
-                incendiaryRocket, PayloadBullets.arbalestIncend,
-                splitterRocket, PayloadBullets.arbalestSplitter
+                basicCruiseMissile, PayloadBullets.arbalestBasic,
+                incendiaryCruiseMissile, PayloadBullets.arbalestIncend,
+                splitterCruiseMissile, PayloadBullets.arbalestSplitter
             );
 
             PartProgress baseProgress = PartProgress.warmup.shorten(0.3f);
@@ -916,9 +916,9 @@ public class PMBlocks{
                 PMItems.tenelium, 120
             ));
             ammo(
-                basicMissile, PayloadBullets.artemisBasic,
-                recursiveMissile, PayloadBullets.artemisRecursive,
-                bombingMissile, PayloadBullets.artemisBombing
+                basicBallisticMissile, PayloadBullets.artemisBasic,
+                recursiveBallisticMissile, PayloadBullets.artemisRecursive,
+                bombingBallisticMissile, PayloadBullets.artemisBombing
             );
             size = 5;
             scaledHealth = 160;
@@ -1298,8 +1298,8 @@ public class PMBlocks{
             size = 5;
             ambientSound = Sounds.machine;
             recipes(
-                emptyRocket,
-                emptyMissile,
+                emptyCruiseMissile,
+                emptyBallisticMissile,
                 emptyNuke
             );
             recipes.each(r -> r.centerBuild = true);
@@ -1320,8 +1320,8 @@ public class PMBlocks{
             ambientSound = Sounds.machine;
             liquidCapacity = 80f;
             recipes(
-                basicRocket, incendiaryRocket, splitterRocket,
-                basicMissile, recursiveMissile, bombingMissile,
+                basicCruiseMissile, incendiaryCruiseMissile, splitterCruiseMissile,
+                basicBallisticMissile, recursiveBallisticMissile, bombingBallisticMissile,
                 basicNuke, clusterNuke, empNuke
             );
             recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
