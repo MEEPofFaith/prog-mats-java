@@ -72,14 +72,14 @@ public class ChaosTurret extends PowerTurret{
         @Override
         protected void updateShooting(){
             if(canConsume() && !active()){
-                if(reload >= reload && !charging()){
+                if(reloadCounter >= reload && !charging()){
                     BulletType type = peekAmmo();
 
                     shoot(type);
 
-                    reload = 0f;
+                    reloadCounter = 0f;
                 }else{
-                    reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                    reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
                 }
             }
         }

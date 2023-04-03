@@ -3,6 +3,7 @@ package progressed.content.blocks;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -62,23 +63,25 @@ public class PMSandboxBlocks{
             {
                 size = 8;
                 shake = 150f;
-                range = 560f;
+                range = ((LaserBulletType)PMBullets.harbingerLaser).length;
                 recoil = 8f;
-                shootY = -16f;
+                shootY = 16f;
                 rotateSpeed = 0.3f;
                 shootCone = 20f;
                 cooldownTime = 600f;
                 recoilTime = 600f;
                 reload = 450f;
+                moveWhileCharging = false;
                 chargeSound = PMSounds.harbingerCharge;
                 shootSound = PMSounds.harbingerBlast;
                 shootType = PMBullets.harbingerLaser;
 
                 shoot = new ShootSpread(){{
                     shots = 100;
-                    spread = 45f / shots;
+                    spread = 55f / shots;
                     firstShotDelay = EnergyFx.harbingerCharge.lifetime;
                 }};
+                inaccuracy = 15f;
 
                 consumePower(300f);
             }
