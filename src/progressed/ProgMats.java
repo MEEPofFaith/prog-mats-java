@@ -225,6 +225,7 @@ public class ProgMats extends Mod{
                     });
 
                     u.abilities.each(a -> ascending.abilities.add(a));
+                    ascending.clipSize = Math.max(ascending.clipSize, u.clipSize);
                 }
             });
         }catch(Throwable ignored){}
@@ -240,36 +241,41 @@ public class ProgMats extends Mod{
                 }
             }
         }));
-        content.blocks().each(b -> {
-            if(b != base && b instanceof Turret){
+        content.blocks().each(b -> b instanceof Turret, b -> {
+            if(b != base){
                 if(b instanceof LaserTurret block && block.shootType != null){
                     BulletType bul = block.shootType;
                     Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
                     Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
                     BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime + block.shootDuration, true);
-                    if(!allBullets.contains(data)){
-                        allBullets.add(data);
-                    }
+                    allBullets.add(data);
                 }else if(b instanceof PowerTurret block && block.shootType != null){
                     BulletType bul = block.shootType;
                     Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
                     Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
                     BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                    if(!allBullets.contains(data)){
+                    allBullets.add(data);
+                }else if(b instanceof ItemTurret block){
+                    for(BulletType bul : block.ammoTypes.values()){
+                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
+                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
                         allBullets.add(data);
                     }
-                }else if(b instanceof ItemTurret block){
-                    content.items().each(i -> {
-                        if(block.ammoTypes.get(i) != null){
-                            BulletType bul = block.ammoTypes.get(i);
-                            Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                            Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                            BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                            if(!allBullets.contains(data)){
-                                allBullets.add(data);
-                            }
-                        }
-                    });
+                }else if(b instanceof LiquidTurret block){
+                    for(BulletType bul : block.ammoTypes.values()){
+                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
+                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
+                        allBullets.add(data);
+                    }
+                }else if(b instanceof PayloadAmmoTurret block){
+                    for(BulletType bul : block.ammoTypes.values()){
+                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
+                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
+                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
+                        allBullets.add(data);
+                    }
                 }
             }
         });

@@ -18,20 +18,24 @@ public class PMUtls{
     static final IntSeq amounts = new IntSeq();
     
     public static float bulletDamage(BulletType b, float lifetime){
-        float damage = b.damage + b.splashDamage; //Base Damage
-
-        damage += b.lightningDamage * b.lightning * b.lightningLength; //Lightning Damage
-
-        if(b.fragBullet != null){
-            damage += bulletDamage(b.fragBullet, b.fragBullet.lifetime) * b.fragBullets; //Frag Bullet Damage
-        }
-
-        if(b instanceof ContinuousLaserBulletType){ //Continuous Damage
-            return damage * lifetime / 5f;
-        }else if(b instanceof BlackHoleBulletType){
-            return damage * lifetime / 2f;
+        if(b.spawnUnit != null){ //Missile unit damage
+            Weapon uW = b.spawnUnit.weapons.first();
+            return bulletDamage(uW.bullet, uW.bullet.lifetime) * uW.shoot.shots;
         }else{
-            return damage;
+            float damage = b.damage + b.splashDamage; //Base Damage
+            damage += b.lightningDamage * b.lightning * b.lightningLength; //Lightning Damage
+
+            if(b.fragBullet != null){
+                damage += bulletDamage(b.fragBullet, b.fragBullet.lifetime) * b.fragBullets; //Frag Bullet Damage
+            }
+
+            if(b instanceof ContinuousBulletType cB){ //Continuous Damage
+                return damage * lifetime / cB.damageInterval;
+            }else if(b instanceof BlackHoleBulletType){
+                return damage * lifetime / 2f;
+            }else{
+                return damage;
+            }
         }
     }
 
