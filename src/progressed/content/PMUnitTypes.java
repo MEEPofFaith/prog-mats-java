@@ -212,6 +212,12 @@ public class PMUnitTypes{
             logicControllable = false;
             playerControllable = false;
             hidden = true;
+            hitSize = 14f;
+            speed = 1f;
+            rotateSpeed = 2.5f;
+            omniMovement = false;
+            rotateMoveFirst = true;
+            itemOffsetY = 5f;
 
             //TODO stats
             itemCapacity = 50;
@@ -221,17 +227,17 @@ public class PMUnitTypes{
             mineItems = Seq.with(Items.beryllium, Items.graphite, Items.tungsten);
 
             allowLegStep = true;
-            legCount = 4;
-            legLength = 14f; //TODO copied from cleroi
+            legCount = 6;
+            legGroupSize = 3;
+            legLength = 13f;
             lockLegBase = true;
             legContinuousMove = true;
             legExtension = -3f;
             legBaseOffset = 5f;
             legMaxLength = 1.1f;
             legMinLength = 0.2f;
-            legLengthScl = 0.95f;
-            legForwardScl = 0.7f;
-            legMoveSpace = 1f;
+            legForwardScl = 1f;
+            legMoveSpace = 2.5f;
             hovering = true;
         }};
 
