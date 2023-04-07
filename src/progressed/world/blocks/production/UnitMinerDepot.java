@@ -1,11 +1,13 @@
 package progressed.world.blocks.production;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -27,6 +29,11 @@ import static mindustry.Vars.*;
 public class UnitMinerDepot extends Block{
     public UnitType unitType = PMUnitTypes.draug;
     public float buildTime = 60f * 8f;
+
+    public float polyStroke = 1.8f, polyRadius = 6.75f, polyRot = 0f;
+    public float polyStrokeScl = 1.75f, polyStrokeSclSpeed = 0.03f, polyStrokeTime = 120f;
+    public int polySides = 4;
+    public Color polyColor = Pal.accent;
 
     public UnitMinerDepot(String name){
         super(name);
@@ -87,7 +94,7 @@ public class UnitMinerDepot extends Block{
         //needs to be "unboxed" after reading, since units are read after buildings.
         public int readUnitId = -1;
         public float buildProgress, totalProgress;
-        public float warmup, readyness;
+        public float warmup, readyness, strokeScl;
         public Unit unit;
         public Vec2 commandPos;
 
@@ -111,6 +118,8 @@ public class UnitMinerDepot extends Block{
 
             warmup = Mathf.approachDelta(warmup, efficiency, 1f / 60f);
             readyness = Mathf.approachDelta(readyness, unit != null ? 1f : 0f, 1f / 60f);
+            float scl = 1 + (1 - Interp.pow3Out.apply((Time.time % polyStrokeTime) / polyStrokeTime)) * (polyStrokeScl - 1);
+            strokeScl = Mathf.approachDelta(strokeScl, scl, polyStrokeSclSpeed);
 
             if(!targetSet && targetItem != null && commandPos != null){
                 Tile ore = world.tileWorld(commandPos.x, commandPos.y);
@@ -186,6 +195,13 @@ public class UnitMinerDepot extends Block{
                 Draw.draw(Layer.blockOver, () -> {
                     Drawf.construct(this, unitType.fullIcon, 0f, buildProgress, warmup, totalProgress);
                 });
+            }else{
+                Draw.z(Layer.bullet - 0.01f);
+                Draw.color(polyColor);
+                Lines.stroke(polyStroke * readyness * strokeScl);
+                Lines.poly(x, y, polySides, polyRadius, polyRot);
+                Draw.reset();
+                Draw.z(Layer.block);
             }
         }
 
