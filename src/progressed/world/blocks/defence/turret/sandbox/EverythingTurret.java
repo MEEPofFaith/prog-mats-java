@@ -14,6 +14,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import progressed.*;
 import progressed.ProgMats.*;
@@ -47,7 +48,7 @@ public class EverythingTurret extends PowerTurret{
         targetInterval = 1;
         minRange = 0f;
         shootType = Bullets.placeholder;
-        drawer = null;
+        drawer = new DrawDefault();
     }
 
     @Override
