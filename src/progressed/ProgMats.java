@@ -39,6 +39,7 @@ public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static Seq<BulletData> allBullets = new Seq<>();
     public static int sandboxBlockHealthMultiplier = 1000000;
+    public static PMHints hints = new PMHints();
     boolean hasProc;
 
     public ProgMats(){
@@ -46,6 +47,7 @@ public class ProgMats extends Mod{
         Events.on(ClientLoadEvent.class, e -> {
             loadSettings();
             PMPal.init();
+            hints.load();
         });
 
         // Load all assets once they're added into Vars.tree

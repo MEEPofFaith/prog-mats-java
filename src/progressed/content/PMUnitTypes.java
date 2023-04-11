@@ -214,6 +214,7 @@ public class PMUnitTypes{
             logicControllable = false;
             playerControllable = false;
             hidden = true;
+            hideDetails = false;
             hitSize = 14f;
             speed = 1f;
             rotateSpeed = 2.5f;
