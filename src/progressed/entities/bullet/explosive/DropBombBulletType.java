@@ -18,7 +18,7 @@ import progressed.util.*;
 import static mindustry.Vars.headless;
 import static progressed.graphics.DrawPseudo3D.*;
 
-public class DropBombBulletType extends BulletType{ //TODO shield projector absorption
+public class DropBombBulletType extends BulletType{
     public float height = 1f;
     public boolean drawZone = true;
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
