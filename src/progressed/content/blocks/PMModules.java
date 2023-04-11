@@ -31,7 +31,7 @@ public class PMModules{
     //Medium
     abyss,
     //TODO a weak, long range tractor beam. purpose is drawing in those pesky disrupts and quells
-    //TODO a neoplasm artillery cannon. leaves behind burning puddles of neoplasm that deal DOT
+    //TODO a neoplasm artillery cannon. does ??? to enemy units
 
     //Large
     firestorm, judgement;

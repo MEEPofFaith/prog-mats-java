@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.graphics.*;
@@ -82,7 +83,7 @@ public class TargetDummyBase extends Block{
         Draw.rect(unitType.fullIcon, plan.drawx(), plan.drawy());
     }
 
-    public class TargetDummyBaseBuild extends Building{
+    public class TargetDummyBaseBuild extends Building implements UnitTetherBlock{
         //needs to be "unboxed" after reading, since units are read after buildings.
         public int readUnitId = -1;
         public Unit unit;
@@ -116,8 +117,7 @@ public class TargetDummyBase extends Block{
                     unit.set(x, y);
                     unit.rotation = 90f;
                     unit.add();
-                    //Call.cargoLoaderDroneSpawned(tile, unit.id);
-                    spawned(unit.id); //TODO custom call
+                    Call.unitTetherBlockSpawned(tile, unit.id);
                 }
             }
 

@@ -90,7 +90,7 @@ public class UnitMinerDepot extends Block{
         }
     }
 
-    public class UnitMinerDepotBuild extends Building{
+    public class UnitMinerDepotBuild extends Building implements UnitTetherBlock{
         //needs to be "unboxed" after reading, since units are read after buildings.
         public int readUnitId = -1;
         public float buildProgress, totalProgress;
@@ -150,8 +150,7 @@ public class UnitMinerDepot extends Block{
                         unit.set(x, y);
                         unit.rotation = 90f;
                         unit.add();
-                        //Call.cargoLoaderDroneSpawned(tile, unit.id);
-                        spawned(unit.id); //TODO custom call
+                        Call.unitTetherBlockSpawned(tile, unit.id);
                     }
                 }
             }

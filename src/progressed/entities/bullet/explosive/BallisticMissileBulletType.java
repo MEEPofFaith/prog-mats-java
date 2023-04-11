@@ -28,7 +28,6 @@ public class BallisticMissileBulletType extends BulletType{
     public float shadowOffset = -1f, shadowGrowth = -1f;
     public float splitTime = 0.5f;
     public float splitLifeMaxOffset = 10f;
-    public float intervalDelay = -1f; //TODO remove when pr merged
     public Color targetColor = Color.red;
     public String sprite;
     public Effect blockEffect = MissileFx.missileBlocked;

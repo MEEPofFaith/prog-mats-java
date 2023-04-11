@@ -121,7 +121,7 @@ public class SwordTurret extends BaseTurret{
         if(targetY == Float.NEGATIVE_INFINITY) targetY = size * Vars.tilesize / 2f;
     }
 
-    public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock{
+    public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock, UnitTetherBlock{
         public IntSeq readUnitIds = new IntSeq(maxSwords);
         public Seq<SwordUnit> swords = new Seq<>(maxSwords);
         public float buildProgress, totalProgress, attackWarmup;
@@ -283,7 +283,8 @@ public class SwordTurret extends BaseTurret{
                     u.add();
 
                     swords.add(u);
-                    spawned(spawnX, spawnY, u.id); //TODO custom call
+                    Fx.spawn.at(u.x, u.y);
+                    Call.unitTetherBlockSpawned(tile, u.id);
                 }
             }
 
@@ -335,8 +336,7 @@ public class SwordTurret extends BaseTurret{
             return swords.size;
         }
 
-        public void spawned(float x, float y, int id){
-            Fx.spawn.at(x, y);
+        public void spawned(int id){
             buildProgress = 0f;
             if(net.client()){
                 readUnitIds.add(id);
