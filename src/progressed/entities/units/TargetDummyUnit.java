@@ -29,21 +29,7 @@ public class TargetDummyUnit extends UnitEntity implements BuildingTetherc{
     }
 
     @Override
-    public void damage(float amount){
-        //apply armor and scaling effects
-        rawDamage(Damage.applyArmor(amount, armor) / healthMultiplier);
-    }
-
-    @Override
-    public void damagePierce(float amount, boolean withEffect){
-        float pre = hitTime;
-        rawDamage(amount / healthMultiplier);
-        if(!withEffect){
-            hitTime = pre;
-        }
-    }
-
-    protected void rawDamage(float damage){
+    public void rawDamage(float damage){
         ((TargetDummyBaseBuild)building).dummyHit(damage);
     }
 

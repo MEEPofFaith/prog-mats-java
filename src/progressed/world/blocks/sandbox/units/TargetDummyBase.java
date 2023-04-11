@@ -38,6 +38,7 @@ public class TargetDummyBase extends Block{
 
         update = alwaysUpdateInUnits = true;
         configurable = logicConfigurable = saveConfig = true;
+        underBullets = true;
         targetable = false;
 
         config(Boolean.class, (TargetDummyBaseBuild tile, Boolean b) -> tile.boosting = b);

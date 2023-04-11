@@ -22,6 +22,7 @@ public class DummyUnitType extends UnitType{
         hoverable = false;
         canBoost = true;
         useUnitCap = false;
+        killable = false;
     }
     
     @Override
