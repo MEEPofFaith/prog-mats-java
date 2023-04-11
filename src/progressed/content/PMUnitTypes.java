@@ -2,11 +2,13 @@ package progressed.content;
 
 import arc.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import mindustry.content.*;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -215,11 +217,12 @@ public class PMUnitTypes{
             hitSize = 14f;
             speed = 1f;
             rotateSpeed = 2.5f;
+            health = 1300;
+            armor = 5f;
             omniMovement = false;
             rotateMoveFirst = true;
             itemOffsetY = 5f;
 
-            //TODO stats
             itemCapacity = 50;
             mineTier = 5;
             mineSpeed = 6f;
@@ -229,7 +232,7 @@ public class PMUnitTypes{
             allowLegStep = true;
             legCount = 6;
             legGroupSize = 3;
-            legLength = 13f;
+            legLength = 12f;
             lockLegBase = true;
             legContinuousMove = true;
             legExtension = -3f;
@@ -239,6 +242,31 @@ public class PMUnitTypes{
             legForwardScl = 1f;
             legMoveSpace = 2.5f;
             hovering = true;
+
+            weapons.add(new Weapon("prog-mats-draug-you-have-incurred-my-wrath-prepare-to-die"){{
+                x = 22f / 4f;
+                y = -3f;
+                shootX = -3f / 4f;
+                shootY = 4.5f / 4f;
+                rotate = true;
+                rotateSpeed = 35f;
+                reload = 35f;
+                shootSound = Sounds.laser;
+
+                bullet = new LaserBulletType(){{
+                    damage = 45f;
+                    sideAngle = 30f;
+                    sideWidth = 1f;
+                    sideLength = 5.25f * 8;
+                    length = 13.75f * 8f;
+                    colors = new Color[]{Pal.heal.cpy().a(0.4f), Pal.heal, Color.white};
+                }};
+            }});
+
+            abilities.add(new RegenAbility(){{
+                //fully regen in 90 seconds
+                percentAmount = 1f / (90f * 60f) * 100f;
+            }});
         }};
 
         flareSmall = new SignalFlareUnitType("small-flare"){{

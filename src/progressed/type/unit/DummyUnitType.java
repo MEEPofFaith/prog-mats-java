@@ -14,6 +14,8 @@ public class DummyUnitType extends UnitType{
 
         constructor = TargetDummyUnit::new;
         controller = u -> new EmptyAI();
+        envEnabled = Env.any;
+        envDisabled = 0;
         isEnemy = false;
         allowedInPayloads = false;
         logicControllable = false;
