@@ -18,6 +18,7 @@ public class ModuleBullets{
             splashDamageRadius = 32f;
             buildingDamageMultiplier = 0.3f;
             hitShake = 3f;
+            collidesAir = false;
             ammoMultiplier = 12;
 
             height = 32f;

@@ -265,8 +265,8 @@ public class SandboxWall extends Block{
             lastDamageTime = Time.time;
 
             if(!DPSTesting()) return;
-            reset = 0f;
 
+            reset = 0f;
             total += Mathf.zero(dm) ? 1 : damage / dm;
         }
 

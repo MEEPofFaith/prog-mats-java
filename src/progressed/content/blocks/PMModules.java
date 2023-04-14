@@ -1,12 +1,15 @@
 package progressed.content.blocks;
 
+import arc.graphics.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.unit.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
@@ -24,8 +27,7 @@ public class PMModules{
     public static Block
 
     //Small
-    augment,
-    //TODO a short-mid range anti-air. shots similar to locus. purpose is missile defence
+    augment, skeet,
     //TODO a mid-range shooty turret (a mini breach i guess?)
 
     //Medium
@@ -43,6 +45,36 @@ public class PMModules{
             healPercent = 100f / 60f / 60f;
 
             consumePower(2f);
+        }};
+
+        skeet = new ItemTurretModule("skeet"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            float brange = 140f;
+            ammo(
+                Items.tungsten, new RailBulletType(){{
+                    length = brange;
+                    damage = 18f;
+                    ammoMultiplier = 3;
+                    collidesGround = false;
+                    hitColor = Color.valueOf("feb380");
+                    hitEffect = Fx.hitBulletColor;
+                    pierceDamageFactor = 0.5f;
+
+                    shootEffect = ModuleFx.skeetShoot;
+                    smokeEffect = Fx.colorSpark;
+                    lineEffect = ModuleFx.skeetLine;
+                    endEffect = ModuleFx.skeetEnd;
+                }}
+            );
+
+            range = brange;
+            reload = 15f;
+            targetInterval = 10f;
+            rotateSpeed = 20f;
+            shootCone = 1f;
+            targetGround = false;
+            //Prioritize missiles above regular units
+            unitSort = (u, x, y) -> (u.type instanceof MissileUnitType ? -1000 : 0) + UnitSorts.closest.cost(u, x, y);
         }};
 
         abyss = new PowerTurretModule("abyss"){{
@@ -107,6 +139,7 @@ public class PMModules{
             size = 3;
             range = 27f * 8f;
             minRange = 7f * 8f;
+            targetAir = false;
             shootSound = Sounds.missileSmall;
             hideDetails = false;
 
