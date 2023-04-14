@@ -10,6 +10,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -26,6 +27,7 @@ public class InfiniMendProjector extends MendProjector{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
+        health = 400;
         configurable = saveConfig = true;
         hasPower = hasItems = false;
         suppressable = false;
@@ -86,23 +88,21 @@ public class InfiniMendProjector extends MendProjector{
 
         @Override
         public void updateTile(){
-            boolean canHeal = !checkSuppression();
-
             smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency, 0.08f);
-            heat = Mathf.lerpDelta(heat, efficiency > 0 && canHeal ? 1f : 0f, 0.08f);
+            heat = Mathf.lerpDelta(heat, efficiency > 0 ? 1f : 0f, 0.08f);
             charge += heat * delta();
 
             phaseHeat = Mathf.lerpDelta(phaseHeat, optionalEfficiency, 0.1f);
 
-            if(optionalEfficiency > 0 && timer(timerUse, useTime) && canHeal){
+            if(optionalEfficiency > 0 && timer(timerUse, useTime)){
                 consume();
             }
 
-            if(charge >= reload && canHeal){
+            if(charge >= reload){
                 charge = 0f;
 
                 float healPercent = extractHealPercent(repairTime);
-                indexer.eachBlock(this, setRange, b -> b.damaged() && !b.isHealSuppressed(), other -> {
+                indexer.eachBlock(this, setRange, Building::damaged, other -> {
                     other.heal(other.maxHealth() * healPercent * efficiency);
                     other.recentlyHealed();
                     Fx.healBlockFull.at(other.x, other.y, other.block.size, baseColor, other.block);

@@ -25,6 +25,7 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
         alwaysUnlocked = true;
 
+        health = 400;
         configurable = saveConfig = true;
         hasPower = hasItems = hasBoost = false;
 
