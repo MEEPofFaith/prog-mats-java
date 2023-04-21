@@ -1,6 +1,7 @@
 package progressed.world.blocks.sandbox.defence;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -20,6 +21,8 @@ import static mindustry.Vars.*;
 public class InfiniOverdriveProjector extends OverdriveProjector{
     static final Vec2 configs = new Vec2();
 
+    public TextureRegion colorRegion;
+
     public InfiniOverdriveProjector(String name){
         super(name);
         requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -33,7 +36,14 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
             tile.boost = values.x;
             tile.setRange = values.y;
         });
-    };
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        colorRegion = Core.atlas.find(name + "strobe", "prog-mats-effect-strobe" + size);
+    }
 
     @Override
     public void setStats(){
@@ -80,6 +90,33 @@ public class InfiniOverdriveProjector extends OverdriveProjector{
 
     public class InfiniOverdriveBuild extends OverdriveBuild{
         float boost = 100, setRange = range;
+
+        @Override
+        public void draw(){
+            float speed = Core.settings.getInt("pm-strobespeed") / 2f;
+            Draw.rect(region, x, y);
+            Draw.color(Tmp.c1.set(Color.red).shiftHue(Time.time * speed), 1f);
+            Draw.rect(colorRegion, x, y);
+            Draw.color();
+
+            float f = 1f - (Time.time / 100f) % 1f;
+
+            Draw.color(baseColor, phaseColor, phaseHeat);
+            Draw.alpha(heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+            Draw.rect(topRegion, x, y);
+            Draw.alpha(1f);
+            Lines.stroke((2f * f + 0.1f) * heat);
+
+            float r = Math.max(0f, Mathf.clamp(2f - f * 2f) * size * tilesize / 2f - f - 0.2f), w = Mathf.clamp(0.5f - f) * size * tilesize;
+            Lines.beginLine();
+            for(int i = 0; i < 4; i++){
+                Lines.linePoint(x + Geometry.d4(i).x * r + Geometry.d4(i).y * w, y + Geometry.d4(i).y * r - Geometry.d4(i).x * w);
+                if(f < 0.5f) Lines.linePoint(x + Geometry.d4(i).x * r - Geometry.d4(i).y * w, y + Geometry.d4(i).y * r + Geometry.d4(i).x * w);
+            }
+            Lines.endLine(true);
+
+            Draw.reset();
+        }
 
         @Override
         public void updateTile(){
