@@ -78,12 +78,7 @@ public interface TurretModule{
         });
     }
 
-    default void unSwap(){
-        module().swapNumber = module().mountNumber;
-    }
-
     default void swap(short number){
-        module().swapNumber = number;
     }
 
     default boolean isSmall(){
@@ -102,12 +97,12 @@ public interface TurretModule{
         return size == size();
     }
 
-    default boolean checkNumber(int number){
+    default boolean checkNumber(short number){
         return module().mountNumber == number;
     }
 
-    default boolean checkSwap(int number){
-        return module().swapNumber == number;
+    default boolean checkLastNumber(short number){
+        return module().lastNumber == number;
     }
 
     default void moduleRemoved(){}

@@ -16,36 +16,47 @@ import progressed.world.module.ModuleModule.*;
 public class ModuleSwapDialog extends BaseDialog{
     public short selFirst = -1;
     public ModuleSize selSize;
+    protected short[][] swaps = new short[ModuleSize.values().length][];
     protected ModularTurretBuild base;
 
     public ModuleSwapDialog(){
         super("@pm-swap.title");
 
         buttons.defaults().size(210f, 64f);
-        buttons.button("@cancel", Icon.cancel, () -> {
-            hide();
-            base.resetSwap();
-        });
+        buttons.button("@cancel", Icon.cancel, this::hide);
         buttons.button("@confirm", Icon.flipX, () -> {
             hide();
-            
-            for(int i = 0; i < base.modules.size; i++){
-                base.configure(Point2.pack(i, base.modules.get(i).module().mountNumber));
+
+            for(ModuleSize size : ModuleSize.values()){
+                short[] swapSize = swaps[size.ordinal()];
+                for(short i = 0; i < swapSize.length; i++){
+                    short ii = i;
+                    if(swapSize[i] == i) continue;
+                    TurretModule mount = base.modules.find(m -> m.checkSize(size) && m.checkLastNumber(ii));
+                    if(mount != null){
+                        base.configure(Point2.pack(base.modules.indexOf(mount), swapSize[i]));
+                    }
+                }
             }
             base.configure(true);
         });
-
-        closeOnBack(() -> base.resetSwap());
 
         shown(this::rebuild);
     }
 
     public Dialog show(ModularTurretBuild base){
         this.base = base;
+        for(ModuleSize size : ModuleSize.values()){
+            int s = size.ordinal(), amount = base.getMountCapacity(size);
+            swaps[s] = new short[amount];
+            for(short i = 0; i < amount; i++){
+                swaps[s][i] = i;
+            }
+        }
         return show();
     }
 
-    private void rebuild(){
+    public void rebuild(){
         cont.clear();
         selSize = ModuleSize.small;
         deselect();
@@ -55,13 +66,13 @@ public class ModuleSwapDialog extends BaseDialog{
             cont.label(mSize::fullTitle).top().right();
             cont.table(b -> {
                 int c = 0;
-                for(int i = 0; i < base.getMaxMounts(mSize); i++){
-                    int ii = i;
+                for(short i = 0; i < base.getMaxMounts(mSize); i++){
+                    short ii = i;
                     Cell<ImageButton> button = b.button(Tex.clear, PMStyles.squareTogglei, 48f, () -> {
                         if(selSize != mSize) deselect();
                         selSize = mSize;
                         if(selFirst != ii){
-                            select((short)ii);
+                            select(ii);
                         }else{
                             deselect();
                         }
@@ -72,8 +83,9 @@ public class ModuleSwapDialog extends BaseDialog{
                     pos.setStackPos(p.x * 4f, p.y * 4f);
                     pos.add(new Image(base.block.fullIcon));
 
-                    TurretModule mount = base.modules.find(m -> m.checkSize(mSize) && m.checkSwap(ii));
-                    String num = " (" + (i + 1) + ")";
+                    short mNum = swaps[mSize.ordinal()][i];
+                    TurretModule mount = base.modules.find(m -> m.checkSize(mSize) && m.checkNumber(mNum));
+                    String num = " (" + (mNum + 1) + ")";
 
                     if(mount != null){
                         pos.add(new Image(mount.block().fullIcon));
@@ -91,7 +103,7 @@ public class ModuleSwapDialog extends BaseDialog{
                         pos.add(m);
 
                         button.get().clearChildren();
-                        button.get().label(() -> String.valueOf(ii + 1));
+                        button.get().label(() -> String.valueOf(mNum + 1));
                         button.tooltip(t -> {
                             t.background(Styles.black6).margin(4f);
                             t.label(() -> Core.bundle.get("empty") + num);
@@ -113,11 +125,13 @@ public class ModuleSwapDialog extends BaseDialog{
         if(selFirst < 0){
             selFirst = sel;
         }else{
-            TurretModule m1 = base.modules.find(m -> m.checkSize(selSize) && m.checkSwap(selFirst)),
-                m2 = base.modules.find(m -> m.checkSize(selSize) && m.checkSwap(sel));
+            short[] swapSize = swaps[selSize.ordinal()];
 
-            if(m1 != null) m1.swap(sel);
-            if(m2 != null) m2.swap(selFirst);
+            short s1 = swapSize[selFirst],
+                s2 = swapSize[sel];
+
+            swapSize[sel] = s1;
+            swapSize[selFirst] = s2;
 
             rebuild();
         }

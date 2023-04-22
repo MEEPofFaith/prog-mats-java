@@ -281,10 +281,6 @@ public class ModularTurret extends PayloadBlock{
             modules.each(m -> m.module().updatePos(this));
         }
 
-        public void resetSwap(){
-            modules.each(TurretModule::unSwap);
-        }
-
         /** @return the module it adds. */
         public TurretModule addModule(TurretModule module){
             return addModule(module, nextMount(module.size()));
@@ -299,6 +295,8 @@ public class ModularTurret extends PayloadBlock{
 
             boolean has = modules.contains(m -> m.checkSize(module.size()));
             rebuild(false, !has, has);
+
+            if(ProgMats.swapDialog.isShown()) ProgMats.swapDialog.rebuild();
 
             return module;
         }
@@ -324,6 +322,10 @@ public class ModularTurret extends PayloadBlock{
                 case medium -> mediumMountPos;
                 case large -> largeMountPos;
             };
+        }
+
+        public int getMountCapacity(ModuleSize size){
+            return getMountPos(size).length;
         }
 
         public int getMaxMounts(ModuleSize size){

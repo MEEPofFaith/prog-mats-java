@@ -24,7 +24,7 @@ public class ModuleModule extends BlockModule{
     public TurretModule module;
     public ModularTurretBuild parent;
     public float progress = 0, hAlpha;
-    public short mountNumber, swapNumber;
+    public short mountNumber, lastNumber;
     public boolean highlight, hasPower;
 
     public ModuleModule(TurretModule module, boolean hasPower){
@@ -34,7 +34,7 @@ public class ModuleModule extends BlockModule{
 
     public void moduleAdded(ModularTurretBuild parent, short pos){
         this.parent = parent;
-        mountNumber = swapNumber = pos;
+        mountNumber = lastNumber = pos;
         if(hasPower) parent.power.graph.add(module.build());
     }
 
@@ -134,9 +134,9 @@ public class ModuleModule extends BlockModule{
 
     public void updatePos(ModularTurretBuild parent){
         this.parent = parent;
-        if(mountNumber != swapNumber){
-            mountNumber = swapNumber;
-            progress = 0;
+        if(mountNumber != lastNumber){
+            lastNumber = mountNumber;
+            progress = 0f;
         }
 
         Vec2 offset = parent.getMountPos(module.size())[mountNumber];
@@ -152,7 +152,7 @@ public class ModuleModule extends BlockModule{
 
     @Override
     public void read(Reads read){
-        mountNumber = swapNumber = read.s();
+        mountNumber = lastNumber = read.s();
         progress = read.f();
     }
 
@@ -163,9 +163,11 @@ public class ModuleModule extends BlockModule{
         public String title(){
             return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT) + ".short");
         }
+
         public String fullTitle(){
             return Core.bundle.get("pm-size." + name().toLowerCase(Locale.ROOT) + ".full");
         }
+
         public String amount(int amount){
             return Core.bundle.format("pm-size." + name().toLowerCase(Locale.ROOT) + ".amount", amount);
         }
