@@ -1,20 +1,23 @@
 package progressed.content.blocks;
 
 import arc.graphics.*;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.unit.*;
 import mindustry.world.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.pattern.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
@@ -27,24 +30,53 @@ public class PMModules{
     public static Block
 
     //Small
-    augment, skeet,
-    //TODO a mid-range shooty turret (a mini breach i guess?)
+    coil, skeet, augment,
 
     //Medium
     abyss, halberd, gravity,
-    //TODO a weak, long range tractor beam. purpose is drawing in those pesky disrupts and quells
     //TODO a neoplasm artillery cannon. does ??? to enemy units
 
     //Large
     firestorm, judgement;
 
     public static void load(){
-        augment = new BoostModule("augment"){{
+        coil = new ItemTurretModule("coil"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
-            hasPower = true;
-            healPercent = 100f / 60f / 60f;
 
-            consumePower(2f);
+            Effect sfe = new MultiEffect(Fx.shootSmallColor, Fx.colorSpark);
+            ammo(
+                Items.beryllium, new BasicBulletType(2.5f, 16){{
+                    lifetime = 75f;
+                    width = 3f;
+                    hitSize = 3f;
+                    height = 5f;
+                    shootEffect = sfe;
+                    smokeEffect = Fx.shootSmallSmoke;
+                    ammoMultiplier = 1;
+                    pierceCap = 2;
+                    pierce = true;
+                    pierceBuilding = true;
+                    hitColor = backColor = trailColor = Pal.berylShot;
+                    frontColor = Color.white;
+                    trailWidth = 0.75f;
+                    trailLength = 10;
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    buildingDamageMultiplier = 0.3f;
+                }}
+            );
+
+            shootSound = Sounds.shootAlt;
+            targetUnderBlocks = false;
+            reload = 40f;
+            range = 18f * 8f;
+
+            shoot = new EnhancedShootHelix(10f, 0.3f){{
+                shots = 4;
+            }};
+
+            coolantMultiplier = 5f;
+            coolant = consume(new ConsumeLiquid(Liquids.water, 5f / 60f));
+            limitRange();
         }};
 
         skeet = new ItemTurretModule("skeet"){{
@@ -73,8 +105,19 @@ public class PMModules{
             rotateSpeed = 20f;
             shootCone = 1f;
             targetGround = false;
-            //Prioritize missiles above regular units
-            unitSort = (u, x, y) -> (u.type instanceof MissileUnitType ? -1000 : 0) + UnitSorts.closest.cost(u, x, y);
+            //Only target missile units
+            unitFilter = u -> u.controller() instanceof MissileAI;
+
+            coolantMultiplier = 5f;
+            coolant = consume(new ConsumeLiquid(Liquids.water, 5f / 60f));
+        }};
+
+        augment = new BoostModule("augment"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            hasPower = true;
+            healPercent = 100f / 60f / 60f;
+
+            consumePower(2f);
         }};
 
         abyss = new PowerTurretModule("abyss"){{
@@ -136,6 +179,7 @@ public class PMModules{
             shootType = new BeamBulletType(40f, "prog-mats-halberd-beam"){{
                 length = brange + 2f;
                 pierceCap = 4;
+                knockback = 1;
 
                 growTime = 8f;
                 fadeTime = 30f;
