@@ -1,8 +1,10 @@
 package progressed.graphics;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
+import arc.scene.ui.layout.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -11,11 +13,13 @@ public class PMShaders{
     public static MaterializeShader materialize;
     public static VerticalBuildShader vertBuild;
     public static BlockBuildCenterShader blockBuildCenter;
+    public static TractorConeShader tractorCone;
 
     public static void init(){
         materialize = new MaterializeShader();
         vertBuild = new VerticalBuildShader();
         blockBuildCenter = new BlockBuildCenterShader();
+        tractorCone = new TractorConeShader();
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -81,12 +85,48 @@ public class PMShaders{
         }
     }
 
+    public static class TractorConeShader extends PMLoadShader{
+        public float cx, cy;
+        public float time, spacing, thickness;
+
+        TractorConeShader(){
+            super("screenspace", "tractorcone");
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_dp", Scl.scl(1f));
+            setUniformf("u_time", time / Scl.scl(1f));
+            setUniformf("u_offset",
+                Core.camera.position.x - Core.camera.width / 2,
+                Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+
+            setUniformf("u_spacing", spacing / Scl.scl(1f));
+            setUniformf("u_thickness", thickness / Scl.scl(1f));
+            setUniformf("u_cx", cx / Scl.scl(1f));
+            setUniformf("u_cy", cy / Scl.scl(1f));
+        }
+
+        public void setCenter(float cx, float cy){
+            /*Vec2 c = Core.camera.project(cx, cy);
+            this.cx = c.x;
+            this.cy = c.y;*/
+            this.cx = cx;
+            this.cy = cy;
+        }
+    }
+
     static class PMLoadShader extends Shader{
-        PMLoadShader(String frag){
+        PMLoadShader(String vert, String frag){
             super(
-                files.internal("shaders/default.vert"),
+                files.internal("shaders/" + vert + ".vert"),
                 tree.get("shaders/" + frag + ".frag")
             );
+        }
+
+        PMLoadShader(String frag){
+            this("default", frag);
         }
     }
 }

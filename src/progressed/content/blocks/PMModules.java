@@ -31,7 +31,7 @@ public class PMModules{
     //TODO a mid-range shooty turret (a mini breach i guess?)
 
     //Medium
-    abyss, artifice,
+    abyss, halberd, gravity,
     //TODO a weak, long range tractor beam. purpose is drawing in those pesky disrupts and quells
     //TODO a neoplasm artillery cannon. does ??? to enemy units
 
@@ -126,14 +126,14 @@ public class PMModules{
             consumePower(8f);
         }};
 
-        artifice = new BeamModule("artifice"){{
+        halberd = new BeamModule("halberd"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
 
             float brange = 12f * 8f;
             range = brange;
-            shootType = new BeamBulletType(40f, "prog-mats-artifice-beam"){{
+            shootType = new BeamBulletType(40f, "prog-mats-halberd-beam"){{
                 length = brange + 2f;
                 pierceCap = 4;
 
@@ -146,6 +146,19 @@ public class PMModules{
             reload = 90f;
             shootDuration = 120f;
             shootSound = Sounds.laser;
+
+            consumePower(4f);
+        }};
+
+        gravity = new TractorConeModule("gravity"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            moduleSize = ModuleSize.medium;
+            size = 2;
+
+            range = 475f; //Just slightly longer range than disrupt :)
+            tractorCone = 20f;
+            force = 30;
+            scaledForce = 20;
 
             consumePower(4f);
         }};

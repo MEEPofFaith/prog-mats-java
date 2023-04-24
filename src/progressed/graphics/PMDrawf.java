@@ -3,6 +3,7 @@ package progressed.graphics;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.actions.*;
@@ -342,24 +343,25 @@ public class PMDrawf{
         }
     }
 
-    public static void arcLine(float x, float y, float radius, float arcAngle, float angle){
-        float arc = arcAngle / 360f;
-        int sides = (int)(Lines.circleVertices(radius) * arc);
-        float space = arcAngle / sides;
-        float hstep = Lines.getStroke() / 2f / Mathf.cosDeg(space / 2f);
-        float r1 = radius - hstep, r2 = radius + hstep;
+    public static void arcLine(float x, float y, float radius, float fraction, float rotation){
+        arc(x, y, radius, fraction, rotation, 50);
+    }
 
-        for(int i = 0; i < sides; i++){
-            float a = angle - arcAngle / 2f + space * i,
-                cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a),
-                cos2 = Mathf.cosDeg(a + space), sin2 = Mathf.sinDeg(a + space);
-            Fill.quad(
-                x + r1*cos, y + r1*sin,
-                x + r1*cos2, y + r1*sin2,
-                x + r2*cos2, y + r2*sin2,
-                x + r2*cos, y + r2*sin
-            );
+    public static void arcLine(float x, float y, float radius, float fraction, float rotation, int sides){
+        int max = Mathf.ceil(sides * fraction);
+        Lines.beginLine();
+
+        for(int i = 0; i <= max; i++){
+            vec1.trns((float)i / max * fraction * 360f + rotation, radius);
+            float x1 = vec1.x;
+            float y1 = vec1.y;
+
+            vec1.trns((float)(i + 1) / max * fraction * 360f + rotation, radius);
+
+            Lines.linePoint(x + x1, y + y1);
         }
+
+        Lines.endLine();
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation){
@@ -367,7 +369,7 @@ public class PMDrawf{
     }
 
     public static void arcFill(float x, float y, float radius, float fraction, float rotation, int sides){
-        int max = (int)(sides * fraction);
+        int max = Mathf.ceil(sides * fraction);
         Fill.polyBegin();
         Fill.polyPoint(x, y);
 
@@ -435,5 +437,21 @@ public class PMDrawf{
         }else{
             draw.run();
         }
+    }
+
+    public static void tractorCone(float cx, float cy, float time, float spacing, float thickness, Runnable draw){
+        FrameBuffer buffer = renderer.effectBuffer;
+        float z = Draw.z();
+        Draw.draw(z, () -> {
+            buffer.begin(Color.clear);
+            draw.run();
+            buffer.end();
+
+            tractorCone.setCenter(cx, cy);
+            tractorCone.time = time;
+            tractorCone.spacing = spacing;
+            tractorCone.thickness = thickness;
+            buffer.blit(tractorCone);
+        });
     }
 }

@@ -127,7 +127,7 @@ public class TargetDummyBase extends Block{
                 unit.armor(unitArmor);
                 unit.team(unitTeam);
 
-                //similar to impulseNet, does not factor in mass
+                //similar to impulseNet but does not factor in mass
                 Tmp.v1.set(this).sub(unit).limit(dst(unit) * pullScale * Time.delta);
                 unit.vel.add(Tmp.v1);
 
