@@ -22,6 +22,7 @@ import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
 
+import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class PMModules{
@@ -173,16 +174,17 @@ public class PMModules{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
+            shootY = size * tilesize / 2f;
 
             float brange = 12f * 8f;
             range = brange;
             shootType = new BeamBulletType(40f, "prog-mats-halberd-beam"){{
-                length = brange + 2f;
+                length = brange - shootY * 2 + 1f;
                 pierceCap = 4;
                 knockback = 1;
 
-                growTime = 8f;
-                fadeTime = 30f;
+                growTime = 16f;
+                fadeTime = 28f;
                 lifetime = growTime + fadeTime;
                 optimalLifeFract = growTime / lifetime;
             }};

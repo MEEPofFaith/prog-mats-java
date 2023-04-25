@@ -1,7 +1,6 @@
 package progressed.entities;
 
 import arc.func.*;
-import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -23,11 +22,11 @@ public class PMDamage{
     private static final Seq<Unit> units = new Seq<>();
     private static final Seq<Bullet> bullets = new Seq<>();
     private static final IntSet collidedBlocks = new IntSet();
+    private static final FloatSeq distances = new FloatSeq();
     private static Tile furthest;
     private static Building tmpBuilding;
     private static Unit tmpUnit;
     private static float tmpFloat;
-    private static int tmpInt;
     private static boolean check;
 
     public static void trueEachBlock(float wx, float wy, float range, Cons<Building> cons){
@@ -239,80 +238,58 @@ public class PMDamage{
         return check;
     }
 
-    public static float bulletCollideLine(float x, float y, float angle, float length, Team team, float damage, int max, Effect effect, Color color){
-        tr.trnsExact(angle, length);
-
-        rect.setPosition(x, y).setSize(tr.x, tr.y);
-        float x2 = x + tr.x, y2 = y + tr.y;
-
-        if(rect.width < 0){
-            rect.x += rect.width;
-            rect.width *= -1;
-        }
-
-        if(rect.height < 0){
-            rect.y += rect.height;
-            rect.height *= -1;
-        }
-
-        float expand = 3f;
-
-        rect.y -= expand;
-        rect.x -= expand;
-        rect.width += expand * 2;
-        rect.height += expand * 2;
-
-        Cons<Bullet> cons = b -> {
-            b.hitbox(hitrect);
-
-            Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
-
-            if(vec != null && damage > 0){
-                effect.at(vec.x, vec.y, angle, color);
-                if(b.damage() > damage){
-                    b.damage(b.damage() - damage);
-                }else{
-                    b.remove();
-                }
-                tmpInt++;
-                tmpFloat = b.dst(x, y);
-            }
-        };
-
-        bullets.clear();
-        tmpFloat = 0;
-        tmpInt = 0;
-
-        Groups.bullet.intersect(rect.x, rect.y, rect.width, rect.height, b -> {
-            if(b.type().hittable && b.team != team){
-                bullets.add(b);
-            }
-        });
-
-        bullets.sort(b -> b.dst2(x, y));
-        bullets.each(b -> {
-            if(tmpInt < max || max <= 0){
-                cons.get(b);
-            }
-        });
-
-        if(tmpInt < max){
-            tmpFloat = length;
-        }
-
-        return tmpFloat;
-    }
-
     /** Like Damage.findLaserLength, but uses an (x, y) coord instead of bullet position */
     public static float findLaserLength(float x, float y, float angle, Team team, float length){
         Tmp.v1.trns(angle, length);
 
         furthest = null;
 
-        boolean found = world.raycast(World.toTile(x), World.toTile(y), World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y),
+        boolean found = World.raycast(World.toTile(x), World.toTile(y), World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y),
         (tx, ty) -> (furthest = world.tile(tx, ty)) != null && furthest.team() != team && furthest.block().absorbLasers);
 
         return found && furthest != null ? Math.max(6f, Mathf.dst(x, y, furthest.worldx(), furthest.worldy())) : length;
+    }
+
+    /** {@link Damage#findPierceLength} but it returns the distance to the point of contact, not the distance to the center of the target. */
+    public static float findPierceLength(Bullet b, int pierceCap, float length){
+        tr.trnsExact(b.rotation(), length);
+        rect.setPosition(b.x, b.y).setSize(tr.x, tr.y).normalize().grow(3f);
+
+        //Max dist
+        tmpFloat = Float.POSITIVE_INFINITY;
+
+        distances.clear();
+
+        World.raycast(b.tileX(), b.tileY(), World.toTile(b.x + tr.x), World.toTile(b.y + tr.y), (x, y) -> {
+            //add distance to list so it can be processed
+            var build = world.build(x, y);
+
+            if(build != null && build.team != b.team && build.collide(b) && b.checkUnderBuild(build, x * tilesize, y * tilesize)){
+                float dst = b.dst(x * tilesize, y * tilesize) - tilesize;
+                distances.add(dst);
+
+                if(b.type.laserAbsorb && build.absorbLasers()){
+                    tmpFloat = Math.min(tmpFloat, dst);
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        Units.nearbyEnemies(b.team, rect, u -> {
+            u.hitbox(hitrect);
+
+            if(u.checkTarget(b.type.collidesAir, b.type.collidesGround) && u.hittable() && Intersector.intersectSegmentRectangle(b.x, b.y, b.x + tr.x, b.y + tr.y, hitrect)){
+                distances.add(b.dst(u) - u.hitSize());
+            }
+        });
+
+        distances.sort();
+
+        //return either the length when not enough things were pierced,
+        //or the last pierced object if there were enough blockages
+        return Math.min(distances.size < pierceCap || pierceCap < 0 ? length : Math.max(6f, distances.get(pierceCap - 1)), tmpFloat);
     }
 
     public static void completeDamage(Team team, float x, float y, float radius, float damage, float buildDmbMult, boolean air, boolean ground){

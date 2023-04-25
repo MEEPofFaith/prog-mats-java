@@ -5,16 +5,17 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.entities.*;
 import progressed.graphics.*;
 
 public class BeamBulletType extends ContinuousBulletType{
     public float growTime = 16f, fadeTime = 16f;
     public float length = 160f;
     public float width = 9f, oscScl = 0.8f, oscMag = 1.5f;
+    public Interp lengthInterp = Interp.pow3In;
     public Color laserColor;
 
     public String beamSprite;
@@ -44,9 +45,9 @@ public class BeamBulletType extends ContinuousBulletType{
 
     @Override
     public void draw(Bullet b){
-        float lenScl = Mathf.clamp(b.time < growTime ? (b.time / growTime) : 1f);
+        float lenScl = Mathf.clamp(b.time < growTime ? lengthInterp.apply(b.time / growTime) : 1f);
         float fout = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f);
-        float realLength = (pierceCap <= 0 ? length : Damage.findPierceLength(b, pierceCap, length * lenScl));
+        float realLength = (pierceCap <= 0 ? length : PMDamage.findPierceLength(b, pierceCap, length * lenScl));
         Color c = laserColor == null ? b.team.color : laserColor;
         Tmp.v1.trns(b.rotation(), realLength * 1.1f);
         Draw.color(c);
@@ -62,7 +63,7 @@ public class BeamBulletType extends ContinuousBulletType{
 
     @Override
     public float currentLength(Bullet b){
-        float lenScl = Mathf.clamp(b.time < growTime ? (b.time / growTime) : 1f);
+        float lenScl = Mathf.clamp(b.time < growTime ? lengthInterp.apply(b.time / growTime) : 1f);
         return length * lenScl;
     }
 }
