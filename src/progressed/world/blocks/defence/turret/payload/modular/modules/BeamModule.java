@@ -37,6 +37,7 @@ public class BeamModule extends PowerTurret{
         destructible = true;
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
+        connectedPower = false;
 
         drawer = new DrawTurretModule();
     }

@@ -41,6 +41,7 @@ public class BoostModule extends Block{
         destructible = true;
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
+        connectedPower = false;
 
         outlineIcon = true;
         suppressable = true;

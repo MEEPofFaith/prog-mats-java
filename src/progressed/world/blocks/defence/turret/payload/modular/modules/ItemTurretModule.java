@@ -31,6 +31,7 @@ public class ItemTurretModule extends ItemTurret{
         destructible = true;
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
+        connectedPower = false;
 
         drawer = new DrawTurretModule();
     }

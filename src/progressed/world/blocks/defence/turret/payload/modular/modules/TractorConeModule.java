@@ -62,6 +62,7 @@ public class TractorConeModule extends BaseTurret{
         destructible = true;
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
+        connectedPower = false;
     }
 
     @Override

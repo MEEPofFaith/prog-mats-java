@@ -31,6 +31,7 @@ public class LiquidTurretModule extends LiquidTurret{
         destructible = true;
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
+        connectedPower = false;
 
         drawer = new DrawTurretModule();
     }

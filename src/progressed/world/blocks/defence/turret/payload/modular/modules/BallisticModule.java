@@ -18,6 +18,7 @@ public class BallisticModule extends ItemTurretModule{
         recoil = 0f;
         shootY = 0f;
         shootEffect = smokeEffect = Fx.none;
+        connectedPower = false;
 
         drawer = new DrawTurretModule();
     }
