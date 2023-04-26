@@ -201,10 +201,11 @@ public class PMModules{
             moduleSize = ModuleSize.medium;
             size = 2;
 
-            range = 475f; //Just slightly longer range than disrupt :)
+            range = 66f * tilesize; //Just slightly longer range than disrupt :)
             tractorCone = 20f;
-            force = 30;
-            scaledForce = 20;
+            ignoreMass = true;
+            force = 0.02f;
+            scaledForce = 0.06f;
 
             consumePower(4f);
         }};
