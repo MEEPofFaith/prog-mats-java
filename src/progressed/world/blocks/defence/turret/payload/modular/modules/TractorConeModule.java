@@ -202,7 +202,7 @@ public class TractorConeModule extends BaseTurret{
 
             //draw cone if applicable
             if(strength > 0.001f){
-                Draw.z(Layer.flyingUnit + 1f);
+                Draw.z(Layer.bullet - 1f);
                 float cx = x + Angles.trnsx(rotation, shootLength),
                     cy = y + Angles.trnsy(rotation, shootLength);
 
@@ -210,18 +210,6 @@ public class TractorConeModule extends BaseTurret{
                     Draw.color(Tmp.c1.set(tractorColor).mulA(strength));
                     PMDrawf.arcFill(cx, cy, range, tractorCone / 360f, rotation - tractorCone / 2f);
                 });
-
-                /*
-                Tmp.c1.set(tractorColor).mulA(strength);
-                //Draw.blend(Blending.disabled);
-                Draw.color(Tmp.c1, Tmp.c1.a * 0.1f);
-                PMDrawf.arcFill(cx, cy, range, tractorCone / 360f, rotation - tractorCone / 2f);
-                //Fill.circle(cx, cy, range);
-                Draw.color(Tmp.c1);
-                PMDrawf.arcLine(cx, cy, range / 2f, tractorCone / 360f, rotation - tractorCone / 2f);
-                //Lines.circle(cx, cy, range / 2f);
-                //Draw.blend();
-                 */
             }
         }
 

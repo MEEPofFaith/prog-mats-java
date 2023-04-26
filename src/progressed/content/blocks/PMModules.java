@@ -1,6 +1,7 @@
 package progressed.content.blocks;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -43,11 +44,12 @@ public class PMModules{
     public static void load(){
         coil = new ItemTurretModule("coil"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            outlineColor = Pal.darkOutline;
 
             Effect sfe = new MultiEffect(Fx.shootSmallColor, Fx.colorSpark);
             ammo(
-                Items.beryllium, new BasicBulletType(2.5f, 16){{
-                    lifetime = 75f;
+                Items.beryllium, new BasicBulletType(2f, 16){{
+                    lifetime = 80f;
                     width = 3f;
                     hitSize = 3f;
                     height = 5f;
@@ -71,8 +73,9 @@ public class PMModules{
             reload = 40f;
             range = 18f * 8f;
 
-            shoot = new EnhancedShootHelix(10f, 0.3f){{
+            shoot = new EnhancedShootHelix(5f, 0.4f){{
                 shots = 4;
+                offset *= Mathf.pi / 4;
             }};
 
             coolantMultiplier = 5f;
@@ -82,6 +85,8 @@ public class PMModules{
 
         skeet = new ItemTurretModule("skeet"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            outlineColor = Pal.darkOutline;
+
             float brange = 140f;
             ammo(
                 Items.tungsten, new RailBulletType(){{
@@ -115,6 +120,8 @@ public class PMModules{
 
         augment = new BoostModule("augment"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            outlineColor = Pal.darkOutline;
+
             hasPower = true;
             healPercent = 100f / 60f / 60f;
 
@@ -125,6 +132,7 @@ public class PMModules{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
+            outlineColor = Pal.darkOutline;
 
             float brange = 14.5f * 8f;
             range = brange;
@@ -174,6 +182,7 @@ public class PMModules{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
+            outlineColor = Pal.darkOutline;
             shootY = size * tilesize / 2f;
 
             float brange = 12f * 8f;
@@ -200,6 +209,7 @@ public class PMModules{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.medium;
             size = 2;
+            outlineColor = Pal.darkOutline;
 
             range = 66f * tilesize; //Just slightly longer range than disrupt :)
             tractorCone = 20f;
@@ -212,6 +222,10 @@ public class PMModules{
 
         firestorm = new BallisticModule("firestorm"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            moduleSize = ModuleSize.large;
+            size = 3;
+            outlineColor = Pal.darkOutline;
+
             ammo(
                 Items.carbide, ModuleBullets.firestormMissile
             );
@@ -219,8 +233,6 @@ public class PMModules{
 
             reload = 5f * 60f;
             maxAmmo = 27;
-            moduleSize = ModuleSize.large;
-            size = 3;
             range = 27f * 8f;
             minRange = 7f * 8f;
             targetAir = false;
@@ -243,11 +255,9 @@ public class PMModules{
 
         judgement = new SweepLaserTurretModule("judgement"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
-
-            reload = 3f * 60f;
             moduleSize = ModuleSize.large;
             size = 3;
-            range = 14f * 8f;
+            outlineColor = Pal.darkOutline;
 
             shootType = new PointLaserBulletType(){{
                 damageInterval = 2f;
@@ -257,6 +267,9 @@ public class PMModules{
                 shake = 0f;
                 trailLength = 24;
             }};
+
+            reload = 3f * 60f;
+            range = 14f * 8f;
 
             consumePower(12f);
         }};
