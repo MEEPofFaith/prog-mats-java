@@ -110,6 +110,7 @@ public class PMModules{
             targetInterval = 10f;
             rotateSpeed = 20f;
             shootCone = 1f;
+            playerControllable = false;
             targetGround = false;
             //Only target missile units
             unitFilter = u -> u.controller() instanceof MissileAI;
