@@ -8,6 +8,7 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -19,13 +20,10 @@ import progressed.world.meta.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
-public class BeamModule extends PowerTurret{
-    public float firingMoveFract = 0f;
-    public float shootDuration = 100f;
-
+public class BeamModule extends ContinuousLiquidTurret{
     public ModuleSize moduleSize = ModuleSize.small;
 
     OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
@@ -38,6 +36,7 @@ public class BeamModule extends PowerTurret{
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
         connectedPower = false;
+        shootCone = 1f;
 
         drawer = new DrawTurretModule();
     }
@@ -76,9 +75,8 @@ public class BeamModule extends PowerTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
-    public class BeamModuleBuild extends PowerTurretBuild implements TurretModule{
+    public class BeamModuleBuild extends ContinuousLiquidTurretBuild implements TurretModule{
         public ModuleModule module;
-        public Seq<BulletEntry> bullets = new Seq<>();
 
         @Override
         public Building create(Block block, Team team){
@@ -106,32 +104,17 @@ public class BeamModule extends PowerTurret{
         public void updateTile(){
             if(!isDeployed()) return;
             super.updateTile();
-
-            bullets.removeAll(b -> !b.bullet.isAdded() || b.bullet.type == null || b.life <= 0f || b.bullet.owner != this);
-            if(bullets.any()){
-                for(var entry : bullets){
-                    float
-                        bulletX = x + Angles.trnsx(rotation - 90, shootX + entry.x, shootY + entry.y),
-                        bulletY = y + Angles.trnsy(rotation - 90, shootX + entry.x, shootY + entry.y),
-                        angle = rotation + entry.rotation;
-
-                    entry.bullet.rotation(angle);
-                    entry.bullet.set(bulletX, bulletY);
-                    entry.bullet.time = Math.min(entry.bullet.time + Time.delta, entry.bullet.type.lifetime * entry.bullet.type.optimalLifeFract);
-                    entry.bullet.keepAlive = true;
-                    entry.life -= Time.delta / Math.max(efficiency, 0.00001f);
-                }
-
-                wasShooting = true;
-                heat = 1f;
-                curRecoil = 1f;
-            }
         }
 
         @Override
         public void drawSelect(){
             if(!isModule()) return;
             super.drawSelect();
+        }
+
+        @Override
+        public boolean isShooting(){
+            return (isControlled() ? unit.isShooting() : logicControlled() ? logicShooting : target != null && wasShooting);
         }
 
         @Override
@@ -150,31 +133,36 @@ public class BeamModule extends PowerTurret{
         }
 
         @Override
-        protected void turnToTarget(float targetRot){
-            rotation = Angles.moveToward(rotation, targetRot, efficiency * rotateSpeed * delta() * (bullets.any() ? firingMoveFract : 1f));
-        }
+        protected void updateBullet(BulletEntry entry){
+            float
+                bulletX = x + Angles.trnsx(rotation - 90, shootX + entry.x, shootY + entry.y),
+                bulletY = y + Angles.trnsy(rotation - 90, shootX + entry.x, shootY + entry.y),
+                angle = rotation + entry.rotation;
 
-        @Override
-        protected void handleBullet(@Nullable Bullet bullet, float offsetX, float offsetY, float angleOffset){
-            if(bullet != null){
-                bullets.add(new BulletEntry(bullet, offsetX, offsetY, angleOffset, shootDuration));
+            entry.bullet.rotation(angle);
+            entry.bullet.set(bulletX, bulletY);
+
+            //target length of laser
+            float shootLength = Math.min(dst(targetPos), range);
+            //current length of laser
+            float curLength = dst(entry.bullet.aimX, entry.bullet.aimY);
+            //resulting length of the bullet (smoothed)
+            float resultLength = Mathf.approachDelta(curLength, shootLength, aimChangeSpeed);
+            //actual aim end point based on length
+            Tmp.v1.trns(rotation, lastLength = resultLength).add(x, y);
+
+            entry.bullet.aimX = Tmp.v1.x;
+            entry.bullet.aimY = Tmp.v1.y;
+
+            if(isShooting() && hasAmmo()){
+                entry.bullet.time = Mathf.approachDelta(entry.bullet.time, entry.bullet.lifetime * entry.bullet.type.optimalLifeFract, 1f);
+                entry.bullet.keepAlive = true;
             }
         }
 
-        @Override
-        public float activeSoundVolume(){
-            return 1f;
-        }
-
-        @Override
-        public boolean shouldActiveSound(){
-            return bullets.any();
-        }
-
-        @Override
-        public boolean shouldConsume(){
-            //still consumes power when bullet is around
-            return bullets.any() || isActive() || isShooting();
+        protected void turnToTarget(float targetRot){
+            if(bullets.any()) return;
+            rotation = Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * Mathf.num(hasAmmo()));
         }
 
         @Override
@@ -205,13 +193,17 @@ public class BeamModule extends PowerTurret{
         @Override
         public void pickedUp(){
             module.progress = 0f;
-            reloadCounter = 0f;
             rotation = 90f;
         }
 
         @Override
         public boolean isValid(){
             return super.isValid() || (parent() != null && parent().isValid());
+        }
+
+        @Override
+        public boolean acceptLiquid(Building source, Liquid liquid){
+            return super.acceptLiquid(source, liquid) && (liquids.current() == null || liquids.currentAmount() < liquidCapacity);
         }
 
         @Override

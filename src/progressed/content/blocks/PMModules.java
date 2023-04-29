@@ -33,9 +33,11 @@ public class PMModules{
 
     //Small
     coil, skeet, augment,
+    //TODO knockback shotgun similar to diffuse
 
     //Medium
     abyss, halberd, gravity,
+    //TODO crit sniper
     //TODO a neoplasm artillery cannon. does ??? to enemy units
 
     //Large
@@ -184,11 +186,11 @@ public class PMModules{
             moduleSize = ModuleSize.medium;
             size = 2;
             outlineColor = Pal.darkOutline;
-            shootY = size * tilesize / 2f;
+            shootY = 4f;
 
             float brange = 12f * 8f;
             range = brange;
-            shootType = new BeamBulletType(40f, "prog-mats-halberd-beam"){{
+            ammo(Liquids.nitrogen, new BeamBulletType(40f, "prog-mats-halberd-beam"){{
                 length = brange - shootY * 2 + 1f;
                 pierceCap = 4;
                 knockback = 1;
@@ -197,13 +199,7 @@ public class PMModules{
                 fadeTime = 28f;
                 lifetime = growTime + fadeTime;
                 optimalLifeFract = growTime / lifetime;
-            }};
-
-            reload = 90f;
-            shootDuration = 120f;
-            shootSound = Sounds.laser;
-
-            consumePower(4f);
+            }});
         }};
 
         gravity = new TractorConeModule("gravity"){{
