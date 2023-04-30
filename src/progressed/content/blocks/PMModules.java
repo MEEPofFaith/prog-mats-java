@@ -32,8 +32,7 @@ public class PMModules{
     public static Block
 
     //Small
-    coil, skeet, augment,
-    //TODO knockback shotgun similar to diffuse
+    coil, skeet, burst, augment,
 
     //Medium
     abyss, halberd, gravity,
@@ -121,6 +120,35 @@ public class PMModules{
             coolant = consume(new ConsumeLiquid(Liquids.water, 5f / 60f));
         }};
 
+        burst = new PowerTurretModule("burst"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            outlineColor = Pal.darkOutline;
+
+            shootType = new BulletType(4.5f, 4f){{
+                hitSize = 7f;
+                lifetime = 24f;
+                pierce = true;
+                impact = true;
+                knockback = 5f;
+                hitColor = Color.white;
+                hitEffect = ModuleFx.hitSteam;
+                despawnEffect = Fx.none;
+                hittable = false;
+            }};
+
+            reload = 1.25f * 60f;
+            range = 13.5f * tilesize;
+            shootEffect = ModuleFx.steamBurst;
+            shootSound = Sounds.flame;
+            shootCone = 60f;
+
+            shoot = new ShootSpread(12, 3f);
+
+            consumePower(2f);
+            consumeLiquid(Liquids.water, 12f / 60f);
+            limitRange(2f);
+        }};
+
         augment = new BoostModule("augment"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             outlineColor = Pal.darkOutline;
@@ -128,7 +156,8 @@ public class PMModules{
             hasPower = true;
             healPercent = 100f / 60f / 60f;
 
-            consumePower(2f);
+            consumePower(1f);
+            consumeLiquid(Liquids.hydrogen, 1f / 60f);
         }};
 
         abyss = new PowerTurretModule("abyss"){{

@@ -253,6 +253,11 @@ public class TractorConeModule extends BaseTurret{
         }
 
         @Override
+        public boolean acceptLiquid(Building source, Liquid liquid){
+            return super.acceptLiquid(source, liquid) && (liquids.current() == null || liquids.currentAmount() < liquidCapacity);
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
 

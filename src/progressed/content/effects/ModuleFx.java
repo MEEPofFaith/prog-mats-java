@@ -11,16 +11,13 @@ import mindustry.graphics.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.stroke;
+import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.randLenVectors;
+import static mindustry.Vars.*;
+import static progressed.util.PMUtls.*;
 
 public class ModuleFx{
     public static Effect
-
-    overdriveParticle = new Effect(100f, e -> {
-        color(PMPal.overdrive);
-
-        Fill.square(e.x, e.y, e.fslope() * 1.5f + 0.14f, 45f);
-    }),
 
     skeetShoot = new Effect(10, e -> {
         color(e.color);
@@ -58,6 +55,33 @@ public class ModuleFx{
     skeetEnd = new Effect(14f, e -> {
         color(e.color);
         Drawf.tri(e.x, e.y, e.fout() * 1.5f, 5f, e.rotation);
+    }),
+
+    steamBurst = new Effect(40f, e -> {
+        rand.setSeed(e.id);
+        for(int i = 0; i < 9; i++){
+            Tmp.v1.trns(e.rotation + rand.range(30f), rand.random(e.finpow() * 13.5f * tilesize));
+            e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
+                color(e.color, Pal.lightishGray, b.fin());
+                Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, b.fout() * 3.4f + 0.3f);
+            });
+        }
+    }),
+
+    hitSteam = new Effect(14, e -> {
+        color(e.color, Pal.lightishGray, e.fin());
+        stroke(0.5f + e.fout());
+
+        randLenVectors(e.id, 2, 1f + e.fin() * 15f, e.rotation, 50f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+        });
+    }),
+
+    overdriveParticle = new Effect(100f, e -> {
+        color(PMPal.overdrive);
+
+        Fill.square(e.x, e.y, e.fslope() * 1.5f + 0.14f, 45f);
     }),
 
     abyssBeam = new Effect(10f, 20f * 8f, e -> {

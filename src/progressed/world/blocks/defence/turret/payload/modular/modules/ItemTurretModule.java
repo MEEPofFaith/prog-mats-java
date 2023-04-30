@@ -6,6 +6,7 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -143,6 +144,11 @@ public class ItemTurretModule extends ItemTurret{
         @Override
         public boolean isValid(){
             return super.isValid() || (parent() != null && parent().isValid());
+        }
+
+        @Override
+        public boolean acceptLiquid(Building source, Liquid liquid){
+            return super.acceptLiquid(source, liquid) && (liquids.current() == null || liquids.currentAmount() < liquidCapacity);
         }
 
         @Override
