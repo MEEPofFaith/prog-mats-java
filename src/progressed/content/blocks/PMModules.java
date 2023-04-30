@@ -238,7 +238,7 @@ public class PMModules{
             outlineColor = Pal.darkOutline;
 
             range = 66f * tilesize; //Just slightly longer range than disrupt :)
-            tractorCone = 20f;
+            tractorCone = 30f;
             ignoreMass = true;
             force = 0.02f;
             scaledForce = 0.06f;

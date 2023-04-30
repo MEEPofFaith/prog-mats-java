@@ -248,6 +248,11 @@ public class TractorConeModule extends BaseTurret{
         }
 
         @Override
+        public boolean isActive(){
+            return TurretModule.super.isActive() && strength > 0.001f;
+        }
+
+        @Override
         public boolean isValid(){
             return super.isValid() || (parent() != null && parent().isValid());
         }
