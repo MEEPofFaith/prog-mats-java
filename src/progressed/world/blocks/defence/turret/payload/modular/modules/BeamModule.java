@@ -87,7 +87,7 @@ public class BeamModule extends ContinuousLiquidTurret{
 
         @Override
         public Unit unit(){
-            if(parent() != null){
+            if(parent() != null && canControl()){
                 unit = (BlockUnitc)parent().unit();
                 return (Unit)unit;
             }

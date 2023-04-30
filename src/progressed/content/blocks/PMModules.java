@@ -18,6 +18,7 @@ import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.bullet.physical.*;
 import progressed.entities.pattern.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.draw.*;
@@ -37,7 +38,7 @@ public class PMModules{
     //Medium
     abyss, halberd, gravity,
     //TODO crit sniper
-    //TODO a neoplasm artillery cannon. does ??? to enemy units
+    //TODO? a neoplasm artillery cannon. does ??? to enemy units
 
     //Large
     firestorm, judgement;
@@ -90,11 +91,10 @@ public class PMModules{
 
             float brange = 140f;
             ammo(
-                Items.tungsten, new RailBulletType(){{
+                Items.tungsten, new AntiMissileRailBulletType(){{
                     length = brange;
-                    damage = 18f;
+                    damage = 45f; //One-shots quell missiles, but not quite anthicus missiles
                     ammoMultiplier = 3;
-                    collidesGround = false;
                     hitColor = Color.valueOf("feb380");
                     hitEffect = Fx.hitBulletColor;
                     pierceDamageFactor = 0.5f;
@@ -107,7 +107,7 @@ public class PMModules{
             );
 
             range = brange;
-            reload = 15f;
+            reload = 45f;
             targetInterval = 10f;
             rotateSpeed = 20f;
             shootCone = 1f;

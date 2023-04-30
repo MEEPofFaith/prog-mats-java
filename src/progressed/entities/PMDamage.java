@@ -5,8 +5,11 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.pooling.*;
+import mindustry.ai.types.*;
 import mindustry.core.*;
 import mindustry.entities.*;
+import mindustry.entities.Damage.*;
 import mindustry.entities.Units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -20,8 +23,9 @@ public class PMDamage{
     private static final Rect hitrect = new Rect();
     private static final Vec2 tr = new Vec2(), seg1 = new Vec2(), seg2 = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
-    private static final Seq<Bullet> bullets = new Seq<>();
     private static final IntSet collidedBlocks = new IntSet();
+    private static final Seq<Collided> collided = new Seq<>();
+    private static final Pool<Collided> collidePool = Pools.get(Collided.class, Collided::new);
     private static final FloatSeq distances = new FloatSeq();
     private static Tile furthest;
     private static Building tmpBuilding;
@@ -236,6 +240,51 @@ public class PMDamage{
         }
 
         return check;
+    }
+
+    /** {@link Damage#collideLine} but only hits missile units. */
+    public static void missileCollideLine(Bullet hitter, Team team, Effect effect, float x, float y, float angle, float length, boolean large, boolean laser, int pierceCap){
+        if(pierceCap > 0){
+            length = findPierceLength(hitter, pierceCap, length);
+        }else if(laser){
+            length = Damage.findLaserLength(hitter, length);
+        }
+
+        collidedBlocks.clear();
+        tr.trnsExact(angle, length);
+
+        float expand = 3f;
+
+        rect.setPosition(x, y).setSize(tr.x, tr.y).normalize().grow(expand * 2f);
+        float x2 = tr.x + x, y2 = tr.y + y;
+
+        Units.nearbyEnemies(team, rect, u -> {
+            if(u.checkTarget(hitter.type.collidesAir, hitter.type.collidesGround) && u.hittable() && u.controller() instanceof MissileAI){
+                u.hitbox(hitrect);
+
+                Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
+
+                if(vec != null){
+                    collided.add(collidePool.obtain().set(vec.x, vec.y, u));
+                }
+            }
+        });
+
+        int[] collideCount = {0};
+        collided.sort(c -> hitter.dst2(c.x, c.y));
+        collided.each(c -> {
+            if(hitter.damage > 0 && (pierceCap <= 0 || collideCount[0] < pierceCap)){
+                if(c.target instanceof Unit u){
+                    effect.at(c.x, c.y);
+                    u.collision(hitter, c.x, c.y);
+                    hitter.collision(u, c.x, c.y);
+                    collideCount[0]++;
+                }
+            }
+        });
+
+        collidePool.freeAll(collided);
+        collided.clear();
     }
 
     /** Like Damage.findLaserLength, but uses an (x, y) coord instead of bullet position */
