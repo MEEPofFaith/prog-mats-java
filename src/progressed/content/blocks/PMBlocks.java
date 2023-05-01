@@ -1154,7 +1154,6 @@ public class PMBlocks{
             speed = 0.06f;
             displayedSpeed = 8.4f;
             buildCostMultiplier = 0.25f;
-            researchCostMultiplier = 300f;
         }};
 
         burstDriver = new BurstDriver("burst-driver"){{
