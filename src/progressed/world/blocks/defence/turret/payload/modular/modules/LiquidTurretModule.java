@@ -17,7 +17,7 @@ import progressed.world.meta.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
 public class LiquidTurretModule extends LiquidTurret{
@@ -67,6 +67,11 @@ public class LiquidTurretModule extends LiquidTurret{
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
     }
 
     public class LiquidTurretModuleBuild extends LiquidTurretBuild implements TurretModule{

@@ -21,6 +21,8 @@ import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
+import static mindustry.Vars.*;
+
 public class BoostModule extends Block{
     public ModuleSize moduleSize = ModuleSize.small;
     //per tick
@@ -77,6 +79,11 @@ public class BoostModule extends Block{
         moduleBarMap.putAll(barMap);
         moduleBarMap.remove("health");
         removeBar("power");
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
     }
 
     public class BoostModuleBuild extends Building implements TurretModule{

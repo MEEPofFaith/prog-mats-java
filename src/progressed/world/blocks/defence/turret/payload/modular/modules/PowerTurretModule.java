@@ -17,7 +17,7 @@ import progressed.world.meta.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
 public class PowerTurretModule extends PowerTurret{
@@ -67,6 +67,11 @@ public class PowerTurretModule extends PowerTurret{
 
     public <T extends Building> void addModuleBar(String name, Func<T, Bar> sup){
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
     }
 
     public class PowerTurretModuleBuild extends PowerTurretBuild implements TurretModule{

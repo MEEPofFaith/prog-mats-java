@@ -87,6 +87,11 @@ public class Missile extends Block{
         return false;
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
+    }
+
     public class MissileBuild extends Building{
         boolean exploded = false; //Temporary measure against setting a `killShooter = true` bullet as the explosion bullet.
 
