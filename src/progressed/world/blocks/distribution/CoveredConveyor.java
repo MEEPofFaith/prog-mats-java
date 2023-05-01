@@ -45,6 +45,11 @@ public class CoveredConveyor extends Conveyor{
         Draw.rect(region, req.drawx(), req.drawy(), region.width * bits[1] * Draw.scl, region.height * bits[2] * Draw.scl, req.rotation * 90);
     }
 
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{regions[0][0], coverRegions[0]};
+    }
+
     public class FloatingConveyorBuild extends ConveyorBuild{
         public boolean backCap, leftCap, rightCap, frontCap;
 
