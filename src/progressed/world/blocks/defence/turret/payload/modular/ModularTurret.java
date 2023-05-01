@@ -37,8 +37,8 @@ public class ModularTurret extends PayloadBlock{
 
     public TextureRegion[] mountBases = new TextureRegion[3];
 
-    private static ModuleSize selSize;
-    private static final Table moduleDisplayTable = new Table();
+    protected static ModuleSize selSize;
+    protected static final Table moduleDisplayTable = new Table();
 
     public ModularTurret(String name){
         super(name);
@@ -162,6 +162,12 @@ public class ModularTurret extends PayloadBlock{
         super.setBars();
         removeBar("liquid");
         removeBar("power");
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
+        ModularTurretBuild b = (ModularTurretBuild)tile.build;
+        return b.modules.isEmpty() || state.rules.infiniteResources || state.isEditor();
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock{

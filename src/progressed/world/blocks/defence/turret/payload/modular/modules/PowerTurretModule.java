@@ -71,6 +71,11 @@ public class PowerTurretModule extends PowerTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
+    }
+
     public class PowerTurretModuleBuild extends PowerTurretBuild implements TurretModule{
         public ModuleModule module;
 

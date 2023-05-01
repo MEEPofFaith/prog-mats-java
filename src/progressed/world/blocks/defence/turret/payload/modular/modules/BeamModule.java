@@ -75,6 +75,11 @@ public class BeamModule extends ContinuousLiquidTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
+    }
+
     public class BeamModuleBuild extends ContinuousLiquidTurretBuild implements TurretModule{
         public ModuleModule module;
 

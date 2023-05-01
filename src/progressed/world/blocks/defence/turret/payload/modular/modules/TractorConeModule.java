@@ -98,6 +98,11 @@ public class TractorConeModule extends BaseTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
+    }
+
     public class TractorConeModuleBuild extends BaseTurretBuild implements TurretModule{
         public ModuleModule module;
         public Unit target;

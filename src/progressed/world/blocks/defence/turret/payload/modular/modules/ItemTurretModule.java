@@ -72,6 +72,11 @@ public class ItemTurretModule extends ItemTurret{
         moduleBarMap.put(name, (Func<Building, Bar>)sup);
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return state.isEditor() || state.rules.infiniteResources;
+    }
+
     public class ItemTurretModuleBuild extends ItemTurretBuild implements TurretModule{
         public ModuleModule module;
 
