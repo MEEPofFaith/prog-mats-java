@@ -115,6 +115,7 @@ public class PowerTurretModule extends PowerTurret{
 
         @Override
         public void moduleRemoved(){
+            TurretModule.super.moduleRemoved();
             unit = (BlockUnitc)UnitTypes.block.create(team);
         }
 

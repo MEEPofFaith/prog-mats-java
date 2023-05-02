@@ -33,15 +33,17 @@ public class PMModules{
     public static Block
 
     //Small
-    coil, skeet, burst, augment,
+    coil, skeet, burst, accentuate, augment,
 
     //Medium
     abyss, halberd, gravity,
-    //TODO crit sniper
-    //TODO? a neoplasm artillery cannon. does ??? to enemy units
+    //TODO? crit sniper
+    //TODO swarm missile launcher
 
     //Large
-    firestorm, judgement;
+    firestorm, wasteland, judgement;
+    //TODO? wasteland: a neoplasm artillery cannon. does ??? to enemy units
+    //TODO judgement: 3 large beams
 
     public static void load(){
         coil = new ItemTurretModule("coil"){{
@@ -147,6 +149,26 @@ public class PMModules{
             consumePower(2f);
             consumeLiquid(Liquids.water, 12f / 60f);
             limitRange(2f);
+        }};
+
+        accentuate = new SweepLaserTurretModule("accentuate"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            outlineColor = Pal.darkOutline;
+
+            shootType = new PointLaserBulletType(){{
+                damageInterval = 2f;
+                damage = 1500f / 60f * damageInterval;
+                beamEffect = Fx.none;
+                color = trailColor = Pal.remove;
+                shake = 0f;
+                trailLength = 24;
+            }};
+
+            reload = 3f * 60f;
+            range = 14f * 8f;
+            sweepDuration = 120f;
+
+            consumePower(0.75f);
         }};
 
         augment = new BoostModule("augment"){{
@@ -277,27 +299,6 @@ public class PMModules{
                 shots = 9;
                 shotDelay = 10f;
             }};
-        }};
-
-        judgement = new SweepLaserTurretModule("judgement"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
-            moduleSize = ModuleSize.large;
-            size = 3;
-            outlineColor = Pal.darkOutline;
-
-            shootType = new PointLaserBulletType(){{
-                damageInterval = 2f;
-                damage = 800f / 60f * damageInterval;
-                beamEffect = Fx.none;
-                color = trailColor = Pal.remove;
-                shake = 0f;
-                trailLength = 24;
-            }};
-
-            reload = 3f * 60f;
-            range = 14f * 8f;
-
-            consumePower(12f);
         }};
     }
 

@@ -2,6 +2,8 @@ package progressed.world.blocks.defence.turret.payload.modular;
 
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.util.*;
+import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -105,7 +107,10 @@ public interface TurretModule{
         return module().lastNumber == number;
     }
 
-    default void moduleRemoved(){}
+    default void moduleRemoved(){
+        SoundLoop loop = Reflect.get(Building.class, build(), "sound");
+        if(loop != null) loop.stop();
+    }
 
     default boolean isModule(){
         return module().parent != null;
