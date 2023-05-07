@@ -60,7 +60,7 @@ public class MinigunTurret extends ItemTurret{
                     Draw.z(Layer.turret - 0.005f - Mathf.sinDeg(m.spin - 90 * i) / 1000f);
                     Draw.rect(barrel, m.x + v.x, m.y + v.y, m.drawrot());
                     if(m.heats[i] > 0.001f){
-                        Drawf.additive(heat, heatColor.write(Tmp.c1).a(m.heat), m.x + v.x, m.y + v.y, m.drawrot(), Layer.turretHeat);
+                        Drawf.additive(heat, heatColor.write(Tmp.c1).a(m.heats[i]), m.x + v.x, m.y + v.y, m.drawrot(), Draw.z());
                     }
                 }
 
@@ -151,7 +151,7 @@ public class MinigunTurret extends ItemTurret{
         protected void updateReload(){
             boolean shooting = hasAmmo() && isShooting() && isActive();
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
-            float add = spinSpeed * multiplier;
+            float add = spinSpeed * multiplier * Time.delta;
             if(shooting && coolant != null && coolant.efficiency(this) > 0 && efficiency > 0){
                 float capacity = coolant instanceof ConsumeLiquidFilter filter ? filter.getConsumed(this).heatCapacity : 1f;
                 coolant.update(this);
