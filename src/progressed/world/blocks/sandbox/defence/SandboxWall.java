@@ -45,6 +45,7 @@ public class SandboxWall extends Block{
 
         solid = true;
         destructible = true;
+        placeableLiquid = true;
         group = BlockGroup.walls;
         canOverdrive = false;
         drawDisabled = false;
