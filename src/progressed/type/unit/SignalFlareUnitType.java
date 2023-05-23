@@ -43,7 +43,7 @@ public class SignalFlareUnitType extends UnitType{
         hitSize = 1f;
         deathExplosionEffect = null;
 
-        EntityMapping.nameMap.put(name, constructor);
+        EntityMapping.nameMap.put(this.name, constructor);
     }
 
     public SignalFlareUnitType(String name){

@@ -46,7 +46,7 @@ public class SentryUnitType extends ErekirUnitType{
         health = 200;
         engineSize = -1;
 
-        EntityMapping.nameMap.put(name, constructor);
+        EntityMapping.nameMap.put(this.name, constructor);
     }
 
     @Override

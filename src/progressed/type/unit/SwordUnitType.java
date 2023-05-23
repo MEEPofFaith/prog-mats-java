@@ -63,7 +63,7 @@ public class SwordUnitType extends UnitType{
         trailLength = 5;
         trailScl = 2;
 
-        EntityMapping.nameMap.put(name, constructor);
+        EntityMapping.nameMap.put(this.name, constructor);
     }
 
     @Override
