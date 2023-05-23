@@ -42,7 +42,7 @@ public class PMModules{
 
     //Large
     firestorm, wasteland, judgement;
-    //TODO? wasteland: a neoplasm artillery cannon. does ??? to enemy units
+    //TODO? wasteland: a neoplasm artillery cannon. splits out globs that stick to enemies then explode
     //TODO judgement: 3 large beams
 
     public static void load(){
