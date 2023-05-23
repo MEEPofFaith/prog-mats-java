@@ -13,7 +13,7 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v143.1'
+    mindustryVersion = '144.2'
     mindustryHash = '385af57d1b'
     arcHash = '2b9b7c4a1d'
     jabelVersion = "0.7.0"
@@ -30,7 +30,7 @@ allprojects{
 dependencies{
     //Release
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
 
     //BE
     //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"

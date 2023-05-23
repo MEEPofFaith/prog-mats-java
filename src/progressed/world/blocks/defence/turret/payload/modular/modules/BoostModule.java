@@ -22,7 +22,7 @@ import progressed.world.blocks.defence.turret.payload.modular.*;
 import progressed.world.module.*;
 import progressed.world.module.ModuleModule.*;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class BoostModule extends Block{
     public ModuleSize moduleSize = ModuleSize.small;
