@@ -130,7 +130,7 @@ public class PMErekirBlocks{
         }};
 
         sergeant = new SinglePayloadAmmoTurret("sergeant"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, with(
+            requirements(Category.turret, with(
                 Items.beryllium, 300,
                 Items.tungsten, 150,
                 Items.silicon, 300,
@@ -208,7 +208,7 @@ public class PMErekirBlocks{
             size = 3;
 
             itemCapacity = 20;
-            heatRequirement = 25f;
+            heatRequirement = 20f;
             craftTime = 60f * 2f;
             liquidCapacity = 60f * 5;
             hasLiquids = true;
