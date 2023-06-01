@@ -54,14 +54,17 @@ public class EverythingTurret extends PowerTurret{
     @Override
     public void setStats(){
         super.setStats();
-
         stats.remove(Stat.ammo);
+        stats.remove(Stat.health);
+
         stats.add(Stat.ammo, t ->  t.add(PMElements.everything()));
+        stats.add(Stat.health, t -> t.add(PMElements.infinity()));
     }
 
     @Override
     public void setBars(){
         super.setBars();
+        removeBar("health");
         addBar("pm-everything-strength", (EverythingTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.pm-everything-strength", PMUtls.stringsFixed(entity.levelf() * 100f)),
             () -> entity.team.color,
@@ -196,6 +199,16 @@ public class EverythingTurret extends PowerTurret{
         @Override
         protected void turnToTarget(float targetRot){
             rotation = targetRot;
+        }
+
+        @Override
+        public void damage(float damage){
+            //haha no
+        }
+
+        @Override
+        public void kill(){
+            //haha no
         }
 
         @Override

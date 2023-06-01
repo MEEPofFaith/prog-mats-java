@@ -234,13 +234,11 @@ public class ProgMats extends Mod{
     }
 
     public static void setupEveryBullets(Turret base){
-        content.units().each(u -> u.weapons.each(w -> {
-            if(w.bullet != null && !w.bullet.killShooter){
-                BulletType bul = w.bullet;
-                BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
-                if(!allBullets.contains(data)){
-                    allBullets.add(data);
-                }
+        content.units().each(u -> u.weapons.each(w -> w.bullet != null, w -> {
+            BulletType bul = w.bullet;
+            BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
+            if(!allBullets.contains(data)){
+                allBullets.add(data);
             }
         }));
         content.blocks().each(b -> b instanceof Turret, b -> {
@@ -304,6 +302,18 @@ public class ProgMats extends Mod{
 
         public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
             this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
+        }
+
+        @Override
+        public boolean equals(Object obj){
+            return obj instanceof BulletData o &&
+                bulletType == o.bulletType &&
+                shootSound == o.shootSound &&
+                shootEffect == o.shootEffect &&
+                smokeEffect == o.smokeEffect &&
+                shake == o.shake &&
+                lifetime == o.lifetime &&
+                continuousBlock == o.continuousBlock;
         }
     }
 
