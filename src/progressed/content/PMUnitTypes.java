@@ -19,6 +19,7 @@ import progressed.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
 import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.type.weapons.*;
@@ -31,7 +32,6 @@ public class PMUnitTypes{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
         prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new),
-        prov(TargetDummyUnit.class, TargetDummyUnit::new),
         prov(SentryUnit.class, SentryUnit::new)
     };
 
@@ -311,7 +311,7 @@ public class PMUnitTypes{
             trailVel = 8;
         }};
 
-        targetDummy = new DummyUnitType("dummy"){{
+        targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
             drag = 0.33f;
             hideDetails = false;
             hitSize = 52f / 4f;
@@ -320,7 +320,7 @@ public class PMUnitTypes{
             for(int i = 0; i < 3; i++){
                 engines.add(new UnitEngine(Geometry.d4x(i) * engineOffset, Geometry.d4y(i) * engineOffset, engineSize, i * 90));
             }
-        }};
+        }});
 
         everythingUnit = new UnitType("god"){
             {
