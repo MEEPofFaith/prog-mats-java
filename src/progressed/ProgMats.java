@@ -164,6 +164,7 @@ public class ProgMats extends Mod{
 
     @Override
     public void loadContent(){
+        EntityRegistry.content();
         PMStatusEffects.load();
         PMLiquids.load();
         PMUnitTypes.load();

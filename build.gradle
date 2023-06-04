@@ -1,9 +1,18 @@
-apply plugin: "java"
+plugins{
+    id 'java'
+    id 'com.github.GlennFolker.EntityAnno' version "$entVersion"
+}
 
 version '1.0'
 
-targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = 17
+tasks.withType(JavaCompile).configureEach{
+    sourceCompatibility = 17
+    options.release = 8
+
+    options.incremental = true
+    options.encoding = 'UTF-8'
+}
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -12,31 +21,27 @@ repositories{
     maven{ url 'https://www.jitpack.io' }
 }
 
-ext{
-    mindustryVersion = '144.2'
-    mindustryHash = '385af57d1b'
-    arcHash = '2b9b7c4a1d'
-    jabelVersion = "0.7.0"
-    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-}
-
-//java 8 backwards compatibility flag
-allprojects{
-    tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '8'])
-    }
+entityAnno{
+    modName = 'prog-mats'
+    mindustryVersion = project['mindustryVersion']
+    revisionDir = file("$rootDir/revisions/")
+    fetchPackage = 'progressed.fetched'
+    genSrcPackage = 'progressed.entities.comp'
+    genPackage = 'progressed.gen.entities'
 }
 
 dependencies{
-    //Release
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
+    // i.
+    compileOnly "com.github.Anuken.Arc:arc-core:$arcVersion"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
 
-    //BE
-    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
-    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
+    // ii.
+    annotationProcessor "com.github.GlennFolker.EntityAnno:downgrader:$entVersion"
 
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    // iii.
+    compileOnly "com.github.GlennFolker.EntityAnno:entity:$entVersion"
+    // iv.
+    kapt "com.github.GlennFolker.EntityAnno:entity:$entVersion"
 }
 
 task jarAndroid{
