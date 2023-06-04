@@ -23,6 +23,7 @@ import progressed.content.*;
 import progressed.content.blocks.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
@@ -164,7 +165,7 @@ public class ProgMats extends Mod{
 
     @Override
     public void loadContent(){
-        EntityRegistry.content();
+        EntityRegistry.register();
         PMStatusEffects.load();
         PMLiquids.load();
         PMUnitTypes.load();
