@@ -18,6 +18,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
@@ -112,8 +113,8 @@ public class TargetDummyBase extends Block{
             if(unit == null){
                 if(!net.client()){
                     unit = unitType.create(team);
-                    if(unit instanceof BuildingTetherc bt){
-                        bt.building(this);
+                    if(unit instanceof TargetDummy td){
+                        td.building(this);
                     }
                     unit.set(x, y);
                     unit.rotation = 90f;
