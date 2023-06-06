@@ -3,10 +3,12 @@ package progressed.entities.comp;
 import arc.util.*;
 import ent.anno.Annotations.*;
 import mindustry.gen.*;
+import progressed.gen.entities.*;
 import progressed.world.blocks.sandbox.units.TargetDummyBase.*;
 
 @EntityComponent
-abstract class TargetDummyComp implements Unitc, Healthc{
+@EntityDef({Unitc.class, TargetDummyUnitc.class})
+abstract class TargetDummyUnitComp implements Unitc, Healthc{
     public @Nullable Building building;
 
     @Override
