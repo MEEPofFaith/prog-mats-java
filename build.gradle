@@ -21,6 +21,10 @@ repositories{
     maven{ url 'https://www.jitpack.io' }
 }
 
+ext{
+    sdkRoot = System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
+}
+
 entityAnno{
     modName = 'prog-mats'
     mindustryVersion = project['mindustryVersion']
