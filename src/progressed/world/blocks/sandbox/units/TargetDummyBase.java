@@ -113,7 +113,7 @@ public class TargetDummyBase extends Block{
             if(unit == null){
                 if(!net.client()){
                     unit = unitType.create(team);
-                    if(unit instanceof TargetDummy td){
+                    if(unit instanceof TargetDummyUnit td){
                         td.building(this);
                     }
                     unit.set(x, y);

@@ -31,7 +31,6 @@ public class PMUnitTypes{
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
-        prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new),
         prov(SentryUnit.class, SentryUnit::new)
     };
 
@@ -206,8 +205,7 @@ public class PMUnitTypes{
             }
         }};
 
-        draug = new ErekirUnitType("draug"){{
-            constructor = BuildingTetherLegsUnit::new;
+        draug = EntityRegistry.content("draug", NoCoreDepositBuildingTetherLegsUnit.class, name -> new ErekirUnitType(name){{
             controller = u -> new DepotMinerAI();
             isEnemy = false;
             allowedInPayloads = false;
@@ -268,7 +266,7 @@ public class PMUnitTypes{
                 //fully regen in 90 seconds
                 percentAmount = 1f / (90f * 60f) * 100f;
             }});
-        }};
+        }});
 
         flareSmall = new SignalFlareUnitType("small-flare"){{
             health = 300f;
@@ -311,7 +309,7 @@ public class PMUnitTypes{
             trailVel = 8;
         }};
 
-        targetDummy = EntityRegistry.content("dummy", TargetDummy.class, name -> new DummyUnitType(name){{
+        targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
             drag = 0.33f;
             hideDetails = false;
             hitSize = 52f / 4f;
