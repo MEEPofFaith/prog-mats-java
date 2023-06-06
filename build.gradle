@@ -98,7 +98,7 @@ task deploy(type: Jar){
     }
 }
 
-task moveDesktop doFirst{
+task move doFirst{
     exec{
         workingDir "$buildDir"
         if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
@@ -110,4 +110,9 @@ task moveDesktop doFirst{
     }
 }
 
-task jarMove dependsOn "jar", "moveDesktop"
+task jarMove{
+    def tasks = [jar, move]
+    move.mustRunAfter(jar)
+
+    dependsOn tasks
+}
