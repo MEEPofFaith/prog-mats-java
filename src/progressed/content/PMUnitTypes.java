@@ -31,7 +31,6 @@ public class PMUnitTypes{
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
         prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
-        prov(SentryUnit.class, SentryUnit::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -111,7 +110,7 @@ public class PMUnitTypes{
         setupID();
 
         //Region Sentry Units
-        barrage = new SentryUnitType("barrage"){{
+        barrage = EntityRegistry.content("barrage", SentryUnit.class, name -> new SentryUnitType(name){{
             lifetime = 39f * 60f;
 
             Weapon gunL = new Weapon(name + "-gun-r"){{
@@ -151,9 +150,9 @@ public class PMUnitTypes{
             for(int i = 0; i < 4; i++){
                 engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
             }
-        }};
+        }});
 
-        strikedown = new SentryUnitType("downpour"){{
+        strikedown = EntityRegistry.content("downpour", SentryUnit.class, name -> new SentryUnitType(name){{
             lifetime = 32f * 60f;
             range = maxRange = 40f * 8f;
 
@@ -203,7 +202,7 @@ public class PMUnitTypes{
             for(int i = 0; i < 4; i++){
                 engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
             }
-        }};
+        }});
 
         draug = EntityRegistry.content("draug", NoCoreDepositBuildingTetherLegsUnit.class, name -> new ErekirUnitType(name){{
             controller = u -> new DepotMinerAI();
