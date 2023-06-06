@@ -311,7 +311,7 @@ public class PMUnitTypes{
             trailVel = 8;
         }};
 
-        targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
+        targetDummy = EntityRegistry.content("dummy", TargetDummy.class, name -> new DummyUnitType(name){{
             drag = 0.33f;
             hideDetails = false;
             hitSize = 52f / 4f;

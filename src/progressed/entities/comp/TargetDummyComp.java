@@ -3,10 +3,11 @@ package progressed.entities.comp;
 import arc.util.*;
 import ent.anno.Annotations.*;
 import mindustry.gen.*;
+import progressed.gen.entities.*;
 import progressed.world.blocks.sandbox.units.TargetDummyBase.*;
 
 @EntityComponent
-@EntityDef({Unitc.class, Healthc.class})
+@EntityDef({TargetDummyc.class, Unitc.class, Healthc.class})
 abstract class TargetDummyComp implements Unitc, Healthc{
     public @Nullable Building building;
 
@@ -18,7 +19,7 @@ abstract class TargetDummyComp implements Unitc, Healthc{
     }
 
     @Override
-    public void rawDamage(float damage){
-        ((TargetDummyBaseBuild)building).dummyHit(damage);
+    public void rawDamage(float amount){
+        ((TargetDummyBaseBuild)building).dummyHit(amount);
     }
 }
