@@ -28,6 +28,8 @@ import progressed.type.unit.*;
 
 import java.util.*;
 
+import static mindustry.Vars.*;
+
 public class SwordTurret extends BaseTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
     public final static float logicControlCooldown = 60 * 2;
