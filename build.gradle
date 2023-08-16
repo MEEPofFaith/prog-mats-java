@@ -3,19 +3,18 @@ apply plugin: "java"
 version '1.0'
 
 targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
 
 sourceSets.main.java.srcDirs = ["src"]
 
 repositories{
     mavenCentral()
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
 ext{
-    mindustryVersion = '144.2'
-    mindustryHash = '385af57d1b'
-    arcHash = '2b9b7c4a1d'
+    mindustryVersion = 'v145.1'
     jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
@@ -30,11 +29,7 @@ allprojects{
 dependencies{
     //Release
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
-
-    //BE
-    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
-    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
@@ -54,7 +49,7 @@ task jarAndroid{
 
         //dex and desugar files - this requires d8 in your PATH
         "d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
-            .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
+                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
@@ -93,10 +88,10 @@ task moveDesktop doFirst{
     exec{
         workingDir "$buildDir"
         if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            println "Yeeting PM to the shadow realm..."
+            println "Yeeting the mod jar to the shadow realm..."
             commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
         }else{
-            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet PM into the mods folder."
+            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet the mod jar into the mods folder."
         }
     }
 }
