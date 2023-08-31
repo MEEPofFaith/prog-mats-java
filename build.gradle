@@ -18,11 +18,26 @@ sourceSets.main.java.srcDirs = ["src"]
 
 repositories{
     mavenCentral()
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
 ext{
     sdkRoot = System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
+}
+
+dependencies{
+    // i.
+    compileOnly "com.github.Anuken.Arc:arc-core:$arcVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+
+    // ii.
+    annotationProcessor "com.github.GlennFolker.EntityAnno:downgrader:$entVersion"
+
+    // iii.
+    compileOnly "com.github.GlennFolker.EntityAnno:entity:$entVersion"
+    // iv.
+    kapt "com.github.GlennFolker.EntityAnno:entity:$entVersion"
 }
 
 entityAnno{
@@ -32,20 +47,6 @@ entityAnno{
     fetchPackage = 'progressed.fetched'
     genSrcPackage = 'progressed.entities.comp'
     genPackage = 'progressed.gen.entities'
-}
-
-dependencies{
-    // i.
-    compileOnly "com.github.Anuken.Arc:arc-core:$arcVersion"
-    compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
-
-    // ii.
-    annotationProcessor "com.github.GlennFolker.EntityAnno:downgrader:$entVersion"
-
-    // iii.
-    compileOnly "com.github.GlennFolker.EntityAnno:entity:$entVersion"
-    // iv.
-    kapt "com.github.GlennFolker.EntityAnno:entity:$entVersion"
 }
 
 task jarAndroid{
@@ -98,21 +99,17 @@ task deploy(type: Jar){
     }
 }
 
-task move doFirst{
-    exec{
-        workingDir "$buildDir"
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            println "Yeeting PM to the shadow realm..."
-            commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
-        }else{
-            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet PM into the mods folder."
-        }
+task move doLast{
+    println "Yeeting the mod jar to the shadow realm..."
+
+    String os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    if(os.contains("windows")) {
+        ant.move file: "${buildDir}\\libs\\${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}\\AppData\\Roaming\\Mindustry\\mods"
+    }else if(os.contains("linux")) { //from Router
+        ant.move file: "${buildDir}/libs/${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}/.local/share/Mindustry/mods"
+    }else{
+        println "Yeah I don't know how to do this on a Mac can someone tell me?"
     }
-}
-
-task jarMove{
-    def tasks = [jar, move]
-    move.mustRunAfter(jar)
-
-    dependsOn tasks
 }
