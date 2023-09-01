@@ -22,13 +22,13 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.content.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 
 import java.util.*;
 
-import static mindustry.Vars.net;
+import static mindustry.Vars.*;
 
 public class SwordTurret extends BaseTurret{
     //after being logic-controlled and this amount of time passes, the turret will resume normal AI
@@ -123,7 +123,7 @@ public class SwordTurret extends BaseTurret{
 
     public class SwordTurretBuild extends BaseTurretBuild implements ControlBlock, UnitTetherBlock{
         public IntSeq readUnitIds = new IntSeq(maxSwords);
-        public Seq<SwordUnit> swords = new Seq<>(maxSwords);
+        public Seq<SwordUnitc> swords = new Seq<>(maxSwords);
         public float buildProgress, totalProgress, attackWarmup;
         public float logicControlTime = -1;
         public boolean logicShooting;
@@ -244,7 +244,7 @@ public class SwordTurret extends BaseTurret{
             for(int i = 0; i < Math.min(readUnitIds.size, maxSwords); i++){
                 int id = readUnitIds.get(i);
                 if(id != -1){
-                    SwordUnit u = (SwordUnit)Groups.unit.getByID(id);
+                    SwordUnitc u = (SwordUnitc)Groups.unit.getByID(id);
                     u.orbitPos(i);
                     swords.add(u);
                     readUnitIds.set(i, -1);
@@ -253,8 +253,8 @@ public class SwordTurret extends BaseTurret{
 
             int s = 0, prev = swords.size;
             while(s < swords.size){
-                Unit u = swords.get(s);
-                if(u == null || u.dead || !u.isAdded()){
+                SwordUnitc u = swords.get(s);
+                if(u == null || u.dead() || !u.isAdded()){
                     swords.remove(s);
                 }else{
                     s++;
@@ -272,19 +272,19 @@ public class SwordTurret extends BaseTurret{
                 totalProgress += edelta();
 
                 if(buildProgress >= 1f){
-                    SwordUnit u = (SwordUnit)swordType.create(team);
+                    SwordUnitc u = (SwordUnitc)swordType.create(team);
                     u.building(this);
                     u.orbitPos(swordCount());
                     float
                         spawnX = x + Angles.trnsx(rotation, buildY),
                         spawnY = y + Angles.trnsy(rotation, buildY);
                     u.set(spawnX, spawnY);
-                    u.rotation = rotation;
+                    u.rotation(rotation);
                     u.add();
 
                     swords.add(u);
-                    Fx.spawn.at(u.x, u.y);
-                    Call.unitTetherBlockSpawned(tile, u.id);
+                    Fx.spawn.at(u.x(), u.y());
+                    Call.unitTetherBlockSpawned(tile, u.id());
                 }
             }
 
@@ -393,7 +393,7 @@ public class SwordTurret extends BaseTurret{
             write.f(rotation);
             write.f(buildProgress);
             write.i(swords.size);
-            swords.each(u -> write.i(u == null ? -1 : u.id));
+            swords.each(u -> write.i(u == null ? -1 : u.id()));
         }
 
         @Override

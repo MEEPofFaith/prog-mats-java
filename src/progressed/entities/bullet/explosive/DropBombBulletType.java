@@ -15,7 +15,7 @@ import progressed.game.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
-import static mindustry.Vars.headless;
+import static mindustry.Vars.*;
 import static progressed.graphics.DrawPseudo3D.*;
 
 public class DropBombBulletType extends BulletType{

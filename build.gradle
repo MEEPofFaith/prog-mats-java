@@ -1,9 +1,18 @@
-apply plugin: "java"
+plugins{
+    id 'java'
+    id 'com.github.GlennFolker.EntityAnno' version "$entVersion"
+}
 
 version '1.0'
 
-targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = 17
+tasks.withType(JavaCompile).configureEach{
+    sourceCompatibility = 17
+    options.release = 8
+
+    options.incremental = true
+    options.encoding = 'UTF-8'
+}
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -14,24 +23,30 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v145.1'
-    jabelVersion = "0.7.0"
-    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-}
-
-//java 8 backwards compatibility flag
-allprojects{
-    tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '8'])
-    }
+    sdkRoot = System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_HOME")
 }
 
 dependencies{
-    //Release
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    // i.
+    compileOnly "com.github.Anuken.Arc:arc-core:$arcVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    // ii.
+    annotationProcessor "com.github.GlennFolker.EntityAnno:downgrader:$entVersion"
+
+    // iii.
+    compileOnly "com.github.GlennFolker.EntityAnno:entity:$entVersion"
+    // iv.
+    kapt "com.github.GlennFolker.EntityAnno:entity:$entVersion"
+}
+
+entityAnno{
+    modName = 'prog-mats'
+    mindustryVersion = project['mindustryVersion']
+    revisionDir = file("$rootDir/revisions/")
+    fetchPackage = 'progressed.fetched'
+    genSrcPackage = 'progressed.entities.comp'
+    genPackage = 'progressed.gen.entities'
 }
 
 task jarAndroid{
@@ -49,7 +64,7 @@ task jarAndroid{
 
         //dex and desugar files - this requires d8 in your PATH
         "d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
-                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
+            .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
@@ -84,16 +99,17 @@ task deploy(type: Jar){
     }
 }
 
-task moveDesktop doFirst{
-    exec{
-        workingDir "$buildDir"
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            println "Yeeting the mod jar to the shadow realm..."
-            commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
-        }else{
-            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet the mod jar into the mods folder."
-        }
+task move doLast{
+    println "Yeeting the mod jar to the shadow realm..."
+
+    String os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    if(os.contains("windows")) {
+        ant.move file: "${buildDir}\\libs\\${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}\\AppData\\Roaming\\Mindustry\\mods"
+    }else if(os.contains("linux")) { //from Router
+        ant.move file: "${buildDir}/libs/${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}/.local/share/Mindustry/mods"
+    }else{
+        println "Yeah I don't know how to do this on a Mac can someone tell me?"
     }
 }
-
-task jarMove dependsOn "jar", "moveDesktop"

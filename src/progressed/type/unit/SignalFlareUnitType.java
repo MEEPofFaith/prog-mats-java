@@ -15,7 +15,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -30,7 +30,6 @@ public class SignalFlareUnitType extends UnitType{
     public SignalFlareUnitType(String name, float lifetime){
         super(name);
         this.lifetime = lifetime;
-        constructor = SignalFlareUnit::new;
         aiController = EmptyAI::new;
         hidden = true;
 
@@ -42,8 +41,6 @@ public class SignalFlareUnitType extends UnitType{
         fallSpeed = 1f / 30f;
         hitSize = 1f;
         deathExplosionEffect = null;
-
-        EntityMapping.nameMap.put(this.name, constructor);
     }
 
     public SignalFlareUnitType(String name){
@@ -77,9 +74,9 @@ public class SignalFlareUnitType extends UnitType{
         Draw.reset();
 
         if(Core.atlas.isFound(outlineRegion)){
-            SignalFlareUnit flare = (SignalFlareUnit)unit;
+            SignalFlareUnitc flare = (SignalFlareUnitc)unit;
 
-            Draw.rect(outlineRegion, unit.x, unit.y, outlineRegion.width / 4f, outlineRegion.height / 4f * flare.height, unit.rotation - 90f);
+            Draw.rect(outlineRegion, unit.x, unit.y, outlineRegion.width / 4f, outlineRegion.height / 4f * flare.height(), unit.rotation - 90f);
             Draw.reset();
         }
     }
@@ -87,25 +84,25 @@ public class SignalFlareUnitType extends UnitType{
     @Override
     public void drawBody(Unit unit){
         applyColor(unit);
-        SignalFlareUnit flare = (SignalFlareUnit)unit;
+        SignalFlareUnitc flare = (SignalFlareUnitc)unit;
 
-        Draw.rect(region, unit.x, unit.y, region.width / 4f, region.height / 4f * flare.height, unit.rotation - 90f);
+        Draw.rect(region, unit.x, unit.y, region.width / 4f, region.height / 4f * flare.height(), unit.rotation - 90f);
         Draw.reset();
     }
 
     @Override
     public void drawCell(Unit unit){
         applyColor(unit);
-        SignalFlareUnit flare = (SignalFlareUnit)unit;
+        SignalFlareUnitc flare = (SignalFlareUnitc)unit;
 
         Draw.color(cellColor(unit));
-        Draw.rect(cellRegion, unit.x, unit.y, cellRegion.width / 4f, cellRegion.height / 4f * flare.height, unit.rotation - 90);
+        Draw.rect(cellRegion, unit.x, unit.y, cellRegion.width / 4f, cellRegion.height / 4f * flare.height(), unit.rotation - 90);
         Draw.reset();
     }
 
     @Override
     public Color cellColor(Unit unit){
-        float f = ((SignalFlareUnit)unit).fout(), min = 0.5f;
+        float f = ((SignalFlareUnitc)unit).fout(), min = 0.5f;
         return super.cellColor(unit).mul(min + (1 - min) * f);
     }
 
@@ -115,7 +112,7 @@ public class SignalFlareUnitType extends UnitType{
         unit.health = health;
         unit.maxHealth = attraction;
         unit.rotation = 90f;
-        ((SignalFlareUnit)unit).lifetime = lifetime;
+        ((SignalFlareUnitc)unit).lifetime(lifetime);
         return unit;
     }
 
@@ -148,7 +145,7 @@ public class SignalFlareUnitType extends UnitType{
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
-            SignalFlareUnit flare = ((SignalFlareUnit)unit);
+            SignalFlareUnitc flare = ((SignalFlareUnitc)unit);
             bars.add(new Bar(
                 () -> Core.bundle.format("bar.pm-lifetime", PMUtls.stringsFixed(flare.fout() * 100f)),
                 () -> Pal.accent,

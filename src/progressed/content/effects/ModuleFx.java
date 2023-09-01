@@ -12,7 +12,7 @@ import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.randLenVectors;
+import static arc.math.Angles.*;
 import static mindustry.Vars.*;
 import static progressed.util.PMUtls.*;
 

@@ -1,32 +1,34 @@
-package progressed.entities.units;
+package progressed.entities.comp;
 
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import arc.util.io.*;
+import ent.anno.Annotations.*;
 import mindustry.*;
 import mindustry.gen.*;
-import mindustry.io.*;
 import mindustry.type.*;
-import progressed.content.*;
+import progressed.gen.entities.*;
 import progressed.type.unit.*;
 
-public class SentryUnit extends TimedKillUnit{
-    public Vec2 anchorVel = new Vec2();
-    public float anchorX, anchorY, anchorRot;
-    public float anchorDrag;
+@EntityComponent
+@EntityDef({SentryUnitc.class, Unitc.class, TimedKillc.class})
+abstract class SentryUnitComp implements Unitc, TimedKillc{
+    @Import float x, y, rotation, elevation, dragMultiplier;
+    @Import int id;
+    @Import Vec2 vel;
+    @Import UnitType type;
+
+    Vec2 anchorVel = new Vec2();
+    float anchorX, anchorY, anchorRot;
+    float anchorDrag;
 
     @Override
     public void setType(UnitType type){
-        super.setType(type);
-
         anchorDrag = ((SentryUnitType)type).anchorDrag;
     }
 
     @Override
     public void update(){
-        super.update();
-
         if(!Vars.net.client() || this.isLocal()){
             float offset = anchorX;
             float range = anchorY;
@@ -64,78 +66,26 @@ public class SentryUnit extends TimedKillUnit{
 
     @Override
     public void set(float x, float y){
-        super.set(x, y);
-
         anchorX = x;
         anchorY = y;
     }
 
     @Override
     public void rotation(float rotation){
-        super.rotation(rotation);
+        this.rotation = rotation; //Improperly replaces rotation. Glenn will fix later.
         anchorRot = rotation;
     }
 
     @Override
+    @Replace
     public float prefRotation(){
         return rotation;
     }
 
     @Override
+    @Replace
     public void wobble() {
-        anchorX += Mathf.sin(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
-        anchorY += Mathf.cos(Time.time + (float)(id() % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
-    }
-
-    @Override
-    public void write(Writes write){
-        super.write(write);
-
-        TypeIO.writeVec2(write, anchorVel);
-        write.f(anchorRot);
-        write.f(anchorX);
-        write.f(anchorY);
-    }
-
-    @Override
-    public void writeSync(Writes write){
-        super.writeSync(write);
-
-        TypeIO.writeVec2(write, anchorVel);
-        write.f(anchorRot);
-        write.f(anchorX);
-        write.f(anchorY);
-    }
-
-    @Override
-    public void read(Reads read){
-        super.read(read);
-
-        anchorVel = TypeIO.readVec2(read, anchorVel);
-        anchorRot = read.f();
-        anchorX = read.f();
-        anchorY = read.f();
-    }
-
-    @Override
-    public void readSync(Reads read){
-        super.readSync(read);
-
-        if(!isLocal()){
-            anchorVel = TypeIO.readVec2(read, anchorVel);
-            anchorRot = read.f();
-            anchorX = read.f();
-            anchorY = read.f();
-        }else{
-            TypeIO.readVec2(read, anchorVel);
-            read.f();
-            read.f();
-            read.f();
-        }
-    }
-
-    @Override
-    public int classId(){
-        return PMUnitTypes.classID(SentryUnit.class);
+        anchorX += Mathf.sin(Time.time + (float)(id % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
+        anchorY += Mathf.cos(Time.time + (float)(id % 10 * 12), 25f, 0.05f) * Time.delta * elevation;
     }
 }

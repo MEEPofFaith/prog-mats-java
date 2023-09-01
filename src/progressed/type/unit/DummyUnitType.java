@@ -6,13 +6,11 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
 import progressed.ai.*;
-import progressed.entities.units.*;
 
 public class DummyUnitType extends UnitType{
     public DummyUnitType(String name){
         super(name);
 
-        constructor = TargetDummyUnit::new;
         controller = u -> new EmptyAI();
         envEnabled = Env.any;
         envDisabled = 0;

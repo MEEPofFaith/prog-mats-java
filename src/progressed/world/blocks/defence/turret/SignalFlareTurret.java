@@ -14,7 +14,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import progressed.entities.bullet.unit.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.util.*;
 import progressed.world.meta.*;
 
@@ -54,7 +54,7 @@ public class SignalFlareTurret extends ItemTurret{
 
         public float tX, tY;
         public int count, amount;
-        public Seq<SignalFlareUnit> flares = new Seq<>();
+        public Seq<SignalFlareUnitc> flares = new Seq<>();
         public boolean targetFound;
         public Bullet bullet;
 
@@ -79,7 +79,7 @@ public class SignalFlareTurret extends ItemTurret{
                 flares.clear();
                 readUnits.each(i -> {
                     var unit = Groups.unit.getByID(i);
-                    if(unit instanceof SignalFlareUnit f){
+                    if(unit instanceof SignalFlareUnitc f){
                         flares.add(f);
                     }
                 });
@@ -228,8 +228,8 @@ public class SignalFlareTurret extends ItemTurret{
             super.write(write);
 
             write.b(flares.size);
-            for(SignalFlareUnit f : flares){
-                write.i(f.id);
+            for(SignalFlareUnitc f : flares){
+                write.i(f.id());
             }
         }
 

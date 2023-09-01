@@ -1,12 +1,10 @@
 package progressed.content;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.struct.ObjectMap.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -18,7 +16,7 @@ import mindustry.world.meta.*;
 import progressed.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.type.weapons.*;
@@ -26,16 +24,6 @@ import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes{
-    //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
-    private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(SignalFlareUnit.class, SignalFlareUnit::new),
-        prov(SwordUnit.class, SwordUnit::new),
-        prov(BuildingTetherLegsUnit.class, BuildingTetherLegsUnit::new),
-        prov(TargetDummyUnit.class, TargetDummyUnit::new),
-        prov(SentryUnit.class, SentryUnit::new)
-    };
-
-    private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
     public static UnitType
 
     //TODO A chain of air units with DriftTrail shenanigans. Serpulo. Steal crab unit cyan pallet.
@@ -62,57 +50,9 @@ public class PMUnitTypes{
     //sandy
     everythingUnit;
 
-    /**
-     * Internal function to flatmap {@code Class -> Prov} into an {@link Entry}.
-     *
-     * @author GlennFolker
-     */
-    private static <T extends Entityc> Entry<Class<T>, Prov<T>> prov(Class<T> type, Prov<T> prov){
-        Entry<Class<T>, Prov<T>> entry = new Entry<>();
-        entry.key = type;
-        entry.value = prov;
-        return entry;
-    }
-
-    /**
-     * Setups all entity IDs and maps them into {@link EntityMapping}.
-     *
-     * @author GlennFolker
-     */
-
-    private static void setupID(){
-        for(
-            int i = 0,
-            j = 0,
-            len = EntityMapping.idMap.length;
-
-            i < len;
-
-            i++
-        ){
-            if(EntityMapping.idMap[i] == null){
-                idMap.put(types[j].key, i);
-                EntityMapping.idMap[i] = types[j].value;
-
-                if(++j >= types.length) break;
-            }
-        }
-    }
-
-    /**
-     * Retrieves the class ID for a certain entity type.
-     *
-     * @author GlennFolker
-     */
-    public static <T extends Entityc> int classID(Class<T> type){
-        return idMap.get(type, -1);
-    }
-
     public static void load(){
-        setupID();
-
         //Region Sentry Units
-        barrage = new SentryUnitType("barrage"){{
+        barrage = EntityRegistry.content("barrage", SentryUnit.class, name -> new SentryUnitType(name){{
             lifetime = 39f * 60f;
 
             Weapon gunL = new Weapon(name + "-gun-r"){{
@@ -152,9 +92,9 @@ public class PMUnitTypes{
             for(int i = 0; i < 4; i++){
                 engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
             }
-        }};
+        }});
 
-        strikedown = new SentryUnitType("downpour"){{
+        strikedown = EntityRegistry.content("downpour", SentryUnit.class, name -> new SentryUnitType(name){{
             lifetime = 32f * 60f;
             range = maxRange = 40f * 8f;
 
@@ -204,10 +144,9 @@ public class PMUnitTypes{
             for(int i = 0; i < 4; i++){
                 engines.add(new AnchorEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
             }
-        }};
+        }});
 
-        draug = new ErekirUnitType("draug"){{
-            constructor = BuildingTetherLegsUnit::new;
+        draug = EntityRegistry.content("draug", NoCoreDepositBuildingTetherLegsUnit.class, name -> new ErekirUnitType(name){{
             controller = u -> new DepotMinerAI();
             isEnemy = false;
             allowedInPayloads = false;
@@ -268,40 +207,40 @@ public class PMUnitTypes{
                 //fully regen in 90 seconds
                 percentAmount = 1f / (90f * 60f) * 100f;
             }});
-        }};
+        }});
 
-        flareSmall = new SignalFlareUnitType("small-flare"){{
+        flareSmall = EntityRegistry.content("small-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name){{
             health = 300f;
             hideDetails = false;
             attraction = 800f;
             flareY = 29f / 4f;
-        }};
+        }});
 
-        flareMedium = new SignalFlareUnitType("medium-flare", 360f){{
+        flareMedium = EntityRegistry.content("medium-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 360f){{
             health = 900f;
             hideDetails = false;
             attraction = 11000f;
             flareY = 45f / 4f;
             flareEffectSize = 1.5f;
-        }};
+        }});
 
-        flareLarge = new SignalFlareUnitType("large-flare", 420f){{
+        flareLarge = EntityRegistry.content("large-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 420f){{
             health = 2700f;
             hideDetails = false;
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;
-        }};
+        }});
 
-        danceSword = new SwordUnitType("dance-sword"){{
+        danceSword = EntityRegistry.content("dance-sword", SwordUnit.class, name -> new SwordUnitType(name){{
             baseY = -4f;
             tipY = 11f;
             damage = 65f;
             hitEffect = OtherFx.swordStab;
             trailLength = 5;
-        }};
+        }});
 
-        masqueradeSword = new SwordUnitType("ball-sword"){{
+        masqueradeSword = EntityRegistry.content("ball-sword", SwordUnit.class, name -> new SwordUnitType(name){{
             baseY = -33f / 4f;
             tipY = 89f / 4f;
             damage = 90f;
@@ -309,9 +248,9 @@ public class PMUnitTypes{
             trailLength = 8;
             trailScl = 4;
             trailVel = 8;
-        }};
+        }});
 
-        targetDummy = new DummyUnitType("dummy"){{
+        targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
             drag = 0.33f;
             hideDetails = false;
             hitSize = 52f / 4f;
@@ -320,7 +259,7 @@ public class PMUnitTypes{
             for(int i = 0; i < 3; i++){
                 engines.add(new UnitEngine(Geometry.d4x(i) * engineOffset, Geometry.d4y(i) * engineOffset, engineSize, i * 90));
             }
-        }};
+        }});
 
         everythingUnit = new UnitType("god"){
             {
