@@ -7,7 +7,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
 
@@ -29,9 +29,9 @@ public class SignalFlareBulletType extends BulletType{
 
     @Override
     public void despawned(Bullet b){
-        SignalFlareUnit flare = (SignalFlareUnit)spawn.spawn(b.team, b.x, b.y);
+        SignalFlareUnitc flare = (SignalFlareUnitc)spawn.spawn(b.team, b.x, b.y);
         if(b.owner instanceof SignalFlareTurretBuild build){
-            flare.building = build;
+            flare.building(build);
             build.flares.add(flare);
         }
 

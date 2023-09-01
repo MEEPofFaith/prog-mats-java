@@ -1,25 +1,30 @@
-package progressed.entities.units;
+package progressed.entities.comp;
 
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import arc.util.io.*;
+import ent.anno.Annotations.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.io.*;
-import progressed.content.*;
+import mindustry.type.*;
+import progressed.gen.entities.*;
 import progressed.type.unit.*;
 import progressed.world.blocks.defence.turret.SignalFlareTurret.*;
 
-public class SignalFlareUnit extends UnitEntity implements Scaled{
+@EntityComponent
+@EntityDef({SignalFlareUnitc.class, Unitc.class})
+abstract class SignalFlareUnitComp implements Unitc, Scaled{
+    @Import float x, y, health, rotation;
+    @Import boolean dead, wasPlayer;
+    @Import UnitType type;
+    @Import Team team;
+
     public Building building;
     public float time, lifetime, height = 0f;
 
     @Override
     public void update(){
-        super.update();
-
         time = Math.min(time + Time.delta, lifetime);
 
         if(time >= lifetime){
@@ -48,26 +53,30 @@ public class SignalFlareUnit extends UnitEntity implements Scaled{
     }
 
     @Override
+    @Replace
     public float healthf(){
         return health / type.health;
     }
 
     @Override
+    @Replace
     public void clampHealth(){
-        // do nothing
+        //Do nothing
     }
 
     @Override
+    @Replace
     public void destroy(){
         SignalFlareTurretBuild s = (SignalFlareTurretBuild)building;
         if(s != null){
-            s.flares.remove(this);
+            s.flares.remove((SignalFlareUnitc)self());
         }
-        type.deathExplosionEffect.at(x, y, height, type.cellColor(this).cpy());
+        type.deathExplosionEffect.at(x, y, height, type.cellColor(self()).cpy());
         remove();
     }
 
     @Override
+    @Replace
     public void killed(){
         wasPlayer = isLocal();
         health = 0f;
@@ -75,73 +84,38 @@ public class SignalFlareUnit extends UnitEntity implements Scaled{
     }
 
     @Override
+    @Replace
     public boolean targetable(Team targeter){
         return fin() < 1 && team != targeter;
     }
 
     @Override
+    @Replace
     public boolean hittable(){
         return fin() < 1;
     }
 
     @Override
+    @Replace
     public boolean isFlying(){
         return true; //Always target
     }
 
     @Override
+    @Replace
     public boolean isGrounded(){
         return true; //Always target
     }
 
     @Override
+    @Replace
     public void impulse(float x, float y){
         // cannot move
     }
 
     @Override
+    @Replace
     public void impulseNet(Vec2 v){
         // cannot move
-    }
-
-    @Override
-    public void write(Writes write){
-        super.write(write);
-        write.f(time);
-        write.f(lifetime);
-        write.f(height);
-        TypeIO.writeBuilding(write, building);
-    }
-
-    @Override
-    public void writeSync(Writes write){
-        super.writeSync(write);
-        write.f(time);
-        write.f(lifetime);
-        write.f(height);
-        TypeIO.writeBuilding(write, building);
-    }
-
-    @Override
-    public void read(Reads read){
-        super.read(read);
-        time = read.f();
-        lifetime = read.f();
-        height = read.f();
-        building = TypeIO.readBuilding(read);
-    }
-
-    @Override
-    public void readSync(Reads read){
-        super.readSync(read);
-        time = read.f();
-        lifetime = read.f();
-        height = read.f();
-        building = TypeIO.readBuilding(read);
-    }
-
-    @Override
-    public int classId(){
-        return PMUnitTypes.classID(SignalFlareUnit.class);
     }
 }

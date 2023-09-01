@@ -29,7 +29,6 @@ import progressed.ui.*;
 public class PMUnitTypes{
     //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(SignalFlareUnit.class, SignalFlareUnit::new),
         prov(SwordUnit.class, SwordUnit::new),
     };
 
@@ -267,28 +266,28 @@ public class PMUnitTypes{
             }});
         }});
 
-        flareSmall = new SignalFlareUnitType("small-flare"){{
+        flareSmall = EntityRegistry.content("small-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name){{
             health = 300f;
             hideDetails = false;
             attraction = 800f;
             flareY = 29f / 4f;
-        }};
+        }});
 
-        flareMedium = new SignalFlareUnitType("medium-flare", 360f){{
+        flareMedium = EntityRegistry.content("medium-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 360f){{
             health = 900f;
             hideDetails = false;
             attraction = 11000f;
             flareY = 45f / 4f;
             flareEffectSize = 1.5f;
-        }};
+        }});
 
-        flareLarge = new SignalFlareUnitType("large-flare", 420f){{
+        flareLarge = EntityRegistry.content("large-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 420f){{
             health = 2700f;
             hideDetails = false;
             attraction = 26000f;
             flareY = 61f / 4f;
             flareEffectSize = 2f;
-        }};
+        }});
 
         danceSword = new SwordUnitType("dance-sword"){{
             baseY = -4f;
