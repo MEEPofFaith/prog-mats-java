@@ -1,4 +1,4 @@
-package progressed.world.blocks.sandbox.distribution;
+package progressed.world.blocks.distribution;
 
 import arc.*;
 import arc.graphics.*;
@@ -7,7 +7,6 @@ import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
-import progressed.world.blocks.distribution.*;
 
 public class SandDriver extends BurstDriver{
     public TextureRegion baseRainbow, rainbow;

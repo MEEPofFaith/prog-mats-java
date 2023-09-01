@@ -33,6 +33,7 @@ import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.*;
+import progressed.world.blocks.defence.turret.sandbox.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
@@ -86,6 +87,9 @@ public class PMBlocks{
     //Nexus
     solstice, starfall,
 
+    //Test turret
+    testTurret,
+
     // endregion
     // region production
 
@@ -100,7 +104,7 @@ public class PMBlocks{
     floatingConveyor,
 
     //Misc
-    burstDriver,
+    burstDriver, sandDriver,
 
     // endregion
     // region Crafting
@@ -119,7 +123,7 @@ public class PMBlocks{
     // endregion
     // region Units
 
-    healZone, speedZone, strengthZone,
+    healZone, speedZone, strengthZone, harmacist,
 
     // endregion
     // region Effect
@@ -1135,6 +1139,20 @@ public class PMBlocks{
 
             consumePower(25f);
         }};
+
+        testTurret = new FreeTurret("test-turret"){{
+            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
+            size = 2;
+            range = 69 * tilesize;
+            reload = 60f;
+            shootType = new SnakeBulletType(3f, 50f, "aflare"){{
+                length = 5;
+                lifetime = 300f;
+                weaveScale = 8f;
+                weaveMag = 2f;
+                homingPower = 0.3f;
+            }};
+        }};
         // endregion
 
         // region Production
@@ -1204,6 +1222,17 @@ public class PMBlocks{
             range = 560f;
 
             consumePower(2.75f);
+        }};
+
+        sandDriver = new SandDriver("sand-driver"){{
+            size = 3;
+            itemCapacity = 180;
+            reload = 120f;
+            shots = 90;
+            delay = 0.75f;
+            range = 560f;
+
+            consumePower(0.1f);
         }};
         // endregion
 
@@ -1429,6 +1458,21 @@ public class PMBlocks{
                 stats.add(Stat.output, PMStatValues.statusEffect(PMStatusEffects.strengthBoost));
             }
         };
+
+        harmacist = new EffectZone("harmacist"){{
+            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            alwaysUnlocked = true;
+
+            size = 2;
+            range = 32f * tilesize;
+            height = 16f;
+            baseColor = Color.red;
+            reload = 5f;
+            affectOwnTeam = false;
+            affectEnemyTeam = true;
+
+            zoneEffect = tile -> all.each(u -> PMBullets.harmanuke.create(tile, u.x, u.y, 0f));
+        }};
         // endregion
 
         // region Effect
@@ -1517,7 +1561,6 @@ public class PMBlocks{
         // endregion
 
         PMErekirBlocks.load();
-        PMSandboxBlocks.load();
     }
 }
 

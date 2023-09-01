@@ -1,8 +1,6 @@
 package progressed.content;
 
-import arc.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.content.*;
@@ -12,15 +10,11 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.unit.*;
-import mindustry.world.meta.*;
-import progressed.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
 import progressed.gen.entities.*;
-import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.type.weapons.*;
-import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes{
@@ -42,13 +36,7 @@ public class PMUnitTypes{
     flareSmall, flareMedium, flareLarge,
 
     //swords
-    danceSword, masqueradeSword,
-
-    //oof
-    targetDummy,
-
-    //sandy
-    everythingUnit;
+    danceSword, masqueradeSword;
 
     public static void load(){
         //Region Sentry Units
@@ -249,57 +237,5 @@ public class PMUnitTypes{
             trailScl = 4;
             trailVel = 8;
         }});
-
-        targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
-            drag = 0.33f;
-            hideDetails = false;
-            hitSize = 52f / 4f;
-            engineOffset = 7f;
-            engineSize = 2f;
-            for(int i = 0; i < 3; i++){
-                engines.add(new UnitEngine(Geometry.d4x(i) * engineOffset, Geometry.d4y(i) * engineOffset, engineSize, i * 90));
-            }
-        }});
-
-        everythingUnit = new UnitType("god"){
-            {
-                constructor = UnitEntity::create;
-                alwaysUnlocked = true;
-                hidden = !ProgMats.everything();
-                flying = true;
-                lowAltitude = true;
-                mineSpeed = 100f;
-                mineTier = 10000;
-                buildSpeed = 10000f;
-                drag = 0.05f;
-                speed = 3.55f;
-                rotateSpeed = 19f;
-                accel = 0.11f;
-                itemCapacity = 20000;
-                health = 200000f;
-                engineOffset = 5.5f;
-                hitSize = 11f;
-            }
-
-            @Override
-            public void setStats(){
-                super.setStats();
-
-                stats.remove(Stat.abilities);
-                stats.remove(Stat.weapons);
-                stats.add(Stat.abilities, t -> t.add(PMElements.everything()));
-                stats.add(Stat.weapons, t -> t.add(PMElements.everything()));
-            }
-
-            @Override
-            public void draw(Unit unit){
-                super.draw(unit);
-
-                if(!ProgMats.everything()){
-                    Draw.z(Layer.overlayUI);
-                    PMDrawf.text(unit.x, unit.y, false, -1, unit.team.color, Core.bundle.get("pm-sandbox-disabled"));
-                }
-            }
-        };
     }
 }

@@ -1,23 +1,15 @@
 package progressed;
 
 import arc.*;
-import arc.audio.*;
 import arc.func.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
-import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
-import mindustry.world.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
@@ -27,19 +19,13 @@ import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
-import progressed.util.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
-import progressed.world.blocks.defence.turret.sandbox.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
-import static mindustry.content.Blocks.*;
-import static progressed.content.blocks.PMSandboxBlocks.*;
 
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
-    public static Seq<BulletData> allBullets = new Seq<>();
-    public static int sandboxBlockHealthMultiplier = 1000000;
     public static PMHints hints = new PMHints();
     boolean hasProc;
 
@@ -59,34 +45,6 @@ public class ProgMats extends Mod{
 
         if(!headless){
             Events.on(ContentInitEvent.class, e -> content.blocks().each(b -> b instanceof ModularTurret, (ModularTurret b) -> b.setClip(PMModules.maxClip)));
-        }
-
-        //Sandbox utilities: Make sandbox blocks have a ton of health.
-        if(settings.getBool("pm-sandbox-health", true)){
-            Events.on(ContentInitEvent.class, e -> {
-                Seq<Block> sandboxBlocks = Seq.with(
-                    //Vanilla
-                    itemSource, itemVoid,
-                    liquidSource, liquidVoid,
-                    powerSource, powerVoid,
-                    payloadSource, payloadVoid,
-                    heatSource,
-
-                    //PM
-                    eviscerator, everythingGun, testTurret,
-                    everythingItemSource, sandDriver,
-                    everythingLiquidSource,
-                    strobeNode, strobeInf, strobeBoost,
-                    sandboxWall, sandboxWallLarge,
-                    infiniHeatSource,
-                    godFactory, capBlock, harmacist,
-                    multiSource, multiVoid, multiSourceVoid, multiEverythingSourceVoid,
-                    infiniMender, infiniOverdrive
-                );
-                //Can't use b.buildVisibility == BuildVisibility.sandboxOnly because some things, like scrap walls, are also sandbox only.
-
-                sandboxBlocks.each(b -> b.health *= sandboxBlockHealthMultiplier);
-            });
         }
     }
 
@@ -111,10 +69,6 @@ public class ProgMats extends Mod{
             progM.meta.author = contributors.toString();
 
             Events.on(ClientLoadEvent.class, e -> {
-                if(everything()){
-                    godHood(PMUnitTypes.everythingUnit);
-                    setupEveryBullets((EverythingTurret)everythingGun);
-                }
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
 
@@ -183,10 +137,6 @@ public class ProgMats extends Mod{
             t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
             t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
             t.checkPref("pm-tesla-range", true);
-            t.pref(new Separator("pm-sandbox-settings"));
-            t.sliderPref("pm-strobespeed", 3, 1, 20, 1, s -> PMUtls.stringsFixed(s / 2f));
-            t.checkPref("pm-sandbox-health", true);
-            t.checkPref("pm-sandbox-everything", false);
             t.pref(new Separator("pm-other-settings"));
             t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
         });
@@ -196,127 +146,9 @@ public class ProgMats extends Mod{
         return settings.getBool("pm-farting", false);
     }
 
-    public static boolean everything(){
-        return settings.getBool("pm-sandbox-everything", false);
-    }
-
     static boolean TUEnabled(){
         LoadedMod testUtils = mods.getMod("test-utils");
         return testUtils != null && testUtils.isSupported() && testUtils.enabled();
-    }
-
-    public static void godHood(UnitType ascending){
-        try{
-            ascending.hitSize = 0;
-            content.units().each(u -> {
-                if(u != ascending){
-                    u.weapons.each(w -> {
-                        if(!w.bullet.killShooter){
-                            Weapon copy = w.copy();
-                            ascending.weapons.add(copy);
-                            if(w.otherSide != -1){
-                                int diff = u.weapons.get(w.otherSide).otherSide - w.otherSide;
-                                copy.otherSide = ascending.weapons.indexOf(copy) + diff;
-                            }
-
-                            copy.rotateSpeed = 360f;
-                            copy.shootCone = 360f;
-
-                            if(copy.shootStatus == StatusEffects.unmoving || copy.shootStatus == StatusEffects.slow){
-                                copy.shootStatus = StatusEffects.none;
-                            }
-                        }
-                    });
-
-                    u.abilities.each(a -> ascending.abilities.add(a));
-                    ascending.clipSize = Math.max(ascending.clipSize, u.clipSize);
-                }
-            });
-        }catch(Throwable ignored){}
-    }
-
-    public static void setupEveryBullets(Turret base){
-        content.units().each(u -> u.weapons.each(w -> w.bullet != null, w -> {
-            BulletType bul = w.bullet;
-            BulletData data = new BulletData(bul, w.shootSound, bul.shootEffect, bul.smokeEffect, w.shake, bul.lifetime);
-            if(!allBullets.contains(data)){
-                allBullets.add(data);
-            }
-        }));
-        content.blocks().each(b -> b instanceof Turret, b -> {
-            if(b != base){
-                if(b instanceof LaserTurret block && block.shootType != null){
-                    BulletType bul = block.shootType;
-                    Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                    Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                    BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime + block.shootDuration, true);
-                    allBullets.add(data);
-                }else if(b instanceof PowerTurret block && block.shootType != null){
-                    BulletType bul = block.shootType;
-                    Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                    Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                    BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                    allBullets.add(data);
-                }else if(b instanceof ItemTurret block){
-                    for(BulletType bul : block.ammoTypes.values()){
-                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                        allBullets.add(data);
-                    }
-                }else if(b instanceof LiquidTurret block){
-                    for(BulletType bul : block.ammoTypes.values()){
-                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                        allBullets.add(data);
-                    }
-                }else if(b instanceof PayloadAmmoTurret block){
-                    for(BulletType bul : block.ammoTypes.values()){
-                        Effect fshootEffect = block.shootEffect == null ? bul.shootEffect : block.shootEffect;
-                        Effect fsmokeEffect = block.smokeEffect == null ? bul.smokeEffect : block.smokeEffect;
-                        BulletData data = new BulletData(bul, block.shootSound, fshootEffect, fsmokeEffect, block.shake, bul.lifetime);
-                        allBullets.add(data);
-                    }
-                }
-            }
-        });
-
-        allBullets.sort(b -> PMUtls.bulletDamage(b.bulletType, b.lifetime));
-    }
-
-    public static class BulletData{
-        public BulletType bulletType;
-        public Sound shootSound;
-        public Effect shootEffect, smokeEffect;
-        public float shake, lifetime;
-        public boolean continuousBlock;
-
-        public BulletData(BulletType bulletType, Sound shootSound, Effect shakeEffect, Effect smokeEffect, float shake, float lifetime, boolean continuous){
-            this.bulletType = bulletType;
-            this.shootSound = shootSound;
-            this.shootEffect = shakeEffect;
-            this.smokeEffect = smokeEffect;
-            this.shake = shake;
-            this.lifetime = lifetime;
-            this.continuousBlock = continuous;
-        }
-
-        public BulletData(BulletType bulletType, Sound shootSound, Effect shootEffect, Effect smokeEffect, float shake, float lifetime){
-            this(bulletType, shootSound, shootEffect, smokeEffect, shake, lifetime, false);
-        }
-
-        @Override
-        public boolean equals(Object obj){
-            return obj instanceof BulletData o &&
-                bulletType == o.bulletType &&
-                shootSound == o.shootSound &&
-                shootEffect == o.shootEffect &&
-                smokeEffect == o.smokeEffect &&
-                shake == o.shake &&
-                lifetime == o.lifetime &&
-                continuousBlock == o.continuousBlock;
-        }
     }
 
     static class Separator extends Setting{

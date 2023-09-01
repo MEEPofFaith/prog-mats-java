@@ -103,11 +103,7 @@ public class PMStatValues{
                         }else if(type.continuousDamage() > 0){
                             bt.add(bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                         }else{
-                            if(Float.isInfinite(type.damage)){
-                                bt.add(PMElements.infiniteDamage());
-                            }else{
-                                bt.add(bundle.format("bullet.damage", type.damage));
-                            }
+                            bt.add(bundle.format("bullet.damage", type.damage));
                             if(type instanceof MagnetBulletType stype){
                                 sep(bt, bundle.format("bullet.pm-attraction-radius", stype.force, stype.attractRange / tilesize));
                             }

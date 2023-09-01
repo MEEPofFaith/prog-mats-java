@@ -6,9 +6,8 @@
 [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=8a1a1a&label=Avant)](https://discord.gg/V6ygvgGVqE)
 [![Stars](https://img.shields.io/github/stars/MEEPofFaith/prog-mats-java?label=Star%20the%20mod%20here%21&style=social)]()
 
-Meepscellanious Concepts is a combination of three of my mods originally made in v5:
+Meepscellanious Concepts is a combination of two of my mods originally made in v5:
 - Ohno Missiles
-- Extra Sand in the Sandbox
 - Progressed Materials
 
 This mod is made up of random ideas that come to me; the balancing is questionable, just have fun.
