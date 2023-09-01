@@ -4,7 +4,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.units.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.type.unit.*;
 import progressed.world.blocks.defence.turret.energy.SwordTurret.*;
 
@@ -26,8 +26,8 @@ public class SwordAI extends AIController{
 
         if(swordTurret.isActive()){
             attackTimer += Time.delta;
-            if(attackTimer >= sunit().orbitPos * stype().attackTimeOffset){
-                attackTimer = sunit().orbitPos * stype().attackTimeOffset + 60f;
+            if(attackTimer >= sunit().orbitPos() * stype().attackTimeOffset){
+                attackTimer = sunit().orbitPos() * stype().attackTimeOffset + 60f;
             }
         }else{
             attackTimer -= Time.delta;
@@ -41,7 +41,7 @@ public class SwordAI extends AIController{
             attack(swordTurret.targetPos, stype().attackRadius);
         }else{
             float count = Math.max(swordTurret.swordCount(), 1); //Should never be 0, just in case this is somehow run while it's 0.
-            float pos = 360f / count * sunit().orbitPos - Time.time * stype().orbitSpeed + swordTurret.rotation + Mathf.randomSeed(swordTurret.id, 360f);
+            float pos = 360f / count * sunit().orbitPos() - Time.time * stype().orbitSpeed + swordTurret.rotation + Mathf.randomSeed(swordTurret.id, 360f);
             Tmp.v1.trns(Mathf.mod(pos, 360f), stype().orbitRadius).add(swordTurret);
             moveTo(Tmp.v1, 1f, 20);
             unit.lookAt(swordTurret.rotation);
@@ -86,7 +86,7 @@ public class SwordAI extends AIController{
         return rotating ? stype().neutralSpeed : inRange ? stype().speed * sturret().efficiency : shouldAttack() ? stype().travelSpeed * sturret().efficiency : stype().neutralSpeed;
     }
     public boolean shouldAttack(){
-        return attackTimer > sunit().orbitPos * stype().attackTimeOffset;
+        return attackTimer > sunit().orbitPos() * stype().attackTimeOffset;
     }
 
     public boolean shouldDamage(){
@@ -97,8 +97,8 @@ public class SwordAI extends AIController{
         return sunit().stype();
     }
 
-    public SwordUnit sunit(){
-        return (SwordUnit)unit;
+    public SwordUnitc sunit(){
+        return (SwordUnitc)unit;
     }
 
     public SwordTurretBuild sturret(){

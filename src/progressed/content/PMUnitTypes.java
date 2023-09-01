@@ -1,12 +1,10 @@
 package progressed.content;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.struct.ObjectMap.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -18,7 +16,6 @@ import mindustry.world.meta.*;
 import progressed.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
-import progressed.entities.units.*;
 import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
@@ -27,12 +24,6 @@ import progressed.ui.*;
 
 @SuppressWarnings("unchecked")
 public class PMUnitTypes{
-    //Steal from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
-    private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(SwordUnit.class, SwordUnit::new),
-    };
-
-    private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
     public static UnitType
 
     //TODO A chain of air units with DriftTrail shenanigans. Serpulo. Steal crab unit cyan pallet.
@@ -59,55 +50,7 @@ public class PMUnitTypes{
     //sandy
     everythingUnit;
 
-    /**
-     * Internal function to flatmap {@code Class -> Prov} into an {@link Entry}.
-     *
-     * @author GlennFolker
-     */
-    private static <T extends Entityc> Entry<Class<T>, Prov<T>> prov(Class<T> type, Prov<T> prov){
-        Entry<Class<T>, Prov<T>> entry = new Entry<>();
-        entry.key = type;
-        entry.value = prov;
-        return entry;
-    }
-
-    /**
-     * Setups all entity IDs and maps them into {@link EntityMapping}.
-     *
-     * @author GlennFolker
-     */
-
-    private static void setupID(){
-        for(
-            int i = 0,
-            j = 0,
-            len = EntityMapping.idMap.length;
-
-            i < len;
-
-            i++
-        ){
-            if(EntityMapping.idMap[i] == null){
-                idMap.put(types[j].key, i);
-                EntityMapping.idMap[i] = types[j].value;
-
-                if(++j >= types.length) break;
-            }
-        }
-    }
-
-    /**
-     * Retrieves the class ID for a certain entity type.
-     *
-     * @author GlennFolker
-     */
-    public static <T extends Entityc> int classID(Class<T> type){
-        return idMap.get(type, -1);
-    }
-
     public static void load(){
-        setupID();
-
         //Region Sentry Units
         barrage = EntityRegistry.content("barrage", SentryUnit.class, name -> new SentryUnitType(name){{
             lifetime = 39f * 60f;
@@ -289,15 +232,15 @@ public class PMUnitTypes{
             flareEffectSize = 2f;
         }});
 
-        danceSword = new SwordUnitType("dance-sword"){{
+        danceSword = EntityRegistry.content("dance-sword", SwordUnit.class, name -> new SwordUnitType(name){{
             baseY = -4f;
             tipY = 11f;
             damage = 65f;
             hitEffect = OtherFx.swordStab;
             trailLength = 5;
-        }};
+        }});
 
-        masqueradeSword = new SwordUnitType("ball-sword"){{
+        masqueradeSword = EntityRegistry.content("ball-sword", SwordUnit.class, name -> new SwordUnitType(name){{
             baseY = -33f / 4f;
             tipY = 89f / 4f;
             damage = 90f;
@@ -305,7 +248,7 @@ public class PMUnitTypes{
             trailLength = 8;
             trailScl = 4;
             trailVel = 8;
-        }};
+        }});
 
         targetDummy = EntityRegistry.content("dummy", TargetDummyUnit.class, name -> new DummyUnitType(name){{
             drag = 0.33f;

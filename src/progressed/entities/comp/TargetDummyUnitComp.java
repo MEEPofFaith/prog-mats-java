@@ -9,7 +9,7 @@ import progressed.world.blocks.sandbox.units.TargetDummyBase.*;
 @EntityComponent
 @EntityDef({TargetDummyUnitc.class, Unitc.class})
 abstract class TargetDummyUnitComp implements Unitc, Healthc{
-    public @Nullable Building building;
+    @Nullable Building building;
 
     @Override
     public void update(){

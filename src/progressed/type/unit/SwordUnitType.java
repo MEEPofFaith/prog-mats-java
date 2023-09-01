@@ -12,7 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.ai.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -39,7 +39,6 @@ public class SwordUnitType extends UnitType{
 
     public SwordUnitType(String name){
         super(name);
-        constructor = SwordUnit::new;
         aiController = SwordAI::new;
         isEnemy = false;
         allowedInPayloads = logicControllable = playerControllable = false;
@@ -62,8 +61,6 @@ public class SwordUnitType extends UnitType{
         trailColor = Color.red.cpy().a(0.25f);
         trailLength = 5;
         trailScl = 2;
-
-        EntityMapping.nameMap.put(this.name, constructor);
     }
 
     @Override
@@ -95,24 +92,24 @@ public class SwordUnitType extends UnitType{
     public void drawBody(Unit unit){
         super.drawBody(unit);
 
-        if(heatRegion.found() && unit instanceof SwordUnit sunit && sunit.heat > 0.01f){
-            Drawf.additive(heatRegion, heatColor.write(Tmp.c1).mulA(sunit.heat), unit.x, unit.y, unit.rotation - 90f, Draw.z());
+        if(heatRegion.found() && unit instanceof SwordUnitc sunit && sunit.heat() > 0.01f){
+            Drawf.additive(heatRegion, heatColor.write(Tmp.c1).mulA(sunit.heat()), unit.x, unit.y, unit.rotation - 90f, Draw.z());
         }
     }
 
     @Override
     public void drawTrail(Unit unit){
-        if(!(unit instanceof SwordUnit sword)) return;
+        if(!(unit instanceof SwordUnitc sword)) return;
 
         if(trailLength > 0){
-            if(sword.driftTrails == null){
-                sword.driftTrails = new DriftTrail[]{
+            if(sword.driftTrails() == null){
+                sword.driftTrails(new DriftTrail[]{
                     new DriftTrail(trailLength),
                     new DriftTrail(trailLength)
-                };
+                });
             }
 
-            for(DriftTrail trail: sword.driftTrails){
+            for(DriftTrail trail: sword.driftTrails()){
                 trail.draw(trailColor == null ? unit.team.color : trailColor, trailScl);
             }
         }

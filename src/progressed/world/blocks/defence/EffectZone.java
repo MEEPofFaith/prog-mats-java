@@ -13,7 +13,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import progressed.entities.units.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 
 import static mindustry.Vars.*;
@@ -115,7 +115,7 @@ public class EffectZone extends Block{
             all.clear();
             Units.nearby(affectEnemyTeam ? null : team, x, y, range, other -> {
                 if(
-                    !other.dead && !(other instanceof SwordUnit) &&
+                    !other.dead && !(other instanceof SwordUnitc) &&
                         (affectOwnTeam && other.team == team || affectEnemyTeam && team != other.team)
                 ) all.add(other);
             });

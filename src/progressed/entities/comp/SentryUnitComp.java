@@ -18,9 +18,9 @@ abstract class SentryUnitComp implements Unitc, TimedKillc{
     @Import Vec2 vel;
     @Import UnitType type;
 
-    public Vec2 anchorVel = new Vec2();
-    public float anchorX, anchorY, anchorRot;
-    public float anchorDrag;
+    Vec2 anchorVel = new Vec2();
+    float anchorX, anchorY, anchorRot;
+    float anchorDrag;
 
     @Override
     public void setType(UnitType type){

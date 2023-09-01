@@ -20,8 +20,8 @@ abstract class SignalFlareUnitComp implements Unitc, Scaled{
     @Import UnitType type;
     @Import Team team;
 
-    public Building building;
-    public float time, lifetime, height = 0f;
+    Building building;
+    float time, lifetime, height = 0f;
 
     @Override
     public void update(){

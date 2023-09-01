@@ -9,7 +9,7 @@ import mindustry.type.*;
 import progressed.util.*;
 import progressed.world.draw.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class SweepLaserTurretModule extends PowerTurretModule{
     public float angleRnd = 30f;

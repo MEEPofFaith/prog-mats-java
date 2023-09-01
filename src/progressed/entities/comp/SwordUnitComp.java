@@ -1,32 +1,43 @@
-package progressed.entities.units;
+package progressed.entities.comp;
 
 import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import ent.anno.Annotations.*;
 import mindustry.core.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import progressed.ai.*;
-import progressed.content.*;
 import progressed.content.effects.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 
 import static mindustry.Vars.*;
 
-public class SwordUnit extends BuildingTetherPayloadUnit{
+@EntityComponent
+@EntityDef({SwordUnitc.class, Unitc.class, BuildingTetherc.class})
+abstract class SwordUnitComp implements Unitc, BuildingTetherc{
+    @Import float x, y, rotation, elevation;
+    @Import Vec2 vel;
+    @Import UnitType type;
+    @Import Team team;
+    @Import UnitController controller;
+    @Import Building building;
+
     IntSeq collided = new IntSeq();
     float lastBaseX = Float.NEGATIVE_INFINITY, lastBaseY;
-    public DriftTrail[] driftTrails;
-    public int orbitPos;
-    public float heat;
+    int orbitPos;
+    float heat;
+    transient @SyncLocal DriftTrail[] driftTrails;
 
     @Override
     public void update(){
-        super.update();
-
         if(sAI() != null && sAI().shouldDamage() && lastBaseX != Float.NEGATIVE_INFINITY){
             float
                 tipX = x + Angles.trnsx(rotation, stype().tipY),
@@ -65,8 +76,6 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
 
     @Override
     public void remove(){
-        super.remove();
-
         if(driftTrails != null){
             for(DriftTrail trail: driftTrails){
                 if(trail.size() > 0) TrailFadeFx.driftTrailFade.at(x, y, type.trailScl, type.trailColor, trail.copy());
@@ -75,8 +84,9 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     }
 
     @Override
-    public void damage(float amount){
-        //don't flash
+    @Replace(69)
+    public void damage(float v){
+        //Don't flash
     }
 
     public void unitRayCast(float x1, float y1, float x2, float y2){
@@ -163,9 +173,14 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
     }
 
     @Override
+    @Replace
     public float speed(){
         SwordAI sAI = sAI();
-        if(sAI == null) return super.speed();
+        if(sAI == null){ //From Unitc
+            float strafePenalty = isGrounded() || !isPlayer() ? 1f : Mathf.lerp(1f, type.strafePenalty, Angles.angleDist(vel().angle(), rotation) / 180f);
+            float boost = Mathf.lerp(1f, type.canBoost ? type.boostMultiplier : 1f, elevation);
+            return type.speed * strafePenalty * boost * floorSpeedMultiplier();
+        }
         return sAI.speed();
     }
 
@@ -183,10 +198,5 @@ public class SwordUnit extends BuildingTetherPayloadUnit{
 
     public SwordAI sAI(){
         return controller instanceof SwordAI s ? s : null;
-    }
-
-    @Override
-    public int classId(){
-        return PMUnitTypes.classID(SwordUnit.class);
     }
 }
