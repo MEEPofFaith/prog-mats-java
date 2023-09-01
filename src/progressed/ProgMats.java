@@ -98,11 +98,11 @@ public class ProgMats extends Mod{
             LoadedMod progM = mods.locateMod("prog-mats");
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);
 
-            progM.meta.displayName = "[#FCC21B]" + progM.meta.displayName + "[]";
+            progM.meta.displayName = "[#4a6de5]" + progM.meta.displayName + "[]";
             progM.meta.description = getModBundle.get(progM.meta.name + ".description");
 
             StringBuilder contributors = new StringBuilder(getModBundle.get(progM.meta.name + ".author"));
-            contributors.append("\n\n").append("[#FCC21B]Contributors:[]");
+            contributors.append("\n\n").append("[#4a6de5]Contributors:[]");
             int i = 0;
             while(bundle.has("mod." + progM.meta.name + "-contributor." + i)){
                 contributors.append("\n        ").append(getModBundle.get(progM.meta.name + "-contributor." + i));
