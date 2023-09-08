@@ -10,8 +10,8 @@ import static arc.Core.*;
 import static arc.math.Mathf.*;
 
 public class DrawPseudo3D{
-    /** Translates horizontal distance in tiles to camera offset height. Somewhat arbitrary. */
-    public static final float horiToVerti = 1f/48f;
+    /** Translates horizontal distance in world units to camera offset height. Somewhat arbitrary. */
+    public static final float horiToVerti = 1f/48f/Vars.tilesize;
     private static final Color tmpCol = new Color();
     
     /**

@@ -1,5 +1,6 @@
 package progressed.content.bullets;
 
+import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.content.effects.*;
@@ -21,7 +22,7 @@ public class ModuleBullets{
             collidesAir = false;
             ammoMultiplier = 12;
 
-            height = 32f;
+            height = 32f * Vars.tilesize;
             heightRnd = 0.5f;
             trailLength = 15;
             trailWidth = 1f;

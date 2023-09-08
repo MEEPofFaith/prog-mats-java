@@ -2,6 +2,7 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.math.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -184,7 +185,7 @@ public class PayloadBullets{
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
-            height = 24f;
+            height = 24f * Vars.tilesize;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
@@ -194,7 +195,7 @@ public class PayloadBullets{
             status = StatusEffects.none;
 
             lifetime *= 1.5f;
-            height = 36f;
+            height = 36f * Vars.tilesize;
             zoneRadius = 5f * 8f;
             trailLength = 25;
             trailWidth = 1f;
@@ -240,7 +241,7 @@ public class PayloadBullets{
             lifetime = 240;
             scaleLife = false;
 
-            height = 48f;
+            height = 48f * Vars.tilesize;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = Pal.suppress;
@@ -273,7 +274,7 @@ public class PayloadBullets{
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            height = 70f;
+            height = 70f * Vars.tilesize;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
@@ -285,7 +286,7 @@ public class PayloadBullets{
 
             lifetime = 5f * 60f;
 
-            height = 160f;
+            height = 160f * Vars.tilesize;
             zoneRadius = 12f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
@@ -325,7 +326,7 @@ public class PayloadBullets{
             despawnEffect = MissileFx.nuclearExplosion;
             blockEffect = MissileFx.missileBlockedLarge;
 
-            height = 70f;
+            height = 70f * Vars.tilesize;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
