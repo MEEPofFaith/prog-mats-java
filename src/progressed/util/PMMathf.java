@@ -19,6 +19,16 @@ public class PMMathf{
         return (float)Math.sqrt(w * h * 2f);
     }
 
+    public static float quadratic(float a, float b, float c, boolean negative){
+        float d = Mathf.sqrt(b * b - (4 * a * c)); //TODO what to do in the case of solutionless input?
+        if(negative) d *= -1;
+        return (-b - d) / (2 * a);
+    }
+
+    public static float quadratic(float a, float b, float c){
+        return quadratic(a, b, c, false);
+    }
+
     public static Vec2 randomCirclePoint(Vec2 v, float radius){
         v.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random()));
 

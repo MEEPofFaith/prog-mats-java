@@ -1140,18 +1140,11 @@ public class PMBlocks{
             consumePower(25f);
         }};
 
-        testTurret = new FreeTurret("test-turret"){{
+        testTurret = new TestTurret("test-turret"){{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             size = 2;
             range = 69 * tilesize;
-            reload = 60f;
-            shootType = new SnakeBulletType(3f, 50f, "aflare"){{
-                length = 5;
-                lifetime = 300f;
-                weaveScale = 8f;
-                weaveMag = 2f;
-                homingPower = 0.3f;
-            }};
+            reload = 20f;
         }};
         // endregion
 
