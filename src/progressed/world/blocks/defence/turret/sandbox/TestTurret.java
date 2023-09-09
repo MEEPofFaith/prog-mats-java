@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.pattern.*;
 import mindustry.logic.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
@@ -20,9 +21,13 @@ public class TestTurret extends Turret{
         super(name);
 
         shootType = new ArcBulletType(4f);
+        reload = 10f;
+        shootY = 0f;
         shootCone = 360f;
-        inaccuracy = 15f;
+        inaccuracy = 30f;
+        velocityRnd = 0.3f;
         rotateSpeed = 1f;
+        shoot = new ShootSpread(5, 72f);
     }
 
     @Override
@@ -83,8 +88,9 @@ public class TestTurret extends Turret{
             //float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y) / type.range, minRange / type.range, range() / type.range) : 1f;
 
             //handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
-            float zVel = ArcBulletData.calcVel(Tmp.v1, type, shootAngle, 45f, Mathf.range(inaccuracy + type.inaccuracy));
-            handleBullet(type.create(this, team, bulletX, bulletY, Tmp.v1.angle(), -1f, 1f, 1f, new ArcBulletData(50f * Vars.tilesize, zVel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            float velRnd = (1f - velocityRnd) + Mathf.random(velocityRnd);
+            float zVel = ArcBulletData.calcVel(Tmp.v1, type.speed * velRnd, shootAngle, 45f, Mathf.range(inaccuracy + type.inaccuracy));
+            handleBullet(type.create(this, team, bulletX, bulletY, Tmp.v1.angle(), -1f, Tmp.v1.len() / type.speed, 1f, new ArcBulletData(50f * Vars.tilesize, zVel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

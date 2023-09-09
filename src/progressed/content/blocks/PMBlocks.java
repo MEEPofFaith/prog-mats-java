@@ -1144,7 +1144,6 @@ public class PMBlocks{
             requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
             size = 2;
             range = 69 * tilesize;
-            reload = 20f;
         }};
         // endregion
 

@@ -70,7 +70,6 @@ public class ArcBulletType extends BulletType{
             xAccel = (2 * (dx - b.vel.x * life)) / (life * life);
             float dy = b.aimY - b.y;
             yAccel = (2 * (dy - b.vel.y * life)) / (life * life);
-            Log.info("life: @ | xA: @ | yA: @", life, xAccel, yAccel);
         }
 
         public void update(Bullet b){
@@ -80,15 +79,15 @@ public class ArcBulletType extends BulletType{
         }
 
         /** Calculates proper initial velocity for the bullet. Normal, horizontal velocity is stored in the input vec2, vertical velocity is returned as a float. */
-        public static float calcVel(Vec2 vec, BulletType b, float angle, float tilt, float inaccuracy){
+        public static float calcVel(Vec2 vec, float speed, float angle, float tilt, float inaccuracy){
             PMMathf.randomCirclePoint(vec, inaccuracy);
             float horiInacc = vec.x;
             float vertInacc = vec.y;
             vec.set(
-                Angles.trnsx(angle + horiInacc, b.speed),
-                Angles.trnsy(angle + horiInacc, b.speed)
+                Angles.trnsx(angle + horiInacc, speed),
+                Angles.trnsy(angle + horiInacc, speed)
             );
-            return Mathf.sin(tilt + vertInacc) * b.speed;
+            return Mathf.sin(tilt + vertInacc) * speed;
         }
     }
 }
