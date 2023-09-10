@@ -1,5 +1,7 @@
 package progressed.entities.bullet.energy.nexus;
 
+import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
@@ -47,6 +49,17 @@ public class ArcBulletType extends BulletType{
         }
     }
 
+    @Override
+    public void drawTrail(Bullet b){
+        if(trailLength > 0 && b.trail != null){
+            //draw below bullets? TODO
+            float z = Draw.z();
+            Draw.z(z - 0.0001f);
+            b.trail.draw(Tmp.c1.set(Color.red).shiftHue(((ArcBulletData)b.data).z / 8f), trailWidth);
+            Draw.z(z);
+        }
+    }
+
     public static class ArcBulletData{
         public float xAccel, yAccel, z, zVel, gravity;
 
@@ -83,11 +96,9 @@ public class ArcBulletType extends BulletType{
             PMMathf.randomCirclePoint(vec, inaccuracy);
             float horiInacc = vec.x;
             float vertInacc = vec.y;
-            vec.set(
-                Angles.trnsx(angle + horiInacc, speed),
-                Angles.trnsy(angle + horiInacc, speed)
-            );
-            return Mathf.sin(tilt + vertInacc) * speed;
+            DrawPseudo3D.rotate(Tmp.v31, speed, angle, horiInacc, tilt + vertInacc);
+            vec.set(Tmp.v31.x, Tmp.v31.y);
+            return Tmp.v31.z;
         }
     }
 }

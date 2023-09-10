@@ -3,8 +3,10 @@ package progressed.graphics;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.graphics.*;
 
 import static arc.Core.*;
 import static arc.math.Mathf.*;
@@ -13,6 +15,7 @@ public class DrawPseudo3D{
     /** Translates horizontal distance in world units to camera offset height. Somewhat arbitrary. */
     public static final float horiToVerti = 1f/48f/Vars.tilesize;
     private static final Color tmpCol = new Color();
+    private static final Vec3 tiltVec = new Vec3();
     
     /**
      * @author sunny, modified by MEEP
@@ -147,6 +150,37 @@ public class DrawPseudo3D{
 
             Fill.quad(dx1, dy1, bc1f, dx2, dy2, bc2f, dx4, dy4, tc2f, dx3, dy3, tc1f);
         }
+    }
+
+    public static void lineAngleBase(float x, float y, float height, float length, float rotation, float rotationOffset, float tilt){
+        rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
+        float h2 = height + Tmp.v31.z;
+        float x1 = xHeight(x, height);
+        float y1 = yHeight(y, height);
+        float x2 = xHeight(x + Tmp.v31.x, h2);
+        float y2 = yHeight(y + Tmp.v31.y, h2);
+        Lines.line(x1, y1, x2, y2);
+    }
+
+    public static void drawAimDebug(float x, float y, float height, float length, float rotation, float tilt, float spread){
+        Lines.stroke(3f);
+        Draw.color(Color.blue); //Down
+        lineAngleBase(x, y, height, length, rotation, 0f, tilt - spread);
+        Lines.stroke(6f);
+        Draw.color(Pal.accent); //Center
+        lineAngleBase(x, y, height, length, rotation, 0f, tilt);
+        Lines.stroke(3f);
+        Draw.color(Color.red); //Right
+        lineAngleBase(x, y, height, length, rotation, -spread, tilt);
+        Draw.color(Color.lime); //Left
+        lineAngleBase(x, y, height, length, rotation, spread, tilt);
+        Draw.color(Color.orange); //Up
+        lineAngleBase(x, y, height, length, rotation, 0f, tilt + spread);
+    }
+
+    public static void rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
+        tiltVec.set(0, 1, 0).rotate(Vec3.Z, -rotation);
+        vec3.set(length, 0, 0).rotate(Vec3.Z, -rotationOffset).rotate(Vec3.Z, -rotation).rotate(tiltVec, tilt);
     }
 
     public static float xHeight(float x, float height){
