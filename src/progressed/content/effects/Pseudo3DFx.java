@@ -148,10 +148,10 @@ public class Pseudo3DFx{
         public float height;
         public float rotation;
 
-        public ShieldSizeData(int sides, float height, float rotation){
+        public ShieldSizeData(int sides, float rotation, float height){
             this.sides = sides;
-            this.height = height;
             this.rotation = rotation;
+            this.height = height;
         }
     }
 }
