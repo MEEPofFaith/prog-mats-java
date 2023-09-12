@@ -30,7 +30,7 @@ public class ModuleBullets{
             hitSound = Sounds.explosion;
 
             hitEffect = MissileFx.smallBoom;
-            blockEffect = MissileFx.missileBlockedSmall;
+            blockEffect = Pseudo3DFx.absorbedSmall;
         }};
     }
 }

@@ -174,63 +174,6 @@ public class MissileFx{
         });
     }).layer(Layer.bullet - 0.021f),
 
-    missileBlockedSmall = new Effect(38f, e -> {
-        color(Pal.missileYellow);
-
-        e.scaled(13f, s -> {
-            stroke(2f * s.fout());
-
-            randLenVectors(e.id, 8, 2f + 34f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, angle(x, y), 2f + s.fout() * 8f);
-            });
-        });
-
-        float in = Interp.pow2Out.apply(Mathf.curve(e.fin(), 0f, 0.6f));
-        float out = 1f - Interp.pow2In.apply(Mathf.curve(e.fin(), 0.6f));
-
-        stroke(0.5f * out + e.fout());
-
-        Lines.circle(e.x, e.y, 2f * out + 13f * in * out);
-    }),
-
-    missileBlocked = new Effect(52f, e -> {
-        color(Pal.missileYellow);
-
-        e.scaled(24f, s -> {
-            stroke(3f * s.fout());
-
-            randLenVectors(e.id, 14, 2f + 53f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, angle(x, y), 2f + s.fout() * 13f);
-            });
-        });
-
-        float in = Interp.pow2Out.apply(Mathf.curve(e.fin(), 0f, 0.6f));
-        float out = 1f - Interp.pow2In.apply(Mathf.curve(e.fin(), 0.6f));
-
-        stroke(out + 2f * e.fout());
-
-        Lines.circle(e.x, e.y, 6f * out + 31f * in * out);
-    }),
-
-    missileBlockedLarge = new Effect(74f, e -> {
-        color(Pal.missileYellow);
-
-        e.scaled(32f, s -> {
-            stroke(5f * s.fout());
-
-            randLenVectors(e.id, 20, 4f + 114f * s.fin(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, angle(x, y), 3f + s.fout() * 18f);
-            });
-        });
-
-        float in = Interp.pow2Out.apply(Mathf.curve(e.fin(), 0f, 0.6f));
-        float out = 1f - Interp.pow2In.apply(Mathf.curve(e.fin(), 0.6f));
-
-        stroke(2f * out + 3f * e.fout());
-
-        Lines.circle(e.x, e.y, 6f * out + 57f * in * out);
-    }),
-
     hitEmpSpark = new Effect(40, e -> {
         color(e.color);
         stroke(e.fout() * 1.2f);

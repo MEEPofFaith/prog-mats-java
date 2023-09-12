@@ -13,6 +13,7 @@ import mindustry.graphics.*;
 import progressed.*;
 import progressed.content.*;
 import progressed.content.effects.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.game.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -20,6 +21,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 import static progressed.graphics.DrawPseudo3D.*;
 
+@Deprecated
 public class BallisticMissileBulletType extends BulletType{
     public boolean drawZone = true;
     public float height = 1f, heightRnd;
@@ -30,13 +32,14 @@ public class BallisticMissileBulletType extends BulletType{
     public float splitLifeMaxOffset = 10f;
     public Color targetColor = Color.red;
     public String sprite;
-    public Effect blockEffect = MissileFx.missileBlocked;
+    public Effect blockEffect = Pseudo3DFx.absorbed;
     public float fartVolume = 50f;
     public boolean spinShade = true;
     public Interp hInterp = PMInterp.flightArc, posInterp = Interp.pow2In, rotInterp = PMInterp.sineInverse;
 
     public TextureRegion region, blRegion, trRegion;
 
+    /** Convert over to {@link ArcMissileBulletType} */
     public BallisticMissileBulletType(String sprite){
         super(1f, 0f);
         this.sprite = sprite;

@@ -228,7 +228,7 @@ public class PayloadBullets{
                     trailWidth = 1f;
                     trailColor = targetColor = PMPal.missileFrag;
 
-                    blockEffect = MissileFx.missileBlockedSmall;
+                    blockEffect = Pseudo3DFx.absorbedSmall;
                 }};
             }};
         }};
@@ -272,7 +272,7 @@ public class PayloadBullets{
             hitShake = 30f;
             fartVolume = 200f;
             despawnEffect = MissileFx.nuclearExplosion;
-            blockEffect = MissileFx.missileBlockedLarge;
+            blockEffect = Pseudo3DFx.absorbedLarge;
 
             height = 70f * Vars.tilesize;
             zoneRadius = 8f * 8f;
@@ -308,7 +308,7 @@ public class PayloadBullets{
 
                 hitShake = 5f;
                 despawnEffect = MissileFx.missileExplosion;
-                blockEffect = MissileFx.missileBlocked;
+                blockEffect = Pseudo3DFx.absorbed;
 
                 trailLength = 35;
                 trailWidth = 1f;
@@ -324,7 +324,7 @@ public class PayloadBullets{
             hitShake = 30f;
             fartVolume = 200f;
             despawnEffect = MissileFx.nuclearExplosion;
-            blockEffect = MissileFx.missileBlockedLarge;
+            blockEffect = Pseudo3DFx.absorbedLarge;
 
             height = 70f * Vars.tilesize;
             zoneRadius = 8f * 8f;

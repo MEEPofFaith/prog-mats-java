@@ -15,7 +15,6 @@ public class DrawPseudo3D{
     /** Translates horizontal distance in world units to camera offset height. Somewhat arbitrary. */
     public static final float horiToVerti = 1f/48f/Vars.tilesize;
     private static final Color tmpCol = new Color();
-    private static final Vec3 tiltVec = new Vec3();
     
     /**
      * @author sunny, modified by MEEP
@@ -178,9 +177,16 @@ public class DrawPseudo3D{
         lineAngleBase(x, y, height, length, rotation, 0f, tilt + spread);
     }
 
+    /** Properly rotates and tilts up a 3D vector.
+     * @param vec3 Vec3 to write output to.
+     * @param length Length of the vector.
+     * @param rotation Angle of the main angle.
+     * @param rotationOffset Rotational offset from the main angle.
+     * @param tilt 3D tilt. Tilts around the axis 90* of the main angle.
+     */
     public static void rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
-        tiltVec.set(0, 1, 0).rotate(Vec3.Z, -rotation);
-        vec3.set(length, 0, 0).rotate(Vec3.Z, -rotationOffset).rotate(Vec3.Z, -rotation).rotate(tiltVec, tilt);
+        vec3.set(Angles.trnsx(rotationOffset, length), Angles.trnsy(rotationOffset, length), 0f)
+            .rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
     }
 
     public static float xHeight(float x, float height){

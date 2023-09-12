@@ -194,30 +194,6 @@ public class OtherFx{
         });
     }),
 
-    squareShieldRecharge = new Effect(20f, e -> {
-        color(e.color, e.fout());
-        stroke(1.5f + 1.5f * e.fout());
-        Lines.square(e.x, e.y, e.rotation * e.finpow());
-    }).layer(Layer.shields),
-
-    squareShieldBreak = new Effect(40f, e -> {
-        stroke(3f * e.fout(), e.color);
-        Lines.square(e.x, e.y, e.rotation + e.fin());
-    }),
-
-    squareForceShrink = new Effect(20f, e -> {
-        color(e.color, e.fout());
-        if(renderer.animateShields){
-            Fill.square(e.x, e.y, e.rotation * e.fout());
-        }else{
-            stroke(1.5f);
-            Draw.alpha(0.09f);
-            Fill.square(e.x, e.y, e.rotation * e.fout());
-            Draw.alpha(1f);
-            Lines.square(e.x, e.y, e.rotation * e.fout());
-        }
-    }).layer(Layer.shields),
-
     fard = new Effect(30, 500f, e -> {
         float intensity = 8f;
         float baseLifetime = 25f + intensity * 15f;

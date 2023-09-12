@@ -1,32 +1,28 @@
-package progressed.world.blocks.defence.turret.sandbox;
+package progressed.world.blocks.defence.turret.testing;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.meta.*;
-import progressed.entities.bullet.energy.nexus.*;
-import progressed.entities.bullet.energy.nexus.ArcBulletType.*;
+import progressed.entities.bullet.pseudo3d.*;
+import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.graphics.*;
-import progressed.world.meta.*;
 
-public class TestTurret extends Turret{
-    public BulletType shootType;
-    public float shotHeight = 180f * Vars.tilesize;
+public class ArcBulletTestTurret extends FreeTurret{
+    public float shotZ = 180f * Vars.tilesize;
     public float shotTilt = 45;
-    public boolean swing = true;
+    public boolean drawAimDebug = false;
+    public boolean swing = false;
+    public float swingScl = 2f;
 
-    public TestTurret(String name){
+    public ArcBulletTestTurret(String name){
         super(name);
 
-        shootType = new ArcBulletType(25f);
+        shootType = new ArcBasicBulletType(25f);
         reload = 10f;
         shootY = 0f;
         shootCone = 360f;
@@ -36,24 +32,13 @@ public class TestTurret extends Turret{
         shoot = new ShootSpread(5, 0f);
     }
 
-    @Override
-    public void setStats(){
-        super.setStats();
-        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
-    }
-
-    public void limitRange(float margin){
-        limitRange(shootType, margin);
-    }
-
-    public class TestTurretBuild extends TurretBuild{
+    public class ArcBulletTestTurretBuild extends FreeTurretBuild{
         public float realTilt = shotTilt;
 
         @Override
         public void updateTile(){
-            unit.ammo(1);
             if(swing){
-                realTilt = Mathf.sinDeg(Time.time) * 90;
+                realTilt = Time.time * swingScl;
             }else{
                 realTilt = shotTilt;
             }
@@ -62,37 +47,16 @@ public class TestTurret extends Turret{
         }
 
         @Override
-        public double sense(LAccess sensor){
-            return switch(sensor){
-                case ammo, ammoCapacity -> 1;
-                default -> super.sense(sensor);
-            };
-        }
-
-        @Override
-        public BulletType useAmmo(){
-            //nothing used
-            return shootType;
-        }
-
-        @Override
-        public boolean hasAmmo(){
-            return true;
-        }
-
-        @Override
-        public BulletType peekAmmo(){
-            return shootType;
-        }
-
-        @Override
         public void draw(){
             super.draw();
+            drawAimDebug();
+        }
 
+        public void drawAimDebug(){
+            if(!drawAimDebug) return;
             Draw.z(Layer.effect + 0.01f);
             //Aiming Display
-            float len = 12f * Vars.tilesize;
-            DrawPseudo3D.drawAimDebug(x, y, shotHeight, len, rotation, realTilt, inaccuracy);
+            DrawPseudo3D.drawAimDebug(x, y, shotZ, shootType.speed * Vars.tilesize, rotation, realTilt, inaccuracy);
         }
 
         @Override
@@ -113,7 +77,7 @@ public class TestTurret extends Turret{
             //handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
             float velRnd = (1f - velocityRnd) + Mathf.random(velocityRnd);
             float zVel = ArcBulletData.calcVel(Tmp.v1, type.speed * velRnd, shootAngle, realTilt, Mathf.range(inaccuracy + type.inaccuracy));
-            handleBullet(type.create(this, team, bulletX, bulletY, Tmp.v1.angle(), -1f, Tmp.v1.len() / type.speed, 1f, new ArcBulletData(shotHeight, zVel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            handleBullet(type.create(this, team, bulletX, bulletY, Tmp.v1.angle(), -1f, Tmp.v1.len() / type.speed, 1f, new ArcBulletData(shotZ, zVel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

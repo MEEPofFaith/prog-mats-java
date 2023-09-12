@@ -1,53 +1,38 @@
 package progressed.world.blocks.defence;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import progressed.content.effects.*;
-import progressed.game.*;
+import progressed.content.effects.Pseudo3DFx.*;
+import progressed.entities.bullet.pseudo3d.*;
+import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
+import static progressed.graphics.DrawPseudo3D.*;
 
 public class ShieldProjector extends ForceProjector{
-    public static float maxShieldRange = 0;
-    public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f, strikeBlastResistance = 0.35f, phaseStrikeBlastResistance = 0.55f;
-    public Effect chargeEffect = OtherFx.squareShieldRecharge;
-    public Color lerpColor = Color.gray;
-    public float lerpPercent = 0.75f;
-
-    protected static final Cons<Bullet> shieldConsumer = bullet -> {
-        if(bullet.team != paramEntity.team && bullet.type.absorbable){
-            bullet.absorb();
-            paramEffect.at(bullet);
-            paramEntity.hit = 1f;
-            paramEntity.buildup += bullet.damage;
-        }
-    };
+    public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f;
+    public float height = 5f * tilesize, phaseHeightBoost = 5f * tilesize;
+    public Effect chargeEffect = Pseudo3DFx.shieldRecharge;
+    public Effect breakEffect = Pseudo3DFx.shieldBreak;
+    public Effect shrinkEffect = Pseudo3DFx.shieldShrink;
 
     public ShieldProjector(String name){
         super(name);
-
-        radius = 80f; //Make it square based because I'm too lazy to do math
-    }
-
-    static{
-        Events.on(PMEventType.BallisticMissileLand.class, l -> {
-            Groups.build.each(b -> b instanceof ShieldBuild, b -> {
-                ((ShieldBuild)b).deflectBallisticMissle(l.bullet, l.blockEffect);
-            });
-        });
     }
 
     @Override
@@ -56,7 +41,7 @@ public class ShieldProjector extends ForceProjector{
         removeBar("shield");
         addBar("shield", (ShieldBuild entity) -> new Bar(
             () -> Core.bundle.get("stat.shieldhealth"),
-            entity::getColor,
+            () -> entity.team.color,
             () -> entity.broken ? 0f : entity.shieldf()
         ).blink(Color.white));
 
@@ -70,7 +55,6 @@ public class ShieldProjector extends ForceProjector{
     @Override
     public void init(){
         clipSize = Math.max(clipSize, PMMathf.cornerDst(radius + phaseRadiusBoost + 3f) * 2f);
-        maxShieldRange = Math.max(maxShieldRange, PMMathf.cornerDst(radius + phaseRadiusBoost + 3f) * 2f);
 
         super.init();
     }
@@ -80,17 +64,30 @@ public class ShieldProjector extends ForceProjector{
         return teamRegion.found() ? new TextureRegion[]{region, teamRegions[Team.sharded.id]} : new TextureRegion[]{region};
     }
 
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
-        drawPotentialLinks(x, y);
+    public static float[] getShieldCorners(float x, float y, float radius, int sides, float shieldRotation){
+        float[] corners = new float[sides * 2];
+        float space = 360f / sides;
+        for(int i = 0; i < sides; i++){
+            float a = space * i + shieldRotation;
+            corners[i * 2] = x + Angles.trnsx(a, radius);
+            corners[i * 2 + 1] = y + Angles.trnsy(a, radius);
+        }
+        return corners;
+    }
 
-        Draw.color(Pal.gray);
-        Lines.stroke(3f);
-        Lines.square(x * tilesize + offset, y * tilesize + offset, radius + 1f);
-        Draw.color(player.team().color);
-        Lines.stroke(1f);
-        Lines.square(x * tilesize + offset, y * tilesize + offset, radius);
-        Draw.color();
+    public static void drawCorners(float[] corners, float height, int sides, CornersDraw draw){
+        for(int i = 0; i < sides; i++){
+            float x1 = corners[i * 2];
+            float y1 = corners[i * 2 + 1];
+            int next = (i + 1) % sides;
+            float x2 = corners[next * 2];
+            float y2 = corners[next * 2 + 1];
+            float x3 = xHeight(x2, height);
+            float y3 = yHeight(y2, height);
+            float x4 = xHeight(x1, height);
+            float y4 = yHeight(y1, height);
+            draw.draw(x1, y1, x2, y2, x3, y3, x4, y4);
+        }
     }
 
     public class ShieldBuild extends ForceBuild{
@@ -99,7 +96,7 @@ public class ShieldProjector extends ForceProjector{
         @Override
         public void onRemoved(){
             float radius = realRadius();
-            if(!broken && radius > 1f) OtherFx.squareForceShrink.at(x, y, radius, team.color);
+            if(!broken && radius > 1f) shrinkEffect.at(x, y, realRadius(), team.color, new ShieldSizeData(sides, shieldRotation, realHeight()));
         }
 
         @Override
@@ -135,7 +132,7 @@ public class ShieldProjector extends ForceProjector{
                     charge += edelta() * scale;
 
                     if(charge >= chargeTime){
-                        chargeEffect.at(x, y, realRadius(), team.color);
+                        chargeEffect.at(x, y, 0f, team.color, self());
                         buildup -= realCharge() * delta();
                         charge %= chargeTime;
                     }
@@ -153,7 +150,10 @@ public class ShieldProjector extends ForceProjector{
             if(buildup >= shieldHealth + phaseShieldBoost * phaseHeat && !broken){
                 broken = true;
                 buildup = shieldHealth;
-                OtherFx.squareShieldBreak.at(x, y, realRadius(), team.color);
+                breakEffect.at(x, y, realRadius(), team.color, new ShieldSizeData(sides, shieldRotation, realHeight()));
+                if(team != state.rules.defaultTeam){
+                    Events.fire(Trigger.forceProjectorBreak);
+                }
             }
 
             if(hit > 0f){
@@ -166,33 +166,32 @@ public class ShieldProjector extends ForceProjector{
         @Override
         public void deflectBullets(){
             float realRadius = realRadius();
+            float realHeight = realHeight();
 
             if(realRadius > 0 && !broken){
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, b -> {
-                    if(b.team != team && b.type.absorbable){
-                        b.absorb();
-                        paramEffect.at(b);
-                        hit = 1f;
-                        buildup += b.damage;
+                    if(b.team != team && Intersector.isInRegularPolygon(sides, x, y, realRadius(), shieldRotation, b.x, b.y)){
+                        if(b.type instanceof ArcBulletType a){
+                            ArcBulletData data = (ArcBulletData)b.data;
+                            if(a.zAbsorbable && data.z <= realHeight){
+                                b.absorb();
+                                a.absorbEffect.at(b.x, b.y, data.z, a.absorbEffectColor);
+                                hit = 1f;
+                                buildup += b.damage;
+                            }
+                        }else if(b.type.absorbable){
+                            b.absorb();
+                            absorbEffect.at(b);
+                            hit = 1f;
+                            buildup += b.damage;
+                        }
                     }
                 });
             }
         }
 
-        public void deflectBallisticMissle(Bullet b, Effect blockEffect){
-            float realRadius = realRadius();
-
-            if(realRadius > 0 && !broken && b.team != team && !b.absorbed && PMMathf.isInSquare(x, y, realRadius, b.x, b.y)){
-                b.absorbed = true;
-                blockEffect.at(b.x, b.y, b.rotation(), b.type.hitColor);
-                b.type.despawnSound.at(b);
-
-                Effect.shake(b.type.despawnShake, b.type.despawnShake, b);
-
-                hit = 1f;
-
-                buildup += (b.damage() + b.type.splashDamage * realStrikeBlastResistance() * b.damageMultiplier()) * warmup;
-            }
+        public float realHeight(){
+            return (height + phaseHeat * phaseHeightBoost) * radscl;
         }
 
         public float realCharge(){
@@ -203,36 +202,62 @@ public class ShieldProjector extends ForceProjector{
         public void drawShield(){
             if(!broken){
                 float radius = realRadius();
+                if(radius > 0.001f){
+                    Draw.color(team.color, Color.white, Mathf.clamp(hit));
+                    float[] corners = getShieldCorners(radius);
 
-                Draw.color(getColor());
+                    if(renderer.animateShields){
+                        Draw.z(Layer.shields + 0.001f * hit);
+                    }else{
+                        Draw.z(Layer.shields);
+                        Lines.stroke(1.5f);
+                        Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
+                    }
+                    Fill.polyBegin();
+                    drawCorners(corners, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
+                        Fill.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                        Fill.polyPoint(x4, y4);
+                    });
+                    Fill.polyEnd();
 
-                if(Core.settings.getBool("animatedshields")){
-                    Draw.z(Layer.shields + 0.001f * hit);
-                    Fill.square(x, y, radius);
-                }else{
-                    Draw.z(Layer.shields);
-                    Lines.stroke(1.5f);
-                    Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
-                    Fill.square(x, y, radius);
+                    if(renderer.animateShields){
+                        Draw.z(Layer.shields + 1.01f);
+                    }else{
+                        Draw.z(Layer.shields + 0.001f);
+                    }
                     Draw.alpha(1f);
-                    Lines.square(x, y, radius);
-                    Draw.reset();
+                    drawCorners(corners, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
+                        //Lines.quad(x1, y1, x2, y2, x3, y3, x4, y4); //Corners expand out wildly for some reason.
+                        Lines.line(x1, y1, x2, y2);
+                        Lines.line(x1, y1, x4, y4);
+                        Lines.line(x2, y2, x3, y3);
+                        Lines.line(x4, y4, x3, y3);
+                    });
+                    Draw.color();
                 }
             }
 
             Draw.reset();
         }
 
-        public float realStrikeBlastResistance(){
-            return 1f - (strikeBlastResistance + phaseHeat * phaseStrikeBlastResistance);
+        public float[] getShieldCorners(float radius){
+            return ShieldProjector.getShieldCorners(x, y, radius, sides, shieldRotation);
+        }
+
+        public float[] getShieldCorners(){
+            return getShieldCorners(realRadius());
+        }
+
+        public void drawCorners(float[] corners, float height, CornersDraw draw){
+            ShieldProjector.drawCorners(corners, height, sides, draw);
+        }
+
+        public void drawCorners(float[] corners, CornersDraw draw){
+           drawCorners(corners, realHeight(), draw);
         }
 
         public float shieldf(){
             return 1f - buildup / (shieldHealth + phaseShieldBoost * phaseHeat);
-        }
-
-        public Color getColor(){
-            return Tmp.c1.set(team.color).lerp(lerpColor, Mathf.absin(30f, shieldf() * lerpPercent)).lerp(Color.white, Mathf.clamp(hit));
         }
 
         @Override
@@ -254,5 +279,9 @@ public class ShieldProjector extends ForceProjector{
         public byte version(){
             return 1;
         }
+    }
+
+    public interface CornersDraw{
+        void draw(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     }
 }

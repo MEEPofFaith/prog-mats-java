@@ -24,8 +24,6 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.part.pseudo3d.*;
-import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -33,7 +31,7 @@ import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
 import progressed.world.blocks.defence.turret.energy.*;
 import progressed.world.blocks.defence.turret.payload.*;
-import progressed.world.blocks.defence.turret.sandbox.*;
+import progressed.world.blocks.defence.turret.testing.*;
 import progressed.world.blocks.distribution.*;
 import progressed.world.blocks.payloads.*;
 import progressed.world.blocks.production.*;
@@ -85,10 +83,10 @@ public class PMBlocks{
     javelin, artemis, paragon,
 
     //Nexus
-    solstice, starfall,
+    unnamedNexus, //Potential names: "Starfall", "Aleph", "Nexus", "Cataclysm"
 
-    //Test turret
-    testTurret,
+    //Test turrets
+    testTurret0, testTurret1,
 
     // endregion
     // region production
@@ -972,179 +970,8 @@ public class PMBlocks{
             setUsers();
         }};
 
-        float nexusHeightGrowStop = 0.15f, nexusSizeGrowStop = 0.3f;
-        PartProgress nexusBeamHeight = PartProgress.warmup.shorten(0.7f).clamp().curve(Interp.smooth).mul(nexusHeightGrowStop)
-            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusHeightGrowStop));
-        PartProgress nexusBeamSize = PartProgress.warmup.shorten(0.5f).clamp().curve(Interp.smooth).mul(nexusSizeGrowStop)
-            .add(PartProgress.warmup.compress(0.5f, 1f).clamp().curve(Interp.smooth).mul(1f - nexusSizeGrowStop));
-        float starLen = 28f;
-        float starWidth = 12f;
-        float starHeight = 50f;
-        float beamLayer = Layer.weather + 0.5f;
-        solstice = new NexusTurret("solstice"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
-            size = 6;
-
-            float brange = range = 100f * 8f;
-            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
-                speed = brange;
-                drawSize = speed * 2f;
-                splashDamage = 1900f;
-                splashDamageRadius = 32f;
-                height = starHeight;
-                alwaysBloom = true;
-            }};
-
-            ammo(Items.phaseFabric, bullet);
-
-            drawer = new DrawMulti(
-                new DrawTurret(){{
-                    parts.add(new PillarPart(){{
-                        radius = starWidth / 4f;
-                        alphaProg = PartProgress.constant(1f);
-                        heightProg = nexusBeamHeight;
-                        radProg = nexusBeamSize;
-                        alwaysBloom = true;
-                        layer = beamLayer;
-                        height = starHeight;
-                    }});
-
-                    parts.add(new RingPart(){{
-                        height = starHeight * nexusHeightGrowStop;
-                        inRad = starLen * 2f;
-                        outRad = inRad * 2.5f;
-                        alwaysBloom = true;
-                        layer = beamLayer;
-                        radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
-                        alphaProg = radProg.inv();
-                    }});
-
-                    parts.add(new StarPart(){{
-                        heightProg = nexusBeamHeight;
-                        sizeProg = nexusBeamSize;
-                        spikeLen = starLen;
-                        spikeWidth = starWidth;
-                        alwaysBloom = true;
-                        layer = beamLayer + 0.1f;
-                        height = starHeight;
-                    }});
-                }},
-                new DrawNexusAim(){{
-                    height = starHeight;
-                    pointWidth = 3f;
-                    pointInLen = 6f;
-                    pointOutLen = 10f;
-                    alwaysBloom = true;
-                    layer = beamLayer;
-
-                    clipSize = (range + radius) * 2f;
-                }}
-            );
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (4f * 60f);
-            warmupMaintainTime = bullet.lifetime + 30f;
-
-            reload = 20f;
-
-            shootSound = Sounds.shootSmite;
-
-            consumePower(25f);
-        }};
-
-        starfall = new NexusTurret("starfall"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
-            size = 6;
-
-            float brange = range = 100f * 8f;
-            float shootRadius = 10f * 8f;
-            NexusLaserBulletType bullet = new NexusLaserBulletType(){{ //TODO hit effect
-                speed = brange;
-                drawSize = speed * 2f;
-                splashDamage = 2400f;
-                splashDamageRadius = 32f;
-                strikeInaccuracy = shootRadius;
-                height = starHeight;
-                baseColorLight = Pal.surge;
-                baseColorDark = PMPal.surgeDark;
-                alwaysBloom = true;
-            }};
-
-            ammo(Items.phaseFabric, bullet);
-            shoot.shots = 10;
-            shoot.shotDelay = 5f;
-
-            drawer = new DrawMulti(
-                new DrawTurret(){{
-                    parts.add(new PillarPart(){{
-                        baseColorLight = topColorLight = Pal.surge;
-                        baseColorDark = topColorDark = PMPal.surgeDark;
-                        radius = starWidth / 4f;
-                        alphaProg = PartProgress.constant(1f);
-                        heightProg = nexusBeamHeight;
-                        radProg = nexusBeamSize;
-                        alwaysBloom = true;
-                        layer = beamLayer;
-                        height = starHeight;
-                    }});
-
-                    parts.add(new RingPart(){{
-                        inColor = Pal.surge;
-                        height = starHeight * nexusHeightGrowStop;
-                        inRad = starLen * 2f;
-                        outRad = inRad * 2.5f;
-                        alwaysBloom = true;
-                        layer = beamLayer;
-                        radProg = PartProgress.warmup.compress(0.5f, 0.6f).clamp();
-                        alphaProg = radProg.inv();
-                    }});
-
-                    parts.add(new StarPart(){{
-                        lightColor = Pal.surge;
-                        darkColor = PMPal.surgeDark;
-                        heightProg = nexusBeamHeight;
-                        sizeProg = nexusBeamSize;
-                        spikeLen = starLen;
-                        spikeWidth = starWidth;
-                        alwaysBloom = true;
-                        layer = beamLayer + 0.1f;
-                        height = starHeight;
-                    }});
-                }},
-                new DrawNexusAim(){{
-                    color = Pal.surge;
-                    beams = 6;
-                    radius = shootRadius + bullet.radius;
-                    pointWidth = 8f;
-                    pointInLen = 3f * 8f;
-                    pointOutLen = 5f * 8f;
-                    pointRotation = 45f;
-                    height = starHeight;
-                    alwaysBloom = true;
-                    layer = beamLayer;
-
-                    clipSize = (range + radius) * 2f;
-                }}
-            );
-
-            linearWarmup = true;
-            minWarmup = 1f;
-            shootWarmupSpeed = 1f / (4f * 60f);
-            warmupMaintainTime = shoot.shots * shoot.shotDelay + bullet.lifetime + 30f;
-
-            reload = 90f;
-
-            shootSound = Sounds.malignShoot;
-
-            consumePower(25f);
-        }};
-
-        testTurret = new TestTurret("test-turret"){{
-            requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
-            size = 2;
-            range = 69 * tilesize;
-        }};
+        testTurret0 = new ArcBulletTestTurret("test-turret0");
+        testTurret1 = new ArcMissileTestTurret("test-turret1");
         // endregion
 
         // region Production
@@ -1540,11 +1367,14 @@ public class PMBlocks{
             ));
             size = 4;
             hideDetails = false;
-            radius = 88f;
-            shieldHealth = 2600f;
-            phaseShieldBoost = 1800f;
-            shieldCharge = 600f;
-            phaseShieldCharge = 350f;
+            radius = 64.5f;
+            phaseRadiusBoost = 27.5f;
+            height = 15f * tilesize;
+            shieldHealth = 3600f;
+            phaseShieldBoost = 2000f;
+            shieldCharge = 700f;
+            phaseShieldCharge = 400f;
+            chargeTime = 450f;
             cooldownBrokenBase *= 2f;
 
             consumePower(7f);

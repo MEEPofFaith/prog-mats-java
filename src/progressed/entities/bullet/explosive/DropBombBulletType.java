@@ -26,7 +26,7 @@ public class DropBombBulletType extends BulletType{
     public float shadowOffset = -1f, shadowGrowth = -1f;
     public boolean spinShade = true, trailOver = true;
     public Color targetColor = Color.red;
-    public Effect blockEffect = MissileFx.missileBlockedSmall;
+    public Effect blockEffect = Pseudo3DFx.absorbedSmall;
     public String sprite;
     public TextureRegion region, blRegion, trRegion;
 
