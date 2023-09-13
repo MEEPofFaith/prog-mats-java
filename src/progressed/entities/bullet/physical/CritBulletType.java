@@ -9,7 +9,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
-import progressed.graphics.*;
+import progressed.graphics.trails.*;
 
 import static mindustry.Vars.*;
 

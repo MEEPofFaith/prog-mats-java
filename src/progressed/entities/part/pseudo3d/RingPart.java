@@ -32,9 +32,9 @@ public class RingPart extends DrawPart{
 
         float z = Draw.z();
         if(layer > 0){
-            Draw.z(layer + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(layer + Draw3D.layerOffset(rx, ry));
         }else{
-            Draw.z(z + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(z + Draw3D.layerOffset(rx, ry));
         }
 
         float alpha = alphaProg.get(params);
@@ -56,7 +56,7 @@ public class RingPart extends DrawPart{
         Tmp.c2.set(outColor).mulA(alpha);
 
         Draw.blend(blending);
-        DrawPseudo3D.ring(x, y, rad, inRad * radScl, outRad * radScl, height * heightScl, Tmp.c1, Tmp.c2);
+        Draw3D.ring(x, y, rad, inRad * radScl, outRad * radScl, height * heightScl, Tmp.c1, Tmp.c2);
         Draw.blend();
     }
 

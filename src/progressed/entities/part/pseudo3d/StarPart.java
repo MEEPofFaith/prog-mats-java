@@ -10,7 +10,7 @@ import progressed.graphics.*;
 
 import static arc.Core.*;
 import static arc.math.geom.Geometry.*;
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class StarPart extends DrawPart{
     /** Progress function for determining height. */
@@ -37,9 +37,9 @@ public class StarPart extends DrawPart{
 
         float z = Draw.z();
         if(layer > 0){
-            Draw.z(layer + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(layer + Draw3D.layerOffset(rx, ry));
         }else{
-            Draw.z(z + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(z + Draw3D.layerOffset(rx, ry));
         }
 
         if(alwaysBloom){

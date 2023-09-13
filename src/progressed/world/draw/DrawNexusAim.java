@@ -11,7 +11,7 @@ import mindustry.world.draw.*;
 import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.energy.NexusTurret.*;
 
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class DrawNexusAim extends DrawBlock{
     public int beams = 1;
@@ -33,9 +33,9 @@ public class DrawNexusAim extends DrawBlock{
 
         float z = Draw.z();
         if(layer > 0){
-            Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y, tx, ty));
+            Draw.z(layer + Draw3D.layerOffset(b.x, b.y, tx, ty));
         }else{
-            Draw.z(z + DrawPseudo3D.layerOffset(b.x, b.y, tx, ty));
+            Draw.z(z + Draw3D.layerOffset(b.x, b.y, tx, ty));
         }
 
         if(alwaysBloom){

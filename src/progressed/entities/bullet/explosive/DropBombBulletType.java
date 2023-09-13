@@ -13,10 +13,11 @@ import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.game.*;
 import progressed.graphics.*;
+import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class DropBombBulletType extends BulletType{
     public float height = 1f;
@@ -107,7 +108,7 @@ public class DropBombBulletType extends BulletType{
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl * shadowGrowth);
         Drawf.shadow(region, shX, shY, 45f);
-        Draw.z(layer + DrawPseudo3D.layerOffset(b.x, b.y) + hScl / 100f);
+        Draw.z(layer + Draw3D.layerOffset(b.x, b.y) + hScl / 100f);
         Draw.scl();
         drawTrail(b);
         Draw.scl(1f + hMul(h));

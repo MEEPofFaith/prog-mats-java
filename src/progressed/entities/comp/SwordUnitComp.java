@@ -15,7 +15,7 @@ import mindustry.type.*;
 import progressed.ai.*;
 import progressed.content.effects.*;
 import progressed.gen.entities.*;
-import progressed.graphics.*;
+import progressed.graphics.trails.*;
 import progressed.type.unit.*;
 
 import static mindustry.Vars.*;

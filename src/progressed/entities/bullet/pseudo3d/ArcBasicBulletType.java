@@ -6,7 +6,7 @@ import arc.math.*;
 import mindustry.gen.*;
 import progressed.graphics.*;
 
-import static progressed.graphics.DrawPseudo3D.hMul;
+import static progressed.graphics.Draw3D.hMul;
 
 public class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
@@ -37,10 +37,10 @@ public class ArcBasicBulletType extends ArcBulletType{
     public void draw(Bullet b){
         drawTrail(b);
         ArcBulletData data = (ArcBulletData)b.data;
-        float lastHX = DrawPseudo3D.xHeight(b.lastX, data.lastZ);
-        float lastHY = DrawPseudo3D.yHeight(b.lastY, data.lastZ);
-        float hX = DrawPseudo3D.xHeight(b.x, data.z);
-        float hY = DrawPseudo3D.yHeight(b.y, data.z);
+        float lastHX = Draw3D.xHeight(b.lastX, data.lastZ);
+        float lastHY = Draw3D.yHeight(b.lastY, data.lastZ);
+        float hX = Draw3D.xHeight(b.x, data.z);
+        float hY = Draw3D.yHeight(b.y, data.z);
         float rot = Angles.angle(lastHX, lastHY, hX, hY);
         Draw.scl(1f + hMul(data.z));
         if(spinShade){

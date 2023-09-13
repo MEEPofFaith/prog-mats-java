@@ -1,4 +1,4 @@
-package progressed.graphics;
+package progressed.graphics.trails;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;

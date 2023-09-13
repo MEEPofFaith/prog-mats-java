@@ -3,15 +3,15 @@ package progressed.graphics;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
+import progressed.util.*;
 
 import static arc.Core.*;
 import static arc.math.Mathf.*;
 
-public class DrawPseudo3D{
+public class Draw3D{
     /** Translates horizontal distance in world units to camera offset height. Somewhat arbitrary. */
     public static final float horiToVerti = 1f/48f/Vars.tilesize;
     private static final Color tmpCol = new Color();
@@ -41,7 +41,7 @@ public class DrawPseudo3D{
     public static void tube(float x, float y, float rad, float height, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * hScale(height));
+        float angle = Math3D.tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * hScale(height));
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -125,7 +125,7 @@ public class DrawPseudo3D{
         int vert = Lines.circleVertices(rad);
 
         float space = 360f / vert;
-        float angle = tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * hScale(height));
+        float angle = Math3D.tubeStartAngle(x1, y1, xHeight(x2, height), yHeight(y2, height), rad, rad * hScale(height));
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -152,7 +152,7 @@ public class DrawPseudo3D{
     }
 
     public static void lineAngleBase(float x, float y, float height, float length, float rotation, float rotationOffset, float tilt){
-        rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
+        Math3D.rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
         float h2 = height + Tmp.v31.z;
         float x1 = xHeight(x, height);
         float y1 = yHeight(y, height);
@@ -175,18 +175,6 @@ public class DrawPseudo3D{
         lineAngleBase(x, y, height, length, rotation, spread, tilt);
         Draw.color(Color.orange); //Up
         lineAngleBase(x, y, height, length, rotation, 0f, tilt + spread);
-    }
-
-    /** Properly rotates and tilts up a 3D vector.
-     * @param vec3 Vec3 to write output to.
-     * @param length Length of the vector.
-     * @param rotation Angle of the main angle.
-     * @param rotationOffset Rotational offset from the main angle.
-     * @param tilt 3D tilt. Tilts around the axis 90* of the main angle.
-     */
-    public static void rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
-        vec3.set(Angles.trnsx(rotationOffset, length), Angles.trnsy(rotationOffset, length), 0f)
-            .rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
     }
 
     public static float xHeight(float x, float height){
@@ -231,21 +219,5 @@ public class DrawPseudo3D{
         float max = Math.max(camera.width, camera.height);
 
         return layerOffset(cx, cy) + dst(cx, cy, tx, ty) * cosDeg(angleDist) / max / 1000f;
-    }
-
-    /**
-     * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
-     * @author Xelo
-     */
-    static float tubeStartAngle(float x1, float y1, float x2, float y2, float rad1, float rad2){
-        if(x1 == x2 && y1 == y2) return 0f;
-
-        float d = dst(x2 - x1,y2 - y1);
-        float f = sqrt(d * d - sqr(rad2 - rad1));
-        float a = rad1 > rad2 ? atan2(rad1 - rad2, f) : (rad1 < rad2 ? pi - atan2(rad2 - rad1, f) : halfPi);
-        Tmp.v1.set(x2 - x1, y2 - y1).scl(1f / d); //normal
-        Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-rad2).add(x2, y2); //tangent
-
-        return Angles.angle(x2, y2, Tmp.v2.x, Tmp.v2.y);
     }
 }

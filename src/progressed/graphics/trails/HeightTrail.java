@@ -1,4 +1,4 @@
-package progressed.graphics;
+package progressed.graphics.trails;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -7,7 +7,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
 
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class HeightTrail extends Trail{
     protected float lastH = 0f;

@@ -14,6 +14,7 @@ import mindustry.type.*;
 import progressed.ai.*;
 import progressed.gen.entities.*;
 import progressed.graphics.*;
+import progressed.graphics.trails.*;
 
 import static mindustry.Vars.*;
 

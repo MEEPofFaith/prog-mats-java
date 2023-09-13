@@ -11,7 +11,7 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class Pseudo3DFx{
     public static Effect
@@ -91,7 +91,7 @@ public class Pseudo3DFx{
             Lines.line(x2, y2, x3, y3);
             Lines.line(x4, y4, x3, y3);
         });
-    }).layer(Layer.shields),
+    }).layer(Layer.shields - 0.01f),
 
     shieldBreak = new Effect(40f, e -> {
         if(!(e.data instanceof ShieldSizeData data)) return;

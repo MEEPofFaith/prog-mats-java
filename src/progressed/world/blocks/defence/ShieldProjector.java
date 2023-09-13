@@ -22,7 +22,7 @@ import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 public class ShieldProjector extends ForceProjector{
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f;

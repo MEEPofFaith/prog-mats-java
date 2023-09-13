@@ -2,6 +2,7 @@ package progressed.util;
 
 import arc.math.*;
 import arc.math.geom.*;
+import mindustry.entities.*;
 
 public class PMMathf{
     private static final Vec2 bezOut = new Vec2(), p1 = new Vec2(), p2 = new Vec2(), p3 = new Vec2(), p4 = new Vec2(), tmp = new Vec2();
@@ -19,14 +20,38 @@ public class PMMathf{
         return (float)Math.sqrt(w * h * 2f);
     }
 
-    public static float quadratic(float a, float b, float c, boolean negative){
-        float d = Mathf.sqrt(b * b - (4 * a * c)); //TODO what to do in the case of solutionless input?
-        if(negative) d *= -1;
-        return (-b - d) / (2 * a);
+    /** Copied from {@link Predict#quad(float, float, float)} */
+    public static Vec2 quad(float a, float b, float c){
+        Vec2 sol = null;
+        if(Math.abs(a) < 1e-6){
+            if(Math.abs(b) < 1e-6){
+                sol = Math.abs(c) < 1e-6 ? tmp.set(0, 0) : null;
+            }else{
+                tmp.set(-c / b, -c / b);
+            }
+        }else{
+            float disc = b * b - 4 * a * c;
+            if(disc >= 0){
+                disc = Mathf.sqrt(disc);
+                a = 2 * a;
+                sol = tmp.set((-b - disc) / a, (-b + disc) / a);
+            }
+        }
+        return sol;
     }
 
-    public static float quadratic(float a, float b, float c){
-        return quadratic(a, b, c, false);
+    /** @return Smallest positive solution of a quadratic. */
+    public static float quadPos(float a, float b, float c){
+        Vec2 ts = quad(a, b, c);
+        if(ts != null){
+            float t0 = ts.x, t1 = ts.y;
+            float t = Math.min(t0, t1);
+            if(t < 0) t = Math.max(t0, t1);
+            if(t > 0){
+                return t;
+            }
+        }
+        return 0f;
     }
 
     public static Vec2 randomCirclePoint(Vec2 v, float radius){

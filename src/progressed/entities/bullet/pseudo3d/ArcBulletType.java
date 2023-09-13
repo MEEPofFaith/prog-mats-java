@@ -11,7 +11,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
-import progressed.graphics.*;
+import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -136,7 +136,7 @@ public class ArcBulletType extends BulletType{
         /** Sets bullet lifetime based on initial z, initial z velocity, and the given gravity constant. */
         public void updateLifetime(Bullet b){ //Calculus :D
             //Calculate lifetime
-            float life = PMMathf.quadratic(-0.5f * gravity, zVel, z);
+            float life = PMMathf.quadPos(-0.5f * gravity, zVel, z);
             b.lifetime(life);
         }
 
@@ -175,7 +175,7 @@ public class ArcBulletType extends BulletType{
             PMMathf.randomCirclePoint(vec, inaccuracy);
             float horiInacc = vec.x;
             float vertInacc = vec.y;
-            DrawPseudo3D.rotate(Tmp.v31, speed, angle, horiInacc, tilt + vertInacc);
+            Math3D.rotate(Tmp.v31, speed, angle, horiInacc, tilt + vertInacc);
             vec.set(Tmp.v31.x, Tmp.v31.y);
             return Tmp.v31.z;
         }

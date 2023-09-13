@@ -15,7 +15,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
-import progressed.graphics.*;
+import progressed.graphics.trails.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(

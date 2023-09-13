@@ -3,7 +3,7 @@ package progressed.content.effects;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.explosive.RocketBulletType.*;
-import progressed.graphics.*;
+import progressed.graphics.trails.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static mindustry.Vars.*;

@@ -56,7 +56,7 @@ public class ArcBulletTestTurret extends FreeTurret{
             if(!drawAimDebug) return;
             Draw.z(Layer.effect + 0.01f);
             //Aiming Display
-            DrawPseudo3D.drawAimDebug(x, y, shotZ, shootType.speed * Vars.tilesize, rotation, realTilt, inaccuracy);
+            Draw3D.drawAimDebug(x, y, shotZ, shootType.speed * Vars.tilesize, rotation, realTilt, inaccuracy);
         }
 
         @Override

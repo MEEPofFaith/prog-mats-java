@@ -5,10 +5,12 @@ import arc.math.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
+import progressed.util.*;
 
 public class ArcMissileTestTurret extends ArcBulletTestTurret{
     public ArcMissileTestTurret(String name){
@@ -16,7 +18,7 @@ public class ArcMissileTestTurret extends ArcBulletTestTurret{
 
         range = 80 * 8;
         shootType = new ArcMissileBulletType(){{
-            homingPower = 1f;
+            //homingPower = 1f;
             accel = 0.1f;
         }};
         shotZ = 0f;
@@ -28,6 +30,22 @@ public class ArcMissileTestTurret extends ArcBulletTestTurret{
 
     public class ArcMissileTestTurretBuild extends ArcBulletTestTurretBuild{
         @Override
+        public void targetPosition(Posc pos){
+            if(!hasAmmo() || pos == null) return;
+            ArcMissileBulletType bullet = (ArcMissileBulletType)peekAmmo();
+
+            if(predictTarget && pos instanceof Hitboxc h){
+                targetPos.set(Math3D.intercept(this, h, bullet.accel));
+            }else{
+                targetPos.set(pos);
+            }
+
+            if(targetPos.isZero()){
+                targetPos.set(pos);
+            }
+        }
+
+        @Override
         public void drawAimDebug(){
             if(!drawAimDebug) return;
             Draw.z(Layer.bullet);
@@ -36,7 +54,7 @@ public class ArcMissileTestTurret extends ArcBulletTestTurret{
             ArcMissileBulletType m = (ArcMissileBulletType)shootType;
             float time = Mathf.sqrt((2 * dst) / m.accel);
             float zVel = -0.5f * -m.gravity * time;
-            DrawPseudo3D.drawAimDebug(x, y, shotZ, zVel, rotation, realTilt, inaccuracy);
+            Draw3D.drawAimDebug(x, y, shotZ, zVel, rotation, realTilt, inaccuracy);
         }
 
         @Override

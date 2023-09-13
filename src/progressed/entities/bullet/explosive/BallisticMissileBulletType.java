@@ -16,10 +16,11 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.game.*;
 import progressed.graphics.*;
+import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.DrawPseudo3D.*;
+import static progressed.graphics.Draw3D.*;
 
 @Deprecated
 public class BallisticMissileBulletType extends BulletType{
@@ -227,7 +228,7 @@ public class BallisticMissileBulletType extends BulletType{
         Draw.z(shadowLayer);
         Draw.scl(1f + hScl * shadowGrowth);
         Drawf.shadow(region, shX, shY, shadowRot(b, shX, shY));
-        Draw.z(layer + DrawPseudo3D.layerOffset(x, y) + hScl / 100f);
+        Draw.z(layer + Draw3D.layerOffset(x, y) + hScl / 100f);
         Draw.scl();
         drawTrail(b);
         Draw.scl(1f + hMul(hScl * height));

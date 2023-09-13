@@ -61,7 +61,7 @@ public class NexusLaserBulletType extends BulletType{
     public void draw(Bullet b){
         float z = Draw.z();
 
-        Draw.z(layer + DrawPseudo3D.layerOffset(b.aimX, b.aimY, b.x, b.y));
+        Draw.z(layer + Draw3D.layerOffset(b.aimX, b.aimY, b.x, b.y));
 
         if(alwaysBloom){
             PMDrawf.bloom(() -> drawBeam(b));
@@ -73,6 +73,6 @@ public class NexusLaserBulletType extends BulletType{
     }
 
     public void drawBeam(Bullet b){
-        DrawPseudo3D.slantTube(b.x, b.y, b.aimX, b.aimY, radius * b.fout(), height, baseColorLight, baseColorDark, topColorLight, topColorDark);
+        Draw3D.slantTube(b.x, b.y, b.aimX, b.aimY, radius * b.fout(), height, baseColorLight, baseColorDark, topColorLight, topColorDark);
     }
 }

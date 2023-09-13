@@ -30,9 +30,9 @@ public class PillarPart extends DrawPart{
 
         float z = Draw.z();
         if(layer > 0){
-            Draw.z(layer + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(layer + Draw3D.layerOffset(rx, ry));
         }else{
-            Draw.z(z + DrawPseudo3D.layerOffset(rx, ry));
+            Draw.z(z + Draw3D.layerOffset(rx, ry));
         }
 
         float alpha = alphaProg.get(params);
@@ -56,7 +56,7 @@ public class PillarPart extends DrawPart{
         Tmp.c4.set(topColorLight).mulA(alpha);
 
         Draw.blend(blending);
-        DrawPseudo3D.tube(x, y, radius * radScl, height * heightScl, Tmp.c1, Tmp.c2, Tmp.c3, Tmp.c4);
+        Draw3D.tube(x, y, radius * radScl, height * heightScl, Tmp.c1, Tmp.c2, Tmp.c3, Tmp.c4);
         Draw.blend();
     }
 
