@@ -15,7 +15,8 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
     public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public Color targetColor = Color.red;
-    public float accel = 0.1f, gravity = 1f;
+    public float accel = 0.1f;
+    public float lifetimeScl = 1f;
 
     public ArcMissileBulletType(String sprite){
         super(0f, sprite);
@@ -45,6 +46,19 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         a.updateLifetime(b);
         //a.setAccel(b.vel.angle(), acceleration);
         a.updateAimPos(b);
+        b.lifetime *= lifetimeScl;
+    }
+
+    @Override
+    public void createFrags(Bullet b, float x, float y){
+        if(fragBullet instanceof ArcBulletType){
+            for(int i = 0; i < fragBullets; i++){
+                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2) * fragSpread);
+                fragBullet.create(b, x, y, a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
+            }
+        }else{
+            super.createFrags(b, x, y);
+        }
     }
 
     @Override

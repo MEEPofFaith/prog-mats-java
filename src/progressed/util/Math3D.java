@@ -52,6 +52,11 @@ public class Math3D{
         return intercept(src.getX(), src.getY(), dst.getX(), dst.getY(), ddx, ddy, accel);
     }
 
+    public static Vec2 inaccuracy(float inaccuracy){
+        PMMathf.randomCirclePoint(vec, inaccuracy);
+        return vec;
+    }
+
     /**
      * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
      * @author Xelo

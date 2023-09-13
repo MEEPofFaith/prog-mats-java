@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
@@ -20,6 +21,7 @@ public class ArcBulletType extends BulletType{
     public boolean zAbsorbable = true;
     public Color absorbEffectColor = Pal.missileYellowBack;
     public Effect absorbEffect = Pseudo3DFx.absorbedSmall;
+    public float gravity = 1f;
 
     public ArcBulletType(float speed){
         super(speed, 0f);
@@ -118,6 +120,30 @@ public class ArcBulletType extends BulletType{
             b.trail.draw(trailColor, trailWidth);
             Draw.z(z);
         }
+    }
+
+    public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float aimX, float aimY){
+        return create3D(owner, team, x, y, z, angle, tilt, gravity, aimX, aimY);
+    }
+
+    public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float gravity, float aimX, float aimY){
+        return create3D(owner, team, x, y, z, angle, tilt, gravity, 1f, aimX, aimY);
+    }
+
+    public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float gravity, float velocityScl, float aimX, float aimY){
+        Vec3 vel = Tmp.v31;
+        Math3D.rotate(vel, speed, angle, 0f, tilt);
+        ArcBulletData data = new ArcBulletData(z, vel.z * velocityScl, gravity);
+        return create(owner, team, x, y, angle, -1, Tmp.v1.set(vel.x, vel.y).scl(velocityScl).len() / speed, 1f, data, null, aimX, aimY);
+    }
+
+    public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float accel, float aimX, float aimY){
+        return create3DVel(owner, team, x, y, z, angle, zVel, gravity, accel, aimX, aimY);
+    }
+
+    public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float aimX, float aimY){
+        ArcBulletData data = new ArcBulletData(z, zVel, gravity).setAccel(angle, accel);
+        return create(owner, team, x, y, angle, -1f, 1f, 1f, data, null, aimX, aimY);
     }
 
     public static class ArcBulletData{

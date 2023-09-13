@@ -2,6 +2,7 @@ package progressed.world.blocks.defence.turret.testing;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.entities.*;
@@ -9,8 +10,8 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.graphics.*;
+import progressed.util.*;
 
 public class ArcBulletTestTurret extends FreeTurret{
     public float shotZ = 180f * Vars.tilesize;
@@ -69,15 +70,12 @@ public class ArcBulletTestTurret extends FreeTurret{
                 xSpread = Mathf.range(xRand),
                 bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
-                //shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy);
-                shootAngle = rotation + angleOffset;
+                shootAngle = rotation + angleOffset,
+                velScl = 1f + Mathf.range(velocityRnd / 2f);
 
-            //float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y) / type.range, minRange / type.range, range() / type.range) : 1f;
-
-            //handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
-            float velRnd = (1f - velocityRnd) + Mathf.random(velocityRnd);
-            float zVel = ArcBulletData.calcVel(Tmp.v1, type.speed * velRnd, shootAngle, realTilt, Mathf.range(inaccuracy + type.inaccuracy));
-            handleBullet(type.create(this, team, bulletX, bulletY, Tmp.v1.angle(), -1f, Tmp.v1.len() / type.speed, 1f, new ArcBulletData(shotZ, zVel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            ArcBulletType aType = (ArcBulletType)type;
+            Vec2 inacc = Math3D.inaccuracy(inaccuracy);
+            handleBullet(aType.create3D(this, team, x, y, shotZ, shootAngle + inacc.x, shotTilt + inacc.y, aType.gravity, velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

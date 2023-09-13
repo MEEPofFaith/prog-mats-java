@@ -40,13 +40,13 @@ public class PMMathf{
         return sol;
     }
 
-    /** @return Smallest positive solution of a quadratic. */
+    /** @return Smallest positive solution (does not include 0) of a quadratic. */
     public static float quadPos(float a, float b, float c){
         Vec2 ts = quad(a, b, c);
         if(ts != null){
             float t0 = ts.x, t1 = ts.y;
             float t = Math.min(t0, t1);
-            if(t < 0) t = Math.max(t0, t1);
+            if(t <= 0) t = Math.max(t0, t1);
             if(t > 0){
                 return t;
             }

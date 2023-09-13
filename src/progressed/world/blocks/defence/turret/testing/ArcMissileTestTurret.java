@@ -7,7 +7,6 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
 import progressed.util.*;
@@ -67,13 +66,14 @@ public class ArcMissileTestTurret extends ArcBulletTestTurret{
                 xSpread = Mathf.range(xRand),
                 bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
-                shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy);
+                shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy),
+                velScl = 1f + Mathf.range(velocityRnd / 2f);
 
             float dst = Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range);
             ArcMissileBulletType m = (ArcMissileBulletType)type;
             float time = Mathf.sqrt((2 * dst) / m.accel);
             float zVel = -0.5f * -m.gravity * time;
-            handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, 1f, 1f, new ArcBulletData(shotZ, zVel, m.gravity).setAccel(shootAngle, m.accel), null, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            handleBullet(m.create3DVel(this, team, bulletX, bulletY, shotZ, shootAngle, zVel, m.accel * velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
