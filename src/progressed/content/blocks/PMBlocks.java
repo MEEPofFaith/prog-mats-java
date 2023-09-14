@@ -908,7 +908,7 @@ public class PMBlocks{
             setUsers();
         }};
 
-        artemis = new BallisticMissileTurret("artemis"){{
+        artemis = new ArcMissileTurret("artemis"){{
             requirements(Category.turret, with(
                 Items.copper, 70,
                 Items.lead, 350,

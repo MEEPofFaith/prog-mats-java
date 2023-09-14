@@ -19,6 +19,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 import static progressed.graphics.Draw3D.*;
 
+@Deprecated
 public class DropBombBulletType extends BulletType{
     public float height = 1f;
     public boolean drawZone = true;

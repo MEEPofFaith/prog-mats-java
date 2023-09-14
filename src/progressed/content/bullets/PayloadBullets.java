@@ -15,6 +15,7 @@ import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.explosive.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
@@ -30,9 +31,10 @@ public class PayloadBullets{
     public static BulletType
 
     arbalestBasic, arbalestIncend, arbalestSplitter;
+    public static ArcMissileBulletType
 
+    artemisBasic, artemisRecursive, artemisBombing;
     public static BallisticMissileBulletType
-    artemisBasic, artemisRecursive, artemisBombing,
     paragonBasic, paragonCluster, paragonEMP,
     ohno;
 
@@ -179,33 +181,34 @@ public class PayloadBullets{
             }};
         }};
 
-        artemisBasic = new BallisticMissileBulletType("prog-mats-basic-missile"){{
+        artemisBasic = new ArcMissileBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
             splashDamageRadius = 64f;
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
-            height = 24f * Vars.tilesize;
+            gravity = 0.5f;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
         }};
 
-        artemisRecursive = new BallisticMissileBulletType("prog-mats-recursive-missile"){{
+        artemisRecursive = new ArcMissileBulletType("prog-mats-recursive-missile"){{
             status = StatusEffects.none;
 
-            lifetime *= 1.5f;
-            height = 36f * Vars.tilesize;
             zoneRadius = 5f * 8f;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileFrag;
-            posInterp = Interp.smoother;
 
-            splitLifeMaxOffset = 30f;
-            fragRandomSpread = 80f;
+            hitEffect = despawnEffect = Fx.none;
+            hitSound = despawnSound = Sounds.none;
+
+            accel = 0.02f;
+            gravity = 0.3f;
+            lifetimeScl = 0.33f;
             fragBullets = 3;
-            fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
+            fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
 
                 zoneRadius = 3.5f * 8f;
@@ -213,27 +216,38 @@ public class PayloadBullets{
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
 
-                fragRandomSpread = 64f;
+                hitEffect = despawnEffect = Fx.none;
+                hitSound = despawnSound = Sounds.none;
+
+                keepVelocity = true;
+                gravity = 0.3f;
+                inheritVelDrift = false;
+                arcFragDrift = 2f;
+                targetDriftDrag = 0.02f;
+                lifetimeScl = 0.5f;
                 fragBullets = 3;
-                fragBullet = new BallisticMissileBulletType("prog-mats-recursive-missile-split"){{
-                    splashDamage = 220f;
-                    splashDamageRadius = 48f;
+                fragBullet = new ArcMissileBulletType(220f, 48f, "prog-mats-recursive-missile-split"){{
+                    keepVelocity = true;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
                     hitEffect = MissileFx.smallBoom;
                     hitSound = Sounds.explosion;
 
                     zoneRadius = 2f * 8f;
+                    gravity = 0.3f;
+                    inheritVelDrift = false;
+                    arcFragDrift = 2f;
+                    targetDriftDrag = 0.02f;
                     trailLength = 15;
                     trailWidth = 1f;
                     trailColor = targetColor = PMPal.missileFrag;
 
-                    blockEffect = Pseudo3DFx.absorbedSmall;
+                    absorbEffect = Pseudo3DFx.absorbedSmall;
                 }};
             }};
         }};
 
-        artemisBombing = new BallisticMissileBulletType("prog-mats-bombing-missile"){{
+        artemisBombing = new ArcMissileBulletType("prog-mats-bombing-missile"){{
             splashDamage = 200f;
             splashDamageRadius = 32f;
             buildingDamageMultiplier = 0.5f;
@@ -241,20 +255,19 @@ public class PayloadBullets{
             lifetime = 240;
             scaleLife = false;
 
-            height = 48f * Vars.tilesize;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = Pal.suppress;
 
-            bulletInterval = 10f;
-            intervalDelay = 105f;
+            accel = 0.02f;
+            gravity = 0.1f;
+            bulletInterval = 20f;
+            intervalDelay = 45f;
             intervalRandomSpread = 0f;
-            intervalBullet = new DropBombBulletType(170f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
-                speed = 2.5f;
-                drag = 0.03f;
-                lifetime = 45f;
+            intervalBullet = new ArcBombBulletType(170f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
+                accel = 0f;
                 buildingDamageMultiplier = 0.5f;
-                homingPower = 0.04f;
+                homingPower = 0.5f;
 
                 trailColor = targetColor = Pal.suppress;
                 trailLength = 12;
@@ -375,11 +388,11 @@ public class PayloadBullets{
         ohno.targetColor = ohno.trailColor = Color.red;
         ohno.rangeChange = 500 * 8;
 
-        BallisticMissileBulletType stop = (BallisticMissileBulletType)artemisRecursive.copy();
+        ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();
         stop.speed = 1;
 
-        BallisticMissileBulletType why = (BallisticMissileBulletType)stop.fragBullet.copy();
-        BallisticMissileBulletType tooFar = (BallisticMissileBulletType)stop.fragBullet.fragBullet.copy();
+        ArcMissileBulletType why = (ArcMissileBulletType)stop.fragBullet.copy();
+        ArcMissileBulletType tooFar = (ArcMissileBulletType)stop.fragBullet.fragBullet.copy();
         tooFar.buildingDamageMultiplier = 1f;
         stop.fragBullet = why;
         stop.fragBullet.fragBullet = tooFar;

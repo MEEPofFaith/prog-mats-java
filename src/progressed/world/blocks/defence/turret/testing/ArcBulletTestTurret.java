@@ -23,7 +23,7 @@ public class ArcBulletTestTurret extends FreeTurret{
     public ArcBulletTestTurret(String name){
         super(name);
 
-        shootType = new ArcBasicBulletType(25f);
+        shootType = new ArcBasicBulletType(25f, 50f, 4f);
         reload = 10f;
         shootY = 0f;
         shootCone = 360f;

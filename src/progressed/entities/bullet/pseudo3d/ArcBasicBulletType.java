@@ -13,14 +13,18 @@ public class ArcBasicBulletType extends ArcBulletType{
     public boolean spinShade = true;
     public TextureRegion region, blRegion, trRegion;
 
-    public ArcBasicBulletType(float speed, String sprite){
-        super(speed);
+    public ArcBasicBulletType(float speed, float damage, float radius, String sprite){
+        super(speed, damage, radius);
         this.sprite = sprite;
     }
 
-    public ArcBasicBulletType(float speed){
-        this(speed, "bullet");
+    public ArcBasicBulletType(float speed, float damage, float radius){
+        this(speed, damage, radius, "bullet");
         spinShade = false;
+    }
+
+    public ArcBasicBulletType(float speed){
+        this(speed, 0f, 0f);
     }
 
     @Override
@@ -35,7 +39,7 @@ public class ArcBasicBulletType extends ArcBulletType{
 
     @Override
     public void draw(Bullet b){
-        drawTrail(b);
+        super.draw(b);
         ArcBulletData data = (ArcBulletData)b.data;
         float lastHX = Draw3D.xHeight(b.lastX, data.lastZ);
         float lastHY = Draw3D.yHeight(b.lastY, data.lastZ);
