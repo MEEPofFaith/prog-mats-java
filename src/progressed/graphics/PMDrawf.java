@@ -234,6 +234,7 @@ public class PMDrawf{
 
     /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
     public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r, float alpha){
+        if(alpha < 0.001f) return;
         if(alpha < 0.999f){
             FrameBuffer buffer = renderer.effectBuffer;
             float z = Draw.z();

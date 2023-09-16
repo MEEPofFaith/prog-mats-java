@@ -50,6 +50,17 @@ public class ArcBulletType extends BulletType{
     public ArcBulletType(float speed){
         this(speed, 0f, 0f);
     }
+    
+    public void initDrawSize(float range){
+        float size = (range + rangeChange + zoneRadius) * 2f; //Probably good enough
+        drawSize = Math.max(size, drawSize);
+        if(fragBullet instanceof ArcBulletType a){
+            a.initDrawSize(range);
+        }
+        if(intervalBullet instanceof ArcBulletType a){
+            a.initDrawSize(range);
+        }
+    }
 
     @Override
     public void init(){

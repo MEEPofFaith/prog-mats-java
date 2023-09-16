@@ -45,7 +45,7 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
             if(!(ammoTypes.get(c) instanceof ArcMissileBulletType aType)){
                 PMUtls.uhOhSpeghettiOh("Arc missile turret " + name + " has a non-arc missle bullet!");
             }else{
-                aType.drawSize = Math.max(aType.drawSize, (range + aType.rangeChange + aType.zoneRadius) * 2f); //Probably good enough
+                aType.initDrawSize(range);
             }
         }
 

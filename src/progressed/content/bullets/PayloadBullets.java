@@ -286,7 +286,7 @@ public class PayloadBullets{
             gravity = 0.05f;
             zoneRadius = 8f * 8f;
             trailLength = 35;
-            trailWidth = 1.5f;
+            trailWidth = 2.5f;
             trailColor = targetColor = PMPal.missileBasic;
         }};
 
@@ -297,7 +297,7 @@ public class PayloadBullets{
 
             zoneRadius = 12f * 8f;
             trailLength = 35;
-            trailWidth = 1.5f;
+            trailWidth = 2.5f;
             trailColor = targetColor = PMPal.missileFrag;
 
             hitEffect = despawnEffect = Fx.none;
@@ -338,7 +338,7 @@ public class PayloadBullets{
 
             zoneRadius = 8f * 8f;
             trailLength = 35;
-            trailWidth = 1.5f;
+            trailWidth = 2.5f;
             trailColor = targetColor = Pal.lancerLaser;
 
             accel = 0.01f;
