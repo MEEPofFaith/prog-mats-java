@@ -14,12 +14,14 @@ public class PMShaders{
     public static VerticalBuildShader vertBuild;
     public static BlockBuildCenterShader blockBuildCenter;
     public static TractorConeShader tractorCone;
+    public static AlphaShader alphaShader;
 
     public static void init(){
         materialize = new MaterializeShader();
         vertBuild = new VerticalBuildShader();
         blockBuildCenter = new BlockBuildCenterShader();
         tractorCone = new TractorConeShader();
+        alphaShader = new AlphaShader();
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -109,11 +111,20 @@ public class PMShaders{
         }
 
         public void setCenter(float cx, float cy){
-            /*Vec2 c = Core.camera.project(cx, cy);
-            this.cx = c.x;
-            this.cy = c.y;*/
             this.cx = cx;
             this.cy = cy;
+        }
+    }
+
+    public static class AlphaShader extends PMLoadShader{
+        public float alpha = 1f;
+
+        AlphaShader(){
+            super("screenspace", "postalpha");
+        }
+
+        public void apply(){
+            setUniformf("u_alpha", alpha);
         }
     }
 

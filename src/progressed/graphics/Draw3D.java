@@ -12,10 +12,10 @@ import static arc.Core.*;
 import static arc.math.Mathf.*;
 
 public class Draw3D{
-    /** Translates horizontal distance in world units to camera offset height. Somewhat arbitrary. */
+    /** Arbitrary value that translates horizontal distance in world units to camera offset height. */
     public static final float horiToVerti = 1f/48f/Vars.tilesize;
-    public static final float fadeBegin = 120f;
-    public static final float fadeEnd = 200f;
+    public static final float zFadeBegin = 300f, zFadeEnd = 5000f;
+    public static final float scaleFadeBegin = 1.5f, scaleFadeEnd = 7f;
     private static final Color tmpCol = new Color();
     
     /**
@@ -209,8 +209,12 @@ public class Draw3D{
         return height * horiToVerti;
     }
 
-    public static float hAlpha(float height){
-        return 1f - Mathf.curve(height, fadeBegin, fadeEnd) / (fadeEnd - fadeBegin);
+    public static float zAlpha(float z){
+        return 1f - Mathf.curve(z, zFadeBegin, zFadeEnd);
+    }
+
+    public static float scaleAlpha(float z){
+        return 1f - Mathf.curve(hMul(z), scaleFadeBegin, scaleFadeEnd);
     }
 
     public static float layerOffset(float x, float y){

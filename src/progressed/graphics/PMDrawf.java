@@ -232,18 +232,24 @@ public class PMDrawf{
         reset();
     }
 
-    /** Draws a sprite that should be light-wise correct, Provided sprites must be similar in shape. */
-    public static void spinSprite(TextureRegion light, TextureRegion dark, float x, float y, float r){
-        float mr = mod(r, 360f);
-        alpha(1f);
-        rect(dark, x, y, r);
-        alpha(0.5f * (Mathf.cosDeg(mr) + 1f));
-        rect(light, x, y, r);
-        alpha(1f);
-    }
-
     /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
-    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
+    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r, float alpha){
+        if(alpha < 0.999f){
+            FrameBuffer buffer = renderer.effectBuffer;
+            float z = Draw.z();
+            float xScl = xscl, yScl = yscl;
+            Draw.draw(z, () -> {
+                buffer.begin(Color.clear);
+                Draw.scl(xScl, yScl);
+                spinSprite(base, bottomLeft, topRight, x, y, r);
+                buffer.end();
+
+                alphaShader.alpha = alpha;
+                buffer.blit(alphaShader);
+            });
+            return;
+        }
+
         float ar = mod(r - 135f, 360f);
         float a = mod(ar, 90f) / 90f;
         alpha(1f);

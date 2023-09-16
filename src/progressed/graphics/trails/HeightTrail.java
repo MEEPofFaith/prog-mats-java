@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
+import progressed.graphics.*;
 
 import static progressed.graphics.Draw3D.*;
 
@@ -43,10 +44,10 @@ public class HeightTrail extends Trail{
         return points.size / 4;
     }
 
-    @Override
-    public void drawCap(Color color, float width){
+    public void drawCap(Color color, float width, boolean fade){
         if(points.size > 4){
             Draw.color(color);
+            if(fade) Draw.alpha(Draw3D.scaleAlpha(lastH));
             int i = points.size - 4;
             float x1 = x(i - 4), y1 = y(i - 4),
                 x2 = x(-1), y2 = y(-1),
@@ -58,48 +59,67 @@ public class HeightTrail extends Trail{
     }
 
     @Override
-    public void draw(Color color, float width){
-        Draw.color(color);
+    public void drawCap(Color color, float width){
+        drawCap(color, width, true);
+    }
+
+    public void draw(Color color, float width, boolean fade){
         float lastAngle = 0;
+        float[] items = points.items;
         float size = width / (points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
-            float x1 = x(i), y1 = y(i), w1 = w(i);
-            float x2, y2, w2;
+            float x1 = x(i), y1 = y(i), w1 = w(i), z1 = items[i + 3];
+            float x2, y2, w2, z2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
                 x2 = x(i + 4);
                 y2 = y(i + 4);
                 w2 = w(i + 4);
+                z2 = items[i + 4 + 3];
+
             }else{
                 x2 = xHeight(lastX, lastH);
                 y2 = yHeight(lastY, lastH);
                 w2 = lastW * hScale(lastH);
+                z2 = lastH;
             }
 
-            float z2 = -Angles.angleRad(x1, y1, x2, y2);
+            float a2 = -Angles.angleRad(x1, y1, x2, y2);
             //end of the trail (i = 0) has the same angle as the next.
-            float z1 = i == 0 ? z2 : lastAngle;
+            float a1 = i == 0 ? a2 : lastAngle;
             if(w1 <= 0.001f || w2 <= 0.001f) continue;
 
             float
-                cx = Mathf.sin(z1) * i/4f * size * w1,
-                cy = Mathf.cos(z1) * i/4f * size * w1,
-                nx = Mathf.sin(z2) * (i/4f + 1) * size * w2,
-                ny = Mathf.cos(z2) * (i/4f + 1) * size * w2;
+                cx = Mathf.sin(a1) * i/4f * size * w1,
+                cy = Mathf.cos(a1) * i/4f * size * w1,
+                nx = Mathf.sin(a2) * (i/4f + 1) * size * w2,
+                ny = Mathf.cos(a2) * (i/4f + 1) * size * w2;
+            Tmp.c1.set(color);
+            float c1 = Tmp.c1.toFloatBits(),
+                c2 = Tmp.c1.toFloatBits();
+            if(fade){
+                c1 = Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(z1)).toFloatBits();
+                c2 = Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(z2)).toFloatBits();
+            }
 
             Fill.quad(
-                x1 - cx, y1 - cy,
-                x1 + cx, y1 + cy,
-                x2 + nx, y2 + ny,
-                x2 - nx, y2 - ny
+                x1 - cx, y1 - cy, c1,
+                x1 + cx, y1 + cy, c1,
+                x2 + nx, y2 + ny, c2,
+                x2 - nx, y2 - ny, c2
             );
 
-            lastAngle = z2;
+            lastAngle = a2;
         }
 
         Draw.reset();
+    }
+
+    @Override
+    public void draw(Color color, float width){
+        draw(color, width, true);
     }
 
     /** Removes the last point from the trail at intervals. */

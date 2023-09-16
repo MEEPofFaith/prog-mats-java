@@ -55,16 +55,18 @@ public class ArcBasicBulletType extends ArcBulletType{
             float sX = Angles.trnsx(225f, data.z) + b.x,
                 sY = Angles.trnsy(225f, data.z) + b.y,
                 sRot = Angles.angle(b.originX, b.originY, b.aimX, b.aimY), //TODO better shadow rotation calculation
-                sAlpha = Draw3D.hAlpha(data.z);
+                sAlpha = Draw3D.zAlpha(data.z);
             PMDrawf.shadow(region, sX, sY, sRot, sAlpha);
         }
 
         Draw.z(layer);
         drawTrail(b);
         Draw.scl(1f + hMul(data.z));
+        float alpha = Draw3D.scaleAlpha(data.z);
         if(spinShade){
-            PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, rot);
+            PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, rot, alpha);
         }else{
+            Draw.alpha(alpha);
             Draw.rect(region, hX, hY, rot);
         }
         Draw.scl();
