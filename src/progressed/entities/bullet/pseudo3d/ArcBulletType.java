@@ -19,7 +19,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class ArcBulletType extends BulletType{
-    public boolean zAbsorbable = true, isInheritive, inheritZVel = true, inheritVelDrift = true;
+    public boolean zAbsorbable = true, isInheritive, inheritZVel = true, inheritVelDrift = false;
     public Color absorbEffectColor = Pal.missileYellowBack;
     public Effect absorbEffect = Pseudo3DFx.absorbedSmall;
     public float gravity = 1f;
@@ -29,7 +29,7 @@ public class ArcBulletType extends BulletType{
     public float targetDriftDrag = 0.05f;
 
     public boolean drawZone = false;
-    public float zoneLayer = Layer.bullet - 1f, shadowLayer = Layer.flyingUnit + 1;
+    public float zoneLayer = Layer.bullet - 1f;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public Color targetColor = Color.red;
 
@@ -42,6 +42,7 @@ public class ArcBulletType extends BulletType{
         scaleLife = true;
         backMove = true;
         trailLength = 8;
+        layer = Layer.shields + 2;
         shootEffect = smokeEffect = Fx.none;
         scaledSplashDamage = true; //Doesn't collide, will rely on splash damage.
     }
@@ -170,6 +171,7 @@ public class ArcBulletType extends BulletType{
     @Override
     public void draw(Bullet b){
         if(drawZone) drawTargetZone(b);
+        Draw.z(layer);
         drawTrail(b);
     }
 

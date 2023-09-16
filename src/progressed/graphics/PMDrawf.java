@@ -54,6 +54,12 @@ public class PMDrawf{
         cross(x, y, size, size, angle);
     }
 
+    public static void shadow(TextureRegion texture, float x, float y, float rotation, float alpha){
+        Draw.color(Tmp.c1.set(Pal.shadow).mulA(alpha));
+        Draw.rect(texture, x, y, rotation);
+        Draw.color();
+    }
+
     public static void vecLine(float x, float y, Vec2 v1, Vec2 v2, boolean cap){
         line(v1.x + x, v1.y + y, v2.x + x, v2.y + y, cap);
     }
@@ -263,6 +269,10 @@ public class PMDrawf{
             rect(topRight, x, y, r);
         }
         alpha(1f);
+    }
+
+    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
+        spinSprite(base, bottomLeft, topRight, x, y, r, 1f);
     }
 
     public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot){

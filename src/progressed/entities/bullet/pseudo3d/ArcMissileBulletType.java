@@ -2,11 +2,9 @@ package progressed.entities.bullet.pseudo3d;
 
 import mindustry.content.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import progressed.content.effects.*;
 
 public class ArcMissileBulletType extends ArcBasicBulletType{
-    public float shadowLayer = Layer.flyingUnit + 1; //TODO shadow drawing
     public float accel = 0.1f;
 
     public ArcMissileBulletType(float damage, float radius, String sprite){
@@ -17,8 +15,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         ammoMultiplier = 1;
         scaleLife = true;
         status = StatusEffects.blasted;
-        drawZone = true;
-        layer = Layer.flyingUnit + 2;
+        drawZone = drawShadow = true;
         absorbEffect = Pseudo3DFx.absorbed;
     }
 

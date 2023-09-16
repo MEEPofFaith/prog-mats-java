@@ -42,7 +42,11 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
     @Override
     public void init(){
         for(UnlockableContent c : ammoTypes.keys()){ //Check for invalid ammo
-            if(!(ammoTypes.get(c) instanceof ArcMissileBulletType)) PMUtls.uhOhSpeghettiOh("Arc missile turret " + name + " has a non-arc missle bullet!");
+            if(!(ammoTypes.get(c) instanceof ArcMissileBulletType aType)){
+                PMUtls.uhOhSpeghettiOh("Arc missile turret " + name + " has a non-arc missle bullet!");
+            }else{
+                aType.drawSize = Math.max(aType.drawSize, (range + aType.rangeChange + aType.zoneRadius) * 2f); //Probably good enough
+            }
         }
 
         super.init();
@@ -107,7 +111,7 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
                 shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
-            float dst = Math.max(Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range), minRange);
+            float dst = Math.max(Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range()), minRange);
             ArcMissileBulletType m = (ArcMissileBulletType)type;
             float time = Mathf.sqrt((2 * dst) / m.accel);
             float zVel = -0.5f * -m.gravity * time;

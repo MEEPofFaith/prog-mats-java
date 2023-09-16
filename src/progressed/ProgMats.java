@@ -38,10 +38,12 @@ public class ProgMats extends Mod{
         });
 
         // Load all assets once they're added into Vars.tree
-        Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
-            if(!headless) PMShaders.init();
-            PMSounds.load();
-        }));
+        Events.on(FileTreeInitEvent.class, e -> {
+            if(!headless){
+                PMShaders.init();
+                PMSounds.load();
+            }
+        });
 
         if(!headless){
             Events.on(ContentInitEvent.class, e -> content.blocks().each(b -> b instanceof ModularTurret, (ModularTurret b) -> b.setClip(PMModules.maxClip)));

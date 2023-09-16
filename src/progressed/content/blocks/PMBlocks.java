@@ -86,7 +86,7 @@ public class PMBlocks{
     unnamedNexus, //Potential names: "Starfall", "Aleph", "Nexus", "Cataclysm"
 
     //Test turrets
-    testTurret0, testTurret1,
+    testTurret0,
 
     // endregion
     // region production
@@ -938,7 +938,7 @@ public class PMBlocks{
             setUsers();
         }};
 
-        paragon = new BallisticMissileTurret("paragon"){{
+        paragon = new ArcMissileTurret("paragon"){{
             requirements(Category.turret, with(
                 Items.copper, 6000,
                 Items.graphite, 5200,
@@ -971,7 +971,6 @@ public class PMBlocks{
         }};
 
         testTurret0 = new ArcBulletTestTurret("test-turret0");
-        testTurret1 = new ArcMissileTestTurret("test-turret1");
         // endregion
 
         // region Production

@@ -2,7 +2,7 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import arc.math.*;
-import mindustry.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -14,7 +14,6 @@ import mindustry.type.unit.*;
 import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.bullet.explosive.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.bullet.unit.*;
 import progressed.graphics.*;
@@ -33,8 +32,7 @@ public class PayloadBullets{
     arbalestBasic, arbalestIncend, arbalestSplitter;
     public static ArcMissileBulletType
 
-    artemisBasic, artemisRecursive, artemisBombing;
-    public static BallisticMissileBulletType
+    artemisBasic, artemisRecursive, artemisBombing,
     paragonBasic, paragonCluster, paragonEMP,
     ohno;
 
@@ -221,7 +219,6 @@ public class PayloadBullets{
 
                 keepVelocity = true;
                 gravity = 0.3f;
-                inheritVelDrift = false;
                 arcFragDrift = 2f;
                 targetDriftDrag = 0.02f;
                 lifetimeScl = 0.5f;
@@ -235,7 +232,6 @@ public class PayloadBullets{
 
                     zoneRadius = 2f * 8f;
                     gravity = 0.3f;
-                    inheritVelDrift = false;
                     arcFragDrift = 2f;
                     targetDriftDrag = 0.02f;
                     trailLength = 15;
@@ -275,7 +271,7 @@ public class PayloadBullets{
             }};
         }};
 
-        paragonBasic = new BallisticMissileBulletType("prog-mats-basic-nuke"){{
+        paragonBasic = new ArcMissileBulletType("prog-mats-basic-nuke"){{
             splashDamage = 27000f;
             splashDamageRadius = 240f;
             buildingDamageMultiplier = 0.5f;
@@ -283,68 +279,70 @@ public class PayloadBullets{
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
-            fartVolume = 200f;
             despawnEffect = MissileFx.nuclearExplosion;
-            blockEffect = Pseudo3DFx.absorbedLarge;
+            absorbEffect = Pseudo3DFx.absorbedLarge;
 
-            height = 70f * Vars.tilesize;
+            accel = 0.01f;
+            gravity = 0.05f;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileBasic;
         }};
 
-        paragonCluster = new BallisticMissileBulletType("prog-mats-cluster-nuke"){{
+        paragonCluster = new ArcMissileBulletType("prog-mats-cluster-nuke"){{
             status = StatusEffects.none;
 
             lifetime = 5f * 60f;
 
-            height = 160f * Vars.tilesize;
             zoneRadius = 12f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
             trailColor = targetColor = PMPal.missileFrag;
-            posInterp = Interp.smoother;
 
-            splitTime = 0.5f;
-            splitLifeMaxOffset = 45f;
-            fragRandomSpread = 20f * 8f;
+            hitEffect = despawnEffect = Fx.none;
+            hitSound = despawnSound = Sounds.none;
+
+            accel = 0.008f;
+            gravity = 0.2f;
+            lifetimeScl = 0.5f;
             fragBullets = 20;
-
-            fragBullet = new BallisticMissileBulletType("prog-mats-cluster-nuke-split"){{
+            fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3500f;
                 splashDamageRadius = 40f;
                 buildingDamageMultiplier = 0.5f;
 
-                homingPower = 0.5f;
+                homingPower = 1f;
                 homingRange = 30f * 8f;
 
                 hitShake = 5f;
                 despawnEffect = MissileFx.missileExplosion;
-                blockEffect = Pseudo3DFx.absorbed;
+                absorbEffect = Pseudo3DFx.absorbed;
 
+                arcFragDrift = 4f;
+                targetDriftDrag = 0.01f;
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
             }};
         }};
 
-        paragonEMP = new BallisticMissileBulletType("prog-mats-emp-nuke"){{
+        paragonEMP = new ArcMissileBulletType("prog-mats-emp-nuke"){{
             lifetime = 3f * 60f;
             status = StatusEffects.none;
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
-            fartVolume = 200f;
             despawnEffect = MissileFx.nuclearExplosion;
-            blockEffect = Pseudo3DFx.absorbedLarge;
+            absorbEffect = Pseudo3DFx.absorbedLarge;
 
-            height = 70f * Vars.tilesize;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 1.5f;
             trailColor = targetColor = Pal.lancerLaser;
 
+            accel = 0.01f;
+            gravity = 0.25f;
             fragBullets = 60;
             fragRandomSpread = 0;
             fragSpread = 360f / fragBullets;
@@ -383,17 +381,18 @@ public class PayloadBullets{
             }};
         }};
 
-        ohno = (BallisticMissileBulletType)paragonCluster.copy();
+        ohno = (ArcMissileBulletType)paragonCluster.copy();
         ohno.sprite = "prog-mats-sandbox-nuke";
         ohno.targetColor = ohno.trailColor = Color.red;
-        ohno.rangeChange = 500 * 8;
+        ohno.rangeChange = 500 * tilesize;
 
         ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();
-        stop.speed = 1;
 
         ArcMissileBulletType why = (ArcMissileBulletType)stop.fragBullet.copy();
+        why.inheritVelDrift = true;
         ArcMissileBulletType tooFar = (ArcMissileBulletType)stop.fragBullet.fragBullet.copy();
         tooFar.buildingDamageMultiplier = 1f;
+        tooFar.inheritVelDrift = true;
         stop.fragBullet = why;
         stop.fragBullet.fragBullet = tooFar;
 
@@ -425,21 +424,38 @@ public class PayloadBullets{
                 deathExplosionEffect = new MultiEffect(MissileFx.missileExplosion, MissileFx.flameRing);
                 shootOnDeath = true;
                 shake = 10f;
-                bullet = new ExplosionBulletType(526f, 8f * tilesize){{
-                    hitColor = Pal.remove;
-                    shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
-                        lifetime = 10f;
-                        strokeFrom = 4f;
-                        sizeTo = 130f;
-                    }});
+                bullet = new ExplosionBulletType(526f, 8f * tilesize){
+                    float fragMinRange = 20f * tilesize, fragMaxRange = 50f * tilesize;
 
-                    makeFire = true;
-                    status = PMStatusEffects.incendiaryBurn;
-                    fragBullets = 1;
-                    fragLifeMin = 1.5f;
-                    fragLifeMax = 3f;
-                    fragBullet = stop;
-                }};
+                    {
+                        hitColor = Pal.remove;
+                        shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                            lifetime = 10f;
+                            strokeFrom = 4f;
+                            sizeTo = 130f;
+                        }});
+
+                        makeFire = true;
+                        status = PMStatusEffects.incendiaryBurn;
+                        fragBullets = 1;
+                        fragBullet = stop;
+                    }
+
+                    @Override
+                    public void createFrags(Bullet b, float x, float y){
+                        ArcMissileBulletType aType = (ArcMissileBulletType)fragBullet;
+                        for(int i = 0; i < fragBullets; i++){
+                            float dst = Mathf.randomSeed(b.id + (2 * i), fragMinRange, fragMaxRange);
+                            float a = Mathf.randomSeed(b.id + (2 * i + 1), 360f);
+                            float time = Mathf.sqrt((2 * dst) / aType.accel);
+                            float zVel = -0.5f * -aType.gravity * time;
+                            Tmp.v1.set(a, dst);
+                            float tx = Tmp.v1.x + x,
+                                ty = Tmp.v1.y + y;
+                            aType.create3DVel(b.owner, b.team, b.x, b.y, 0f, a, zVel, aType.accel, tx, ty);
+                        }
+                    }
+                };
             }});
 
             abilities.add(new MoveEffectAbility(){{
@@ -451,14 +467,13 @@ public class PayloadBullets{
             }});
         }};
 
-        BallisticMissileBulletType enough = (BallisticMissileBulletType)paragonBasic.copy();
+        ArcMissileBulletType enough = (ArcMissileBulletType)paragonBasic.copy();
         enough.buildingDamageMultiplier = 1f;
         enough.fragBullets = 10;
         enough.fragBullet = cease;
-        enough.height = ohno.height;
+        enough.arcFragDrift = 5f;
+        enough.targetDriftDrag = 0.01f;
 
         ohno.fragBullet = enough;
-        ohno.fragRandomSpread = 40f * 8f;
-        ohno.splitLifeMaxOffset = 45f;
     }
 }
