@@ -11,6 +11,7 @@ import progressed.entities.*;
 import progressed.entities.bullet.explosive.*;
 import progressed.world.draw.*;
 
+@Deprecated
 public class BallisticModule extends ItemTurretModule{
     public BallisticModule(String name){
         super(name);

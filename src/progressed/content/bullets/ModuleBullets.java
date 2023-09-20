@@ -1,10 +1,9 @@
 package progressed.content.bullets;
 
-import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import progressed.content.effects.*;
-import progressed.entities.bullet.explosive.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
 
 public class ModuleBullets{
@@ -13,7 +12,7 @@ public class ModuleBullets{
     firestormMissile;
 
     public static void load(){
-        firestormMissile = new BallisticMissileBulletType("prog-mats-firestorm-missile"){{
+        firestormMissile = new ArcMissileBulletType("prog-mats-firestorm-missile"){{
             lifetime = 75f;
             splashDamage = 170f;
             splashDamageRadius = 32f;
@@ -22,15 +21,15 @@ public class ModuleBullets{
             collidesAir = false;
             ammoMultiplier = 12;
 
-            height = 32f * Vars.tilesize;
-            heightRnd = 0.5f;
+            accel = 0.2f;
+            gravity = 0.3f;
             trailLength = 15;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
             hitSound = Sounds.explosion;
 
             hitEffect = MissileFx.smallBoom;
-            blockEffect = Pseudo3DFx.absorbedSmall;
+            absorbEffect = Pseudo3DFx.absorbedSmall;
         }};
     }
 }

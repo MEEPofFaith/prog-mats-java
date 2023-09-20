@@ -268,16 +268,13 @@ public class PMModules{
             consumePower(4f);
         }};
 
-        firestorm = new BallisticModule("firestorm"){{
+        firestorm = new ArcModule("firestorm"){{
             requirements(Category.units, BuildVisibility.sandboxOnly, with());
             moduleSize = ModuleSize.large;
             size = 3;
             outlineColor = Pal.darkOutline;
 
-            ammo(
-                Items.carbide, ModuleBullets.firestormMissile
-            );
-            limitRange(1f);
+            ammo(Items.carbide, ModuleBullets.firestormMissile);
 
             reload = 5f * 60f;
             maxAmmo = 27;
