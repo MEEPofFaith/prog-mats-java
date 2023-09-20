@@ -14,13 +14,12 @@ import mindustry.graphics.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
-import progressed.entities.bullet.explosive.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.trails.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(
-        NexusLaserBulletType.class,
-        BallisticMissileBulletType.class,
+        ArcBulletType.class, //TODO Maybe implement a special case for these 3D bullets? Make suction radius spherical.
         BlackHoleBulletType.class,
         MagmaBulletType.class,
         ContinuousBulletType.class,
