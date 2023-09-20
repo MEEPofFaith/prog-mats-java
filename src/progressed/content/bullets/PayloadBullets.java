@@ -185,7 +185,7 @@ public class PayloadBullets{
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
-            gravity = 0.5f;
+            gravity = 0.12f;
             trailLength = 25;
             trailWidth = 1f;
             trailColor = targetColor = PMPal.missileBasic;
@@ -202,8 +202,8 @@ public class PayloadBullets{
             hitEffect = despawnEffect = Fx.none;
             hitSound = despawnSound = Sounds.none;
 
-            accel = 0.02f;
-            gravity = 0.3f;
+            accel = 0.015f;
+            gravity = 0.05f;
             lifetimeScl = 0.33f;
             fragBullets = 3;
             fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
@@ -218,7 +218,7 @@ public class PayloadBullets{
                 hitSound = despawnSound = Sounds.none;
 
                 keepVelocity = true;
-                gravity = 0.3f;
+                gravity = 0.05f;
                 arcFragDrift = 2f;
                 targetDriftDrag = 0.02f;
                 lifetimeScl = 0.5f;
@@ -231,7 +231,7 @@ public class PayloadBullets{
                     hitSound = Sounds.explosion;
 
                     zoneRadius = 2f * 8f;
-                    gravity = 0.3f;
+                    gravity = 0.05f;
                     arcFragDrift = 2f;
                     targetDriftDrag = 0.02f;
                     trailLength = 15;
@@ -255,8 +255,8 @@ public class PayloadBullets{
             trailWidth = 1f;
             trailColor = targetColor = Pal.suppress;
 
-            accel = 0.02f;
-            gravity = 0.1f;
+            accel = 0.03f;
+            gravity = 0.05f;
             bulletInterval = 20f;
             intervalDelay = 45f;
             intervalRandomSpread = 0f;
@@ -283,7 +283,7 @@ public class PayloadBullets{
             absorbEffect = Pseudo3DFx.absorbedLarge;
 
             accel = 0.01f;
-            gravity = 0.05f;
+            gravity = 0.02f;
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 2.5f;
@@ -304,7 +304,7 @@ public class PayloadBullets{
             hitSound = despawnSound = Sounds.none;
 
             accel = 0.008f;
-            gravity = 0.2f;
+            gravity = 0.025f;
             lifetimeScl = 0.5f;
             fragBullets = 20;
             fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
@@ -321,6 +321,7 @@ public class PayloadBullets{
 
                 arcFragDrift = 4f;
                 targetDriftDrag = 0.01f;
+                gravity = 0.025f;
                 trailLength = 35;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileFrag;
@@ -342,7 +343,7 @@ public class PayloadBullets{
             trailColor = targetColor = Pal.lancerLaser;
 
             accel = 0.01f;
-            gravity = 0.25f;
+            gravity = 0.02f;
             fragBullets = 60;
             fragRandomSpread = 0;
             fragSpread = 360f / fragBullets;

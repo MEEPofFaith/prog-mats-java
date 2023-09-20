@@ -232,7 +232,7 @@ public class PMDrawf{
         reset();
     }
 
-    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face right. */
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
     public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r, float alpha){
         if(alpha < 0.001f) return;
         if(alpha < 0.999f){

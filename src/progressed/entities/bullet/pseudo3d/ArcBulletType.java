@@ -31,6 +31,7 @@ public class ArcBulletType extends BulletType{
     public boolean drawZone = false;
     public float zoneLayer = Layer.bullet - 1f;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
+    public float zoneLifeOffset = 0f;
     public Color targetColor = Color.red;
 
     public ArcBulletType(float speed, float damage, float radius){
@@ -44,7 +45,7 @@ public class ArcBulletType extends BulletType{
         trailLength = 8;
         layer = Layer.shields + 2;
         shootEffect = smokeEffect = Fx.none;
-        scaledSplashDamage = true; //Doesn't collide, will rely on splash damage.
+        scaledSplashDamage = true; //Doesn't collide, needs to rely on splash damage.
     }
 
     public ArcBulletType(float speed){
@@ -64,7 +65,10 @@ public class ArcBulletType extends BulletType{
 
     @Override
     public void init(){
-        if(fragBullet instanceof ArcBulletType a) a.isInheritive = true;
+        if(fragBullet instanceof ArcBulletType a){
+            a.isInheritive = true;
+            a.zoneLifeOffset = a.zoneLifeOffset * a.lifetimeScl + lifetimeScl;
+        }
         if(intervalBullet instanceof ArcBulletType a) a.isInheritive = true;
 
         super.init();
@@ -92,7 +96,9 @@ public class ArcBulletType extends BulletType{
 
     @Override
     public void update(Bullet b){
-        ((ArcBulletData)b.data).update(b);
+        if(!(b.data instanceof ArcBulletData data)) return;
+        data.update(b);
+        //Log.info(data.z);
         super.update(b);
         if(b.time > b.lifetime * lifetimeScl) b.remove();
     }
@@ -203,7 +209,8 @@ public class ArcBulletType extends BulletType{
             Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
             Fill.circle(b.aimX, b.aimY, zoneRadius);
             Draw.color(Color.red, 0.5f);
-            float subRad = b.fin() * (zoneRadius + shrinkRad),
+            float fin = zoneLifeOffset + b.fin() * (1f - zoneLifeOffset);
+            float subRad = fin * (zoneRadius + shrinkRad),
                 inRad = Math.max(0, zoneRadius - subRad),
                 outRad = Math.min(zoneRadius, zoneRadius + shrinkRad - subRad);
 
