@@ -27,8 +27,8 @@ public class PMPal{
     missileBasic = valueOf("D4816B"),
     missileFrag = valueOf("9CB664"),
 
-    nexusLaser = valueOf("CE5EE5"),
-    nexusLaserDark = valueOf("9A27C4");
+    nexusLaser = valueOf("da89fa"),
+    nexusLaserDark = valueOf("cf6aec");
 
     //Color sets
     public static Color[]

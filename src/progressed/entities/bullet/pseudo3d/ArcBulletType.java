@@ -43,7 +43,7 @@ public class ArcBulletType extends BulletType{
         scaleLife = true;
         backMove = true;
         trailLength = 8;
-        layer = Layer.shields + 2;
+        layer = PMLayer.skyBloomBegin + 2;
         shootEffect = smokeEffect = Fx.none;
         scaledSplashDamage = true; //Doesn't collide, needs to rely on splash damage.
     }

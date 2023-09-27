@@ -9,10 +9,12 @@ public class SkyLaserTestTurret extends FreeTurret{
     public SkyLaserTestTurret(String name){
         super(name);
 
-        shootType = new SkyBeamBulletType(2.5f, 200f){{
-            lifetime = 300 * tilesize / speed;
-            offset = 0f;
+        float bRange = 80f * tilesize;
+        range = bRange;
+        shootType = new SkyBeamBulletType(3f, 600f){{
+            lifetime = bRange / speed;
             radius = 1.5f * tilesize;
+            drag = -0.01f;
         }};
         shootY = 0f;
     }

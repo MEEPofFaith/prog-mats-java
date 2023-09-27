@@ -12,6 +12,7 @@ import arc.scene.ui.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.*;
+import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
@@ -24,6 +25,16 @@ import static progressed.graphics.PMShaders.*;
 
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
+
+    public static void init(){
+        Events.run(Trigger.drawOver, () -> {
+            Bloom bloom = renderer.bloom;
+            if(bloom != null){
+                Draw.draw(PMLayer.skyBloomBegin - 0.02f, bloom::capture);
+                Draw.draw(PMLayer.skyBloomEnd + 0.02f, bloom::render);
+            }
+        });
+    }
 
     public static void light(float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
         float res = color.toFloatBits();
@@ -440,20 +451,6 @@ public class PMDrawf{
         Pools.free(layout);
 
         return width;
-    }
-
-    public static void bloom(Runnable draw){
-        Bloom bloom = renderer.bloom;
-        float z = Draw.z();
-        if(bloom != null && (z < Layer.bullet - 0.02f || z > Layer.effect + 0.02f)){
-            Draw.draw(z, () -> {
-                bloom.capture();
-                draw.run();
-                bloom.render();
-            });
-        }else{
-            draw.run();
-        }
     }
 
     public static void tractorCone(float cx, float cy, float time, float spacing, float thickness, Runnable draw){

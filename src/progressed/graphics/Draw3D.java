@@ -54,15 +54,10 @@ public class Draw3D{
 
     public static void slantTube(float x1, float y1, float x2, float y2, float z2, float rad, Color baseColor, Color topColor, float offset){
         //Properly set the offset with scale
-        if(offset > 0f){
-            offset = 1f - offset;
-            float hAlpha = scaleAlpha(hScale(z2 * offset));
-            offset *= hAlpha;
-            Tmp.v1.set(x1, y1).lerp(x2, y2, offset);
-            x2 = Tmp.v1.x;
-            y2 = Tmp.v1.y;
-            z2 *= offset;
-        }
+        offset = 1f - offset;
+        float hAlpha = scaleAlpha(hScale(z2 * offset));
+        offset *= hAlpha;
+        offset = 1f - offset;
 
         //Draw
         int verts = Lines.circleVertices(rad * hScale(z2));
@@ -85,6 +80,12 @@ public class Draw3D{
                 ty1 = yHeight(diskVerts[i * 3 + 1], tz1),
                 tx2 = xHeight(diskVerts[i2 * 3], tz2),
                 ty2 = yHeight(diskVerts[i2 * 3 + 1], tz2);
+            if(offset > 0f){
+                tx1 = Mathf.lerp(tx1, bx1, offset);
+                ty1 = Mathf.lerp(ty1, by1, offset);
+                tx2 = Mathf.lerp(tx2, bx2, offset);
+                ty2 = Mathf.lerp(ty2, by2, offset);
+            }
 
             Fill.quad(
                 bx1, by1, baseCol,
@@ -93,25 +94,6 @@ public class Draw3D{
                 tx1, ty1, topCol
             );
         }
-
-        /*//test
-        Draw.color(Color.blue);
-        Fill.polyBegin();
-        for(int i = 0; i < verts * 2; i += 2){
-            Fill.polyPoint(castVerts[i], castVerts[i + 1]);
-        }
-        Fill.polyEnd();
-        Draw.color(Color.white);
-        Lines.line(x1, y1, castVerts[0], castVerts[1]);
-        Draw.color(Color.red);
-        Fill.polyBegin();
-        for(int i = 0; i < verts * 3; i += 3){
-            float z = diskVerts[i + 2];
-            Fill.polyPoint(xHeight(diskVerts[i], z), yHeight(diskVerts[i + 1], z));
-        }
-        Fill.polyEnd();
-        Draw.color(Color.white);
-        line(x2, y2, z2, diskVerts[0], diskVerts[1], diskVerts[2]);*/
     }
 
     public static void slantTube(float x1, float y1, float x2, float y2, float z, float rad, Color baseColor, Color topColor){
