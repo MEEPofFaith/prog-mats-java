@@ -229,8 +229,7 @@ public class ArcBulletType extends BulletType{
     }
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float gravity, float velocityScl, float aimX, float aimY){
-        Vec3 vel = Tmp.v31;
-        Math3D.rotate(vel, speed, angle, 0f, tilt);
+        Vec3 vel = Math3D.rotate(Tmp.v31, speed, angle, 0f, tilt);
         ArcBulletData data = new ArcBulletData(z, vel.z * velocityScl, gravity);
 
         //Taken from normal bullet create

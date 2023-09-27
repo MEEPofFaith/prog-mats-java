@@ -24,6 +24,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -86,7 +87,7 @@ public class PMBlocks{
     unnamedNexus, //Potential names: "Starfall", "Aleph", "Nexus", "Cataclysm"
 
     //Test turrets
-    testTurret0,
+    testTurret0, testTurret1,
 
     // endregion
     // region production
@@ -971,6 +972,7 @@ public class PMBlocks{
         }};
 
         testTurret0 = new ArcBulletTestTurret("test-turret0");
+        testTurret1 = new SkyLaserTestTurret("test-turret1");
         // endregion
 
         // region Production

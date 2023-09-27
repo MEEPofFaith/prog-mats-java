@@ -10,6 +10,8 @@ import static arc.math.Mathf.*;
 public class Math3D{
     private static final Vec2 vec = new Vec2();
     private static final Vec2 vresult = new Vec2();
+    private static final Vec3 axis = new Vec3();
+    private static final Vec3 rim = new Vec3();
 
     /** Properly rotates and tilts up a 3D vector.
      * @param vec3 Vec3 to write output to.
@@ -18,9 +20,39 @@ public class Math3D{
      * @param rotationOffset Rotational offset from the main angle.
      * @param tilt 3D tilt. Tilts around the axis 90* of the main angle.
      */
-    public static void rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
-        vec3.set(Angles.trnsx(rotationOffset, length), Angles.trnsy(rotationOffset, length), 0f)
+    public static Vec3 rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
+        return vec3.set(Angles.trnsx(rotationOffset, length), Angles.trnsy(rotationOffset, length), 0f)
             .rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
+    }
+
+    public static float[] diskVertices(float x, float y, float z, float rotation, float startAngle, float tilt, float rad, int verts){
+        float[] diskVerts = new float[verts * 3];
+        float space = 360f / (verts - 1f);
+        axis.set(Vec3.Z).rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
+        rim.set(rad, 0, 0).rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
+        rim.rotate(axis, rotation - startAngle);
+
+        for(int i = 0; i < verts * 3; i += 3){
+            diskVerts[i] = x + rim.x;
+            diskVerts[i + 1] = y + rim.y;
+            diskVerts[i + 2] = z + rim.z;
+            rim.rotate(axis, space);
+        }
+        return diskVerts;
+    }
+
+    public static float[] castVertices(float x, float y, float rotation, float startAngle, float tilt, float rad, int verts){
+        float[] castVerts = new float[verts * 2];
+        float space = 360f / (verts - 1f);
+        float scl = 1f + Mathf.sinDeg(tilt);
+
+        for(int i = 0; i < verts; i++){
+            float angle = startAngle + space * i - rotation;
+            vec.trns(rotation, Mathf.cosDeg(angle) * rad * scl, Mathf.sinDeg(angle) * rad);
+            castVerts[i * 2] = x + vec.x;
+            castVerts[i * 2 + 1] = y + vec.y;
+        }
+        return castVerts;
     }
 
     /**
