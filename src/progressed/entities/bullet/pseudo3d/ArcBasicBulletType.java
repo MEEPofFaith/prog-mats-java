@@ -15,18 +15,18 @@ public class ArcBasicBulletType extends ArcBulletType{
     public boolean drawShadow = false, spinShade = true;
     public TextureRegion region, blRegion, trRegion;
 
-    public ArcBasicBulletType(float speed, float damage, float radius, String sprite){
-        super(speed, damage, radius);
+    public ArcBasicBulletType(float speed, float damage, String sprite){
+        super(speed, damage);
         this.sprite = sprite;
     }
 
-    public ArcBasicBulletType(float speed, float damage, float radius){
-        this(speed, damage, radius, "bullet");
+    public ArcBasicBulletType(float speed, float damage){
+        this(speed, damage, "bullet");
         spinShade = false;
     }
 
     public ArcBasicBulletType(float speed){
-        this(speed, 0f, 0f);
+        this(speed, 0f);
     }
 
     @Override

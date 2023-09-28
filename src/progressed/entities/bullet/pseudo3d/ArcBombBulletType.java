@@ -6,7 +6,9 @@ public class ArcBombBulletType extends ArcMissileBulletType{
     public float zVelOffset;
 
     public ArcBombBulletType(float damage, float radius, String sprite){
-        super(damage, radius, sprite);
+        super(0f, sprite);
+        splashDamage = damage;
+        splashDamageRadius = radius;
         inheritVelDrift = false;
     }
 

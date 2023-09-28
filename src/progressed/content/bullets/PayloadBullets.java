@@ -223,7 +223,9 @@ public class PayloadBullets{
                 targetDriftDrag = 0.02f;
                 lifetimeScl = 0.5f;
                 fragBullets = 3;
-                fragBullet = new ArcMissileBulletType(220f, 48f, "prog-mats-recursive-missile-split"){{
+                fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
+                    splashDamage = 220f;
+                    splashDamageRadius = 48f;
                     keepVelocity = true;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;

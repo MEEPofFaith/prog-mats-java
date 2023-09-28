@@ -4,7 +4,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
@@ -13,8 +12,10 @@ import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
+import static mindustry.Vars.*;
+
 public class ArcBulletTestTurret extends FreeTurret{
-    public float shotZ = 180f * Vars.tilesize;
+    public float shotZ = 180f * tilesize;
     public float shotTilt = 45;
     public boolean drawAimDebug = false;
     public boolean swing = false;
@@ -23,8 +24,11 @@ public class ArcBulletTestTurret extends FreeTurret{
     public ArcBulletTestTurret(String name){
         super(name);
 
-        shootType = new ArcBasicBulletType(25f, 50f, 4f);
+        shootType = new ArcBasicBulletType(25f, 400f){{
+            homingPower = 3f;
+        }};
         reload = 10f;
+        range = 45f * tilesize;
         shootY = 0f;
         shootCone = 360f;
         inaccuracy = 30f;
@@ -57,7 +61,7 @@ public class ArcBulletTestTurret extends FreeTurret{
             if(!drawAimDebug) return;
             Draw.z(Layer.effect + 0.01f);
             //Aiming Display
-            Draw3D.drawAimDebug(x, y, shotZ, shootType.speed * Vars.tilesize, rotation, realTilt, inaccuracy);
+            Draw3D.drawAimDebug(x, y, shotZ, shootType.speed * tilesize, rotation, realTilt, inaccuracy);
         }
 
         @Override

@@ -7,8 +7,8 @@ import progressed.content.effects.*;
 public class ArcMissileBulletType extends ArcBasicBulletType{
     public float accel = 0.1f;
 
-    public ArcMissileBulletType(float damage, float radius, String sprite){
-        super(0f, damage, radius, sprite);
+    public ArcMissileBulletType(float damage, String sprite){
+        super(0f, damage, sprite);
 
         despawnEffect = MissileFx.missileExplosion;
         hitSound = Sounds.largeExplosion;
@@ -20,7 +20,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
     }
 
     public ArcMissileBulletType(String sprite){
-        this(0f, 0f, sprite);
+        this(0f, sprite);
     }
 
     public ArcMissileBulletType(){

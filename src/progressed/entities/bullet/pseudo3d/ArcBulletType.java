@@ -19,6 +19,9 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class ArcBulletType extends BulletType{
+    private static float cdist = 0f;
+    private static Unit result;
+
     public boolean zAbsorbable = true, isInheritive, inheritZVel = true, inheritVelDrift = false;
     public Color absorbEffectColor = Pal.missileYellowBack;
     public Effect absorbEffect = Pseudo3DFx.absorbedSmall;
@@ -34,22 +37,20 @@ public class ArcBulletType extends BulletType{
     public float zoneLifeOffset = 0f;
     public Color targetColor = Color.red;
 
-    public ArcBulletType(float speed, float damage, float radius){
-        super(speed, 0f);
-        splashDamage = damage;
-        splashDamageRadius = radius;
+    public ArcBulletType(float speed, float damage){
+        super(speed, damage);
 
         collides = hittable = absorbable = reflectable = false;
+        despawnHit = true;
         scaleLife = true;
         backMove = true;
         trailLength = 8;
-        layer = PMLayer.skyBloomBegin + 2;
+        layer = PMLayer.skyBloom;
         shootEffect = smokeEffect = Fx.none;
-        scaledSplashDamage = true; //Doesn't collide, needs to rely on splash damage.
     }
 
     public ArcBulletType(float speed){
-        this(speed, 0f, 0f);
+        this(speed, 0f);
     }
     
     public void initDrawSize(float range){
@@ -83,7 +84,6 @@ public class ArcBulletType extends BulletType{
         }else{
             b.remove(); //Invalid data
         }
-        b.damage = splashDamage * b.damageMultiplier(); //Doesn't collide, put splash damage in instead. Used for shield absorption calculation.
 
         super.init(b);
     }
@@ -106,7 +106,22 @@ public class ArcBulletType extends BulletType{
     @Override
     public void despawned(Bullet b){
         if(b.absorbed) return;
-        super.despawned(b);
+
+        if(despawnHit){
+            boolean hit = calcNearbyHit(b);
+            if(!hit) hit(b);
+        }else{
+            createUnits(b, b.x, b.y);
+        }
+
+        if(!fragOnHit){
+            createFrags(b, b.x, b.y);
+        }
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
+
+        Effect.shake(despawnShake, despawnShake, b);
     }
 
     @Override
@@ -114,6 +129,38 @@ public class ArcBulletType extends BulletType{
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
             TrailFadeFx.heightTrailFade.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
         }
+    }
+
+    public boolean calcNearbyHit(Bullet b){
+        cdist = 0f;
+        result = null;
+        float range = 1f;
+
+        Units.nearbyEnemies(b.team, b.x - range, b.y - range, range*2f, range*2f, e -> {
+            if(e.dead() || !e.checkTarget(collidesAir, collidesGround) || !e.hittable()) return;
+
+            e.hitbox(Tmp.r1);
+            if(!Tmp.r1.contains(b.x, b.y)) return;
+
+            float dst = e.dst(b.x, b.y) - e.hitSize;
+            if((result == null || dst < cdist)){
+                result = e;
+                cdist = dst;
+            }
+        });
+
+        if(result != null){
+            b.collision(result, b.x, b.y);
+            return true;
+        }else if(collidesTiles){
+            Building build = world.buildWorld(b.x, b.y);
+            if(build != null && build.team != b.team){
+                build.collision(b);
+                hit(b);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -233,16 +280,7 @@ public class ArcBulletType extends BulletType{
         ArcBulletData data = new ArcBulletData(z, vel.z * velocityScl, gravity);
 
         //Taken from normal bullet create
-        Bullet bullet = Bullet.create();
-        bullet.type = this;
-        bullet.owner = owner;
-        bullet.team = team;
-        bullet.time = 0f;
-        bullet.originX = x;
-        bullet.originY = y;
-        bullet.aimTile = world.tileWorld(aimX, aimY);
-        bullet.aimX = aimX;
-        bullet.aimY = aimY;
+        Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
         bullet.rotation(angle);
         bullet.vel.set(vel.x, vel.y);
         if(backMove){
@@ -318,7 +356,7 @@ public class ArcBulletType extends BulletType{
         return bullet;
     }
 
-    public Bullet beginBulletCreate(Entityc owner, Team team, float x, float y, float aimX, float aimY){
+    public Bullet beginBulletCreate(Entityc owner, Team team, float x, float y, float damage, float aimX, float aimY){
         //Taken from normal bullet create
         Bullet bullet = Bullet.create();
         bullet.type = this;
@@ -330,7 +368,12 @@ public class ArcBulletType extends BulletType{
         bullet.aimTile = world.tileWorld(aimX, aimY);
         bullet.aimX = aimX;
         bullet.aimY = aimY;
+        bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
         return bullet;
+    }
+
+    public Bullet beginBulletCreate(Entityc owner, Team team, float x, float y, float aimX, float aimY){
+        return beginBulletCreate(owner, team, x, y, -1f, aimX, aimY);
     }
 
     public static class ArcBulletData implements Cloneable{
