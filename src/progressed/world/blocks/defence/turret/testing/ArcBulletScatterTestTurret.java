@@ -1,67 +1,30 @@
 package progressed.world.blocks.defence.turret.testing;
 
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
-import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.graphics.*;
-import progressed.util.*;
 
-import static mindustry.Vars.*;
+public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
+    public float bAccel = 0.3f;
 
-public class ArcBulletTestTurret extends FreeTurret{
-    public float shotZ = 180f * tilesize;
-    public float shotTilt = 45;
-    public boolean drawAimDebug = false;
-    public boolean swing = false;
-    public float swingScl = 2f;
-
-    public ArcBulletTestTurret(String name){
+    public ArcBulletScatterTestTurret(String name){
         super(name);
 
-        shootType = new ArcBasicBulletType(25f, 400f){{
-            homingPower = 3f;
+
+        shootType = new ArcBasicBulletType(15f, 30f){{
+            isInheritive = true;
         }};
-        reload = 10f;
-        range = 45f * tilesize;
-        shootY = 0f;
-        shootCone = 360f;
-        inaccuracy = 30f;
-        velocityRnd = 0.3f;
-        //rotateSpeed = 1f;
-        shoot = new ShootSpread(5, 0f);
+        reload = 1f;
+        shotTilt = -90f;
+        shoot = new ShootPattern(){{
+            shots = 5;
+        }};
     }
 
     public class ArcBulletTestTurretBuild extends FreeTurretBuild{
-        public float realTilt = shotTilt;
 
-        @Override
-        public void updateTile(){
-            if(swing){
-                realTilt = Time.time * swingScl;
-            }else{
-                realTilt = shotTilt;
-            }
-
-            super.updateTile();
-        }
-
-        @Override
-        public void draw(){
-            super.draw();
-            drawAimDebug();
-        }
-
-        public void drawAimDebug(){
-            if(!drawAimDebug) return;
-            Draw.z(PMLayer.skyBloom + 2f);
-            //Aiming Display
-            Draw3D.drawAimDebug(x, y, shotZ, shootType.speed * tilesize, rotation, realTilt, inaccuracy);
-        }
 
         @Override
         protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
@@ -73,12 +36,11 @@ public class ArcBulletTestTurret extends FreeTurret{
                 xSpread = Mathf.range(xRand),
                 bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
-                shootAngle = rotation + angleOffset,
+                shootAngle = Mathf.random(360),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
             ArcBulletType aType = (ArcBulletType)type;
-            Vec2 inacc = Math3D.inaccuracy(inaccuracy);
-            handleBullet(aType.create3D(this, team, x, y, shotZ, shootAngle + inacc.x, shotTilt + inacc.y, aType.gravity, velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            handleBullet(aType.create3DStraight(this, team, x, y, shotZ, shootAngle, Mathf.random(-90f, -0.1f), aType.speed * velScl, bAccel), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

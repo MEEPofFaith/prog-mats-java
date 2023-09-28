@@ -86,7 +86,7 @@ public class PMBlocks{
     judgement,
 
     //Test turrets
-    testTurret0, testTurret1,
+    testTurret0, testTurret1, testTurret2,
 
     // endregion
     // region production
@@ -977,6 +977,7 @@ public class PMBlocks{
 
         testTurret0 = new ArcBulletTestTurret("test-turret0");
         testTurret1 = new SkyLaserTestTurret("test-turret1");
+        testTurret2 = new ArcBulletScatterTestTurret("test-turret2");
         // endregion
 
         // region Production

@@ -324,6 +324,35 @@ public class ArcBulletType extends BulletType{
         return bullet;
     }
 
+    public Bullet create3DStraight(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float vel, float accel){
+        Math3D.rotate(Tmp.v31, vel, angle, 0f, tilt);
+        Math3D.rotate(Tmp.v32, accel, angle, 0f, tilt);
+        Tmp.v1.set(Tmp.v31.x, Tmp.v31.y);
+
+        ArcBulletData data = new ArcBulletData(z, Tmp.v31.z, -Tmp.v32.z);
+        data.xAccel = Tmp.v32.x;
+        data.yAccel = Tmp.v32.y;
+
+        Bullet bullet = beginBulletCreate(owner, team, x, y);
+        bullet.vel.set(Tmp.v1);
+        bullet.rotation(Tmp.v1.angle());
+        data.updateAimPos(bullet);
+        if(backMove){
+            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
+            data.backMove(bullet);
+        }else{
+            bullet.set(x, y);
+        }
+        bullet.data = data;
+        bullet.drag = drag;
+        bullet.hitSize = hitSize;
+        if(bullet.trail != null){
+            bullet.trail.clear();
+        }
+        bullet.add();
+        return bullet;
+    }
+
     public Bullet create3DInherit(Bullet b, float angle, float maxTargetDrift, boolean drop){
         return create3DInherit(b, angle, maxTargetDrift, gravity, drop);
     }
@@ -376,6 +405,10 @@ public class ArcBulletType extends BulletType{
         return beginBulletCreate(owner, team, x, y, -1f, aimX, aimY);
     }
 
+    public Bullet beginBulletCreate(Entityc owner, Team team, float x, float y){
+        return beginBulletCreate(owner, team, x, y, -1f, x, y);
+    }
+
     public static class ArcBulletData implements Cloneable{
         public float xAccel, yAccel;
         public float lastZ, z, zVel, gravity;
@@ -405,9 +438,7 @@ public class ArcBulletType extends BulletType{
         /** Sets bullet lifetime based on initial z, initial z velocity, and the given gravity constant. */
         public void updateLifetime(Bullet b){ //Calculus :D
             //Calculate lifetime
-            Vec2 t = PMMathf.quad(-0.5f * gravity, zVel, z);
-            float life = Math.max(t.x, t.y);
-            b.lifetime(life);
+            b.lifetime(PMMathf.solve(-0.5f * gravity, zVel, z));
         }
 
         /** Sets constant acceleration in the x and y directions based on distance to target, initial velocity, and lifetime. */

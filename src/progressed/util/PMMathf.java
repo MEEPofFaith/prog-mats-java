@@ -54,6 +54,15 @@ public class PMMathf{
         return 0f;
     }
 
+    public static float solve(float a, float b, float c){
+        if(a == 0){
+            return -c / b;
+        }else{
+            Vec2 t = quad(a, b, c);
+            return Math.max(t.x, t.y);
+        }
+    }
+
     public static Vec2 randomCirclePoint(Vec2 v, float radius){
         v.setToRandomDirection().setLength(radius * Mathf.sqrt(Mathf.random()));
 
