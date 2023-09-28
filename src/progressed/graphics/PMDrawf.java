@@ -26,16 +26,6 @@ import static progressed.graphics.PMShaders.*;
 public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
 
-    public static void init(){
-        Events.run(Trigger.drawOver, () -> {
-            Bloom bloom = renderer.bloom;
-            if(bloom != null){
-                Draw.draw(PMLayer.skyBloomBegin - 0.02f, bloom::capture);
-                Draw.draw(PMLayer.skyBloomEnd + 0.02f, bloom::render);
-            }
-        });
-    }
-
     public static void light(float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
         float res = color.toFloatBits();
         renderer.lights.add(() -> {

@@ -2,10 +2,6 @@ package progressed.graphics;
 
 public class PMLayer{
     public static final float
-
-    //Secondary bloom begin
-    skyBloomBegin = 132,
-
-    //Secondary bloom end
-    skyBloomEnd = 138;
+    //Secondary bloom ranges from -1.02 to +1.02 around this
+    skyBloom = 135;
 }

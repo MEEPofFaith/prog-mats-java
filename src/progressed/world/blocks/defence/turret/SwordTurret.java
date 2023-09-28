@@ -1,4 +1,4 @@
-package progressed.world.blocks.defence.turret.energy;
+package progressed.world.blocks.defence.turret;
 
 import arc.*;
 import arc.func.*;

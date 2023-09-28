@@ -6,7 +6,7 @@ import arc.util.*;
 import mindustry.entities.units.*;
 import progressed.gen.entities.*;
 import progressed.type.unit.*;
-import progressed.world.blocks.defence.turret.energy.SwordTurret.*;
+import progressed.world.blocks.defence.turret.SwordTurret.*;
 
 public class SwordAI extends AIController{
     Rand curveRand = new Rand();

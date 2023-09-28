@@ -1,16 +1,19 @@
 package progressed.graphics;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;
 import static arc.math.Mathf.*;
+import static mindustry.Vars.renderer;
 
 public class Draw3D{
     /** Arbitrary value that translates horizontal distance in world units to camera offset height. */
@@ -18,6 +21,16 @@ public class Draw3D{
     public static final float zFadeBegin = 300f, zFadeEnd = 5000f;
     public static final float scaleFadeBegin = 1.5f, scaleFadeEnd = 7f;
     private static final Color tmpCol = new Color();
+
+    public static void init(){
+        Events.run(Trigger.drawOver, () -> {
+            Bloom bloom = renderer.bloom;
+            if(bloom != null){
+                Draw.draw(PMLayer.skyBloom - 1.02f, bloom::capture);
+                Draw.draw(PMLayer.skyBloom + 1.02f, bloom::render);
+            }
+        });
+    }
 
     public static void tube(float x, float y, float rad, float height, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
@@ -53,12 +66,6 @@ public class Draw3D{
     }
 
     public static void slantTube(float x1, float y1, float x2, float y2, float z2, float rad, Color baseColor, Color topColor, float offset){
-        //Properly set the offset with scale
-        offset = 1f - offset;
-        float hAlpha = scaleAlpha(hScale(z2 * offset));
-        offset *= hAlpha;
-        offset = 1f - offset;
-
         //Draw
         int verts = Lines.circleVertices(rad * hScale(z2));
         float rotation = Angles.angle(x2, y2, x1, y1);
@@ -66,8 +73,9 @@ public class Draw3D{
         float startAngle = Math3D.tubeStartAngle(xHeight(x2, z2), yHeight(y2, z2), x1, y1, rad * hScale(z2), rad);
         float[] castVerts = Math3D.castVertices(x1, y1, rotation, startAngle, tilt, rad, verts);
         float[] diskVerts = Math3D.diskVertices(x2, y2, z2, rotation, startAngle, tilt, rad, verts);
-        float baseCol = baseColor.toFloatBits();
-        float topCol = topColor.toFloatBits();
+        float hAlpha = scaleAlpha(z2 * offset);
+        float baseCol = Tmp.c1.set(baseColor).mulA(hAlpha).toFloatBits();
+        float topCol = Tmp.c1.set(topColor).mulA(hAlpha).toFloatBits();
         for(int i = 0; i < verts - 1; i++){
             int i2 = i + 1;
             float bx1 = castVerts[i * 2],
@@ -94,6 +102,13 @@ public class Draw3D{
                 tx1, ty1, topCol
             );
         }
+        //Debug
+        Draw.z(PMLayer.skyBloom + 10);
+        Lines.stroke(4);
+        Draw.color(Color.black);
+        Lines.line(x1, y1, castVerts[0], castVerts[1]);
+        line(x2, y2, z2, diskVerts[0], diskVerts[1], diskVerts[2]);
+        line(castVerts[0], castVerts[1], 0, diskVerts[0], diskVerts[1], diskVerts[2]);
     }
 
     public static void slantTube(float x1, float y1, float x2, float y2, float z, float rad, Color baseColor, Color topColor){

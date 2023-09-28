@@ -21,7 +21,7 @@ public class SkyBeamBulletType extends BulletType{
 
         hittable = absorbable = reflectable = false;
         pierce = pierceBuilding = true;
-        layer = PMLayer.skyBloomBegin + 2;
+        layer = PMLayer.skyBloom;
         shootEffect = smokeEffect = Fx.none;
     }
 

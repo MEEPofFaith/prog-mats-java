@@ -24,13 +24,12 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
-import progressed.entities.bullet.pseudo3d.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.turret.*;
-import progressed.world.blocks.defence.turret.energy.*;
+import progressed.world.blocks.defence.turret.nexus.*;
 import progressed.world.blocks.defence.turret.payload.*;
 import progressed.world.blocks.defence.turret.testing.*;
 import progressed.world.blocks.distribution.*;
@@ -84,7 +83,7 @@ public class PMBlocks{
     javelin, artemis, paragon,
 
     //Nexus
-    unnamedNexus, //Potential names: "Starfall", "Aleph", "Nexus", "Cataclysm"
+    judgement,
 
     //Test turrets
     testTurret0, testTurret1,
@@ -969,6 +968,11 @@ public class PMBlocks{
             coolant = consumeCoolant(0.2f);
             limitRange();
             setUsers();
+        }};
+
+        judgement = new NexusTurret("judgement"){{
+            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
+            size = 9;
         }};
 
         testTurret0 = new ArcBulletTestTurret("test-turret0");
