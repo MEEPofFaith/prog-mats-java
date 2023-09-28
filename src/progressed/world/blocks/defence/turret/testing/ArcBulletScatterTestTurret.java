@@ -1,10 +1,14 @@
 package progressed.world.blocks.defence.turret.testing;
 
+import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import progressed.entities.bullet.pseudo3d.*;
+import progressed.graphics.*;
+
+import static mindustry.Vars.tilesize;
 
 public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
     public float bAccel = 0.3f;
@@ -13,18 +17,23 @@ public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
         super(name);
 
 
-        shootType = new ArcBasicBulletType(15f, 30f){{
-            isInheritive = true;
-        }};
+        shootType = new ArcBasicBulletType(15f, 30f);
         reload = 1f;
         shotTilt = -90f;
+        inaccuracy = 45f;
         shoot = new ShootPattern(){{
             shots = 5;
         }};
     }
 
-    public class ArcBulletTestTurretBuild extends FreeTurretBuild{
-
+    public class ArcBulletScatterTestTurretBuild extends ArcBulletTestTurretBuild{
+        @Override
+        public void drawAimDebug(){
+            if(!drawAimDebug) return;
+            Draw.z(PMLayer.skyBloom + 2f);
+            //Aiming Display
+            Draw3D.drawAimDebug(x, y, shotZ, shootType.speed * tilesize, 0f, -90f, inaccuracy);
+        }
 
         @Override
         protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
@@ -40,7 +49,7 @@ public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
             ArcBulletType aType = (ArcBulletType)type;
-            handleBullet(aType.create3DStraight(this, team, x, y, shotZ, shootAngle, Mathf.random(-90f, -0.1f), aType.speed * velScl, bAccel), xOffset, yOffset, shootAngle - rotation);
+            handleBullet(aType.create3DStraight(this, team, x, y, shotZ, shootAngle, Mathf.random(-90f, -90f + inaccuracy), aType.speed * velScl, bAccel), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

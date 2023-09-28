@@ -100,7 +100,7 @@ public class ArcBulletType extends BulletType{
         data.update(b);
         //Log.info(data.z);
         super.update(b);
-        if(b.time > b.lifetime * lifetimeScl) b.remove();
+        if(b.time > b.lifetime * lifetimeScl || data.z <= 0f) b.remove();
     }
 
     @Override
@@ -336,7 +336,6 @@ public class ArcBulletType extends BulletType{
         Bullet bullet = beginBulletCreate(owner, team, x, y);
         bullet.vel.set(Tmp.v1);
         bullet.rotation(Tmp.v1.angle());
-        data.updateAimPos(bullet);
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -349,6 +348,8 @@ public class ArcBulletType extends BulletType{
         if(bullet.trail != null){
             bullet.trail.clear();
         }
+        data.updateLifetime(bullet);
+        data.updateAimPos(bullet);
         bullet.add();
         return bullet;
     }
@@ -436,7 +437,7 @@ public class ArcBulletType extends BulletType{
         }
 
         /** Sets bullet lifetime based on initial z, initial z velocity, and the given gravity constant. */
-        public void updateLifetime(Bullet b){ //Calculus :D
+        public void updateLifetime(Bullet b){
             //Calculate lifetime
             b.lifetime(PMMathf.solve(-0.5f * gravity, zVel, z));
         }
