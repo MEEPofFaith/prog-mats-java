@@ -12,7 +12,7 @@ public class SkyBeamBulletType extends BulletType{
     public float height = 50f * tilesize;
     public float offset = 0.25f;
     public float radius = tilesize;
-    public boolean forceBloom = false;
+    public boolean bloom = true;
     public Color baseColor = PMPal.nexusLaserDark;
     public Color topColor = PMPal.nexusLaser.cpy().a(0);
 
@@ -35,6 +35,6 @@ public class SkyBeamBulletType extends BulletType{
     public void draw(Bullet b){
         super.draw(b);
 
-        Draw3D.slantTube(b.x, b.y, b.originX, b.originY, height, radius, baseColor, topColor, offset);
+        Draw3D.highBloom(bloom, () -> Draw3D.slantTube(b.x, b.y, b.originX, b.originY, height, radius, baseColor, topColor, offset));
     }
 }

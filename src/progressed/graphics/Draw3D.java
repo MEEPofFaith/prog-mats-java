@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
@@ -13,7 +14,7 @@ import progressed.util.*;
 
 import static arc.Core.*;
 import static arc.math.Mathf.*;
-import static mindustry.Vars.renderer;
+import static mindustry.Vars.*;
 
 public class Draw3D{
     /** Arbitrary value that translates horizontal distance in world units to camera offset height. */
@@ -21,14 +22,22 @@ public class Draw3D{
     public static final float zFadeBegin = 300f, zFadeEnd = 5000f;
     public static final float scaleFadeBegin = 1.5f, scaleFadeEnd = 7f;
     private static final Color tmpCol = new Color();
+    private static final Seq<QueuedBloom> bloomQueue = new Seq<>();
 
     public static void init(){
         Events.run(Trigger.drawOver, () -> {
             Bloom bloom = renderer.bloom;
-            if(bloom != null){
-                Draw.draw(PMLayer.skyBloom - 1.02f, bloom::capture);
-                Draw.draw(PMLayer.skyBloom + 1.02f, bloom::render);
+            if(bloom != null && bloomQueue.any()){
+                bloomQueue.sort(q -> q.layer);
+                Draw.draw(PMLayer.skyBloom, () -> {
+                    bloom.capture();
+                    for(QueuedBloom b : bloomQueue){
+                        b.draw.run();
+                    }
+                    bloom.render();
+                });
             }
+            bloomQueue.clear();
         });
     }
 
@@ -197,7 +206,7 @@ public class Draw3D{
     }
 
     public static float hMul(float height){
-        return height(height) * Vars.renderer.getDisplayScale();
+        return height(height) * renderer.getDisplayScale();
     }
 
     public static float height(float height){
@@ -224,5 +233,38 @@ public class Draw3D{
         float max = Math.max(camera.width, camera.height);
 
         return layerOffset(cx, cy) + dst(cx, cy, tx, ty) * cosDeg(angleDist) / max / 1000f;
+    }
+
+    public static void highBloom(Runnable draw){
+        highBloom(true, Draw.z(), draw);
+    }
+
+    public static void highBloom(float layer, Runnable draw){
+        highBloom(true, layer, draw);
+    }
+
+    public static void highBloom(boolean bloom, Runnable draw){
+        highBloom(bloom, Draw.z(), draw);
+    }
+
+    public static void highBloom(boolean bloom, float layer, Runnable draw){
+        if(bloom){
+            bloomQueue.add(new QueuedBloom(layer, draw));
+        }else{
+            float z = Draw.z();
+            Draw.z(z + 0.01f);
+            draw.run();
+            Draw.z(z);
+        }
+    }
+
+    private static class QueuedBloom{
+        public final float layer;
+        public final Runnable draw;
+
+        private QueuedBloom(float layer, Runnable draw){
+            this.layer = layer;
+            this.draw = draw;
+        }
     }
 }

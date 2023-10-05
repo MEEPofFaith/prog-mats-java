@@ -17,6 +17,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         status = StatusEffects.blasted;
         drawZone = drawShadow = true;
         absorbEffect = Pseudo3DFx.absorbed;
+        bloomSprite = false;
     }
 
     public ArcMissileBulletType(String sprite){

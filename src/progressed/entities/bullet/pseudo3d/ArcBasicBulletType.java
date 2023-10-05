@@ -12,6 +12,7 @@ import static progressed.graphics.Draw3D.*;
 public class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
     public float shadowLayer = Layer.flyingUnit + 1;
+    public boolean bloomSprite = true;
     public boolean drawShadow = false, spinShade = true;
     public TextureRegion region, blRegion, trRegion;
 
@@ -61,14 +62,16 @@ public class ArcBasicBulletType extends ArcBulletType{
 
         Draw.z(layer);
         drawTrail(b);
-        Draw.scl(1f + hMul(data.z));
-        float alpha = Draw3D.scaleAlpha(data.z);
-        if(spinShade){
-            PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, rot, alpha);
-        }else{
-            Draw.alpha(alpha);
-            Draw.rect(region, hX, hY, rot);
-        }
-        Draw.scl();
+        Draw3D.highBloom(bloomSprite, () -> {
+            Draw.scl(1f + hMul(data.z));
+            float alpha = Draw3D.scaleAlpha(data.z);
+            if(spinShade){
+                PMDrawf.spinSprite(region, trRegion, blRegion, hX, hY, rot, alpha);
+            }else{
+                Draw.alpha(alpha);
+                Draw.rect(region, hX, hY, rot);
+            }
+            Draw.scl();
+        });
     }
 }

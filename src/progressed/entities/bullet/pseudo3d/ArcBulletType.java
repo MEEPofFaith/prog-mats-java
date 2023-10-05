@@ -31,6 +31,8 @@ public class ArcBulletType extends BulletType{
     public float arcFragDrift = 0f, intervalDropDrift = 0f;
     public float targetDriftDrag = 0.05f;
 
+    public boolean bloomTrail = true;
+
     public boolean drawZone = false;
     public float zoneLayer = Layer.bullet - 1f;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
@@ -245,7 +247,7 @@ public class ArcBulletType extends BulletType{
             //draw below bullets? TODO
             float z = Draw.z();
             Draw.z(z - 0.0001f);
-            b.trail.draw(trailColor, trailWidth);
+            Draw3D.highBloom(bloomTrail, () -> b.trail.draw(trailColor, trailWidth));
             Draw.z(z);
         }
     }
@@ -395,7 +397,7 @@ public class ArcBulletType extends BulletType{
         bullet.time = 0f;
         bullet.originX = x;
         bullet.originY = y;
-        bullet.aimTile = world.tileWorld(aimX, aimY);
+        //bullet.aimTile = world.tileWorld(aimX, aimY);
         bullet.aimX = aimX;
         bullet.aimY = aimY;
         bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();

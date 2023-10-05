@@ -8,7 +8,7 @@ import mindustry.entities.pattern.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
     public float bAccel = 0.3f;
