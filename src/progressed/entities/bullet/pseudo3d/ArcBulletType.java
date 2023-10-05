@@ -17,6 +17,7 @@ import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
+import static progressed.graphics.Draw3D.hMul;
 
 public class ArcBulletType extends BulletType{
     private static float cdist = 0f;
@@ -49,6 +50,7 @@ public class ArcBulletType extends BulletType{
         trailLength = 8;
         layer = PMLayer.skyBloom;
         shootEffect = smokeEffect = Fx.none;
+        lightOpacity = 0f;
     }
 
     public ArcBulletType(float speed){
@@ -244,7 +246,6 @@ public class ArcBulletType extends BulletType{
     @Override
     public void drawTrail(Bullet b){
         if(trailLength > 0 && b.trail != null){
-            //draw below bullets? TODO
             float z = Draw.z();
             Draw.z(z - 0.0001f);
             Draw3D.highBloom(bloomTrail, () -> b.trail.draw(trailColor, trailWidth));
@@ -267,6 +268,13 @@ public class ArcBulletType extends BulletType{
         }
         Draw.z(zoneLayer);
         PMDrawf.target(b.aimX, b.aimY, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
+    }
+
+    @Override
+    public void drawLight(Bullet b){
+        if(lightOpacity <= 0f || lightRadius <= 0f) return;
+        ArcBulletData data = (ArcBulletData)b.data;
+        Drawf.light(Draw3D.xHeight(b.x, data.z), Draw3D.yHeight(b.y, data.z), lightRadius * (1f + hMul(data.z)), lightColor, lightOpacity * Draw3D.scaleAlpha(data.z));
     }
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float aimX, float aimY){
