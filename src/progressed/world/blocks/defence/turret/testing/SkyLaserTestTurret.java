@@ -27,7 +27,7 @@ public class SkyLaserTestTurret extends FreeTurret{
             super.draw();
 
             SkyBeamBulletType type = (SkyBeamBulletType)shootType;
-            Draw3D.line(x, y, type.height, targetPos.x, targetPos.y, 0);
+            Draw3D.drawLineDebug(x, y, type.height, targetPos.x, targetPos.y, 0);
             Draw3D.drawDiskDebug(targetPos.x, targetPos.y, x, y, type.height, type.radius);
         }
     }

@@ -64,7 +64,7 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
                 targetPos.set(pos);
             }
 
-            if(!bullet.scaleLife) targetPos.sub(this).setLength(range).add(this);
+            if(!bullet.scaleLife) targetPos.sub(this).setLength(range()).add(this);
 
             if(targetPos.isZero()){
                 targetPos.set(pos);
@@ -111,6 +111,7 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
                 shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
+            if(!type.scaleLife) targetPos.sub(this).setLength(range()).add(this);
             float dst = Math.max(Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range()), minRange);
             ArcMissileBulletType m = (ArcMissileBulletType)type;
             float time = Mathf.sqrt((2 * dst) / m.accel);

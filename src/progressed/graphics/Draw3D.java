@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import progressed.util.*;
@@ -17,8 +16,8 @@ import static arc.math.Mathf.*;
 import static mindustry.Vars.*;
 
 public class Draw3D{
-    /** Arbitrary value that translates horizontal distance in world units to camera offset height. */
-    public static final float horiToVerti = 1f/48f/Vars.tilesize;
+    /** Arbitrary value that translates z coordinate in world units to camera offset height. */
+    public static final float zToOffset = 1f/48f/tilesize;
     public static final float zFadeBegin = 300f, zFadeEnd = 5000f;
     public static final float scaleFadeBegin = 1.5f, scaleFadeEnd = 7f;
     private static final Color tmpCol = new Color();
@@ -131,6 +130,20 @@ public class Draw3D{
         );
     }
 
+    public static void drawLineSegments(float x1, float y1, float z1, float x2, float y2, float z2){
+        drawLineSegments(x1, y1, z1, x2, y2, z2, Math3D.linePointCounts(x1, y1, z1, x2, y2, z2));
+    }
+
+    public static void drawLineSegments(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
+        float[] points = Math3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
+        Lines.beginLine();
+        for(int i = 0; i < pointCount; i++){
+            float z = points[i * 3 + 2];
+            Lines.linePoint(xHeight(points[i * 3], z), yHeight(points[i * 3 + 1], z));
+        }
+        Lines.endLine();
+    }
+
     public static void lineAngleBase(float x, float y, float height, float length, float rotation, float rotationOffset, float tilt){
         Math3D.rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
         float h2 = height + Tmp.v31.z;
@@ -169,11 +182,12 @@ public class Draw3D{
         //Disk
         Lines.stroke(3f);
         Draw.color(Color.white);
-        float[] verts = Math3D.diskVertices(x2, y2, z2, rotation, 0f, tilt, rad, Lines.circleVertices(rad * hScale(z2)));
+        int vertCount = Lines.circleVertices(rad * hScale(z2));
+        float[] verts = Math3D.diskVertices(x2, y2, z2, rotation, 0f, tilt, rad, vertCount);
         Lines.beginLine();
-        for(int i = 0; i < verts.length; i += 3){
-            float vZ = verts[i + 2];
-            Lines.linePoint(xHeight(verts[i], vZ), yHeight(verts[i + 1], vZ));
+        for(int i = 0; i <= vertCount; i++){
+            float vZ = verts[i * 3 + 2];
+            Lines.linePoint(xHeight(verts[i * 3], vZ), yHeight(verts[i * 3 + 1], vZ));
         }
         Lines.endLine(true);
         //Stuff
@@ -183,34 +197,50 @@ public class Draw3D{
         line(x2, y2, z2, x2 + Tmp.v32.x, y2 + Tmp.v32.y, z2 + Tmp.v32.z);
     }
 
-    public static float xHeight(float x, float height){
-        if(height <= 0) return x;
-        return x + xOffset(x, height);
+    public static void drawLineDebug(float x1, float y1, float z1, float x2, float y2, float z2){
+        int pointCount = Math3D.linePointCounts(x1, y1, z1, x2, y2, z2);
+        float[] points = Math3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
+        Lines.beginLine();
+        for(int i = 0; i < pointCount; i++){
+            float x = points[i * 3],
+                y = points[i * 3 + 1],
+                z = points[i * 3 + 2];
+            float hx = xHeight(x, z),
+                hy = yHeight(y, z);
+            Lines.linePoint(hx, hy);
+            Lines.line(x, y, hx, hy);
+        }
+        Lines.endLine();
     }
 
-    public static float yHeight(float y, float height){
-        if(height <= 0) return y;
-        return y + yOffset(y, height);
+    public static float xHeight(float x, float z){
+        if(z <= 0) return x;
+        return x + xOffset(x, z);
     }
 
-    public static float xOffset(float x, float height){
-        return (x - camera.position.x) * hMul(height);
+    public static float yHeight(float y, float z){
+        if(z <= 0) return y;
+        return y + yOffset(y, z);
     }
 
-    public static float yOffset(float y, float height){
-        return (y - camera.position.y) * hMul(height);
+    public static float xOffset(float x, float z){
+        return (x - camera.position.x) * hMul(z);
     }
 
-    public static float hScale(float height){
-        return 1f + hMul(height);
+    public static float yOffset(float y, float z){
+        return (y - camera.position.y) * hMul(z);
     }
 
-    public static float hMul(float height){
-        return height(height) * renderer.getDisplayScale();
+    public static float hScale(float z){
+        return 1f + hMul(z);
     }
 
-    public static float height(float height){
-        return height * horiToVerti;
+    public static float hMul(float z){
+        return height(z) * renderer.getDisplayScale();
+    }
+
+    public static float height(float z){
+        return z * zToOffset;
     }
 
     public static float zAlpha(float z){

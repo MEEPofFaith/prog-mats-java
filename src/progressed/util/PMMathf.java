@@ -20,6 +20,11 @@ public class PMMathf{
         return (float)Math.sqrt(w * h * 2f);
     }
 
+    /** Returns the uhhhhh */
+    public static float sqrt(float a){
+        return Mathf.sign(a) * Mathf.sqrt(Math.abs(a));
+    }
+
     /** Copied from {@link Predict#quad(float, float, float)} */
     public static Vec2 quad(float a, float b, float c){
         Vec2 sol = null;

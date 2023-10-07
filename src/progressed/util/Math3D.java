@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.gen.*;
 
 import static arc.math.Mathf.*;
+import static mindustry.Vars.*;
 
 public class Math3D{
     private static final Vec2 vec = new Vec2();
@@ -25,17 +26,36 @@ public class Math3D{
             .rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
     }
 
+    public static int linePointCounts(float x1, float y1, float z1, float x2, float y2, float z2){
+        return (int)(dst(x1, y1, z1, x2, y2, z2) / tilesize / tilesize);
+    }
+
+    public static float[] linePoints(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
+        float[] points = new float[pointCount * 3];
+        float px = (x2 - x1) / (pointCount - 1);
+        float py = (y2 - y1) / (pointCount - 1);
+        float pz = (z2 - z1) / (pointCount - 1);
+
+        for(int i = 0; i < pointCount; i++){
+            points[i * 3] = x1 + px * i;
+            points[i * 3 + 1] = y1 + py * i;
+            points[i * 3 + 2] = z1 + pz * i;
+        }
+
+        return points;
+    }
+
     public static float[] diskVertices(float x, float y, float z, float rotation, float startAngle, float tilt, float rad, int verts){
-        float[] diskVerts = new float[verts * 3];
-        float space = 360f / (verts - 1f);
+        float[] diskVerts = new float[(verts + 1) * 3];
+        float space = 360f / verts;
         axis.set(Vec3.Z).rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
         rim.set(rad, 0, 0).rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
         rim.rotate(axis, rotation - startAngle);
 
-        for(int i = 0; i < verts * 3; i += 3){
-            diskVerts[i] = x + rim.x;
-            diskVerts[i + 1] = y + rim.y;
-            diskVerts[i + 2] = z + rim.z;
+        for(int i = 0; i <= verts; i ++){
+            diskVerts[i * 3] = x + rim.x;
+            diskVerts[i * 3 + 1] = y + rim.y;
+            diskVerts[i * 3 + 2] = z + rim.z;
             rim.rotate(axis, space);
         }
         return diskVerts;
@@ -89,6 +109,13 @@ public class Math3D{
         return vec;
     }
 
+    public static float dst(float x1, float y1, float z1, float x2, float y2, float z2){
+        float xd = x2 - x1;
+        float yd = y2 - y1;
+        float zd = z2 - z1;
+        return Mathf.sqrt(xd * xd + yd * yd + zd * zd);
+    }
+
     /**
      * See DriveBelt#drawBelt in AvantTeam/ProjectUnityPublic
      * @author Xelo
@@ -96,7 +123,7 @@ public class Math3D{
     public static float tubeStartAngle(float x1, float y1, float x2, float y2, float rad1, float rad2){
         if(x1 == x2 && y1 == y2) return 0f;
 
-        float d = dst(x2 - x1,y2 - y1);
+        float d = Mathf.dst(x2 - x1,y2 - y1);
         float f = sqrt(d * d - sqr(rad2 - rad1));
         float a = rad1 > rad2 ? atan2(rad1 - rad2, f) : (rad1 < rad2 ? pi - atan2(rad2 - rad1, f) : halfPi);
         Tmp.v1.set(x2 - x1, y2 - y1).scl(1f / d); //normal
