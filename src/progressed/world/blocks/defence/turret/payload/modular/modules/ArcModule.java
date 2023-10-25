@@ -47,7 +47,7 @@ public class ArcModule extends ItemTurretModule{
             ArcMissileBulletType bullet = (ArcMissileBulletType)peekAmmo();
 
             if(predictTarget && pos instanceof Hitboxc h){
-                targetPos.set(Math3D.intercept(this, h, bullet.accel));
+                targetPos.set(Math3D.intercept(this, h, bullet.accel, bullet.speed));
             }else{
                 targetPos.set(pos);
             }
@@ -111,7 +111,7 @@ public class ArcModule extends ItemTurretModule{
 
             float dst = Math.max(Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range()), minRange);
             ArcMissileBulletType m = (ArcMissileBulletType)type;
-            float time = Mathf.sqrt((2 * dst) / m.accel);
+            float time = Mathf.sqrt((2 * dst) / m.accel); //TODO consider initial velocity
             float zVel = -0.5f * -m.gravity * time;
             handleBullet(m.create3DVel(this, team, bulletX, bulletY, 0f, shootAngle, zVel, m.accel * velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 

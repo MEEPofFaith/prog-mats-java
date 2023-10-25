@@ -64,11 +64,11 @@ public class Math3D{
     public static float[] castVertices(float x, float y, float rotation, float startAngle, float tilt, float rad, int verts){
         float[] castVerts = new float[verts * 2];
         float space = 360f / (verts - 1f);
-        float scl = 1f + Mathf.sinDeg(tilt);
+        float scl = 1f + sinDeg(tilt);
 
         for(int i = 0; i < verts; i++){
             float angle = startAngle + space * i - rotation;
-            vec.trns(rotation, Mathf.cosDeg(angle) * rad * scl, Mathf.sinDeg(angle) * rad);
+            vec.trns(rotation, cosDeg(angle) * rad * scl, sinDeg(angle) * rad);
             castVerts[i * 2] = x + vec.x;
             castVerts[i * 2 + 1] = y + vec.y;
         }
@@ -83,15 +83,40 @@ public class Math3D{
      * @param dsty Y of target
      * @param dstvx X velocity of target (subtract shooter X velocity if needed)
      * @param dstvy Y velocity of target (subtract shooter Y velocity if needed)
-     * @param accel constant acceleration of bullet
+     * @param ba constant acceleration of the bullet
+     * @param bv initial velocity of the bullet
      * @return the intercept location
      */
-    public static Vec2 intercept(float srcx, float srcy, float dstx, float dsty, float dstvx, float dstvy, float accel){
-        //TODO come back once I learn parametrics
-        return vresult.set(dstx, dsty);
+    public static Vec2 intercept(float srcx, float srcy, float dstx, float dsty, float dstvx, float dstvy, float ba, float bv){
+        dstvx /= Time.delta;
+        dstvy /= Time.delta;
+        float dx = dstx - srcx,
+            dy = dsty - srcy;
+        float uv = dstvx * dstvx + dstvy * dstvy,
+            ud = dx * dstvx + dy * dstvy;
+
+        // Get quartic components
+        float a = -(ba * ba) / 4;
+        float b = -ba * bv;
+        float c = uv - (bv * bv);
+        float d = 2 * ud;
+        float e = dx * dx + dy * dy;
+
+        // Solve
+        float[] ts = quartic(a, b, c, d, e);
+
+        // Find smallest positive solution
+        Vec2 sol = vresult.set(dstx, dsty);
+        float min = Float.MAX_VALUE;
+        for(float t : ts){
+            if(t >= 0 && t < min) min = t;
+        }
+        if(min < Float.MAX_VALUE) sol.set(dstx + dstvx * min, dsty + dstvy * min);
+
+        return sol;
     }
 
-    public static Vec2 intercept(Position src, Position dst, float accel){
+    public static Vec2 intercept(Position src, Position dst, float ba, float bv){
         float ddx = 0, ddy = 0;
         if(dst instanceof Hitboxc h){
             ddx += h.deltaX();
@@ -101,7 +126,8 @@ public class Math3D{
             ddx -= h.deltaX();
             ddy -= h.deltaY();
         }
-        return intercept(src.getX(), src.getY(), dst.getX(), dst.getY(), ddx, ddy, accel);
+        if(ddx == 0 && ddy == 0) return vresult.set(dst); //Don't bother performing unnecessary math if no prediction is needed.
+        return intercept(src.getX(), src.getY(), dst.getX(), dst.getY(), ddx, ddy, ba, bv);
     }
 
     public static Vec2 inaccuracy(float inaccuracy){
@@ -113,7 +139,7 @@ public class Math3D{
         float xd = x2 - x1;
         float yd = y2 - y1;
         float zd = z2 - z1;
-        return Mathf.sqrt(xd * xd + yd * yd + zd * zd);
+        return sqrt(xd * xd + yd * yd + zd * zd);
     }
 
     /**
@@ -130,5 +156,26 @@ public class Math3D{
         Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-rad2).add(x2, y2); //tangent
 
         return Angles.angle(x2, y2, Tmp.v2.x, Tmp.v2.y);
+    }
+
+    // https://math.stackexchange.com/questions/785/is-there-a-general-formula-for-solving-quartic-degree-4-equations
+    private static float[] quartic(float a, float b, float c, float d, float e){
+        float p1 = 2*c*c*c - 9*b*c*d + 27*a*d*d + 27*b*b*e - 72*a*c*e;
+        float p2 = c*c - 3*b*d + 12*a*e;
+        float p3 = p1 + sqrt(-4*p2*p2*p2 + p1*p1);
+        float p4 = PMMathf.cbrt(p3/2);
+        float p5 = p2/(3*a*p4) + (p4/(3*a));
+
+        float p6 = sqrt((b*b)/(4*a*a) - (2*c)/(3*a) + p5);
+        float p7 = (b*b)/(2*a*a) - (4*c)/(3*a) - p5;
+        float p8 = (-(b*b*b)/(a*a*a) + (4*b*c)/(a*a) - (8*d)/a) / (4*p6);
+
+        float[] out = new float[4];
+        out[0] = -(b/(4*a)) - (p6/2) - (sqrt(p7-p8)/2);
+        out[1] = -(b/(4*a)) - (p6/2) + (sqrt(p7-p8)/2);
+        out[2] = -(b/(4*a)) - (p6/2) - (sqrt(p7+p8)/2);
+        out[3] = -(b/(4*a)) - (p6/2) + (sqrt(p7+p8)/2);
+
+        return out;
     }
 }
