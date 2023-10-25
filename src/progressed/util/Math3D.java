@@ -103,7 +103,7 @@ public class Math3D{
         float e = dx * dx + dy * dy;
 
         // Solve
-        float[] ts = quartic(a, b, c, d, e);
+        float[] ts = PMMathf.quartic(a, b, c, d, e);
 
         // Find smallest positive solution
         Vec2 sol = vresult.set(dstx, dsty);
@@ -156,26 +156,5 @@ public class Math3D{
         Tmp.v2.set(Tmp.v1).rotateRad(pi - a).scl(-rad2).add(x2, y2); //tangent
 
         return Angles.angle(x2, y2, Tmp.v2.x, Tmp.v2.y);
-    }
-
-    // https://math.stackexchange.com/questions/785/is-there-a-general-formula-for-solving-quartic-degree-4-equations
-    private static float[] quartic(float a, float b, float c, float d, float e){
-        float p1 = 2*c*c*c - 9*b*c*d + 27*a*d*d + 27*b*b*e - 72*a*c*e;
-        float p2 = c*c - 3*b*d + 12*a*e;
-        float p3 = p1 + sqrt(-4*p2*p2*p2 + p1*p1);
-        float p4 = PMMathf.cbrt(p3/2);
-        float p5 = p2/(3*a*p4) + (p4/(3*a));
-
-        float p6 = sqrt((b*b)/(4*a*a) - (2*c)/(3*a) + p5);
-        float p7 = (b*b)/(2*a*a) - (4*c)/(3*a) - p5;
-        float p8 = (-(b*b*b)/(a*a*a) + (4*b*c)/(a*a) - (8*d)/a) / (4*p6);
-
-        float[] out = new float[4];
-        out[0] = -(b/(4*a)) - (p6/2) - (sqrt(p7-p8)/2);
-        out[1] = -(b/(4*a)) - (p6/2) + (sqrt(p7-p8)/2);
-        out[2] = -(b/(4*a)) - (p6/2) - (sqrt(p7+p8)/2);
-        out[3] = -(b/(4*a)) - (p6/2) + (sqrt(p7+p8)/2);
-
-        return out;
     }
 }

@@ -310,14 +310,18 @@ public class ArcBulletType extends BulletType{
     }
 
     public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float accel, float aimX, float aimY){
-        return create3DVel(owner, team, x, y, z, angle, zVel, gravity, accel, aimX, aimY);
+        return create3DVel(owner, team, x, y, z, angle, zVel, gravity, accel, 0, aimX, aimY);
     }
 
-    public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float aimX, float aimY){
+    public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float accel, float vel, float aimX, float aimY){
+        return create3DVel(owner, team, x, y, z, angle, zVel, gravity, accel, vel, aimX, aimY);
+    }
+
+    public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float vel, float aimX, float aimY){
         ArcBulletData data = new ArcBulletData(z, zVel, gravity).setAccel(angle, accel);
 
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
-        bullet.initVel(angle, 0);
+        bullet.initVel(angle, vel);
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);

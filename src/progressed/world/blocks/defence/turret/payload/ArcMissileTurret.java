@@ -14,6 +14,9 @@ import progressed.world.draw.*;
 import static mindustry.Vars.*;
 
 public class ArcMissileTurret extends SinglePayloadAmmoTurret{
+    /** Fraction of bullet velocity that is random. */
+    public float accelRnd = 0f;
+
     public ArcMissileTurret(String name){
         super(name);
 
@@ -109,14 +112,15 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
                 bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy),
+                accScl = 1f + Mathf.range(accelRnd / 2f),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
             if(!type.scaleLife) targetPos.sub(this).setLength(range()).add(this);
             float dst = Math.max(Math.min(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y), range()), minRange);
             ArcMissileBulletType m = (ArcMissileBulletType)type;
-            float time = Mathf.sqrt((2 * dst) / m.accel); //TODO consider initial velocity
+            float time = PMMathf.quadPos(m.accel / 2f, m.speed, -dst);
             float zVel = -0.5f * -m.gravity * time;
-            handleBullet(m.create3DVel(this, team, bulletX, bulletY, 0f, shootAngle, zVel, m.accel * velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
+            handleBullet(m.create3DVel(this, team, bulletX, bulletY, 0f, shootAngle, zVel, m.accel * accScl, m.speed * velScl, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
             (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

@@ -4,6 +4,8 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.entities.*;
 
+import static arc.math.Mathf.sqrt;
+
 public class PMMathf{
     private static final Vec2 bezOut = new Vec2(), p1 = new Vec2(), p2 = new Vec2(), p3 = new Vec2(), p4 = new Vec2(), tmp = new Vec2();
 
@@ -44,7 +46,7 @@ public class PMMathf{
         return sol;
     }
 
-    /** @return Smallest positive solution (does not include 0) of a quadratic. */
+    /** @return Smallest positive nonzero solution of a quadratic. */
     public static float quadPos(float a, float b, float c){
         Vec2 ts = quad(a, b, c);
         if(ts != null){
@@ -65,6 +67,27 @@ public class PMMathf{
             Vec2 t = quad(a, b, c);
             return Math.max(t.x, t.y);
         }
+    }
+
+    // https://math.stackexchange.com/questions/785/is-there-a-general-formula-for-solving-quartic-degree-4-equations
+    public static float[] quartic(float a, float b, float c, float d, float e){
+        float p1 = 2*c*c*c - 9*b*c*d + 27*a*d*d + 27*b*b*e - 72*a*c*e;
+        float p2 = c*c - 3*b*d + 12*a*e;
+        float p3 = p1 + sqrt(-4*p2*p2*p2 + p1*p1);
+        float p4 = cbrt(p3/2);
+        float p5 = p2/(3*a*p4) + (p4/(3*a));
+
+        float p6 = sqrt((b*b)/(4*a*a) - (2*c)/(3*a) + p5);
+        float p7 = (b*b)/(2*a*a) - (4*c)/(3*a) - p5;
+        float p8 = (-(b*b*b)/(a*a*a) + (4*b*c)/(a*a) - (8*d)/a) / (4*p6);
+
+        float[] out = new float[4];
+        out[0] = -(b/(4*a)) - (p6/2) - (sqrt(p7-p8)/2);
+        out[1] = -(b/(4*a)) - (p6/2) + (sqrt(p7-p8)/2);
+        out[2] = -(b/(4*a)) - (p6/2) - (sqrt(p7+p8)/2);
+        out[3] = -(b/(4*a)) - (p6/2) + (sqrt(p7+p8)/2);
+
+        return out;
     }
 
     public static Vec2 randomCirclePoint(Vec2 v, float radius){
