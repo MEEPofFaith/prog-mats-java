@@ -43,7 +43,7 @@ public class Draw3D{
     public static void tube(float x, float y, float rad, float height, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
-        float angle = Math3D.tubeStartAngle(x, y, xHeight(x, height), yHeight(y, height), rad, rad * hScale(height));
+        float angle = Math3D.tubeStartAngle(x, y, x(x, height), y(y, height), rad, rad * hScale(height));
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -53,10 +53,10 @@ public class Draw3D{
                 x2 = x + rad * cos2,
                 y2 = y + rad * sin2;
 
-            float x3 = xHeight(x1, height),
-                y3 = yHeight(y1, height),
-                x4 = xHeight(x2, height),
-                y4 = yHeight(y2, height);
+            float x3 = x(x1, height),
+                y3 = y(y1, height),
+                x4 = x(x2, height),
+                y4 = y(y2, height);
             
             float cLerp1 = 1f - Angles.angleDist(a, 45f) / 180f,
                 cLerp2 = 1f - Angles.angleDist(a + space, 45f) / 180f;
@@ -78,7 +78,7 @@ public class Draw3D{
         int verts = Lines.circleVertices(rad * hScale(z2));
         float rotation = Angles.angle(x2, y2, x1, y1);
         float tilt = 90f - Angles.angle(Mathf.dst(x1, y1, x2, y2), z2);
-        float startAngle = Math3D.tubeStartAngle(xHeight(x2, z2), yHeight(y2, z2), x1, y1, rad * hScale(z2), rad);
+        float startAngle = Math3D.tubeStartAngle(x(x2, z2), y(y2, z2), x1, y1, rad * hScale(z2), rad);
         float[] castVerts = Math3D.castVertices(x1, y1, rotation, startAngle, tilt, rad, verts);
         float[] diskVerts = Math3D.diskVertices(x2, y2, z2, rotation, startAngle, tilt, rad, verts);
         float hAlpha = scaleAlpha(z2 * offset);
@@ -92,10 +92,10 @@ public class Draw3D{
                 by2 = castVerts[i2 * 2 + 1];
             float tz1 = diskVerts[i * 3 + 2],
                 tz2 = diskVerts[i2 * 3 + 2];
-            float tx1 = xHeight(diskVerts[i * 3], tz1),
-                ty1 = yHeight(diskVerts[i * 3 + 1], tz1),
-                tx2 = xHeight(diskVerts[i2 * 3], tz2),
-                ty2 = yHeight(diskVerts[i2 * 3 + 1], tz2);
+            float tx1 = x(diskVerts[i * 3], tz1),
+                ty1 = y(diskVerts[i * 3 + 1], tz1),
+                tx2 = x(diskVerts[i2 * 3], tz2),
+                ty2 = y(diskVerts[i2 * 3 + 1], tz2);
             if(offset > 0f){
                 tx1 = Mathf.lerp(tx1, bx1, offset);
                 ty1 = Mathf.lerp(ty1, by1, offset);
@@ -125,8 +125,8 @@ public class Draw3D{
 
     public static void line(float x1, float y1, float z1, float x2, float y2, float z2){
         Lines.line(
-            xHeight(x1, z1), yHeight(y1, z1),
-            xHeight(x2, z2), yHeight(y2, z2)
+            x(x1, z1), y(y1, z1),
+            x(x2, z2), y(y2, z2)
         );
     }
 
@@ -139,7 +139,7 @@ public class Draw3D{
         Lines.beginLine();
         for(int i = 0; i < pointCount; i++){
             float z = points[i * 3 + 2];
-            Lines.linePoint(xHeight(points[i * 3], z), yHeight(points[i * 3 + 1], z));
+            Lines.linePoint(x(points[i * 3], z), y(points[i * 3 + 1], z));
         }
         Lines.endLine();
     }
@@ -147,10 +147,10 @@ public class Draw3D{
     public static void lineAngleBase(float x, float y, float height, float length, float rotation, float rotationOffset, float tilt){
         Math3D.rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
         float h2 = height + Tmp.v31.z;
-        float x1 = xHeight(x, height);
-        float y1 = yHeight(y, height);
-        float x2 = xHeight(x + Tmp.v31.x, h2);
-        float y2 = yHeight(y + Tmp.v31.y, h2);
+        float x1 = x(x, height);
+        float y1 = y(y, height);
+        float x2 = x(x + Tmp.v31.x, h2);
+        float y2 = y(y + Tmp.v31.y, h2);
         Lines.line(x1, y1, x2, y2);
     }
 
@@ -187,7 +187,7 @@ public class Draw3D{
         Lines.beginLine();
         for(int i = 0; i <= vertCount; i++){
             float vZ = verts[i * 3 + 2];
-            Lines.linePoint(xHeight(verts[i * 3], vZ), yHeight(verts[i * 3 + 1], vZ));
+            Lines.linePoint(x(verts[i * 3], vZ), y(verts[i * 3 + 1], vZ));
         }
         Lines.endLine(true);
         //Stuff
@@ -205,20 +205,20 @@ public class Draw3D{
             float x = points[i * 3],
                 y = points[i * 3 + 1],
                 z = points[i * 3 + 2];
-            float hx = xHeight(x, z),
-                hy = yHeight(y, z);
+            float hx = x(x, z),
+                hy = y(y, z);
             Lines.linePoint(hx, hy);
             Lines.line(x, y, hx, hy);
         }
         Lines.endLine();
     }
 
-    public static float xHeight(float x, float z){
+    public static float x(float x, float z){
         if(z <= 0) return x;
         return x + xOffset(x, z);
     }
 
-    public static float yHeight(float y, float z){
+    public static float y(float y, float z){
         if(z <= 0) return y;
         return y + yOffset(y, z);
     }

@@ -45,10 +45,10 @@ public class ArcBasicBulletType extends ArcBulletType{
         if(drawZone) drawTargetZone(b);
 
         ArcBulletData data = (ArcBulletData)b.data;
-        float lastHX = Draw3D.xHeight(b.lastX, data.lastZ),
-            lastHY = Draw3D.yHeight(b.lastY, data.lastZ);
-        float hX = Draw3D.xHeight(b.x, data.z),
-            hY = Draw3D.yHeight(b.y, data.z);
+        float lastHX = Draw3D.x(b.lastX, data.lastZ),
+            lastHY = Draw3D.y(b.lastY, data.lastZ);
+        float hX = Draw3D.x(b.x, data.z),
+            hY = Draw3D.y(b.y, data.z);
         float rot = Angles.angle(lastHX, lastHY, hX, hY);
         if(drawShadow){
             Draw.scl(1f + height(data.z));

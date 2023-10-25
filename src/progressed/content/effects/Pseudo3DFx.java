@@ -25,7 +25,7 @@ public class Pseudo3DFx{
             stroke(2f * s.fout() * zScl);
 
             randLenVectors(e.id, 8, (2f + 34f * s.fin()) * zScl, (x, y) -> {
-                lineAngle(xHeight(e.x + x, z), yHeight(e.y + y, z), angle(x, y), (2f + s.fout() * 8f) * zScl);
+                lineAngle(x(e.x + x, z), y(e.y + y, z), angle(x, y), (2f + s.fout() * 8f) * zScl);
             });
         });
 
@@ -34,7 +34,7 @@ public class Pseudo3DFx{
 
         stroke((0.5f * out + e.fout()) * zScl);
 
-        Lines.circle(xHeight(e.x, z), yHeight(e.y, z), (2f * out + 13f * in * out) * zScl);
+        Lines.circle(x(e.x, z), y(e.y, z), (2f * out + 13f * in * out) * zScl);
     }),
 
     absorbed = new Effect(52f, e -> {
@@ -46,7 +46,7 @@ public class Pseudo3DFx{
             stroke(3f * s.fout() * zScl);
 
             randLenVectors(e.id, 14, (2f + 53f * s.fin()) * zScl, (x, y) -> {
-                lineAngle(xHeight(e.x + x, z), yHeight(e.y + y, z), angle(x, y), (2f + s.fout() * 13f) * zScl);
+                lineAngle(x(e.x + x, z), y(e.y + y, z), angle(x, y), (2f + s.fout() * 13f) * zScl);
             });
         });
 
@@ -55,7 +55,7 @@ public class Pseudo3DFx{
 
         stroke((out + 2f * e.fout()) * zScl);
 
-        Lines.circle(xHeight(e.x, z), yHeight(e.y, z), (6f * out + 31f * in * out) * zScl);
+        Lines.circle(x(e.x, z), y(e.y, z), (6f * out + 31f * in * out) * zScl);
     }),
 
     absorbedLarge = new Effect(74f, e -> {
@@ -67,7 +67,7 @@ public class Pseudo3DFx{
             stroke(5f * s.fout() * zScl);
 
             randLenVectors(e.id, 20, (4f + 114f * s.fin() * zScl), (x, y) -> {
-                lineAngle(xHeight(e.x + x, z), yHeight(e.y + y, z), angle(x, y), (3f + s.fout() * 18f) * zScl);
+                lineAngle(x(e.x + x, z), y(e.y + y, z), angle(x, y), (3f + s.fout() * 18f) * zScl);
             });
         });
 
@@ -76,7 +76,7 @@ public class Pseudo3DFx{
 
         stroke((2f * out + 3f * e.fout()) * zScl);
 
-        Lines.circle(xHeight(e.x, z), yHeight(e.y, z), (6f * out + 57f * in * out) * zScl);
+        Lines.circle(x(e.x, z), y(e.y, z), (6f * out + 57f * in * out) * zScl);
     }),
 
     shieldRecharge = new Effect(20f, e -> {

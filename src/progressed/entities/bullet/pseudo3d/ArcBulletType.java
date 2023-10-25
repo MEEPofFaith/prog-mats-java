@@ -274,7 +274,7 @@ public class ArcBulletType extends BulletType{
     public void drawLight(Bullet b){
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
         ArcBulletData data = (ArcBulletData)b.data;
-        Drawf.light(Draw3D.xHeight(b.x, data.z), Draw3D.yHeight(b.y, data.z), lightRadius * (1f + hMul(data.z)), lightColor, lightOpacity * Draw3D.scaleAlpha(data.z));
+        Drawf.light(Draw3D.x(b.x, data.z), Draw3D.y(b.y, data.z), lightRadius * (1f + hMul(data.z)), lightColor, lightOpacity * Draw3D.scaleAlpha(data.z));
     }
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float aimX, float aimY){

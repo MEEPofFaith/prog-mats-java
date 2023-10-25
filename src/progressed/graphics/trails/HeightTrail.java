@@ -80,8 +80,8 @@ public class HeightTrail extends Trail{
                 z2 = items[i + 4 + 3];
 
             }else{
-                x2 = xHeight(lastX, lastH);
-                y2 = yHeight(lastY, lastH);
+                x2 = Draw3D.x(lastX, lastH);
+                y2 = Draw3D.y(lastY, lastH);
                 w2 = lastW * hScale(lastH);
                 z2 = lastH;
             }
@@ -157,17 +157,17 @@ public class HeightTrail extends Trail{
     }
 
     public float x(int index){
-        if(index < 0) return xHeight(lastX, lastH);
+        if(index < 0) return Draw3D.x(lastX, lastH);
 
         float[] items = points.items;
-        return xHeight(items[index], items[index + 3]);
+        return Draw3D.x(items[index], items[index + 3]);
     }
 
     public float y(int index){
-        if(index < 0) return yHeight(lastY, lastH);
+        if(index < 0) return Draw3D.y(lastY, lastH);
 
         float[] items = points.items;
-        return yHeight(items[index + 1], items[index + 3]);
+        return Draw3D.y(items[index + 1], items[index + 3]);
     }
 
     public float w(int index){

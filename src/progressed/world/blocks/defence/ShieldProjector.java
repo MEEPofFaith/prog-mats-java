@@ -82,10 +82,10 @@ public class ShieldProjector extends ForceProjector{
             int next = (i + 1) % sides;
             float x2 = corners[next * 2];
             float y2 = corners[next * 2 + 1];
-            float x3 = xHeight(x2, height);
-            float y3 = yHeight(y2, height);
-            float x4 = xHeight(x1, height);
-            float y4 = yHeight(y1, height);
+            float x3 = x(x2, height);
+            float y3 = y(y2, height);
+            float x4 = x(x1, height);
+            float y4 = y(y1, height);
             draw.draw(x1, y1, x2, y2, x3, y3, x4, y4);
         }
     }

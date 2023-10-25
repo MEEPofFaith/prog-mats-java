@@ -20,9 +20,12 @@ public class PMMathf{
         return (float)Math.sqrt(w * h * 2f);
     }
 
-    /** Returns the uhhhhh */
     public static float sqrt(float a){
         return Mathf.sign(a) * Mathf.sqrt(Math.abs(a));
+    }
+
+    public static float log(float a, float value){
+        return Mathf.sign(value) * Mathf.log(a, Math.abs(value) + 1);
     }
 
     /** Copied from {@link Predict#quad(float, float, float)} */
