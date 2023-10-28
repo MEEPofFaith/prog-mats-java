@@ -81,13 +81,12 @@ public class PMMathf{
         float p7 = (b*b)/(2*a*a) - (4*c)/(3*a) - p5;
         float p8 = (-(b*b*b)/(a*a*a) + (4*b*c)/(a*a) - (8*d)/a) / (4*p6);
 
-        float[] out = new float[4];
-        out[0] = -(b/(4*a)) - (p6/2) - (sqrt(p7-p8)/2);
-        out[1] = -(b/(4*a)) - (p6/2) + (sqrt(p7-p8)/2);
-        out[2] = -(b/(4*a)) - (p6/2) - (sqrt(p7+p8)/2);
-        out[3] = -(b/(4*a)) - (p6/2) + (sqrt(p7+p8)/2);
-
-        return out;
+        return new float[]{
+            -(b/(4*a)) - (p6/2) - (sqrt(p7-p8)/2),
+            -(b/(4*a)) - (p6/2) + (sqrt(p7-p8)/2),
+            -(b/(4*a)) - (p6/2) - (sqrt(p7+p8)/2),
+            -(b/(4*a)) - (p6/2) + (sqrt(p7+p8)/2)
+        };
     }
 
     public static Vec2 randomCirclePoint(Vec2 v, float radius){
