@@ -2,8 +2,6 @@
 
 [![Commit Compiling](https://github.com/MEEPofFaith/prog-mats-java/workflows/Commit%20Test/badge.svg)](https://github.com/MEEPofFaith/prog-mats-java/actions/workflows/Commit.yml)
 [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=ffd37f&label=Mindustry)](https://discord.com/invite/mindustry)
-[![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=181818&label=de_)](https://discord.gg/VF8Vsc6mmN)
-[![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=8a1a1a&label=Avant)](https://discord.gg/V6ygvgGVqE)
 [![Stars](https://img.shields.io/github/stars/MEEPofFaith/prog-mats-java?label=Star%20the%20mod%20here%21&style=social)]()
 
 Meepscellanious Concepts is a combination of two of my mods originally made in v5:

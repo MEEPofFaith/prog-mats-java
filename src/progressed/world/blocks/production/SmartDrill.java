@@ -218,22 +218,28 @@ public class SmartDrill extends Drill{
         @Override
         public void write(Writes write){
             super.write(write);
-            write.i(dominantItem.id);
-            write.i(dominantItems);
+            write.bool(dominantItem != null);
+            if(dominantItem != null){
+                write.i(dominantItem.id);
+                write.i(dominantItems);
+            }
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
             if(revision >= 2){
-                dominantItem = content.item(read.i());
-                dominantItems = read.i();
+                boolean hasDominant = revision == 2 || revision >= 3 && read.bool();
+                if(hasDominant){
+                    dominantItem = content.item(read.i());
+                    dominantItems = read.i();
+                }
             }
         }
 
         @Override
         public byte version(){
-            return 2;
+            return 3;
         }
     }
 }

@@ -116,7 +116,7 @@ public class SwordTurret extends BaseTurret{
         if(buildY == Float.NEGATIVE_INFINITY) buildY = size * Vars.tilesize / 2f;
         if(elevation < 0) elevation = size / 2f;
 
-        clipSize = Math.max(clipSize, Math.abs(buildY) + swordType.fullIcon.height / 4f);
+        if(!headless) clipSize = Math.max(clipSize, Math.abs(buildY) + swordType.fullIcon.height / 4f);
         if(targetColor != null) clipSize = Math.max(clipSize, range + targetRad);
         if(targetY == Float.NEGATIVE_INFINITY) targetY = size * Vars.tilesize / 2f;
     }
