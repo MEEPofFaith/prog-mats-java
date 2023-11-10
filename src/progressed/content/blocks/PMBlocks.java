@@ -1392,7 +1392,7 @@ public class PMBlocks{
     }
 }
 
-//Oops, someone spilled their colons
+//Oops, someone spilled their semicolons
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;
