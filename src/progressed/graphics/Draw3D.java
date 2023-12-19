@@ -24,8 +24,6 @@ public class Draw3D{
     private static final Seq<QueuedBloom> bloomQueue = new Seq<>();
 
     public static void init(){
-        if(headless) return;
-
         Events.run(Trigger.drawOver, () -> {
             Bloom bloom = renderer.bloom;
             if(bloom != null && bloomQueue.any()){

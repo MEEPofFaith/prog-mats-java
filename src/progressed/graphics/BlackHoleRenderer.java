@@ -17,32 +17,31 @@ public class BlackHoleRenderer{
     private Shader blackHoleShader;
 
     private FrameBuffer zonesBuffer = new FrameBuffer();
-    private Seq<BlackHoleZone> circles = new Seq<>(BlackHoleZone.class);
-    private int circleIndex = 0;
+    private Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
+    private int zoneIndex = 0;
+    private Texture zonesTex;
 
     public void add(float x, float y, float inRadius, float outRadius, Color color){
         if(inRadius > outRadius || outRadius <= 0) return;
 
         float res = Color.toFloatBits(color.r, color.g, color.b, 1);
 
-        if(circles.size <= circleIndex) circles.add(new BlackHoleZone(x, y, res, inRadius, outRadius));
-        circleIndex++;
+        if(zones.size <= zoneIndex) zones.add(new BlackHoleZone(x, y, res, inRadius, outRadius));
+        zoneIndex++;
     }
 
     public void draw(){
-        //TODO add a setting. This is probably pretty intensive to render.
-
         zonesBuffer.resize(Core.graphics.getWidth() / scaling, Core.graphics.getHeight() / scaling);
 
         Draw.color();
-        zonesBuffer.begin(Color.clear);
         Draw.sort(false);
+        zonesBuffer.begin(Color.clear);
         Gl.blendEquationSeparate(Gl.funcAdd, Gl.max);
-        //apparently necessary
+        //apparently necessary? idk I just copied this from LightRenderer
         Blending.normal.apply();
 
-        for(int i = 0; i < circleIndex; i++){
-            BlackHoleZone cir = circles.get(i);
+        for(int i = 0; i < zoneIndex; i++){
+            BlackHoleZone cir = zones.get(i);
             float x = cir.x,
                 y = cir.y,
                 inRadius = cir.inRadius,
@@ -53,10 +52,10 @@ public class BlackHoleRenderer{
             float space = 360f / sides;
 
             for(int j = 0; j < sides; j++){
-                float px1 = Angles.trnsx(space * (float)i, inRadius),
-                    py1 = Angles.trnsy(space * (float)i, inRadius),
-                    px2 = Angles.trnsx(space * (float)(i + 1), inRadius),
-                    py2 = Angles.trnsy(space * (float)(i + 1), inRadius);
+                float px1 = Angles.trnsx(space * (float)j, inRadius),
+                    py1 = Angles.trnsy(space * (float)j, inRadius),
+                    px2 = Angles.trnsx(space * (float)(j + 1), inRadius),
+                    py2 = Angles.trnsy(space * (float)(j + 1), inRadius);
 
                 Draw.color(centerf);
                 Fill.quad(x, y, x, y, x + px1, y + py1, x + px2, y + py2);
@@ -70,32 +69,33 @@ public class BlackHoleRenderer{
         }
 
         Draw.reset();
-        Draw.sort(true);
         zonesBuffer.end();
+        zonesTex = zonesBuffer.getTexture();
+        Draw.sort(true);
         Gl.blendEquationSeparate(Gl.funcAdd, Gl.funcAdd);
 
         Draw.color();
+        zonesBuffer.blit(PMShaders.none);
 
-        circles.clear();
-        circleIndex = 0;
+        zones.clear();
+        zoneIndex = 0;
     }
 
     public void captureAll(){
-        if(!capturing){
+        /*if(!capturing){
             capturing = true;
             allBuffer.begin();
-        }
+        }*/
     }
 
     public void render(){
-        if(capturing){
+        /*if(capturing){
             capturing = false;
             allBuffer.end();
         }
 
         ((Texture)allBuffer.getTexture()).bind(1);
-        allBuffer.blit(blackHoleShader);
-
+        allBuffer.blit(blackHoleShader);*/
     }
 
     static class BlackHoleZone{

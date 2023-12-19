@@ -29,13 +29,12 @@ public class PMDrawf{
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
 
     public static void init(){
-        if(headless) return;
+        //TODO add a setting. This is probably pretty intensive to render.
 
         Events.run(Trigger.drawOver, () -> {
             Draw.draw(Layer.min - 0.02f, blackHoleRenderer::captureAll);
             Draw.draw(Layer.end + 0.02f, blackHoleRenderer::render);
-
-            blackHoleRenderer.draw();
+            Draw.draw(Layer.end - 0.01f, blackHoleRenderer::draw);
         });
     }
 

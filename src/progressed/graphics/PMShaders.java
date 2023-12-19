@@ -15,6 +15,7 @@ public class PMShaders{
     public static BlockBuildCenterShader blockBuildCenter;
     public static TractorConeShader tractorCone;
     public static AlphaShader alphaShader;
+    public static NoneShader none;
 
     public static void init(){
         materialize = new MaterializeShader();
@@ -22,6 +23,7 @@ public class PMShaders{
         blockBuildCenter = new BlockBuildCenterShader();
         tractorCone = new TractorConeShader();
         alphaShader = new AlphaShader();
+        none = new NoneShader();
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -123,8 +125,15 @@ public class PMShaders{
             super("screenspace", "postalpha");
         }
 
+        @Override
         public void apply(){
             setUniformf("u_alpha", alpha);
+        }
+    }
+
+    public static class NoneShader extends PMLoadShader{
+        NoneShader(){
+            super("screenspace", "none");
         }
     }
 

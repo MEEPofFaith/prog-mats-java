@@ -102,7 +102,7 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        PMDrawf.blackHole(b.x, b.y, size, suctionRadius, b.team.color);
+        PMDrawf.blackHole(b.x, b.y, size, size + (suctionRadius - size) * 0.33f, b.team.color);
     }
 
     @Override
