@@ -24,7 +24,25 @@ import static mindustry.Vars.*;
 import static progressed.graphics.PMShaders.*;
 
 public class PMDrawf{
+    private static final BlackHoleRenderer blackHoleRenderer = new BlackHoleRenderer();
+
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
+
+    public static void init(){
+        if(headless) return;
+
+        Events.run(Trigger.drawOver, () -> {
+            Draw.draw(Layer.min - 0.02f, blackHoleRenderer::captureAll);
+            Draw.draw(Layer.end + 0.02f, blackHoleRenderer::render);
+
+            blackHoleRenderer.draw();
+        });
+    }
+
+    public static void blackHole(float x, float y, float inRadius, float outRadius, Color color){
+        if(headless) return;
+        blackHoleRenderer.add(x, y, inRadius, outRadius, color);
+    }
 
     public static void light(float x, float y, TextureRegion region, float rotation, Color color, float opacity, boolean flip){
         float res = color.toFloatBits();

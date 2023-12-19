@@ -1,7 +1,6 @@
 package progressed.entities.bullet.energy;
 
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -15,6 +14,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.pseudo3d.*;
+import progressed.graphics.*;
 import progressed.graphics.trails.*;
 
 public class BlackHoleBulletType extends BulletType{
@@ -102,14 +102,12 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, b.team.color);
-        Draw.z(Layer.effect + 0.01f);
-        Fill.light(b.x, b.y, Lines.circleVertices(size), size, color, b.team.color);
+        PMDrawf.blackHole(b.x, b.y, size, suctionRadius, b.team.color);
     }
 
     @Override
     public void drawLight(Bullet b){
-        Drawf.light(b, lightRadius, b.team.color, lightOpacity);
+        //none
     }
 
     @Override
