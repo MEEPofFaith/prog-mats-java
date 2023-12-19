@@ -72,7 +72,7 @@ public class BlackHoleTurret extends PowerTurret{
     }
 
     public class BlackHoleTurretBuild extends PowerTurretBuild{
-        protected float alpha, charge;
+        protected float alpha;
 
         @Override
         public void draw(){
@@ -87,13 +87,19 @@ public class BlackHoleTurret extends PowerTurret{
         public void updateTile(){
             alpha = Mathf.lerpDelta(alpha, Mathf.num(canConsume()), 0.1f);
 
-            if(charging()){
-                charge = Mathf.clamp(charge + Time.delta / shoot.firstShotDelay);
-            }else{
-                charge = 0;
-            }
-
             super.updateTile();
+        }
+
+        @Override
+        protected void updateReload(){
+            if(charging()) return;
+            super.updateReload();
+        }
+
+        @Override
+        protected void updateCooling(){
+            if(charging()) return;
+            super.updateCooling();
         }
 
         @Override

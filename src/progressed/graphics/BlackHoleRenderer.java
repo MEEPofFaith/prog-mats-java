@@ -14,7 +14,7 @@ public class BlackHoleRenderer{
 
     private FrameBuffer allBuffer = new FrameBuffer();
     private boolean capturing = false;
-    private Shader blackHoleShader;
+    private Shader blackHoleShader = PMShaders.blackHoleShader;
 
     private FrameBuffer zonesBuffer = new FrameBuffer();
     private Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
@@ -82,20 +82,21 @@ public class BlackHoleRenderer{
     }
 
     public void captureAll(){
-        /*if(!capturing){
+        allBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+        if(!capturing){
             capturing = true;
             allBuffer.begin();
-        }*/
+        }
     }
 
     public void render(){
-        /*if(capturing){
+        if(capturing){
             capturing = false;
             allBuffer.end();
         }
 
         ((Texture)allBuffer.getTexture()).bind(1);
-        allBuffer.blit(blackHoleShader);*/
+        allBuffer.blit(blackHoleShader);
     }
 
     static class BlackHoleZone{

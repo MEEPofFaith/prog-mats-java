@@ -58,16 +58,10 @@ public class EnergyFx{
     }),
 
     kugelblitzCharge = new Effect(80f, e -> {
-        color(Color.black, e.color, e.fin());
-        randLenVectors(e.id, 8, 23f * e.fout(), e.rotation, 180f, (x, y) -> {
-            float ang = angle(x, y);
-            lineAngle(e.x + x, e.y + y, ang, e.fslope() * 5f);
-        });
-
-        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
-        z(Layer.effect + 0.03f);
-        Fill.light(e.x, e.y, 60, 6f * e.fin(), Color.black, e.color);
-    }).layer(Layer.effect + 0.01f),
+        float in = 6f,
+            out = 160f;
+        PMDrawf.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
+    }),
 
     blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
