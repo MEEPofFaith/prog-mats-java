@@ -1,25 +1,18 @@
 package progressed.graphics;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 
 /** Renders gravitational lensing. Client only. */
 public class BlackHoleRenderer{
-    private static final int scaling = 4;
+    private static final int scaling = 1;
 
-    private FrameBuffer allBuffer = new FrameBuffer();
     private boolean capturing = false;
-    private Shader blackHoleShader = PMShaders.blackHoleShader;
-
-    private FrameBuffer zonesBuffer = new FrameBuffer();
     private Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
     private int zoneIndex = 0;
-    private Texture zonesTex;
 
     public void add(float x, float y, float inRadius, float outRadius, Color color){
         if(inRadius > outRadius || outRadius <= 0) return;
@@ -31,11 +24,8 @@ public class BlackHoleRenderer{
     }
 
     public void draw(){
-        zonesBuffer.resize(Core.graphics.getWidth() / scaling, Core.graphics.getHeight() / scaling);
-
         Draw.color();
         Draw.sort(false);
-        zonesBuffer.begin(Color.clear);
         Gl.blendEquationSeparate(Gl.funcAdd, Gl.max);
         //apparently necessary? idk I just copied this from LightRenderer
         Blending.normal.apply();
@@ -57,9 +47,6 @@ public class BlackHoleRenderer{
                     px2 = Angles.trnsx(space * (float)(j + 1), inRadius),
                     py2 = Angles.trnsy(space * (float)(j + 1), inRadius);
 
-                Draw.color(centerf);
-                Fill.quad(x, y, x, y, x + px1, y + py1, x + px2, y + py2);
-                Draw.color();
                 Fill.quad(x + px1, y + py1, centerf,
                     x + px2, y + py2, centerf,
                     x + px2 * scl, y + py2 * scl, edgef,
@@ -67,36 +54,24 @@ public class BlackHoleRenderer{
                 );
             }
         }
+        for(int i = 0; i < zoneIndex; i++){
+            BlackHoleZone cir = zones.get(i);
+            float x = cir.x,
+                y = cir.y,
+                inRadius = cir.inRadius;
+
+            Draw.color(Color.black);
+            Fill.circle(x, y, inRadius);
+        }
 
         Draw.reset();
-        zonesBuffer.end();
-        zonesTex = zonesBuffer.getTexture();
         Draw.sort(true);
         Gl.blendEquationSeparate(Gl.funcAdd, Gl.funcAdd);
 
         Draw.color();
-        zonesBuffer.blit(PMShaders.none);
 
         zones.clear();
         zoneIndex = 0;
-    }
-
-    public void captureAll(){
-        allBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-        if(!capturing){
-            capturing = true;
-            allBuffer.begin();
-        }
-    }
-
-    public void render(){
-        if(capturing){
-            capturing = false;
-            allBuffer.end();
-        }
-
-        ((Texture)allBuffer.getTexture()).bind(1);
-        allBuffer.blit(blackHoleShader);
     }
 
     static class BlackHoleZone{

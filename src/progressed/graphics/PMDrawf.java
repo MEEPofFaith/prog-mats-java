@@ -32,9 +32,7 @@ public class PMDrawf{
         //TODO add a setting. This is probably pretty intensive to render.
 
         Events.run(Trigger.drawOver, () -> {
-            Draw.draw(Layer.min - 0.02f, blackHoleRenderer::captureAll);
-            Draw.draw(Layer.end + 0.02f, blackHoleRenderer::render);
-            Draw.draw(Layer.end - 0.01f, blackHoleRenderer::draw);
+            Draw.draw(Layer.shields + 1f, blackHoleRenderer::draw);
         });
     }
 
