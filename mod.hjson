@@ -1,27 +1,11 @@
-displayName: "Meepscellanious Concepts"
-
-#the internal name of your mod
-name: "prog-mats"
-
-#your name
-author: "MEEP of Faith (And a bunch of contributors. Load the game with Meepscillanious Concepts enabled to view them!)"
-
-#the fully qualified main class of the mod
-main: "progressed.ProgMats"
-
-#the mod description as seen in the mod dialog
-description: "A collection of random ideas that come to my head."
-
-#short description displayed under the title
-subtitle: "Madness"
-
-#the mod version
-version: 27.3
-
-#the minimum game build required to run this mod
-minGameVersion: 145.1
-
-#this is a java mod
-java: true
-
-repo: MEEPofFaith/prog-mats-java
+{
+    "displayName": "Meepscellanious Concepts",
+    "subtitle": "Madness",
+    "description": "A collection of random ideas that come to my head.",
+    "version": 27.3,
+    "minGameVersion": 146,
+    "author": "MEEP of Faith (And a bunch of contributors. Load the game with Meepscillanious Concepts enabled to view them!)",
+    "java": true,
+    "main": "progressed.ProgMats",
+    "repo": MEEPofFaith/prog-mats-java
+}
