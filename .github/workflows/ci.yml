@@ -19,5 +19,5 @@ jobs:
       - name: Upload built mod artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ModTemplate (zipped)
-          path: build/libs/ModTemplate.jar
+          name: MeepscCont (zipped)
+          path: build/libs/MeepscCont.jar
