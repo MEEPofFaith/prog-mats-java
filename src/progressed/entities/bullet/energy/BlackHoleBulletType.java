@@ -14,7 +14,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.graphics.*;
+import progressed.graphics.renders.*;
 import progressed.graphics.trails.*;
 
 public class BlackHoleBulletType extends BulletType{
@@ -102,7 +102,7 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        PMDrawf.blackHole(b.x, b.y, size, size + (suctionRadius - size) * 0.33f, b.team.color);
+        PMRenderer.blackHole(b.x, b.y, size, size + (suctionRadius - size) * 0.33f, b.team.color);
     }
 
     @Override

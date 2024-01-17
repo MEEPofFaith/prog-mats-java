@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
+import progressed.graphics.renders.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.line;
@@ -60,7 +61,7 @@ public class EnergyFx{
     kugelblitzCharge = new Effect(80f, e -> {
         float in = 6f,
             out = 160f;
-        PMDrawf.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
+        PMRenderer.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
     }),
 
     blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),

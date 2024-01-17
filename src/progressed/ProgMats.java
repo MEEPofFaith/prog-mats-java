@@ -17,6 +17,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.gen.entities.*;
 import progressed.graphics.*;
+import progressed.graphics.renders.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
@@ -73,7 +74,7 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
-                PMDrawf.init();
+                PMRenderer.init();
                 Draw3D.init();
 
                 if(farting()){

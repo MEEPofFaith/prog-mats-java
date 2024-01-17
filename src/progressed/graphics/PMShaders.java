@@ -15,6 +15,7 @@ public class PMShaders{
     public static BlockBuildCenterShader blockBuildCenter;
     public static TractorConeShader tractorCone;
     public static AlphaShader alphaShader;
+    public static DimShader dimShader;
 
     public static void init(){
         materialize = new MaterializeShader();
@@ -22,6 +23,7 @@ public class PMShaders{
         blockBuildCenter = new BlockBuildCenterShader();
         tractorCone = new TractorConeShader();
         alphaShader = new AlphaShader();
+        dimShader = new DimShader();
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -121,6 +123,19 @@ public class PMShaders{
 
         AlphaShader(){
             super("screenspace", "postalpha");
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_alpha", alpha);
+        }
+    }
+
+    public static class DimShader extends PMLoadShader{
+        public float alpha;
+
+        DimShader(){
+            super("screenspace", "dim");
         }
 
         @Override

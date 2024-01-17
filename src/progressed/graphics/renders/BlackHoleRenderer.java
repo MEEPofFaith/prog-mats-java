@@ -1,4 +1,4 @@
-package progressed.graphics;
+package progressed.graphics.renders;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -6,11 +6,8 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 
-/** Renders gravitational lensing. Client only. */
+/** Renders the glowing area around black holes. (Do I even need this?) */
 public class BlackHoleRenderer{
-    private static final int scaling = 1;
-
-    private boolean capturing = false;
     private Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
     private int zoneIndex = 0;
 

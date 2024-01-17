@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.graphics.renders.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -156,6 +157,10 @@ public class MissileFx{
         }
 
         e.scaled(baseLifetime, s -> {
+            //TODO probably won't keep these
+            PMRenderer.dimGlow(e.x, e.y, Interp.pow10Out.apply(Mathf.clamp(e.fin() * 2)) * 25f * intensity, 0.9f * Interp.sineOut.apply(Mathf.clamp(s.fout() * 3)) * 0.5f);
+            PMRenderer.dimAlpha(Interp.sineOut.apply(Mathf.clamp(s.fslope() * 3/2)) * 0.5f);
+
             color(Color.gray);
             s.scaled(5 + intensity * 2f, i -> {
                 stroke((3.1f + intensity/5f) * i.fout());
