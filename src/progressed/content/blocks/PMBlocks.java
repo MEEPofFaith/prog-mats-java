@@ -24,6 +24,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
+import progressed.entities.effect.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -983,15 +984,15 @@ public class PMBlocks{
                 lifetime = 90f;
                 width *= 4;
                 glowWidth *= 4;
-                hitSize *= 4;
+                hitSize = width * 2;
                 strokeTo = 0.5f;
-                flashDuration = 60f;
 
                 colors = new Color[6];
                 for(int i = 0; i < colors.length; i++){
                     colors[i] = Color.white.cpy().a((i + 1f) / colors.length);
                 }
             }};
+            shootEffect = new FlashEffect(new WrapDataEffect(UltraRailgunBulletType.defaultShockwave, 150f * 8f), 60f);
         }};
         // endregion
 
