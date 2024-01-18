@@ -158,8 +158,8 @@ public class MissileFx{
 
         e.scaled(baseLifetime, s -> {
             //TODO probably won't keep these
-            PMRenderer.dimGlow(e.x, e.y, Interp.pow10Out.apply(Mathf.clamp(e.fin() * 2)) * 25f * intensity, 0.9f * Interp.sineOut.apply(Mathf.clamp(s.fout() * 3)) * 0.5f);
-            PMRenderer.dimAlpha(Interp.sineOut.apply(Mathf.clamp(s.fslope() * 3/2)) * 0.5f);
+            PMRenders.dimGlow(e.x, e.y, Interp.pow10Out.apply(Mathf.clamp(e.fin() * 2)) * 25f * intensity, 0.9f * Interp.sineOut.apply(Mathf.clamp(s.fout() * 3)) * 0.5f);
+            PMRenders.dimAlpha(Interp.sineOut.apply(Mathf.clamp(s.fslope() * 3/2)) * 0.5f);
 
             color(Color.gray);
             s.scaled(5 + intensity * 2f, i -> {

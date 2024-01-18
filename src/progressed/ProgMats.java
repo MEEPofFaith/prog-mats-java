@@ -74,7 +74,7 @@ public class ProgMats extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 PMStyles.load();
                 swapDialog = new ModuleSwapDialog();
-                PMRenderer.init();
+                PMRenders.init();
                 Draw3D.init();
 
                 if(farting()){

@@ -24,7 +24,7 @@ public class DimRenderer{
     private float dimAlpha = 0;
 
     {
-        Events.on(WorldLoadEvent.class, e -> dimAlpha = 0);
+        Events.on(ResetEvent.class, e -> dimAlpha = 0);
     }
 
     public void updateAlpha(float dimAlpha){

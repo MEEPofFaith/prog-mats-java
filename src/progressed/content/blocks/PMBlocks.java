@@ -985,6 +985,7 @@ public class PMBlocks{
                 glowWidth *= 4;
                 hitSize *= 4;
                 strokeTo = 0.5f;
+                flashDuration = 60f;
 
                 colors = new Color[6];
                 for(int i = 0; i < colors.length; i++){

@@ -20,6 +20,7 @@ public class UltraRailgunBulletType extends BulletType{
     public float glowWidth = 64f;
     public float fadeInTime = 15f;
     public float fadeOutTime = 120f;
+    public float flashDuration = 30f;
     public Effect endEffect;
 
     public UltraRailgunBulletType(float minSpeed, float speed, float damage){
@@ -43,6 +44,13 @@ public class UltraRailgunBulletType extends BulletType{
                 drawBeam(e.x - Tmp.v1.x, e.y - Tmp.v1.y, e.x, e.y, e.fout()  * 0.9f, e.fout());
             });
         }
+    }
+
+    @Override
+    public void init(Bullet b){
+        super.init(b);
+
+        PMRenders.flash(flashDuration);
     }
 
     @Override
@@ -83,8 +91,8 @@ public class UltraRailgunBulletType extends BulletType{
     }
 
     protected void drawBeam(float x1, float y1, float x2, float y2, float dim, float scl){
-        if(dim >= 0) PMRenderer.dimAlpha(dim);
-        PMRenderer.dimGlowLine(x1, y1, x2, y2, glowWidth, scl);
+        if(dim >= 0) PMRenders.dimAlpha(dim);
+        PMRenders.dimGlowLine(x1, y1, x2, y2, glowWidth, scl);
 
         for(int i = 0; i < colors.length; i++){
             Draw.color(colors[i]);

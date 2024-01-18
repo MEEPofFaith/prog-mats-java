@@ -61,7 +61,7 @@ public class EnergyFx{
     kugelblitzCharge = new Effect(80f, e -> {
         float in = 6f,
             out = 160f;
-        PMRenderer.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
+        PMRenders.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
     }),
 
     blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
