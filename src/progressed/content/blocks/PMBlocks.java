@@ -86,7 +86,7 @@ public class PMBlocks{
     judgement,
 
     //Test turrets
-    testTurret0, testTurret1, testTurret2,
+    testTurret0, testTurret1, testTurret2, testTurret3,
 
     // endregion
     // region production
@@ -978,6 +978,20 @@ public class PMBlocks{
         testTurret0 = new ArcBulletTestTurret("test-turret0");
         testTurret1 = new SkyLaserTestTurret("test-turret1");
         testTurret2 = new ArcBulletScatterTestTurret("test-turret2");
+        testTurret3 = new FreeTurret("test-turret3"){{
+            shootType = new UltraRailgunBulletType(0f, 40f, 15_000_000){{
+                lifetime = 90f;
+                width *= 4;
+                glowWidth *= 4;
+                hitSize *= 4;
+                strokeTo = 0.5f;
+
+                colors = new Color[6];
+                for(int i = 0; i < colors.length; i++){
+                    colors[i] = Color.white.cpy().a((i + 1f) / colors.length);
+                }
+            }};
+        }};
         // endregion
 
         // region Production

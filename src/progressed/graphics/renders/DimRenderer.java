@@ -28,7 +28,7 @@ public class DimRenderer{
     }
 
     public void updateAlpha(float dimAlpha){
-        this.dimAlpha = Math.max(this.dimAlpha, dimAlpha);
+        this.dimAlpha = Mathf.clamp(Math.max(this.dimAlpha, dimAlpha));
     }
 
     public void add(Runnable run){
@@ -179,7 +179,6 @@ public class DimRenderer{
 
     public void draw(){
         if(circleRegion == null) circleRegion = Core.atlas.find("circle-shadow");
-        dimAlpha = Mathf.clamp(dimAlpha);
         if(dimAlpha <= 0.001f){
             lights.clear();
             circleIndex = 0;

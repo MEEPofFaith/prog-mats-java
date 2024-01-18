@@ -18,7 +18,7 @@ public class FreeTurret extends Turret{
     public FreeTurret(String name){
         super(name);
 
-        requirements(Category.turret, OS.username.equals("MEEP") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
+        requirements(Category.turret, OS.username.equals("MEEPM") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
         size = 2;
     }
 
