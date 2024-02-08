@@ -178,12 +178,13 @@ public class DimRenderer{
     }
 
     public void draw(){
-        if(circleRegion == null) circleRegion = Core.atlas.find("circle-shadow");
         if(dimAlpha <= 0.001f){
             lights.clear();
             circleIndex = 0;
             return;
         }
+
+        if(circleRegion == null) circleRegion = Core.atlas.find("circle-shadow");
 
         buffer.resize(Core.graphics.getWidth()/scaling, Core.graphics.getHeight()/scaling);
 

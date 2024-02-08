@@ -32,8 +32,8 @@ public class PMRenders{
         });
 
         Events.run(Trigger.drawOver, () -> {
-            Draw.draw(Layer.shields + 1f, blackHoleRenderer::draw);
-            Draw.draw(Layer.playerName + 1f, () -> {
+            Draw.draw(Layer.shields + 1.5f, blackHoleRenderer::draw);
+            Draw.draw(Layer.playerName + 1.5f, () -> {
                 dimRenderer.draw();
 
                 if(flashIntensity > 0.001f){
@@ -45,10 +45,14 @@ public class PMRenders{
         });
     }
 
-    public static void flash(float duration){
-        flashIntensity = 1f;
+    public static void flash(float intensity, float duration){
+        flashIntensity = intensity;
         flashTime = Math.max(flashTime, duration);
         flashReduction = flashIntensity / flashTime;
+    }
+
+    public static void flash(float duration){
+        flash(1f, duration);
     }
 
     public static void blackHole(float x, float y, float inRadius, float outRadius, Color color){
