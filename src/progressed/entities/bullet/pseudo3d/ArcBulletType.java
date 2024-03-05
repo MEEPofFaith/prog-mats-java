@@ -17,7 +17,7 @@ import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.Draw3D.hMul;
+import static progressed.graphics.Draw3D.*;
 
 public class ArcBulletType extends BulletType{
     private static float cdist = 0f;

@@ -4,7 +4,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.entities.*;
 
-import static arc.math.Mathf.sqrt;
+import static arc.math.Mathf.*;
 
 public class PMMathf{
     private static final Vec2 bezOut = new Vec2(), p1 = new Vec2(), p2 = new Vec2(), p3 = new Vec2(), p4 = new Vec2(), tmp = new Vec2();
