@@ -10,12 +10,10 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.renders.*;
-import progressed.graphics.trails.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(
@@ -32,6 +30,7 @@ public class BlackHoleBulletType extends BulletType{
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, lensEdge = -1f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 1f;
+    public float bulletDamage = 10f;
     public float swirlInterval = 3f;
     public int swirlEffects = 4;
     public boolean repel;
@@ -85,9 +84,14 @@ public class BlackHoleBulletType extends BulletType{
                         other.move(impulse.x, impulse.y);
                     }
 
-                    /*if(Mathf.within(b.x, b.y, other.x, other.y, size * 2f)){
-                        absorbBullet(other);
-                    }*/
+                    if(other.type.hittable && Mathf.within(b.x, b.y, other.x, other.y, size * 2f)){
+                        float realDamage = bulletDamage * damageMultiplier(b);
+                        if(other.damage > realDamage){
+                            other.damage(other.damage - realDamage);
+                        }else{
+                            other.remove();
+                        }
+                    }
                 }
             });
         }
@@ -135,19 +139,6 @@ public class BlackHoleBulletType extends BulletType{
         if(!b.hit && (fragBullet != null || splashDamageRadius > 0f || lightning > 0)){
             hit(b);
         }
-    }
-
-    public void absorbBullet(Bullet bullet){
-        if(absorbEffect != Fx.none) absorbEffect.at(bullet.x, bullet.y);
-        if(bullet.type.trailLength > 0 && bullet.trail != null && bullet.trail.size() > 0){
-            if(bullet.trail instanceof PMTrail t){
-                TrailFadeFx.PMTrailFade.at(bullet.x, bullet.y, bullet.type.trailWidth, bullet.type.trailColor, t.copyPM());
-            }else{
-                Fx.trailFade.at(bullet.x, bullet.y, bullet.type.trailWidth, bullet.type.trailColor, bullet.trail.copy());
-            }
-        }
-        bullet.type = PMBullets.absorbed;
-        bullet.absorb();
     }
 
     public static boolean checkType(BulletType type){ //Returns true for bullets immune to suction.

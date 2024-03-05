@@ -25,7 +25,7 @@ public class PMBullets{
 
     pillarField,
     
-    blackHole, absorbed,
+    blackHole,
     
     excaliburLaser, sentinelLaser,
 
@@ -112,28 +112,6 @@ public class PMBullets{
             lightOpacity = 0.7f;
             chargeEffect = EnergyFx.kugelblitzGrow;
         }};
-
-        absorbed = new BulletType(0f, 0f){
-            @Override
-            public void despawned(Bullet b){
-                //Do nothing
-            }
-
-            @Override
-            public void hit(Bullet b, float x, float y){
-                //Do nothing
-            }
-
-            @Override
-            public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
-                //do nothing
-            }
-
-            @Override
-            public void update(Bullet b){
-                //Do nothing
-            }
-        };
 
         excaliburLaser = new CrossLaserBulletType(1500f){{
             length = 800f;
