@@ -27,7 +27,7 @@ public class PMBullets{
     
     blackHole, absorbed,
     
-    harbingerLaser, excaliburLaser, sentinelLaser,
+    excaliburLaser, sentinelLaser,
 
     harmanuke,
 
@@ -110,7 +110,7 @@ public class PMBullets{
             backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
-            chargeEffect = EnergyFx.kugelblitzCharge;
+            chargeEffect = EnergyFx.kugelblitzGrow;
         }};
 
         absorbed = new BulletType(0f, 0f){
@@ -132,43 +132,6 @@ public class PMBullets{
             @Override
             public void update(Bullet b){
                 //Do nothing
-            }
-        };
-
-        harbingerLaser = new LaserBulletType(Float.POSITIVE_INFINITY){
-            {
-                colors = new Color[]{Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white};
-                length = 900f;
-                width = 75f;
-                lifetime = 130;
-                lightColor = colors[1];
-                ammoMultiplier = 1;
-
-                lightningSpacing = 20f;
-                lightningLength = 15;
-                lightningLengthRand = 10;
-                lightningDelay = 0.5f;
-                lightningDamage = (float)Double.MAX_VALUE;
-                lightningAngleRand = 45f;
-                lightningColor = colors[1];
-
-                sideAngle = 25f;
-                sideWidth = width / 8f;
-                sideLength = length / 1.5f;
-
-                chargeEffect = EnergyFx.harbingerCharge;
-            }
-
-            @Override
-            public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
-                super.hitTile(b, build, x, y, initialHealth, direct);
-                if(build.team != b.team) build.kill();
-            }
-
-            @Override
-            public void hitEntity(Bullet b, Hitboxc other, float initialHealth){
-                super.hitEntity(b, other, initialHealth);
-                if(((Teamc)other).team() != b.team) ((Healthc)other).kill();
             }
         };
 

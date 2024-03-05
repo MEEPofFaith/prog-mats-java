@@ -11,8 +11,8 @@ import mindustry.graphics.*;
 import static mindustry.Vars.*;
 
 public class PMRenders{
-    private static final BlackHoleRenderer blackHoleRenderer = new BlackHoleRenderer();
-    private static final DimRenderer dimRenderer = new DimRenderer();
+    private static BlackHoleRenderer blackHoleRenderer;
+    private static DimRenderer dimRenderer;
 
     private static float
     //reduction rate of screen flash
@@ -23,6 +23,9 @@ public class PMRenders{
     flashTime;
 
     public static void init(){
+        blackHoleRenderer = new BlackHoleRenderer();
+        dimRenderer = new DimRenderer();
+
         Events.on(ResetEvent.class, e -> {
             flashReduction = flashTime = 0;
         });
@@ -32,7 +35,6 @@ public class PMRenders{
         });
 
         Events.run(Trigger.drawOver, () -> {
-            Draw.draw(Layer.shields + 1.5f, blackHoleRenderer::draw);
             Draw.draw(Layer.playerName + 1.5f, () -> {
                 dimRenderer.draw();
 

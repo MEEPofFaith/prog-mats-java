@@ -1,15 +1,63 @@
 package progressed.graphics.renders;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.game.EventType.*;
+import mindustry.graphics.*;
+import progressed.graphics.*;
+
+import static arc.Core.graphics;
 
 /** Renders the glowing area around black holes. (Do I even need this?) */
 public class BlackHoleRenderer{
-    private Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
+    private final Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
+    private final FrameBuffer pingPong1;
+    private final FrameBuffer pingPong2;
     private int zoneIndex = 0;
+
+    public BlackHoleRenderer(){
+        pingPong1 = new FrameBuffer();
+        pingPong2 = new FrameBuffer();
+
+        Events.run(Trigger.draw, () -> {
+            Draw.draw(Layer.min, () -> {
+                pingPong1.resize(graphics.getWidth(), graphics.getHeight());
+                pingPong2.resize(graphics.getWidth(), graphics.getHeight());
+
+                pingPong1.begin();
+            });
+
+            Draw.draw(Layer.max, () -> {
+                FrameBuffer from = pingPong1;
+
+                for(int i = 0; i < zoneIndex; i++){
+                    BlackHoleZone cir = zones.get(i);
+                    Fill.light(cir.x, cir.y,
+                        Lines.circleVertices(cir.outRadius), cir.outRadius,
+                        Tmp.c1.abgr8888(cir.color).a(0.5f), Tmp.c2.abgr8888(cir.color).a(0)
+                    );
+
+                    from.end();
+                    FrameBuffer to = from == pingPong1 ? pingPong2 : pingPong1;
+                    to.begin();
+                    PMShaders.blackHole.set(cir);
+                    from.blit(PMShaders.blackHole);
+                    from = to;
+                }
+
+                from.end();
+                from.blit(PMShaders.passThrough);
+
+                zones.clear();
+                zoneIndex = 0;
+            });
+        });
+    }
 
     public void add(float x, float y, float inRadius, float outRadius, Color color){
         if(inRadius > outRadius || outRadius <= 0) return;
@@ -71,8 +119,8 @@ public class BlackHoleRenderer{
         zoneIndex = 0;
     }
 
-    static class BlackHoleZone{
-        float x, y, color, inRadius, outRadius;
+    public static class BlackHoleZone{
+        public float x, y, color, inRadius, outRadius;
 
         public BlackHoleZone(float x, float y, float color, float inRadius, float outRadius){
             this.x = x;

@@ -30,7 +30,7 @@ public class BlackHoleBulletType extends BulletType{
 
     public Color color = Color.black;
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
-    public float suctionRadius = 160f, size = 6f, damageRadius = 17f;
+    public float suctionRadius = 160f, size = 6f, lensEdge = -1f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 2f;
     public float swirlInterval = 3f;
     public int swirlEffects = 4;
@@ -47,6 +47,14 @@ public class BlackHoleBulletType extends BulletType{
     }
 
     @Override
+    public void init(){
+        super.init();
+        if(lensEdge < 0f) lensEdge = size * 6f;
+
+        drawSize = Math.max(drawSize, lensEdge * 2f);
+    }
+
+    @Override
     public float continuousDamage(){
         return damage / 2f * 60f; //Damage every 2 ticks
     }
@@ -54,20 +62,22 @@ public class BlackHoleBulletType extends BulletType{
     @Override
     public void update(Bullet b){
         if(b.timer(1, 2f)){
-            PMDamage.completeDamage(b.team, b.x, b.y, damageRadius, b.damage);
+            float fout = fout(b);
+            PMDamage.completeDamage(b.team, b.x, b.y, damageRadius * fout, b.damage);
 
-            Units.nearbyEnemies(b.team, b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, unit -> {
-                if(unit.within(b.x, b.y, suctionRadius)){
-                    Vec2 impulse = Tmp.v1.trns(unit.angleTo(b), force + (1f - unit.dst(b) / suctionRadius) * scaledForce);
+            float sR = suctionRadius * fout;
+            Units.nearbyEnemies(b.team, b.x - sR, b.y - sR, sR * 2f, sR * 2f, unit -> {
+                if(unit.within(b.x, b.y, sR)){
+                    Vec2 impulse = Tmp.v1.trns(unit.angleTo(b), force + (1f - unit.dst(b) / sR) * scaledForce);
                     if(repel) impulse.rotate(180f);
                     unit.impulseNet(impulse);
                 }
             });
 
-            Groups.bullet.intersect(b.x - suctionRadius, b.y - suctionRadius, suctionRadius * 2f, suctionRadius * 2f, other -> {
-                //if(other != null && Mathf.within(b.x, b.y, other.x, other.y, suctionRadius) && b != other && b.team != other.team && other.type.speed > 0.01f && !checkType(other.type)){
-                if(other != null && Mathf.within(b.x, b.y, other.x, other.y, suctionRadius) && b != other && b.team != other.team && b.type.absorbable && other.type.speed > 0.01f){
-                    Vec2 impulse = Tmp.v1.trns(other.angleTo(b), bulletForce + (1f - other.dst(b) / suctionRadius) * bulletScaledForce);
+            Groups.bullet.intersect(b.x - sR, b.y - sR, sR * 2f, sR * 2f, other -> {
+                //if(other != null && Mathf.within(b.x, b.y, other.x, other.y, sR) && b != other && b.team != other.team && other.type.speed > 0.01f && !checkType(other.type)){
+                if(other != null && Mathf.within(b.x, b.y, other.x, other.y, sR) && b != other && b.team != other.team && b.type.absorbable && other.type.speed > 0.01f){
+                    Vec2 impulse = Tmp.v1.trns(other.angleTo(b), bulletForce + (1f - other.dst(b) / sR) * bulletScaledForce);
                     if(repel) impulse.rotate(180f);
                     other.vel().add(impulse);
 
@@ -102,12 +112,17 @@ public class BlackHoleBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        PMRenders.blackHole(b.x, b.y, size, size + (suctionRadius - size) * 0.33f, b.team.color);
+        float fout = fout(b);
+        PMRenders.blackHole(b.x, b.y, size * fout, lensEdge * fout, b.team.color);
     }
 
     @Override
     public void drawLight(Bullet b){
         //none
+    }
+
+    public float fout(Bullet b){
+        return Interp.sineOut.apply(1 - Mathf.curve(b.time, b.lifetime - swirlEffect.lifetime, b.lifetime));
     }
 
     @Override

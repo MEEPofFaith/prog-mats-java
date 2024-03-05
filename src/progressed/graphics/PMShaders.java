@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.scene.ui.layout.*;
+import progressed.graphics.renders.BlackHoleRenderer.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -16,6 +17,8 @@ public class PMShaders{
     public static TractorConeShader tractorCone;
     public static AlphaShader alphaShader;
     public static DimShader dimShader;
+    public static GravitationalLensingShader blackHole;
+    public static PassThroughShader passThrough;
 
     public static void init(){
         materialize = new MaterializeShader();
@@ -24,6 +27,8 @@ public class PMShaders{
         tractorCone = new TractorConeShader();
         alphaShader = new AlphaShader();
         dimShader = new DimShader();
+        blackHole = new GravitationalLensingShader();
+        passThrough = new PassThroughShader();
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -141,6 +146,36 @@ public class PMShaders{
         @Override
         public void apply(){
             setUniformf("u_alpha", alpha);
+        }
+    }
+
+    public static class GravitationalLensingShader extends PMLoadShader{
+        public float x, y, inRad, outRad;
+
+        GravitationalLensingShader(){
+            super("screenspace", "gravitationallensing");
+        }
+
+        public void set(BlackHoleZone zone){
+            x = zone.x;
+            y = zone.y;
+            inRad = zone.inRadius;
+            outRad = zone.outRadius;
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+
+            setUniformf("u_center", x, y);
+            setUniformf("u_radii", inRad, outRad);
+        }
+    }
+
+    static class PassThroughShader extends PMLoadShader{
+        public PassThroughShader(){
+            super("screenspace", "passThrough");
         }
     }
 

@@ -10,11 +10,9 @@ import progressed.graphics.*;
 import progressed.graphics.renders.*;
 
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.line;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
-import static mindustry.graphics.Drawf.*;
 
 public class EnergyFx{
     public static Effect
@@ -58,34 +56,18 @@ public class EnergyFx{
         }
     }),
 
-    kugelblitzCharge = new Effect(80f, e -> {
-        float in = 6f,
-            out = 160f;
-        PMRenders.blackHole(e.x, e.y, in * e.fin(), (in + (out - in) * 0.33f) * e.fin(), e.color);
+    kugelblitzGrow = new Effect(80f, e -> {
+        float in = 6f;
+        float fin = e.fin(Interp.sineOut);
+        PMRenders.blackHole(e.x, e.y, in * fin, in * 6f * fin, e.color);
     }),
 
     blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
-    blackHoleDespawn = new Effect(24f, e -> {
-        color(Color.darkGray, Color.black, e.fin());
-
-        e.scaled(12f, s -> {
-            stroke(2f * e.fout());
-            Lines.circle(e.x, e.y, s.fin() * 10f);
-        });
-
-        stroke(2f * e.fout());
-        randLenVectors(e.id, 4, e.fin() * 15f, (x, y) -> {
-            float ang = angle(x, y);
-            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
-        });
-
-        color(e.color);
-        randLenVectors(e.id * 2L, 4, e.fin() * 15f, (x, y) -> {
-            float ang = angle(x, y);
-            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
-        });
-    }).layer(Layer.effect + 0.005f),
+    blackHoleDespawn = new Effect(40f, e -> {
+        Lines.stroke(2f * e.fout(), Color.black);
+        Lines.circle(e.x, e.y, 18f * e.fin(Interp.pow3Out));
+    }).layer(Layer.effect + 0.03f),
 
     blackHoleAbsorb = new Effect(20f, e -> {
         color(Color.black);
@@ -132,57 +114,7 @@ public class EnergyFx{
         }
 
         Drawf.light(e.x, e.y, circleRad * 1.6f, Pal.heal, e.fout());
-    }),
-
-    harbingerCharge = new Effect(150f, 1600f, e -> {
-        Color[] colors = {Color.valueOf("D99F6B55"), Color.valueOf("E8D174aa"), Color.valueOf("F3E979"), Color.valueOf("ffffff")};
-        float[] tscales = {1f, 0.7f, 0.5f, 0.2f};
-        float[] strokes = {2f, 1.5f, 1, 0.3f};
-        float[] lenscales = {1, 1.12f, 1.15f, 1.17f};
-
-        float lightOpacity = 0.4f + (e.finpow() * 0.4f);
-
-        Draw.color(colors[0], colors[2], 0.5f + e.finpow() * 0.5f);
-        Lines.stroke(Mathf.lerp(0f, 28f, e.finpow()));
-        Lines.circle(e.x, e.y, 384f * (1f - e.finpow()));
-
-        for(int i = 0; i < 36; i++){
-            v1.trns(i * 10f, 384f * (1 - e.finpow()));
-            v2.trns(i * 10f + 10f, 384f * (1f - e.finpow()));
-            light(e.x + v1.x, e.y + v1.y, e.x + v2.x, e.y + v2.y, 14f / 2f + 60f * e.finpow(), Draw.getColor(), lightOpacity + (0.2f * e.finpow()));
-        }
-
-        float fade = 1f - Mathf.curve(e.time, e.lifetime - 30f, e.lifetime);
-        float grow = Mathf.curve(e.time, 0f, e.lifetime - 30f);
-
-        for(int i = 0; i < 4; i++){
-            float baseLen = (900f + (Mathf.absin(Time.time / ((i + 1f) * 2f) + Mathf.randomSeed(e.id), 0.8f, 1.5f) * (900f / 1.5f))) * 0.75f * fade;
-            Draw.color(Tmp.c1.set(colors[i]).mul(1f + Mathf.absin(Time.time / 3f + Mathf.randomSeed(e.id), 1.0f, 0.3f) / 3f));
-            for(int j = 0; j < 2; j++){
-                int dir = Mathf.signs[j];
-                for(int k = 0; k < 10; k++){
-                    float side = k * (360f / 10f);
-                    for(int l = 0; l < 4; l++){
-                        Lines.stroke((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[l]);
-                        Lines.lineAngle(e.x, e.y, (e.rotation + 360f * e.finpow() + side) * dir, baseLen * lenscales[l], false);
-                    }
-
-                    v1.trns((e.rotation + 360f * e.finpow() + side) * dir, baseLen * 1.1f);
-
-                    light(e.x, e.y, e.x + v1.x, e.y + v1.y, ((16f * 0.75f + Mathf.absin(Time.time, 0.5f, 1f)) * grow * strokes[i] * tscales[j]) / 2f + 60f * e.finpow(), colors[2], lightOpacity);
-                }
-            }
-            Draw.reset();
-        }
-    }),
-
-    //[circle radius, distance]
-    everythingGunSwirl = new Effect(120f, 1600f, e -> {
-        float[] data = (float[])e.data;
-        v1.trns(Mathf.randomSeed(e.id, 360f) + e.rotation * e.fin(), (16f + data[1]) * e.fin());
-        color(e.color, Color.black, 0.25f + e.fin() * 0.75f);
-        Fill.circle(e.x + v1.x, e.y + v1.y, data[0] * e.fout());
-    }).layer(Layer.bullet - 0.00999f);
+    });
 
     public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean lerp){
         return new Effect(eLifetime, 400f, e -> {
@@ -191,7 +123,7 @@ public class EnergyFx{
             float lifetime = e.lifetime - length;
             float dst;
             if(minDst < 0 || maxDst < 0){
-                dst = Math.abs(e.rotation);;
+                dst = Math.abs(e.rotation);
             }else{
                 dst = Mathf.randomSeed(e.id, minDst, maxDst);
             }

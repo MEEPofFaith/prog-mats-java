@@ -765,7 +765,7 @@ public class PMBlocks{
             reload = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
-            shoot.firstShotDelay = EnergyFx.kugelblitzCharge.lifetime - 1f;
+            shoot.firstShotDelay = EnergyFx.kugelblitzGrow.lifetime - 1f;
             rotateSpeed = 2f;
             recoil = 2f;
             recoilTime = 240f;
