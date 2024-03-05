@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.scene.ui.layout.*;
-import progressed.graphics.renders.BlackHoleRenderer.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -27,8 +26,17 @@ public class PMShaders{
         tractorCone = new TractorConeShader();
         alphaShader = new AlphaShader();
         dimShader = new DimShader();
-        blackHole = new GravitationalLensingShader();
         passThrough = new PassThroughShader();
+
+        createBlackholeShader();
+    }
+
+    public static void createBlackholeShader(){
+        GravitationalLensingShader.len *= 2;
+        Shader.prependFragmentCode = "#define MAX_COUNT " + GravitationalLensingShader.len + "\n";
+        if(blackHole != null) blackHole.dispose();
+        blackHole = new GravitationalLensingShader();
+        Shader.prependFragmentCode = "";
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -150,17 +158,11 @@ public class PMShaders{
     }
 
     public static class GravitationalLensingShader extends PMLoadShader{
-        public float x, y, inRad, outRad;
+        public static int len = 16 / 2;
+        public float[] blackholes;
 
         GravitationalLensingShader(){
             super("screenspace", "gravitationallensing");
-        }
-
-        public void set(BlackHoleZone zone){
-            x = zone.x;
-            y = zone.y;
-            inRad = zone.inRadius;
-            outRad = zone.outRadius;
         }
 
         @Override
@@ -168,8 +170,8 @@ public class PMShaders{
             setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
             setUniformf("u_resolution", Core.camera.width, Core.camera.height);
 
-            setUniformf("u_center", x, y);
-            setUniformf("u_radii", inRad, outRad);
+            setUniformi("u_blackholecount", blackholes.length / 4);
+            setUniform4fv("u_blackholes", blackholes, 0, blackholes.length);
         }
     }
 
