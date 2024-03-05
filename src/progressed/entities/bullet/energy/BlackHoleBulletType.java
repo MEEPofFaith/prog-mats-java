@@ -31,7 +31,7 @@ public class BlackHoleBulletType extends BulletType{
     public Color color = Color.black;
     public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, lensEdge = -1f, damageRadius = 17f;
-    public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 2f;
+    public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 1f;
     public float swirlInterval = 3f;
     public int swirlEffects = 4;
     public boolean repel;
@@ -49,7 +49,7 @@ public class BlackHoleBulletType extends BulletType{
     @Override
     public void init(){
         super.init();
-        if(lensEdge < 0f) lensEdge = size * 6f;
+        if(lensEdge < 0f) lensEdge = suctionRadius / 2f;
 
         drawSize = Math.max(drawSize, lensEdge * 2f);
     }
@@ -75,8 +75,7 @@ public class BlackHoleBulletType extends BulletType{
             });
 
             Groups.bullet.intersect(b.x - sR, b.y - sR, sR * 2f, sR * 2f, other -> {
-                //if(other != null && Mathf.within(b.x, b.y, other.x, other.y, sR) && b != other && b.team != other.team && other.type.speed > 0.01f && !checkType(other.type)){
-                if(other != null && Mathf.within(b.x, b.y, other.x, other.y, sR) && b != other && b.team != other.team && b.type.absorbable && other.type.speed > 0.01f){
+                if(other != null && !checkType(other.type) && Mathf.within(b.x, b.y, other.x, other.y, sR) && b != other && b.team != other.team && other.type.speed > 0.01f){
                     Vec2 impulse = Tmp.v1.trns(other.angleTo(b), bulletForce + (1f - other.dst(b) / sR) * bulletScaledForce);
                     if(repel) impulse.rotate(180f);
                     other.vel().add(impulse);
@@ -86,9 +85,9 @@ public class BlackHoleBulletType extends BulletType{
                         other.move(impulse.x, impulse.y);
                     }
 
-                    if(Mathf.within(b.x, b.y, other.x, other.y, size * 2f)){
+                    /*if(Mathf.within(b.x, b.y, other.x, other.y, size * 2f)){
                         absorbBullet(other);
-                    }
+                    }*/
                 }
             });
         }
