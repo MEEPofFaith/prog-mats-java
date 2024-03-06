@@ -95,6 +95,13 @@ public class PMMathf{
         return v;
     }
 
+    public static float circleStarPoint(float theta){
+        theta = mod(theta, 90f);
+        theta *= degRad;
+        float b = -2 * sqrt2 * cos(theta - pi / 4f);
+        return (-b - sqrt(b * b - 4)) / 2;
+    }
+
     /** Pulled out of {@link Angles#moveToward(float, float, float)} */
     public static int angleMoveDirection(float from, float to){
         from = Mathf.mod(from, 360f);

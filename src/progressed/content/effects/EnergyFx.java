@@ -7,7 +7,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
-import progressed.graphics.renders.*;
+import progressed.util.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -57,10 +57,26 @@ public class EnergyFx{
     }),
 
     kugelblitzGrow = new Effect(80f, e -> {
-        float in = 6f, out = 160f;
-        float fin = e.fin(Interp.sineOut);
-        PMRenders.blackHole(e.x, e.y, in * fin, out / 2f * fin, e.color);
+        int sides = 20 * 4;
+        float space = 360f / sides;
+        float fin = e.fin(Interp.circleOut);
+        float rX = 20 * fin, rY = 10 * fin;
+        float in = Color.whiteFloatBits, out = e.color.toFloatBits();
+
+        for(int i = 0; i < sides; i++){
+            float t1 = i * space, t2 = (i + 1) * space;
+            Tmp.v1.trns(t1, PMMathf.circleStarPoint(t1)).scl(rX, rY).add(e.x, e.y);
+            Tmp.v2.trns(t2, PMMathf.circleStarPoint(t2)).scl(rX, rY).add(e.x, e.y);
+            Fill.quad(
+                e.x, e.y, in,
+                e.x, e.y, in,
+                Tmp.v1.x, Tmp.v1.y, out,
+                Tmp.v2.x, Tmp.v2.y, out
+            );
+        }
     }),
+
+    kugelblitzCharge = makeSwirlEffect(30f, 8, 2f, 15f, 90f, false).layer(Layer.bullet - 0.03f),
 
     blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
 
@@ -68,12 +84,6 @@ public class EnergyFx{
         Lines.stroke(2f * e.fout(), Color.black);
         Lines.circle(e.x, e.y, 18f * e.fin(Interp.pow3Out));
     }).layer(Layer.effect + 0.03f),
-
-    blackHoleAbsorb = new Effect(20f, e -> {
-        color(Color.black);
-        stroke(2f * e.fout(Interp.pow3In));
-        Lines.circle(e.x, e.y, 8f * e.fout(Interp.pow3In));
-    }),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
         color(Pal.missileYellow);

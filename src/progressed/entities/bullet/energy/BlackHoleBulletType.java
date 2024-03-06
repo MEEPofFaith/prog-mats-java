@@ -27,10 +27,11 @@ public class BlackHoleBulletType extends BulletType{
     );
 
     public Color color = Color.black;
-    public Effect absorbEffect = EnergyFx.blackHoleAbsorb, swirlEffect = EnergyFx.blackHoleSwirl;
+    public Effect swirlEffect = EnergyFx.blackHoleSwirl;
     public float suctionRadius = 160f, size = 6f, lensEdge = -1f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 1f;
     public float bulletDamage = 10f;
+    public float growTime = 10f, shrinkTime = -1f;
     public float swirlInterval = 3f;
     public int swirlEffects = 4;
     public boolean repel;
@@ -49,6 +50,7 @@ public class BlackHoleBulletType extends BulletType{
     public void init(){
         super.init();
         if(lensEdge < 0f) lensEdge = suctionRadius / 2f;
+        if(shrinkTime < 0f) shrinkTime = swirlEffect.lifetime;
 
         drawSize = Math.max(drawSize, lensEdge * 2f);
     }
@@ -105,9 +107,8 @@ public class BlackHoleBulletType extends BulletType{
 
         if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
             if(b.timer(0, swirlInterval)){
-                int sign = Mathf.sign(Mathf.randomSeed(b.id, -1, 0));
                 for(int i = 0; i < swirlEffects; i++){
-                    swirlEffect.at(b.x, b.y, suctionRadius * sign, b.team.color, b);
+                    swirlEffect.at(b.x, b.y, suctionRadius, b.team.color, b);
                 }
             }
         }
@@ -125,7 +126,10 @@ public class BlackHoleBulletType extends BulletType{
     }
 
     public float fout(Bullet b){
-        return Interp.sineOut.apply(1 - Mathf.curve(b.time, b.lifetime - swirlEffect.lifetime, b.lifetime));
+        return Interp.sineOut.apply(
+            Mathf.curve(b.time, 0f, growTime)
+                - Mathf.curve(b.time, b.lifetime - shrinkTime, b.lifetime)
+        );
     }
 
     @Override

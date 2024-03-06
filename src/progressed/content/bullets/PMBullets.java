@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.*;
@@ -11,6 +12,7 @@ import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
 import progressed.entities.bullet.unit.*;
+import progressed.entities.effect.*;
 
 public class PMBullets{
     public static BulletType
@@ -110,7 +112,13 @@ public class PMBullets{
             backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
-            chargeEffect = EnergyFx.kugelblitzGrow;
+            int times = 25;
+            float life = EnergyFx.kugelblitzGrow.lifetime;
+            chargeEffect = new MultiEffect(
+                new WrapEffect(new RepeatEffect(EnergyFx.kugelblitzCharge, (life - EnergyFx.kugelblitzCharge.lifetime - 1f) / times, times), Color.black, 48f),
+                EnergyFx.kugelblitzGrow
+            );
+            chargeEffect.lifetime = life;
         }};
 
         excaliburLaser = new CrossLaserBulletType(1500f){{
