@@ -25,18 +25,24 @@ public class Draw3D{
 
     public static void init(){
         Events.run(Trigger.drawOver, () -> {
-            Bloom bloom = renderer.bloom;
-            if(bloom != null && bloomQueue.any()){
+            if(bloomQueue.any()){
                 bloomQueue.sort(q -> q.layer);
-                Draw.draw(PMLayer.skyBloom, () -> {
-                    bloom.capture();
+                Bloom bloom = renderer.bloom;
+                if(bloom != null){
+                    Draw.draw(PMLayer.skyBloom, () -> {
+                        bloom.capture();
+                        for(QueuedBloom b : bloomQueue){
+                            b.draw.run();
+                        }
+                        bloom.render();
+                    });
+                }else{
                     for(QueuedBloom b : bloomQueue){
                         b.draw.run();
                     }
-                    bloom.render();
-                });
+                }
+                bloomQueue.clear();
             }
-            bloomQueue.clear();
         });
     }
 

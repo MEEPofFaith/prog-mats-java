@@ -5,12 +5,14 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
 import progressed.graphics.PMShaders.*;
 
 import static arc.Core.*;
+import static mindustry.Vars.renderer;
 
 /** Renders the glowing area around black holes. (Do I even need this?) */
 public class BlackHoleRenderer{
@@ -40,19 +42,39 @@ public class BlackHoleRenderer{
                 if(zones.size >= GravitationalLensingShader.len) PMShaders.createBlackholeShader();
 
                 float[] blackholes = new float[zones.size * 4];
+                float[] colors = new float[zones.size * 4];
                 for(int i = 0; i < zones.size; i++){
                     BlackHoleZone zone = zones.get(i);
                     blackholes[i * 4] = zone.x;
                     blackholes[i * 4 + 1] = zone.y;
                     blackholes[i * 4 + 2] = zone.inRadius;
                     blackholes[i * 4 + 3] = zone.outRadius;
+
+                    Tmp.c1.abgr8888(zone.color);
+                    colors[i * 4] = Tmp.c1.r;
+                    colors[i * 4 + 1] = Tmp.c1.g;
+                    colors[i * 4 + 2] = Tmp.c1.b;
+                    colors[i * 4 + 3] = Tmp.c1.a;
                 }
                 PMShaders.blackHole.blackholes = blackholes;
                 buffer.blit(PMShaders.blackHole);
 
-                zones.clear();
+                PMShaders.accretionDisk.blackholes = blackholes;
+                PMShaders.accretionDisk.colors = colors;
+                buffer.begin();
+                Draw.rect();
+                buffer.end();
 
-                //TODO accretion disk
+                Bloom bloom = renderer.bloom;
+                if(bloom != null){
+                    bloom.capture();
+                    buffer.blit(PMShaders.accretionDisk);
+                    bloom.render();
+                }else{
+                    buffer.blit(PMShaders.accretionDisk);
+                }
+
+                zones.clear();
             });
         });
     }

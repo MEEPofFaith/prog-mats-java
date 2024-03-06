@@ -17,6 +17,7 @@ public class PMShaders{
     public static AlphaShader alphaShader;
     public static DimShader dimShader;
     public static GravitationalLensingShader blackHole;
+    public static AccretionDiskShader accretionDisk;
     public static PassThroughShader passThrough;
 
     public static void init(){
@@ -32,10 +33,15 @@ public class PMShaders{
     }
 
     public static void createBlackholeShader(){
-        GravitationalLensingShader.len *= 2;
+        if(blackHole != null){
+            GravitationalLensingShader.len *= 2;
+            blackHole.dispose();
+            accretionDisk.dispose();
+        }
+
         Shader.prependFragmentCode = "#define MAX_COUNT " + GravitationalLensingShader.len + "\n";
-        if(blackHole != null) blackHole.dispose();
         blackHole = new GravitationalLensingShader();
+        accretionDisk = new AccretionDiskShader();
         Shader.prependFragmentCode = "";
     }
 
@@ -158,7 +164,7 @@ public class PMShaders{
     }
 
     public static class GravitationalLensingShader extends PMLoadShader{
-        public static int len = 16 / 2;
+        public static int len = 4;
         public float[] blackholes;
 
         GravitationalLensingShader(){
@@ -172,6 +178,25 @@ public class PMShaders{
 
             setUniformi("u_blackholecount", blackholes.length / 4);
             setUniform4fv("u_blackholes", blackholes, 0, blackholes.length);
+        }
+    }
+
+    public static class AccretionDiskShader extends PMLoadShader{
+        public float[] blackholes;
+        public float[] colors;
+
+        AccretionDiskShader(){
+            super("screenspace", "accretiondisk");
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+
+            setUniformi("u_blackholecount", blackholes.length / 4);
+            setUniform4fv("u_blackholes", blackholes, 0, blackholes.length);
+            setUniform4fv("u_colors", colors, 0, colors.length);
         }
     }
 
