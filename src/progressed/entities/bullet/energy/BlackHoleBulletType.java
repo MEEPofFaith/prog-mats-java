@@ -49,7 +49,7 @@ public class BlackHoleBulletType extends BulletType{
     @Override
     public void init(){
         super.init();
-        if(lensEdge < 0f) lensEdge = suctionRadius / 2f;
+        if(lensEdge < 0f) lensEdge = suctionRadius;
         if(shrinkTime < 0f) shrinkTime = swirlEffect.lifetime;
 
         drawSize = Math.max(drawSize, lensEdge * 2f);
@@ -105,13 +105,13 @@ public class BlackHoleBulletType extends BulletType{
     public void updateTrailEffects(Bullet b){
         super.updateTrailEffects(b);
 
-        if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
+        /*if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
             if(b.timer(0, swirlInterval)){
                 for(int i = 0; i < swirlEffects; i++){
                     swirlEffect.at(b.x, b.y, suctionRadius, b.team.color, b);
                 }
             }
-        }
+        }*/
     }
 
     @Override

@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 import progressed.graphics.*;
@@ -18,7 +17,7 @@ public class BlackHoleRenderer{
     private final Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
     private final FrameBuffer buffer;
 
-    public BlackHoleRenderer(){
+    public BlackHoleRenderer(){ //TODO setting
         buffer = new FrameBuffer();
 
         Events.run(Trigger.draw, () -> {
@@ -28,13 +27,13 @@ public class BlackHoleRenderer{
             });
 
             Draw.draw(Layer.max, () -> {
-                for(BlackHoleZone zone : zones){
+                /*for(BlackHoleZone zone : zones){
                     Fill.light(
                         zone.x, zone.y,
                         Lines.circleVertices(zone.outRadius), zone.outRadius,
                         Tmp.c1.abgr8888(zone.color).a(0.5f), Tmp.c2.abgr8888(zone.color).a(0)
                     );
-                }
+                }*/
 
                 buffer.end();
 
@@ -52,6 +51,8 @@ public class BlackHoleRenderer{
                 buffer.blit(PMShaders.blackHole);
 
                 zones.clear();
+
+                //TODO accretion disk
             });
         });
     }

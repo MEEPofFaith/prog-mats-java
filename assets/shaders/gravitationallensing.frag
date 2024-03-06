@@ -13,7 +13,27 @@ uniform vec4 u_blackholes[MAX_COUNT];
 varying vec2 v_texCoords;
 
 float interp(float a){
-    return 1.0 - cos(a * HALFPI);
+    float f = a - 1.0;
+    float t = a;
+
+    //Interp.sineIn
+    //a = sin(a * HALFPI);
+
+    //Interp.pow5Out
+    a = a - 1.0;
+    a = a * a * a * a * a + 1.0;
+
+    //Interp.circle
+    if(a <= 0.5){
+        a *= 2.0;
+        a = (1.0 - sqrt(1.0 - a * a)) / 2.0;
+    }else{
+        --a;
+        a *= 2.0;
+        a = (sqrt(1.0 - a * a) + 1.0) / 2.0;
+    }
+
+    return f + (t - f) * a;
 }
 
 void main() {
@@ -39,7 +59,6 @@ void main() {
             p = interp(p);
             float a = atan(coords.x - cX, coords.y - cY) + HALFPI;
             vec2 pos = vec2(cX - oR * cos(a) * p, cY + oR * sin(a) * p);
-
             offset += pos - coords;
         }
     }
