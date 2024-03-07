@@ -23,20 +23,12 @@ public class BlackHoleRenderer{
         buffer = new FrameBuffer();
 
         Events.run(Trigger.draw, () -> {
-            Draw.draw(Layer.min, () -> {
+            Draw.draw(Layer.min + 0.01f, () -> {
                 buffer.resize(graphics.getWidth(), graphics.getHeight());
                 buffer.begin();
             });
 
             Draw.draw(Layer.max, () -> {
-                /*for(BlackHoleZone zone : zones){
-                    Fill.light(
-                        zone.x, zone.y,
-                        Lines.circleVertices(zone.outRadius), zone.outRadius,
-                        Tmp.c1.abgr8888(zone.color).a(0.5f), Tmp.c2.abgr8888(zone.color).a(0)
-                    );
-                }*/
-
                 buffer.end();
 
                 if(zones.size >= GravitationalLensingShader.len) PMShaders.createBlackholeShader();
