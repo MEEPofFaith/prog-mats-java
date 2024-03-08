@@ -33,8 +33,8 @@ void main() {
         float iR = blackhole.b;
 
         float dst = distance(blackhole.xy, coords);
-        if(dst < iR){ //Inside, clear
-            gl_FragColor = vec4(0.0);
+        if(dst < iR){ //Inside, black
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
             return;
         }else if(dst > iR * MUL){ //Outside, skip
             continue;

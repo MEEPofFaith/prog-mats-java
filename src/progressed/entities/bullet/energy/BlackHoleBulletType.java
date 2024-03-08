@@ -105,13 +105,13 @@ public class BlackHoleBulletType extends BulletType{
     public void updateTrailEffects(Bullet b){
         super.updateTrailEffects(b);
 
-        /*if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
+        if(swirlInterval > 0f && b.time <= b.lifetime - swirlEffect.lifetime){
             if(b.timer(0, swirlInterval)){
                 for(int i = 0; i < swirlEffects; i++){
                     swirlEffect.at(b.x, b.y, suctionRadius, b.team.color, b);
                 }
             }
-        }*/
+        }
     }
 
     @Override
