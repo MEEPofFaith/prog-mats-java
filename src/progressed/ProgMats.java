@@ -142,6 +142,7 @@ public class ProgMats extends Mod{
             t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
             t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
             t.checkPref("pm-tesla-range", true);
+            t.checkPref("pm-advanced-blackhole-rendering", true, PMRenders::toggleAdvancedBlackholes);
             t.pref(new Separator("pm-other-settings"));
             t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
         });

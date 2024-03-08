@@ -23,7 +23,7 @@ public class PMRenders{
     flashTime;
 
     public static void init(){
-        blackHoleRenderer = new BlackHoleRenderer();
+        blackHoleRenderer = new BlackHoleRenderer(Core.settings.getBool("pm-advanced-blackhole-rendering", true));
         dimRenderer = new DimRenderer();
 
         Events.on(ResetEvent.class, e -> {
@@ -45,6 +45,10 @@ public class PMRenders{
                 }
             });
         });
+    }
+
+    public static void toggleAdvancedBlackholes(boolean advanced){
+        if(blackHoleRenderer != null) blackHoleRenderer.toggleAdvanced(advanced);
     }
 
     public static void flash(float intensity, float duration){

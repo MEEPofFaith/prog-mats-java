@@ -17,7 +17,7 @@ public class PMShaders{
     public static AlphaShader alphaShader;
     public static DimShader dimShader;
     public static GravitationalLensingShader blackHole;
-    public static AccretionDiskShader accretionDisk;
+    public static BlackholeRimShader blackholeRim;
     public static PassThroughShader passThrough;
 
     public static void init(){
@@ -36,12 +36,12 @@ public class PMShaders{
         if(blackHole != null){
             GravitationalLensingShader.len *= 2;
             blackHole.dispose();
-            accretionDisk.dispose();
+            blackholeRim.dispose();
         }
 
         Shader.prependFragmentCode = "#define MAX_COUNT " + GravitationalLensingShader.len + "\n";
         blackHole = new GravitationalLensingShader();
-        accretionDisk = new AccretionDiskShader();
+        blackholeRim = new BlackholeRimShader();
         Shader.prependFragmentCode = "";
     }
 
@@ -181,12 +181,12 @@ public class PMShaders{
         }
     }
 
-    public static class AccretionDiskShader extends PMLoadShader{
+    public static class BlackholeRimShader extends PMLoadShader{
         public float[] blackholes;
         public float[] colors;
 
-        AccretionDiskShader(){
-            super("screenspace", "accretiondisk");
+        BlackholeRimShader(){
+            super("screenspace", "blackholerim");
         }
 
         @Override

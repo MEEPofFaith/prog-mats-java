@@ -14,11 +14,11 @@ uniform vec4 u_colors[MAX_COUNT];
 varying vec2 v_texCoords;
 
 //https://stackoverflow.com/a/72973369
-vec4 blendOver(float4 a, float4 b) {
+vec4 blendOver(vec4 a, vec4 b) {
     float newAlpha = mix(b.w, 1.0, a.w);
     vec3 newColor = mix(b.w * b.xyz, a.xyz, a.w);
     float divideFactor = (newAlpha > 0.001 ? (1.0 / newAlpha) : 1.0);
-    return float4(newColor * divideFactor, newAlpha);
+    return vec4(newColor * divideFactor, newAlpha);
 }
 
 void main() {
