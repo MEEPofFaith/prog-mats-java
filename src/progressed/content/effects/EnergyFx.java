@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
+import progressed.entities.effect.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
@@ -78,9 +79,9 @@ public class EnergyFx{
         Drawf.light(e.x, e.y, rX * 2f, e.color, 0.8f);
     }),
 
-    kugelblitzCharge = makeSwirlEffect(30f, 8, 2f, 15f, 90f, false).layer(Layer.bullet - 0.03f),
+    kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false).layer(Layer.bullet - 0.03f),
 
-    blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 180f, 720f, true, true).layer(Layer.effect + 0.005f),
+    blackHoleSwirl = new SwirlEffect(90f, 8, 3f, 120f, 480f, true, true).layer(Layer.effect + 0.005f),
 
     blackHoleDespawn = new Effect(80f, e -> {
         float rad = 24f;
@@ -133,71 +134,4 @@ public class EnergyFx{
 
         Drawf.light(e.x, e.y, circleRad * 1.6f, Pal.heal, e.fout());
     });
-
-    public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean light, boolean lerp){
-        return new Effect(eLifetime, 400f, e -> {
-            if(e.time < 1f) return;
-
-            float lifetime = e.lifetime - length;
-            float dst;
-            if(minDst < 0 || maxDst < 0){
-                dst = Math.abs(e.rotation);
-            }else{
-                dst = Mathf.randomSeed(e.id, minDst, maxDst);
-            }
-            float l = Mathf.clamp(e.time / lifetime);
-            if(lerp){
-                color(color, e.color, l);
-            }else{
-                color(color);
-            }
-
-            int points = (int)Math.min(e.time, length);
-            float width = Mathf.clamp(e.time / (e.lifetime - length)) * maxWidth;
-            float size = width / points;
-            float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, minRot, maxRot) * Mathf.sign(e.rotation);
-
-            float fout, lastAng = 0f;
-            for(int i = 0; i < points; i++){
-                fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
-                v1.trns(baseRot + addRot * PMMathf.cbrt(fout), Mathf.maxZero(dst * fout));
-                fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
-                v2.trns(baseRot + addRot * PMMathf.cbrt(fout), Mathf.maxZero(dst * fout));
-
-                float a2 = -v1.angleTo(v2) * Mathf.degRad;
-                float a1 = i == 0 ? a2 : lastAng;
-
-                float
-                    cx = Mathf.sin(a1) * i * size,
-                    cy = Mathf.cos(a1) * i * size,
-                    nx = Mathf.sin(a2) * (i + 1) * size,
-                    ny = Mathf.cos(a2) * (i + 1) * size;
-
-                Fill.quad(
-                    e.x + v1.x - cx, e.y + v1.y - cy,
-                    e.x + v1.x + cx, e.y + v1.y + cy,
-                    e.x + v2.x + nx, e.y + v2.y + ny,
-                    e.x + v2.x - nx, e.y + v2.y - ny
-                );
-                if(light){
-                    Drawf.light(
-                        e.x + v1.x, e.y + v1.y,
-                        e.x + v2.x, e.y + v2.y,
-                        i * size * 6f, Draw.getColor().cpy(), l
-                    );
-                }
-
-                lastAng = a2;
-            }
-            Draw.rect("hcircle", e.x + v2.x, e.y + v2.y, width * 2f, width * 2f, -Mathf.radDeg * lastAng);
-        });
-    }
-
-    public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean light, boolean lerp){
-        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, light, lerp);
-    }
-
-    public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean lerp){
-        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, false, lerp);
-    }
 }
