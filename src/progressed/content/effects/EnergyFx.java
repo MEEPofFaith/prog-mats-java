@@ -74,15 +74,23 @@ public class EnergyFx{
                 Tmp.v2.x, Tmp.v2.y, out
             );
         }
+
+        Drawf.light(e.x, e.y, rX * 2f, e.color, 0.8f);
     }),
 
     kugelblitzCharge = makeSwirlEffect(30f, 8, 2f, 15f, 90f, false).layer(Layer.bullet - 0.03f),
 
-    blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 90f, 720f, true).layer(Layer.effect + 0.005f),
+    blackHoleSwirl = makeSwirlEffect(90f, 8, 3f, 180f, 720f, true, true).layer(Layer.effect + 0.005f),
 
-    blackHoleDespawn = new Effect(40f, e -> {
+    blackHoleDespawn = new Effect(80f, e -> {
+        float rad = 24f;
+        e.scaled(60f, s -> {
+            Lines.stroke(6f * s.fout(), e.color);
+            Lines.circle(e.x, e.y, 1.5f * rad * s.fin(Interp.pow3Out));
+        });
+
         Lines.stroke(2f * e.fout(), Color.black);
-        Lines.circle(e.x, e.y, 18f * e.fin(Interp.pow3Out));
+        Lines.circle(e.x, e.y, rad * e.fin(Interp.pow3Out));
     }).layer(Layer.effect + 0.03f),
 
     sentinelBlast = new Effect(80f, 150f, e -> {
@@ -126,7 +134,7 @@ public class EnergyFx{
         Drawf.light(e.x, e.y, circleRad * 1.6f, Pal.heal, e.fout());
     });
 
-    public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean lerp){
+    public static Effect makeSwirlEffect(Color color, float eLifetime, int length, float maxWidth, float minRot, float maxRot, float minDst, float maxDst, boolean light, boolean lerp){
         return new Effect(eLifetime, 400f, e -> {
             if(e.time < 1f) return;
 
@@ -137,8 +145,9 @@ public class EnergyFx{
             }else{
                 dst = Mathf.randomSeed(e.id, minDst, maxDst);
             }
+            float l = Mathf.clamp(e.time / lifetime);
             if(lerp){
-                color(color, e.color, Mathf.clamp(e.time / lifetime));
+                color(color, e.color, l);
             }else{
                 color(color);
             }
@@ -151,9 +160,9 @@ public class EnergyFx{
             float fout, lastAng = 0f;
             for(int i = 0; i < points; i++){
                 fout = 1f - Mathf.clamp((e.time - points + i) / lifetime);
-                v1.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+                v1.trns(baseRot + addRot * PMMathf.cbrt(fout), Mathf.maxZero(dst * fout));
                 fout = 1f - Mathf.clamp((e.time - points + i + 1) / lifetime);
-                v2.trns(baseRot + addRot * Mathf.sqrt(fout), Mathf.maxZero(dst * fout));
+                v2.trns(baseRot + addRot * PMMathf.cbrt(fout), Mathf.maxZero(dst * fout));
 
                 float a2 = -v1.angleTo(v2) * Mathf.degRad;
                 float a1 = i == 0 ? a2 : lastAng;
@@ -170,6 +179,13 @@ public class EnergyFx{
                     e.x + v2.x + nx, e.y + v2.y + ny,
                     e.x + v2.x - nx, e.y + v2.y - ny
                 );
+                if(light){
+                    Drawf.light(
+                        e.x + v1.x, e.y + v1.y,
+                        e.x + v2.x, e.y + v2.y,
+                        i * size * 6f, Draw.getColor().cpy(), l
+                    );
+                }
 
                 lastAng = a2;
             }
@@ -177,7 +193,11 @@ public class EnergyFx{
         });
     }
 
+    public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean light, boolean lerp){
+        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, light, lerp);
+    }
+
     public static Effect makeSwirlEffect(float eLifetime, int length, float maxWidth, float minRot, float maxRot, boolean lerp){
-        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, lerp);
+        return makeSwirlEffect(Color.black, eLifetime, length, maxWidth, minRot, maxRot, -1, -1, false, lerp);
     }
 }

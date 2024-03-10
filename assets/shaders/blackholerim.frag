@@ -21,6 +21,7 @@ vec4 blendOver(vec4 a, vec4 b) {
     return vec4(newColor * divideFactor, newAlpha);
 }
 
+//Made by MEEPofFaith
 void main() {
     vec2 c = v_texCoords.xy;
     vec2 coords = (c * u_resolution) + u_campos;
@@ -38,7 +39,7 @@ void main() {
             return;
         }else if(dst > iR * MUL){ //Outside, skip
             continue;
-        }else{ //Add
+        }else{ //Add color
             float p = 1.0 - (dst - iR) / (iR * MUL - iR);
             vec4 c1 = u_colors[i];
             c1.a = p;

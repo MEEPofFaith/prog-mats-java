@@ -16,9 +16,6 @@ float interp(float a){
     float f = a - 1.0;
     float t = a;
 
-    //Interp.sineIn
-    //a = sin(a * HALFPI);
-
     //Interp.pow5Out
     a = a - 1.0;
     a = a * a * a * a * a + 1.0;
@@ -33,9 +30,11 @@ float interp(float a){
         a = (sqrt(1.0 - a * a) + 1.0) / 2.0;
     }
 
+    //Lerp between two linear functions
     return f + (t - f) * a;
 }
 
+//Made by MEEPofFaith
 void main() {
     vec2 c = v_texCoords.xy;
     vec2 coords = (c * u_resolution) + u_campos;
@@ -54,7 +53,7 @@ void main() {
             return;
         }else if(dst > oR){ //Outside black hole, skip
             continue;
-        }else{ //Influence position
+        }else{ //Influence target position
             float p = (dst - iR) / (oR - iR);
             p = interp(p);
             float a = atan(coords.x - cX, coords.y - cY) + HALFPI;

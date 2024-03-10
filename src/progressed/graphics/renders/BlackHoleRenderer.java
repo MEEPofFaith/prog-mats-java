@@ -14,7 +14,10 @@ import progressed.graphics.PMShaders.*;
 import static arc.Core.*;
 import static mindustry.Vars.renderer;
 
-/** Handles rendering of gravitational lensing and the glow around the center. */
+/**
+ * Handles rendering of gravitational lensing and the glow around the center.
+ * @author MEEPofFaith
+ * */
 public class BlackHoleRenderer{
     private final Seq<BlackHoleZone> zones = new Seq<>(BlackHoleZone.class);
     private FrameBuffer buffer;
