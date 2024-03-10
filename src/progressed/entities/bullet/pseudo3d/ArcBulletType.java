@@ -85,8 +85,9 @@ public class ArcBulletType extends BulletType{
             ArcBulletData a = (ArcBulletData)b.data;
             a.updateLifetime(b);
             arcBulletDataInit(b);
-        }else{
-            b.remove(); //Invalid data
+        }else{ //Invalid data, remove
+            b.data = new ArcBulletData(); //Prevent crash
+            b.remove();
         }
 
         super.init(b);
@@ -437,6 +438,10 @@ public class ArcBulletType extends BulletType{
 
         public ArcBulletData(float z, float zVel){
             this(z, zVel, 1f);
+        }
+
+        public ArcBulletData(){
+            this(0, 0);
         }
 
         public void backMove(Bullet b){
