@@ -3,10 +3,12 @@ package progressed.util;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.mod.Mods.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import progressed.entities.bullet.energy.*;
@@ -115,6 +117,11 @@ public class PMUtls{
         }else{
             return Strings.autoFixed(f, 2);
         }
+    }
+
+    public static boolean modEnabled(String name){
+        LoadedMod mod = Vars.mods.getMod(name);
+        return mod != null && mod.isSupported() && mod.enabled();
     }
 
     public static void uhOhSpeghettiOh(String ohno){

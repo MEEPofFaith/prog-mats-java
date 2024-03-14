@@ -20,6 +20,7 @@ import progressed.graphics.*;
 import progressed.graphics.renders.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
+import progressed.util.*;
 import progressed.world.blocks.defence.turret.payload.modular.*;
 
 import static arc.Core.*;
@@ -152,8 +153,7 @@ public class ProgMats extends Mod{
     }
 
     static boolean TUEnabled(){
-        LoadedMod testUtils = mods.getMod("test-utils");
-        return testUtils != null && testUtils.isSupported() && testUtils.enabled();
+        return PMUtls.modEnabled("test-utils");
     }
 
     static class Separator extends Setting{

@@ -7,5 +7,6 @@
     "author": "MEEP of Faith (And a bunch of contributors. Load the game with Meepscillanious Concepts enabled to view them!)",
     "java": true,
     "main": "progressed.ProgMats",
-    "repo": "MEEPofFaith/prog-mats-java"
+    "repo": "MEEPofFaith/prog-mats-java",
+    "dependencies": ["black-hole-renderer"]
 }
