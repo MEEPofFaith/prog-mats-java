@@ -16,8 +16,6 @@ public class PMShaders{
     public static TractorConeShader tractorCone;
     public static AlphaShader alphaShader;
     public static DimShader dimShader;
-    public static GravitationalLensingShader blackHole;
-    public static BlackholeRimShader blackholeRim;
     public static PassThroughShader passThrough;
 
     public static void init(){
@@ -28,21 +26,6 @@ public class PMShaders{
         alphaShader = new AlphaShader();
         dimShader = new DimShader();
         passThrough = new PassThroughShader();
-
-        createBlackholeShader();
-    }
-
-    public static void createBlackholeShader(){
-        if(blackHole != null){
-            GravitationalLensingShader.len *= 2;
-            blackHole.dispose();
-            blackholeRim.dispose();
-        }
-
-        Shader.prependFragmentCode = "#define MAX_COUNT " + GravitationalLensingShader.len + "\n";
-        blackHole = new GravitationalLensingShader();
-        blackholeRim = new BlackholeRimShader();
-        Shader.prependFragmentCode = "";
     }
 
     public static class MaterializeShader extends PMLoadShader{
@@ -160,43 +143,6 @@ public class PMShaders{
         @Override
         public void apply(){
             setUniformf("u_alpha", alpha);
-        }
-    }
-
-    public static class GravitationalLensingShader extends PMLoadShader{
-        public static int len = 4;
-        public float[] blackholes;
-
-        GravitationalLensingShader(){
-            super("screenspace", "gravitationallensing");
-        }
-
-        @Override
-        public void apply(){
-            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-
-            setUniformi("u_blackholecount", blackholes.length / 4);
-            setUniform4fv("u_blackholes", blackholes, 0, blackholes.length);
-        }
-    }
-
-    public static class BlackholeRimShader extends PMLoadShader{
-        public float[] blackholes;
-        public float[] colors;
-
-        BlackholeRimShader(){
-            super("screenspace", "blackholerim");
-        }
-
-        @Override
-        public void apply(){
-            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-
-            setUniformi("u_blackholecount", blackholes.length / 4);
-            setUniform4fv("u_blackholes", blackholes, 0, blackholes.length);
-            setUniform4fv("u_colors", colors, 0, colors.length);
         }
     }
 
