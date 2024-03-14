@@ -8,10 +8,7 @@ import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
 
-import static mindustry.Vars.*;
-
 public class PMRenders{
-    private static BlackHoleRenderer blackHoleRenderer;
     private static DimRenderer dimRenderer;
 
     private static float
@@ -23,7 +20,6 @@ public class PMRenders{
     flashTime;
 
     public static void init(){
-        blackHoleRenderer = new BlackHoleRenderer(Core.settings.getBool("pm-advanced-blackhole-rendering", true));
         dimRenderer = new DimRenderer();
 
         Events.on(ResetEvent.class, e -> {
@@ -47,10 +43,6 @@ public class PMRenders{
         });
     }
 
-    public static void toggleAdvancedBlackholes(boolean advanced){
-        if(blackHoleRenderer != null) blackHoleRenderer.toggleAdvanced(advanced);
-    }
-
     public static void flash(float intensity, float duration){
         flashIntensity = intensity;
         flashTime = Math.max(flashTime, duration);
@@ -59,11 +51,6 @@ public class PMRenders{
 
     public static void flash(float duration){
         flash(1f, duration);
-    }
-
-    public static void blackHole(float x, float y, float inRadius, float outRadius, Color color){
-        if(headless) return;
-        blackHoleRenderer.add(x, y, inRadius, outRadius, color);
     }
 
     public static void dimAlpha(float a){

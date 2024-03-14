@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import blackhole.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -13,7 +14,6 @@ import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.graphics.renders.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(
@@ -117,7 +117,7 @@ public class BlackHoleBulletType extends BulletType{
     @Override
     public void draw(Bullet b){
         float fout = fout(b);
-        PMRenders.blackHole(b.x, b.y, size * fout, lensEdge * fout, b.team.color);
+        BlackHoleRenderer.addBlackHole(b.x, b.y, size * fout, lensEdge * fout, b.team.color);
     }
 
     @Override

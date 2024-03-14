@@ -1,8 +1,6 @@
-import arc.files.*
-import arc.util.*
+import arc.files.Fi
+import arc.util.OS
 import arc.util.serialization.Jval
-
-import java.util.regex.*
 
 buildscript{
     dependencies{
@@ -37,6 +35,10 @@ configure(allprojects){
 
         mindustry = {String module ->
             return "com.github.Anuken.Mindustry$module:$mindustryVersion"
+        }
+
+        blackhole = {String module ->
+            return "com.github.MEEPofFaith$module:$blackHoleRendererVersion"
         }
     }
 
@@ -102,6 +104,8 @@ configure(rootProject){
         // Depend on Mindustry/Arc classpath.
         compileOnly "${mindustry(':core')}"
         compileOnly "${arc(':arc-core')}"
+
+        compileOnly "${blackhole(':MindustryBlackHoleRenderer')}"
     }
 
     jar{

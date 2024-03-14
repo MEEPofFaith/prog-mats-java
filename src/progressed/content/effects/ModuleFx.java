@@ -5,10 +5,10 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import blackhole.entities.effect.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
-import progressed.entities.effect.*;
 import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
