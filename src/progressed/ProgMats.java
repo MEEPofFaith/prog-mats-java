@@ -62,6 +62,7 @@ public class ProgMats extends Mod{
 
             progM.meta.displayName = "[#4a6de5]" + progM.meta.displayName + "[]";
             progM.meta.description = getModBundle.get(progM.meta.name + ".description");
+            progM.meta.subtitle = getModBundle.get(progM.meta.name + ".subtitle");
 
             StringBuilder contributors = new StringBuilder(getModBundle.get(progM.meta.name + ".author"));
             contributors.append("\n\n").append("[#4a6de5]Contributors:[]");
