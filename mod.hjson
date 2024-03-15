@@ -1,7 +1,7 @@
 {
     "displayName": "Meepscellanious Concepts",
     "subtitle": "The machinations of a madman.",
-    "description": "A collection of random ideas that come to my head.",
+    "description": "A collection of random ideas that come to my head.\n\n[red]REQUIRES `MEEPofFaith/black-hole-renderer` TO RUN.",
     "version": 27.3,
     "minGameVersion": 146,
     "author": "MEEP of Faith (And a bunch of contributors. Load the game with Meepscillanious Concepts enabled to view them!)",
