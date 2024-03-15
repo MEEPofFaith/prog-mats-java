@@ -58,17 +58,17 @@ public class ProgMats extends Mod{
             if(OS.username.equals("MEEP")) experimental = true;
 
             LoadedMod progM = mods.locateMod("prog-mats");
-            Func<String, String> getModBundle = value -> bundle.get("mod." + value);
+            Func<String, String> getModBundle = value -> bundle.get("mod." + progM.meta.name + "." + value);
 
             progM.meta.displayName = "[#4a6de5]" + progM.meta.displayName + "[]";
-            progM.meta.description = getModBundle.get(progM.meta.name + ".description");
-            progM.meta.subtitle = getModBundle.get(progM.meta.name + ".subtitle");
+            progM.meta.description = getModBundle.get("description");
+            progM.meta.subtitle = getModBundle.get("subtitle");
 
-            StringBuilder contributors = new StringBuilder(getModBundle.get(progM.meta.name + ".author"));
+            StringBuilder contributors = new StringBuilder(getModBundle.get("author"));
             contributors.append("\n\n").append("[#4a6de5]Contributors:[]");
             int i = 0;
-            while(bundle.has("mod." + progM.meta.name + "-contributor." + i)){
-                contributors.append("\n        ").append(getModBundle.get(progM.meta.name + "-contributor." + i));
+            while(bundle.has("mod." + progM.meta.name + ".contributor-" + i)){
+                contributors.append("\n        ").append(getModBundle.get("contributor-" + i));
                 i++;
             }
             progM.meta.author = contributors.toString();
