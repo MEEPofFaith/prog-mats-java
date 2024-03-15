@@ -2,7 +2,7 @@
     "displayName": "Meepscellaneous Concepts",
     "subtitle": "The machinations of a madman.",
     "description": "A collection of random ideas that come to my head.\n\n[red]REQUIRES `MEEPofFaith/black-hole-renderer` TO RUN. THE GAME WILL CRASH WITHOUT IT INSTALLED.[]",
-    "version": 28.0,
+    "version": 28.1,
     "minGameVersion": 146,
     "author": "MEEP of Faith (And a bunch of contributors. Load the game with Meepscillaneous Concepts enabled to view them!)",
     "java": true,
