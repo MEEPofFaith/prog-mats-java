@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -63,6 +64,10 @@ public class UltraRailgunBulletType extends BulletType{
     public float shockwaveSizeScl = 8f;
     public Effect endShockwaveEffect = new FlashEffect(new WrapDataEffect(defaultShockwave, 75f * 8f), 30f);
     public Effect endEffect;
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(UltraRailgunBulletType.class);
+    }
 
     public UltraRailgunBulletType(float minSpeed, float speed, float damage){
         super(speed, damage);

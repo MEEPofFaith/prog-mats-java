@@ -1,6 +1,7 @@
 package progressed.content.bullets;
 
 import arc.graphics.*;
+import blackhole.entities.bullet.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
@@ -109,7 +110,6 @@ public class PMBullets{
 
         blackHole = new BlackHoleBulletType(0.5f, 1400f / 30f){{
             lifetime = 630f;
-            backMove = false;
             lightRadius = 8f;
             lightOpacity = 0.7f;
             int times = 25;
@@ -119,6 +119,7 @@ public class PMBullets{
                 EnergyFx.kugelblitzGrow
             );
             chargeEffect.lifetime = life;
+            despawnEffect = EnergyFx.blackHoleDespawn;
         }};
 
         excaliburLaser = new CrossLaserBulletType(1500f){{

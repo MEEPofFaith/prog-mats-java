@@ -3,6 +3,7 @@ package progressed.entities.bullet.energy;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -21,6 +22,10 @@ public class MagmaBulletType extends BulletType{
     public float groundRise = 4f;
     public Color crackColor = PMPal.darkBrown;
     public LightningEffect crackEffect = LightningFx.groundCrack;
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(MagmaBulletType.class);
+    }
     
     public MagmaBulletType(float damage, float radius){
         super(0.001f, damage);

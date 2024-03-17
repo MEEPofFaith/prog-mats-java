@@ -81,8 +81,6 @@ public class EnergyFx{
 
     kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false, false).layer(Layer.bullet - 0.03f),
 
-    blackHoleSwirl = new SwirlEffect(90f, 8, 3f, 120f, 480f, true).layer(Layer.effect + 0.005f),
-
     blackHoleDespawn = new Effect(80f, e -> {
         float rad = 24f;
         e.scaled(60f, s -> {

@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -39,6 +40,10 @@ public class ArcBulletType extends BulletType{
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float zoneLifeOffset = 0f;
     public Color targetColor = Color.red;
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(ArcBulletType.class);
+    }
 
     public ArcBulletType(float speed, float damage){
         super(speed, damage);

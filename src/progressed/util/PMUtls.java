@@ -6,40 +6,16 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.mod.Mods.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import progressed.entities.bullet.energy.*;
 
 public class PMUtls{
     public static final Rand rand = new Rand();
     static final Seq<ItemStack> rawStacks = new Seq<>();
     static final Seq<Item> items = new Seq<>();
     static final IntSeq amounts = new IntSeq();
-    
-    public static float bulletDamage(BulletType b, float lifetime){
-        if(b.spawnUnit != null){ //Missile unit damage
-            Weapon uW = b.spawnUnit.weapons.first();
-            return bulletDamage(uW.bullet, uW.bullet.lifetime) * uW.shoot.shots;
-        }else{
-            float damage = b.damage + b.splashDamage; //Base Damage
-            damage += b.lightningDamage * b.lightning * b.lightningLength; //Lightning Damage
-
-            if(b.fragBullet != null){
-                damage += bulletDamage(b.fragBullet, b.fragBullet.lifetime) * b.fragBullets; //Frag Bullet Damage
-            }
-
-            if(b instanceof ContinuousBulletType cB){ //Continuous Damage
-                return damage * lifetime / cB.damageInterval;
-            }else if(b instanceof BlackHoleBulletType){
-                return damage * lifetime / 2f;
-            }else{
-                return damage;
-            }
-        }
-    }
 
     //Is this really necessary?
     public static String stringsFixed(float value){
