@@ -7,6 +7,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import blackhole.entities.bullet.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
