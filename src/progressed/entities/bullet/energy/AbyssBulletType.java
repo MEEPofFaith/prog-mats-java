@@ -3,6 +3,7 @@ package progressed.entities.bullet.energy;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -19,6 +20,10 @@ public class AbyssBulletType extends BulletType{
     public Effect beamEffect = Fx.none;
     public Effect swirlEffect = Fx.none;
     public Effect growEffect = Fx.none;
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(AbyssBulletType.class);
+    }
 
     public AbyssBulletType(){
         super(0.01f, 0f);

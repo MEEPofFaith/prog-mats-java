@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -36,6 +37,10 @@ public class PillarFieldBulletType extends BulletType{
     public LightningEffect crackEffect = LightningFx.groundCrack;
 
     public Effect placeEffect = OtherFx.pillarPlace;
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(PillarFieldBulletType.class);
+    }
 
     public PillarFieldBulletType(){
         super();

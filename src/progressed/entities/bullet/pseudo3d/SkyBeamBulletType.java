@@ -1,6 +1,7 @@
 package progressed.entities.bullet.pseudo3d;
 
 import arc.graphics.*;
+import blackhole.utils.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -15,6 +16,10 @@ public class SkyBeamBulletType extends BulletType{
     public boolean bloom = true;
     public Color baseColor = PMPal.nexusLaserDark;
     public Color topColor = PMPal.nexusLaser.cpy().a(0);
+
+    static{
+        BlackHoleUtils.immuneBulletTypes.add(SkyBeamBulletType.class);
+    }
 
     public SkyBeamBulletType(float speed, float damage){
         super(speed, damage);
