@@ -3,6 +3,7 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
+import blackhole.entities.bullet.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -33,7 +34,7 @@ public class PayloadBullets{
     public static ArcMissileBulletType
 
     artemisBasic, artemisRecursive, artemisBombing,
-    paragonBasic, paragonCluster, paragonEMP,
+    paragonBasic, paragonCluster, paragonEMP, paragonBlackHole,
     ohno;
 
     public static void load(){
@@ -381,6 +382,35 @@ public class PayloadBullets{
                     sizeTo = 30f;
                     colorFrom = colorTo = Pal.lancerLaser;
                 }};
+            }};
+        }};
+
+        paragonBlackHole = new ArcMissileBulletType("prog-mats-blackhole-nuke"){{
+            lifetime = 3f * 60f;
+            status = StatusEffects.none;
+
+            hitSound = PMSounds.nuclearExplosion;
+            hitShake = 30f;
+            despawnEffect = Fx.none;
+            absorbEffect = Pseudo3DFx.absorbedLarge;
+
+            zoneRadius = 8f * 8f;
+            trailLength = 35;
+            trailWidth = 2.5f;
+            trailColor = Pal.sapBulletBack; //Black doesn't work because of bloom
+            targetColor = Color.black;
+
+            accel = 0.01f;
+            gravity = 0.02f;
+            fragBullets = 1;
+            fragBullet = new BlackHoleBulletType(0f, 4400f / 30f){{
+                lifetime = 10f * 60f;
+                growTime = lifetime - MissileFx.bigBlackHoleSwirl.lifetime;
+                swirlEffect = MissileFx.bigBlackHoleSwirl;
+                loopSoundVolume = 6f;
+
+                horizonRadius = 18f * tilesize;
+                suctionRadius = 64f * tilesize;
             }};
         }};
 

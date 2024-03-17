@@ -953,6 +953,7 @@ public class PMBlocks{
                 basicNuke, PayloadBullets.paragonBasic,
                 clusterNuke, PayloadBullets.paragonCluster,
                 empNuke, PayloadBullets.paragonEMP,
+                blackHoleNuke, PayloadBullets.paragonBlackHole,
                 sandboxNuke, PayloadBullets.ohno
             );
             size = 7;

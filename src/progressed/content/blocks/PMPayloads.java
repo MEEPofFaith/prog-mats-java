@@ -26,7 +26,7 @@ public class PMPayloads{
 
     emptyNuke,
 
-    basicNuke, clusterNuke, empNuke,
+    basicNuke, clusterNuke, empNuke, blackHoleNuke,
 
     sandboxNuke,
 
@@ -229,6 +229,21 @@ public class PMPayloads{
             constructTime = 60f * 49f;
 
             explosionBullet = PayloadBullets.paragonEMP;
+        }};
+
+        blackHoleNuke = new Missile("black-hole-nuke"){{
+            buildCost(
+                PMItems.tenelium, 110,
+                Items.surgeAlloy, 65,
+                Items.silicon, 80
+            );
+
+            prev = emptyNuke;
+            size = 3;
+            powerUse = 15f;
+            constructTime = 60f * 49f;
+
+            explosionBullet = PayloadBullets.paragonBlackHole;
         }};
 
         sandboxNuke = new Missile("sandbox-nuke"){{

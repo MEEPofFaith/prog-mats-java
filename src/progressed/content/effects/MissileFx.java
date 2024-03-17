@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import blackhole.entities.effect.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -182,5 +183,7 @@ public class MissileFx{
             float ang = Mathf.angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
-    });
+    }),
+
+    bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f, true).layer(Layer.effect + 0.005f);
 }
