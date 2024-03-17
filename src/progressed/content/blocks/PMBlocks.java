@@ -771,7 +771,7 @@ public class PMBlocks{
             recoilTime = 240f;
             cooldownTime = 300f;
             shootY = 0f;
-            shootSound = Sounds.release;
+            shootSound = Sounds.dullExplosion;
             shootType = PMBullets.blackHole;
 
             consumePower(35f);

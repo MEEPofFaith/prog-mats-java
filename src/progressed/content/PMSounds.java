@@ -18,8 +18,6 @@ public class PMSounds{
     pixelShoot = new Sound(),
     pixelHit = new Sound(),
     rockExplode = new Sound(),
-    harbingerCharge = new Sound(),
-    harbingerBlast = new Sound(),
     nuclearExplosion = new Sound(),
     pulseBeam = new Sound(),
     funiBoom = new Sound(),
@@ -31,8 +29,6 @@ public class PMSounds{
         pixelShoot = Vars.tree.loadSound("pixel-shoot");
         pixelHit = Vars.tree.loadSound("pixel-hit");
         rockExplode = Vars.tree.loadSound("rock-explode");
-        harbingerCharge = Vars.tree.loadSound("harbinger-charge");
-        harbingerBlast = Vars.tree.loadSound("harbinger-blast");
         nuclearExplosion = Vars.tree.loadSound("nuclear-explosion");
         pulseBeam = Vars.tree.loadSound("pulse-beam");
         funiBoom = Vars.tree.loadSound("funi-boom");

@@ -1,11 +1,13 @@
 package progressed.entities.bullet.energy;
 
+import arc.audio.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import blackhole.graphics.*;
+import mindustry.audio.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -14,6 +16,8 @@ import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
 import progressed.entities.bullet.pseudo3d.*;
+
+import static mindustry.Vars.*;
 
 public class BlackHoleBulletType extends BulletType{
     static Seq<Class<?>> immuneTypes = Seq.with(
@@ -28,6 +32,8 @@ public class BlackHoleBulletType extends BulletType{
 
     public Color color = Color.black;
     public Effect swirlEffect = EnergyFx.blackHoleSwirl;
+    public Sound loopSound = Sounds.spellLoop;
+    public float loopSoundVolume = 2f;
     public float suctionRadius = 160f, size = 6f, lensEdge = -1f, damageRadius = 17f;
     public float force = 10f, scaledForce = 800f, bulletForce = 0.1f, bulletScaledForce = 1f;
     public float bulletDamage = 10f;
@@ -58,6 +64,15 @@ public class BlackHoleBulletType extends BulletType{
     @Override
     public float continuousDamage(){
         return damage / 2f * 60f; //Damage every 2 ticks
+    }
+
+    @Override
+    public void init(Bullet b){
+        super.init(b);
+
+        if(loopSound != null){
+            b.data = new SoundLoop(loopSound, loopSoundVolume);
+        }
     }
 
     @Override
@@ -96,6 +111,10 @@ public class BlackHoleBulletType extends BulletType{
                     }
                 }
             });
+        }
+
+        if(!headless && b.data instanceof SoundLoop loop){
+            loop.update(b.x, b.y, b.isAdded(), fout(b));
         }
 
         super.update(b);
@@ -142,6 +161,14 @@ public class BlackHoleBulletType extends BulletType{
 
         if(!b.hit && (fragBullet != null || splashDamageRadius > 0f || lightning > 0)){
             hit(b);
+        }
+    }
+
+    @Override
+    public void removed(Bullet b){
+        super.removed(b);
+        if(b.data instanceof SoundLoop loop){
+            loop.stop();
         }
     }
 
