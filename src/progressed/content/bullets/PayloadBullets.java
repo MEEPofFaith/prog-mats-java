@@ -409,7 +409,7 @@ public class PayloadBullets{
                 swirlEffect = MissileFx.bigBlackHoleSwirl;
                 loopSoundVolume = 6f;
 
-                horizonRadius = 18f * tilesize;
+                damageRadius = 18f * tilesize;
                 suctionRadius = 64f * tilesize;
             }};
         }};
