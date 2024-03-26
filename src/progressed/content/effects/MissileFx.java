@@ -6,14 +6,17 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import blackhole.entities.effect.*;
+import blackhole.graphics.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.graphics.renders.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
+import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
 import static progressed.util.PMUtls.*;
 
@@ -185,5 +188,23 @@ public class MissileFx{
         });
     }),
 
-    bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f, true).layer(Layer.effect + 0.005f);
+    bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f, true).layer(Layer.effect + 0.005f),
+
+    slashTest = new Effect(90, 128 * tilesize * 8, e -> { //b i g   c l i p
+        float ang = Mathf.randomSeed(e.id, Mathf.PI2);
+        float fout = e.fout(Interp.circleIn);
+        SlashRenderer.addSlash(e.x, e.y, Mathf.halfPi - ang, 64 * fout);
+
+        ang *= Mathf.radDeg;
+        Tmp.v1.trns(ang, 128 * tilesize * fout);
+        Tmp.v2.trns(ang + 90f, tilesize * fout);
+
+        Draw.color(Color.white);
+        Fill.quad(
+            e.x + Tmp.v1.x, e.y + Tmp.v1.y,
+            e.x + Tmp.v2.x, e.y + Tmp.v2.y,
+            e.x - Tmp.v1.x, e.y - Tmp.v1.y,
+            e.x - Tmp.v2.x, e.y - Tmp.v2.y
+        );
+    }).layer(BHLayer.end + 2f);
 }

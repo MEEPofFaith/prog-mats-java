@@ -404,13 +404,16 @@ public class PayloadBullets{
             gravity = 0.02f;
             fragBullets = 1;
             fragBullet = new BlackHoleBulletType(0f, 4400f / 30f){{
-                lifetime = 10f * 60f;
-                growTime = lifetime - MissileFx.bigBlackHoleSwirl.lifetime;
+                lifetime = 4f * 60f;
+                growTime = lifetime;
+                shrinkTime = 0f;
                 swirlEffect = MissileFx.bigBlackHoleSwirl;
                 loopSoundVolume = 6f;
 
                 damageRadius = 18f * tilesize;
                 suctionRadius = 64f * tilesize;
+
+                despawnEffect = MissileFx.slashTest;
             }};
         }};
 

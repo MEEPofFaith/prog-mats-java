@@ -21,6 +21,7 @@ public class PMRenders{
 
     public static void init(){
         dimRenderer = new DimRenderer();
+        SlashRenderer.init();
 
         Events.on(ResetEvent.class, e -> {
             flashReduction = flashTime = 0;
@@ -40,6 +41,8 @@ public class PMRenders{
                     Draw.color();
                 }
             });
+
+            SlashRenderer.draw();
         });
     }
 

@@ -152,15 +152,15 @@ public class PMShaders{
         }
     }
 
-    static class PMLoadShader extends Shader{
-        PMLoadShader(String vert, String frag){
+    public static class PMLoadShader extends Shader{
+        public PMLoadShader(String vert, String frag){
             super(
                 files.internal("shaders/" + vert + ".vert"),
                 tree.get("shaders/" + frag + ".frag")
             );
         }
 
-        PMLoadShader(String frag){
+        public PMLoadShader(String frag){
             this("default", frag);
         }
     }
