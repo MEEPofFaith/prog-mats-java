@@ -35,7 +35,8 @@ public class SlashRenderer{
     }
 
     public static void addSlash(float x, float y, float a, float off){
-        slashes.add(new SlashData(x, y, a, off));
+        if(off <= 0.001f) return;
+        slashes.add(new SlashData(x, y, Mathf.halfPi - a, off));
     }
 
     public static void draw(){

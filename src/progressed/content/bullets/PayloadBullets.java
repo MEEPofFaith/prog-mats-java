@@ -3,7 +3,6 @@ package progressed.content.bullets;
 import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
-import blackhole.entities.bullet.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -182,7 +181,7 @@ public class PayloadBullets{
 
         artemisBasic = new ArcMissileBulletType("prog-mats-basic-missile"){{
             splashDamage = 750f;
-            splashDamageRadius = 64f;
+            splashDamageRadius = 6f * tilesize;
             buildingDamageMultiplier = 0.5f;
             hitShake = 5f;
 
@@ -226,7 +225,7 @@ public class PayloadBullets{
                 fragBullets = 3;
                 fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 220f;
-                    splashDamageRadius = 48f;
+                    splashDamageRadius = 4f * tilesize;
                     keepVelocity = true;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
@@ -263,7 +262,7 @@ public class PayloadBullets{
             bulletInterval = 20f;
             intervalDelay = 45f;
             intervalRandomSpread = 0f;
-            intervalBullet = new ArcBombBulletType(170f, 3f * 8f, "prog-mats-bombing-missile-bomb"){{
+            intervalBullet = new ArcBombBulletType(170f, 3f * tilesize, "prog-mats-bombing-missile-bomb"){{
                 accel = 0f;
                 buildingDamageMultiplier = 0.5f;
                 homingPower = 0.5f;
@@ -276,7 +275,7 @@ public class PayloadBullets{
 
         paragonBasic = new ArcMissileBulletType("prog-mats-basic-nuke"){{
             splashDamage = 27000f;
-            splashDamageRadius = 240f;
+            splashDamageRadius = 24f * tilesize;
             buildingDamageMultiplier = 0.5f;
             lifetime = 3f * 60f;
 
@@ -312,10 +311,10 @@ public class PayloadBullets{
             fragBullets = 20;
             fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3500f;
-                splashDamageRadius = 40f;
+                splashDamageRadius = 2f * tilesize;
                 buildingDamageMultiplier = 0.5f;
 
-                homingPower = 1f;
+                homingPower = 0.5f;
                 homingRange = 30f * 8f;
 
                 hitShake = 5f;
@@ -389,7 +388,7 @@ public class PayloadBullets{
             lifetime = 3f * 60f;
             status = StatusEffects.none;
 
-            hitSound = PMSounds.nuclearExplosion;
+            hitSound = Sounds.dullExplosion;
             hitShake = 30f;
             despawnEffect = Fx.none;
             absorbEffect = Pseudo3DFx.absorbedLarge;
@@ -403,17 +402,33 @@ public class PayloadBullets{
             accel = 0.01f;
             gravity = 0.02f;
             fragBullets = 1;
-            fragBullet = new BlackHoleBulletType(0f, 4400f / 30f){{
-                lifetime = 4f * 60f;
-                growTime = lifetime;
+            fragBullet = new SlashBlackHoleBulletType(0f, 4400f / 30f){{
+                growTime = 4f * 60f;
+                slashTime = 4f * 60f;
+                lifetime = growTime + slashTime;
                 shrinkTime = 0f;
                 swirlEffect = MissileFx.bigBlackHoleSwirl;
                 loopSoundVolume = 6f;
 
-                damageRadius = 18f * tilesize;
+                damageRadius = 8f * tilesize;
+                horizonRadius = damageRadius + 2f * tilesize;
                 suctionRadius = 64f * tilesize;
 
-                despawnEffect = MissileFx.slashTest;
+                despawnHit = true;
+                splashDamage = 17000f;
+                splashDamageRadius = 24f * tilesize;
+                splashDamagePierce = true;
+                scaledSplashDamage = true;
+                buildingDamageMultiplier = 0.5f;
+
+                despawnSound = PMSounds.nuclearExplosion;
+                despawnEffect = MissileFx.blackHoleNukeExplode;
+                hitEffect = Fx.none;
+                starIn = Color.white;
+                starWidth = 12f * tilesize;
+                starHeight = 3f * tilesize;
+                slashOffsetStart = 8f;
+                slashOffsetEnd = 32f;
             }};
         }};
 

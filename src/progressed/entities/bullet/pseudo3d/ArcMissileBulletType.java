@@ -14,6 +14,8 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         hitSound = Sounds.largeExplosion;
         ammoMultiplier = 1;
         scaleLife = true;
+        scaledSplashDamage = true;
+        splashDamagePierce = true;
         status = StatusEffects.blasted;
         drawZone = drawShadow = true;
         absorbEffect = Pseudo3DFx.absorbed;
