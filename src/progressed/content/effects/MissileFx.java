@@ -14,11 +14,12 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static arc.util.Tmp.*;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static mindustry.graphics.Drawf.*;
-import static progressed.util.PMUtls.*;
 
 public class MissileFx{
+    public static final Rand rand = new Rand();
+
     public static Effect
 
     shootSmokeDownpour = new Effect(70f, e -> {
@@ -62,9 +63,10 @@ public class MissileFx{
         float amount = 40;
         float fin = e.fin(Interp.pow5Out);
         Draw.alpha(e.fout(Interp.pow3Out));
+        rand.setSeed(e.id);
         for(int i = 0; i < amount; i++){
-            int frame = (int)Mathf.mod(e.time * ((float)Fire.duration / Fire.frames) + Mathf.randomSeed(e.id + i * 2L, Fire.frames), Fire.frames);
-            v1.trns(i * (360f / amount) + Mathf.randomSeedRange(e.id, 180f), 88f * fin);
+            int frame = (int)Mathf.mod(e.time * ((float)Fire.duration / Fire.frames) + rand.random(Fire.frames), Fire.frames);
+            v1.trns(i * (360f / amount) + rand.range(180f), 88f * fin);
             Draw.rect(Fire.regions[frame], e.x + v1.x, e.y + v1.y);
         }
         Draw.color();
@@ -188,14 +190,24 @@ public class MissileFx{
 
     bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f, true).layer(Layer.effect + 0.005f),
 
-    blackHoleNukeExplode = new Effect(180f, e -> {
-        float rad = 32f * tilesize;
+    blackHoleNukeParticle = new Effect(300f, e -> {
+        rand.setSeed(e.id);
+        float rad = rand.random(1f, 4f) * tilesize * (1f - Interp.pow3Out.apply(Mathf.curve(e.time, 120f, 300f)));
+        float ang = rand.random(360f);
+        float dst = rand.random(8f, 24f) * tilesize * e.fin(Interp.pow5Out);
+
+        Draw.color(Color.black);
+        Fill.circle(e.x + Angles.trnsx(ang, dst), e.y + Angles.trnsy(ang, dst), rad);
+    }).layer(Layer.effect + 0.02f),
+
+    blackHoleNukeWaves = new Effect(180f, e -> {
+        float rad = 12f * tilesize;
         e.scaled(150f, s -> {
-            Lines.stroke(9f * tilesize * s.fout(), e.color);
+            Lines.stroke(3f * tilesize * s.fout(), e.color);
             Lines.circle(e.x, e.y, 1.5f * rad * s.fin(Interp.pow3Out));
         });
 
-        Lines.stroke(4f * tilesize * e.fout(), Color.black);
+        Lines.stroke(2f * tilesize * e.fout(), Color.black);
         Lines.circle(e.x, e.y, rad * e.fin(Interp.pow3Out));
-    }).layer(Layer.effect + 0.02f);
+    }).layer(Layer.effect + 0.03f);
 }

@@ -16,6 +16,7 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.bullet.unit.*;
+import progressed.entities.effect.*;
 import progressed.graphics.*;
 import progressed.type.unit.*;
 import progressed.type.weapons.*;
@@ -427,13 +428,17 @@ public class PayloadBullets{
                 buildingDamageMultiplier = 0.5f;
 
                 despawnSound = PMSounds.nuclearExplosion;
-                despawnEffect = MissileFx.blackHoleNukeExplode;
+                despawnEffect = new MultiEffect(
+                    MissileFx.blackHoleNukeWaves,
+                    new RepeatEffect(MissileFx.blackHoleNukeParticle, 1f, 60)
+                );
                 hitEffect = Fx.none;
                 starIn = Color.white;
                 starWidth = 8f * tilesize;
                 starHeight = 3f * tilesize;
                 slashOffsetStart = 8f;
                 slashOffsetEnd = 32f;
+                slashWidthTo = 0.25f * tilesize;
             }};
         }};
 
