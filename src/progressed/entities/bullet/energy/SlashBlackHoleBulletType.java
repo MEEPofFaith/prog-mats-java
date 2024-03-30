@@ -58,8 +58,8 @@ public class SlashBlackHoleBulletType extends BlackHoleBulletType{
             SlashRenderer.addSlash(b.x, b.y, ang, off);
 
             ang *= Mathf.radDeg;
-            Tmp.v1.trns(ang, slashLength);
-            Tmp.v2.trns(ang + 90f, Mathf.lerp(slashWidthFrom, slashWidthTo, sfin));
+            Tmp.v1.trns(ang, slashLength * fout);
+            Tmp.v2.trns(ang + 90f, Mathf.lerp(slashWidthFrom, slashWidthTo, sfin) * fout);
 
             Draw.color(BHDrawf.teamColor(b, slashColor));
             Fill.quad(
