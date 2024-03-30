@@ -54,7 +54,7 @@ public class SlashBlackHoleBulletType extends BlackHoleBulletType{
         if(b.time > b.lifetime - slashTime){
             float ang = Mathf.randomSeed(b.id, Mathf.PI2);
             float sfin = Interp.sineOut.apply(Mathf.curve(b.time, b.lifetime - slashTime, b.lifetime));
-            float off = Mathf.lerp(slashOffsetStart, slashOffsetEnd, sfin);
+            float off = Mathf.lerp(slashOffsetStart, slashOffsetEnd, sfin) * fout;
             SlashRenderer.addSlash(b.x, b.y, ang, off);
 
             ang *= Mathf.radDeg;

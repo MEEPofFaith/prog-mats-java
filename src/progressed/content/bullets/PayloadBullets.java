@@ -406,7 +406,7 @@ public class PayloadBullets{
                 growTime = 4f * 60f;
                 slashTime = 4f * 60f;
                 lifetime = growTime + slashTime;
-                shrinkTime = 0f;
+                shrinkTime = 0.2f * 60f;
                 swirlEffect = MissileFx.bigBlackHoleSwirl;
                 loopSoundVolume = 6f;
 
@@ -430,7 +430,7 @@ public class PayloadBullets{
                 despawnEffect = MissileFx.blackHoleNukeExplode;
                 hitEffect = Fx.none;
                 starIn = Color.white;
-                starWidth = 12f * tilesize;
+                starWidth = 8f * tilesize;
                 starHeight = 3f * tilesize;
                 slashOffsetStart = 8f;
                 slashOffsetEnd = 32f;
