@@ -414,6 +414,11 @@ public class PayloadBullets{
                 horizonRadius = damageRadius + 2f * tilesize;
                 suctionRadius = 64f * tilesize;
 
+                force = 20f;
+                scaledForce = 3600f;
+                bulletForce = 0.15f;
+                scaledBulletForce = 1.5f;
+
                 despawnHit = true;
                 splashDamage = 17000f;
                 splashDamageRadius = 24f * tilesize;
