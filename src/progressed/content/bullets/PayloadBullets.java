@@ -436,7 +436,7 @@ public class PayloadBullets{
                 starIn = Color.white;
                 starWidth = 8f * tilesize;
                 starHeight = 3f * tilesize;
-                slashOffsetStart = 8f;
+                slashOffsetStart = 24f;
                 slashOffsetEnd = 32f;
                 slashWidthTo = 0.25f * tilesize;
             }};
