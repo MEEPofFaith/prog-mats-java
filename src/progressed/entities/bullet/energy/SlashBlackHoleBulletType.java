@@ -2,9 +2,7 @@ package progressed.entities.bullet.energy;
 
 import arc.audio.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.util.*;
 import blackhole.entities.bullet.*;
 import blackhole.graphics.*;
 import mindustry.content.*;
@@ -49,27 +47,27 @@ public class SlashBlackHoleBulletType extends BlackHoleBulletType{
     @Override
     public void draw(Bullet b){
         float fout = this.fout(b);
-        BlackHoleRenderer.addBlackHole(b.x, b.y, this.horizonRadius * fout, this.lensingRadius * fout, BHDrawf.teamColor(b, this.color));
+        BlackHoleRenderer.addBlackHole(
+            b.x, b.y,
+            this.horizonRadius * fout, this.lensingRadius * fout,
+            BHDrawf.teamColor(b, this.color)
+        );
 
         if(b.time > b.lifetime - slashTime){
             float ang = Mathf.randomSeed(b.id, Mathf.PI2);
             float sfin = Interp.sineOut.apply(Mathf.curve(b.time, b.lifetime - slashTime, b.lifetime));
             float off = Mathf.lerp(slashOffsetStart, slashOffsetEnd, sfin) * fout;
-            SlashRenderer.addSlash(b.x, b.y, ang, off);
-
-            ang *= Mathf.radDeg;
-            Tmp.v1.trns(ang, slashLength * fout);
-            Tmp.v2.trns(ang + 90f, Mathf.lerp(slashWidthFrom, slashWidthTo, sfin) * fout);
-
-            Draw.color(BHDrawf.teamColor(b, slashColor));
-            Fill.quad(
-                b.x + Tmp.v1.x, b.y + Tmp.v1.y,
-                b.x + Tmp.v2.x, b.y + Tmp.v2.y,
-                b.x - Tmp.v1.x, b.y - Tmp.v1.y,
-                b.x - Tmp.v2.x, b.y - Tmp.v2.y
+            SlashRenderer.addSlash(
+                b.x, b.y, ang, off,
+                slashLength * fout, Mathf.lerp(slashWidthFrom, slashWidthTo, sfin) * fout,
+                BHDrawf.teamColor(b, slashColor).toFloatBits()
             );
         }else if(this.starWidth > 0.0F){
-            BlackHoleRenderer.addStar(b.x, b.y, this.starWidth * fout, this.starHeight * fout, this.starAngle, BHDrawf.teamColor(b, this.starIn), BHDrawf.teamColor(b, this.starOut));
+            BlackHoleRenderer.addStar(
+                b.x, b.y,
+                this.starWidth * fout, this.starHeight * fout, this.starAngle,
+                BHDrawf.teamColor(b, this.starIn), BHDrawf.teamColor(b, this.starOut)
+            );
         }
     }
 }

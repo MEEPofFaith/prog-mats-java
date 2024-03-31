@@ -5,10 +5,12 @@ import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import blackhole.graphics.*;
 import progressed.graphics.PMShaders.*;
 
 import static arc.Core.*;
+import static mindustry.Vars.renderer;
 
 public class SlashRenderer{
     private static int maxCount = 4;
@@ -34,9 +36,9 @@ public class SlashRenderer{
         buffer = new FrameBuffer();
     }
 
-    public static void addSlash(float x, float y, float a, float off){
+    public static void addSlash(float x, float y, float a, float off, float length, float width, float color){
         if(off <= 0.001f) return;
-        slashes.add(new SlashData(x, y, Mathf.halfPi - a, off));
+        slashes.add(new SlashData(x, y, a, off, length, width, color));
     }
 
     public static void draw(){
@@ -55,13 +57,38 @@ public class SlashRenderer{
                 SlashData slash = slashes.get(i);
                 slashArray[i * 4] = slash.x;
                 slashArray[i * 4 + 1] = slash.y;
-                slashArray[i * 4 + 2] = Mathf.mod(slash.angle, Mathf.PI2)   ;
+                slashArray[i * 4 + 2] = Mathf.mod(Mathf.halfPi - slash.angle, Mathf.PI2);
                 slashArray[i * 4 + 3] = slash.offset;
             }
             slashShader.slashes = slashArray;
             buffer.blit(slashShader);
+
+            if(renderer.bloom != null){
+                renderer.bloom.capture();
+                drawSlashes();
+                renderer.bloom.render();
+            }else{
+                drawSlashes();
+            }
+
             slashes.clear();
         });
+    }
+
+    private static void drawSlashes(){
+        for(SlashData slash : slashes){
+            float ang = slash.angle * Mathf.radDeg;
+            Tmp.v1.trns(ang, slash.length);
+            Tmp.v2.trns(ang + 90f, slash.width);
+
+            Draw.color(slash.color);
+            Fill.quad(
+                slash.x + Tmp.v1.x, slash.y + Tmp.v1.y,
+                slash.x + Tmp.v2.x, slash.y + Tmp.v2.y,
+                slash.x - Tmp.v1.x, slash.y - Tmp.v1.y,
+                slash.x - Tmp.v2.x, slash.y - Tmp.v2.y
+            );
+        }
     }
 
     private static class SlashShader extends PMLoadShader{
@@ -83,12 +110,16 @@ public class SlashRenderer{
 
     private static class SlashData{
         public float x, y, angle, offset;
+        public float length, width, color;
 
-        public SlashData(float x, float y, float angle, float offset){
+        public SlashData(float x, float y, float angle, float offset, float length, float width, float color){
             this.x = x;
             this.y = y;
             this.angle = angle;
             this.offset = offset;
+            this.length = length;
+            this.width = width;
+            this.color = color;
         }
     }
 }
