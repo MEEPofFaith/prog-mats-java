@@ -2,7 +2,6 @@ package progressed.content.bullets;
 
 import arc.graphics.*;
 import blackhole.entities.bullet.*;
-import blackhole.entities.effect.SwirlEffect.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
@@ -117,24 +116,7 @@ public class PMBullets{
             float life = EnergyFx.kugelblitzGrow.lifetime;
             chargeEffect = new MultiEffect(
                 new WrapEffect(
-                    new RepeatEffect(EnergyFx.kugelblitzCharge, (life - EnergyFx.kugelblitzCharge.lifetime - 1f) / times, times){
-                        @Override
-                        protected void add(float x, float y, float rotation, Color color, Object data){
-                            var entity = BlackHoleEffectState.create();
-                            entity.effect = this;
-                            entity.rotation = baseRotation + rotation;
-                            entity.data = data;
-                            entity.lifetime = lifetime;
-                            entity.set(x, y);
-                            entity.color.set(color);
-                            if(followParent && data instanceof Posc p){
-                                entity.parent = p;
-                                entity.rotWithParent = rotWithParent;
-                            }
-                            entity.add();
-                        }
-                    }.followParent(true).rotWithParent(true),
-                    Color.black, 48f
+                    new RepeatEffect(EnergyFx.kugelblitzCharge, (life - EnergyFx.kugelblitzCharge.lifetime - 1f) / times, times), Color.black, 48f
                 ),
                 EnergyFx.kugelblitzGrow
             );
