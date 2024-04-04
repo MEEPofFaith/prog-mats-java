@@ -10,3 +10,8 @@ if(JavaVersion.current().ordinal() < JavaVersion.VERSION_17.ordinal()){
 }
 
 rootProject.name = modName
+
+if(new File(rootDir.parent, 'MindustryBlackHoleRenderer').exists()){
+    println("Compiling with local Black Hole Library")
+    includeBuild("../MindustryBlackHoleRenderer")
+}
