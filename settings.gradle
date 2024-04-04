@@ -11,7 +11,32 @@ if(JavaVersion.current().ordinal() < JavaVersion.VERSION_17.ordinal()){
 
 rootProject.name = modName
 
-if(new File(rootDir.parent, 'MindustryBlackHoleRenderer').exists()){
+def name = 'MindustryBlackHoleRenderer'
+if(new File(rootDir.parent, name).exists()){
     println("Compiling with local Black Hole Library")
-    includeBuild("../MindustryBlackHoleRenderer")
+    includeBuild("../${name}"){
+        dependencySubstitution{sub ->
+            sub.all{
+                if(it.requested instanceof ModuleComponentSelector){
+                    def req = it.requested as ModuleComponentSelector
+                    if(Boolean.valueOf(mindustryBE) && req.group == 'com.github.Anuken.Mindustry'){
+                        useTarget "com.github.Anuken.MindustryJitpack:$req.module:$mindustryBEVersion"
+                    }else if(req.group == 'com.github.Anuken.Arc'){
+                        useTarget "com.github.Anuken.Arc:$req.module:$arcVersion"
+                    }else if(req.group.startsWith('com.github.MEEPofFaith')){
+                        def group = req.group.substring('com.github.MEEPofFaith'.length())
+                        if(group.isEmpty() && req.module == name){
+                            useTarget sub.project(':')
+                        }else if(!group.isEmpty() && group.substring(1) == name){
+                            if(req.module.endsWith('.gradle.plugin')){
+                                useTarget sub.project(':')
+                            }else{
+                                useTarget sub.project(":$req.module")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
