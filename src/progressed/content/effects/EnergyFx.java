@@ -6,7 +6,9 @@ import arc.math.*;
 import arc.util.*;
 import blackhole.entities.effect.*;
 import mindustry.entities.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
+import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.util.*;
 
@@ -77,7 +79,23 @@ public class EnergyFx{
         }
 
         Drawf.light(e.x, e.y, rX * 2f, e.color, 0.8f);
-    }).followParent(true).rotWithParent(true),
+    }){
+        @Override
+        protected void add(float x, float y, float rotation, Color color, Object data){
+            var entity = TurretParentEffectState.create();
+            entity.effect = this;
+            entity.rotation = baseRotation + rotation;
+            entity.data = data;
+            entity.lifetime = lifetime;
+            entity.set(x, y);
+            entity.color.set(color);
+            if(followParent && data instanceof Posc p){
+                entity.parent = p;
+                entity.rotWithParent = rotWithParent;
+            }
+            entity.add();
+        }
+    }.followParent(true).rotWithParent(true),
 
     kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false, false).layer(Layer.bullet - 0.03f),
 
