@@ -77,7 +77,7 @@ public class EnergyFx{
         }
 
         Drawf.light(e.x, e.y, rX * 2f, e.color, 0.8f);
-    }),
+    }).followParent(true).rotWithParent(true),
 
     kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false, false).layer(Layer.bullet - 0.03f),
 

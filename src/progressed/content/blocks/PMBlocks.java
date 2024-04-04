@@ -761,21 +761,53 @@ public class PMBlocks{
             size = 4;
             hideDetails = false;
             scaledHealth = 230;
-            canOverdrive = false;
             reload = 520f;
             range = 256f;
             shootEffect = smokeEffect = Fx.none;
+            linearWarmup = true;
+            minWarmup = 1f;
+            shootWarmupSpeed = 1f / (1.5f * 60f);
+            warmupMaintainTime = 60f;
             shoot.firstShotDelay = EnergyFx.kugelblitzGrow.lifetime - 1f;
             rotateSpeed = 2f;
             recoil = 2f;
             recoilTime = 240f;
             cooldownTime = 300f;
-            shootY = 0f;
+            shootY = -11f / 4f;
             shootSound = Sounds.dullExplosion;
             shootType = PMBullets.blackHole;
 
             consumePower(35f);
             coolant = consumeCoolant(0.2f);
+
+            drawer = new DrawTurret(){{
+                PartProgress push = PartProgress.warmup.shorten(0.6f).clamp().curve(Interp.smooth);
+                PartProgress pull = PartProgress.warmup.delay(0.6f).clamp().curve(Interp.smooth);
+
+                parts.addAll(
+                    new RegionPart("-bottom"),
+                    new RegionPart("-front"){{
+                        mirror = true;
+                        moves.addAll(
+                            new PartMove(push, 0f, 2.5f, 0f),
+                            new PartMove(pull, 14f / 4f, -2f, 0f)
+                        );
+                    }},
+                    new RegionPart("-back"){{
+                        mirror = true;
+                        moves.addAll(
+                            new PartMove(push, 0f, -2.5f, 0f),
+                            new PartMove(pull, 14f / 4f, 2f, 0f)
+                        );
+                    }},
+                    new RegionPart("-cover"){{
+                        mirror = true;
+                        progress = PartProgress.warmup.curve(0.4f, 0.4f).clamp().curve(Interp.smooth);
+                        moveX = 20f / 4f;
+                    }},
+                    new RegionPart("-top")
+                );
+            }};
         }};
 
         excalibur = new PowerTurret("excalibur"){{
