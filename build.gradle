@@ -40,7 +40,7 @@ configure(allprojects){
         localBlackhole = new File(rootDir.parent, 'MindustryBlackHoleRenderer').exists()
 
         blackhole = {String module ->
-            return "com.github.MEEPofFaith.MindustryBlackHoleRenderer$module:$blackHoleRendererVersion"
+            return "com.github.MEEPofFaith$module:$blackHoleRendererVersion"
         }
     }
 
