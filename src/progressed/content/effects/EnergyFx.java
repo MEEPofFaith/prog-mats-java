@@ -97,7 +97,9 @@ public class EnergyFx{
         }
     }.followParent(true).rotWithParent(true),
 
-    kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false, false).layer(Layer.bullet - 0.03f),
+    kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false){{
+        lightOpacity = -1f;
+    }}.layer(Layer.bullet - 0.03f),
 
     blackHoleDespawn = new Effect(80f, e -> {
         float rad = 24f;
