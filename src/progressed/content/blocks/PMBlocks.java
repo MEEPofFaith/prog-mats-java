@@ -25,6 +25,7 @@ import progressed.content.effects.*;
 import progressed.entities.bullet.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.effect.*;
+import progressed.entities.part.*;
 import progressed.type.unit.*;
 import progressed.util.*;
 import progressed.world.blocks.crafting.*;
@@ -786,12 +787,15 @@ public class PMBlocks{
 
                 parts.addAll(
                     new RegionPart("-bottom"),
+                    new SpacePart("-space"),
                     new RegionPart("-front"){{
                         mirror = true;
                         moves.addAll(
                             new PartMove(push, 0f, 2.5f, 0f),
                             new PartMove(pull, 14f / 4f, -2f, 0f)
                         );
+                        layerOffset = 0.001f;
+                        outlineLayerOffset -= layerOffset;
                     }},
                     new RegionPart("-back"){{
                         mirror = true;
@@ -799,13 +803,27 @@ public class PMBlocks{
                             new PartMove(push, 0f, -2.5f, 0f),
                             new PartMove(pull, 14f / 4f, 2f, 0f)
                         );
+                        layerOffset = 0.001f;
+                        outlineLayerOffset -= layerOffset;
                     }},
                     new RegionPart("-cover"){{
                         mirror = true;
                         progress = PartProgress.warmup.curve(0.4f, 0.4f).clamp().curve(Interp.smooth);
                         moveX = 20f / 4f;
+                        layerOffset = 0.001f;
+                        outlineLayerOffset -= layerOffset;
                     }},
-                    new RegionPart("-top")
+                    new RegionPart("-side-cover"){{
+                        mirror = true;
+                        progress = pull;
+                        moveY = 7f / 4f;
+                        layerOffset = 0.001f;
+                        outlineLayerOffset -= layerOffset;
+                    }},
+                    new RegionPart("-over"){{
+                        layerOffset = 0.002f;
+                        outlineLayerOffset -= layerOffset;
+                    }}
                 );
             }};
         }};
