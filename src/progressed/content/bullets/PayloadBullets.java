@@ -189,7 +189,7 @@ public class PayloadBullets{
             gravity = 0.12f;
             trailLength = 25;
             trailWidth = 1f;
-            trailColor = targetColor = PMPal.missileBasic;
+            trailColor = targetColor = zoneColor = PMPal.missileBasic;
         }};
 
         artemisRecursive = new ArcMissileBulletType("prog-mats-recursive-missile"){{
@@ -198,7 +198,7 @@ public class PayloadBullets{
             zoneRadius = 5f * 8f;
             trailLength = 25;
             trailWidth = 1f;
-            trailColor = targetColor = PMPal.missileFrag;
+            trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
             hitEffect = despawnEffect = Fx.none;
             hitSound = despawnSound = Sounds.none;
@@ -213,7 +213,7 @@ public class PayloadBullets{
                 zoneRadius = 3.5f * 8f;
                 trailLength = 20;
                 trailWidth = 1f;
-                trailColor = targetColor = PMPal.missileFrag;
+                trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
                 hitEffect = despawnEffect = Fx.none;
                 hitSound = despawnSound = Sounds.none;
@@ -239,7 +239,7 @@ public class PayloadBullets{
                     targetDriftDrag = 0.02f;
                     trailLength = 15;
                     trailWidth = 1f;
-                    trailColor = targetColor = PMPal.missileFrag;
+                    trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
                     absorbEffect = Pseudo3DFx.absorbedSmall;
                 }};
@@ -256,7 +256,7 @@ public class PayloadBullets{
 
             trailLength = 25;
             trailWidth = 1f;
-            trailColor = targetColor = Pal.suppress;
+            trailColor = targetColor = zoneColor = Pal.suppress;
 
             accel = 0.03f;
             gravity = 0.05f;
@@ -268,7 +268,7 @@ public class PayloadBullets{
                 buildingDamageMultiplier = 0.5f;
                 homingPower = 0.5f;
 
-                trailColor = targetColor = Pal.suppress;
+                trailColor = targetColor = zoneColor = Pal.suppress;
                 trailLength = 12;
                 trailWidth = 1f;
             }};
@@ -290,7 +290,7 @@ public class PayloadBullets{
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 2.5f;
-            trailColor = targetColor = PMPal.missileBasic;
+            trailColor = targetColor = zoneColor = PMPal.missileBasic;
         }};
 
         paragonCluster = new ArcMissileBulletType("prog-mats-cluster-nuke"){{
@@ -301,7 +301,7 @@ public class PayloadBullets{
             zoneRadius = 12f * 8f;
             trailLength = 35;
             trailWidth = 2.5f;
-            trailColor = targetColor = PMPal.missileFrag;
+            trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
             hitEffect = despawnEffect = Fx.none;
             hitSound = despawnSound = Sounds.none;
@@ -327,7 +327,7 @@ public class PayloadBullets{
                 gravity = 0.025f;
                 trailLength = 35;
                 trailWidth = 1f;
-                trailColor = targetColor = PMPal.missileFrag;
+                trailColor = targetColor = zoneColor = PMPal.missileFrag;
             }};
         }};
 
@@ -343,7 +343,7 @@ public class PayloadBullets{
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 2.5f;
-            trailColor = targetColor = Pal.lancerLaser;
+            trailColor = targetColor = zoneColor = Pal.lancerLaser;
 
             accel = 0.01f;
             gravity = 0.02f;
@@ -398,7 +398,7 @@ public class PayloadBullets{
             trailLength = 35;
             trailWidth = 2.5f;
             trailColor = Pal.sapBulletBack; //Black doesn't work because of bloom
-            targetColor = Color.black;
+            targetColor = zoneColor = Color.black;
 
             accel = 0.01f;
             gravity = 0.02f;
@@ -444,7 +444,7 @@ public class PayloadBullets{
 
         ohno = (ArcMissileBulletType)paragonCluster.copy();
         ohno.sprite = "prog-mats-sandbox-nuke";
-        ohno.targetColor = ohno.trailColor = Color.red;
+        ohno.targetColor = ohno.trailColor = ohno.zoneColor = Color.red;
         ohno.rangeChange = 500 * tilesize;
 
         ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();

@@ -39,7 +39,7 @@ public class ArcBulletType extends BulletType{
     public float zoneLayer = Layer.bullet - 1f;
     public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
     public float zoneLifeOffset = 0f;
-    public Color targetColor = Color.red;
+    public Color zoneColor = Color.red, targetColor = Color.red;
 
     static{
         BlackHoleUtils.immuneBulletTypes.add(ArcBulletType.class);
@@ -262,9 +262,9 @@ public class ArcBulletType extends BulletType{
     public void drawTargetZone(Bullet b){
         Draw.z(zoneLayer - 0.01f);
         if(drawZone && zoneRadius > 0f){
-            Draw.color(Color.red, 0.25f + 0.25f * Mathf.absin(16f, 1f));
+            Draw.color(zoneColor, 0.25f + 0.25f * Mathf.absin(16f, 1f));
             Fill.circle(b.aimX, b.aimY, zoneRadius);
-            Draw.color(Color.red, 0.5f);
+            Draw.color(zoneColor, 0.5f);
             float fin = zoneLifeOffset + b.fin() * (1f - zoneLifeOffset);
             float subRad = fin * (zoneRadius + shrinkRad),
                 inRad = Math.max(0, zoneRadius - subRad),
