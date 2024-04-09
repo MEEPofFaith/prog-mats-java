@@ -36,8 +36,12 @@ public class ArcBulletType extends BulletType{
     public boolean bloomTrail = true;
 
     public boolean drawZone = false;
-    public float zoneLayer = Layer.bullet - 1f;
-    public float targetRadius = 1f, zoneRadius = 3f * 8f, shrinkRad = -1f;
+    public float zoneLayer = Layer.bullet;
+    public float targetRadius = 12f, zoneRadius = 3f * 8f;
+    public float shortSpikeWidth = -1f, shortSpike = -1f;
+    public float longSpikeWidth = -1f, longSpike = -1f;
+    public float spokeWidth = 2f, spokeLength = 8f;
+    public float spikeSpin = 0.5f;
     public float zoneLifeOffset = 0f;
     public Color zoneColor = Color.red, targetColor = Color.red;
 
@@ -75,6 +79,11 @@ public class ArcBulletType extends BulletType{
 
     @Override
     public void init(){
+        if(longSpike < 0) longSpike = zoneRadius / 2f;
+        if(shortSpike < 0) shortSpike = longSpike / 2f;
+        if(shortSpikeWidth < 0) shortSpikeWidth = shortSpike / 2f;
+        if(longSpikeWidth < 0) longSpikeWidth = shortSpikeWidth;
+
         if(fragBullet instanceof ArcBulletType a){
             a.isInheritive = true;
             a.zoneLifeOffset = a.zoneLifeOffset * a.lifetimeScl + lifetimeScl;
@@ -260,20 +269,31 @@ public class ArcBulletType extends BulletType{
     }
 
     public void drawTargetZone(Bullet b){
-        Draw.z(zoneLayer - 0.01f);
-        if(drawZone && zoneRadius > 0f){
-            Draw.color(zoneColor, 0.25f + 0.25f * Mathf.absin(16f, 1f));
-            Fill.circle(b.aimX, b.aimY, zoneRadius);
-            Draw.color(zoneColor, 0.5f);
-            float fin = zoneLifeOffset + b.fin() * (1f - zoneLifeOffset);
-            float subRad = fin * (zoneRadius + shrinkRad),
-                inRad = Math.max(0, zoneRadius - subRad),
-                outRad = Math.min(zoneRadius, zoneRadius + shrinkRad - subRad);
-
-            PMDrawf.ring(b.aimX, b.aimY, inRad, outRad);
-        }
         Draw.z(zoneLayer);
-        PMDrawf.target(b.aimX, b.aimY, Time.time * 1.5f + Mathf.randomSeed(b.id, 360f), targetRadius, targetColor != null ? targetColor : b.team.color, b.team.color, 1f);
+        Draw.color(zoneColor);
+        float x = b.aimX, y = b.aimY;
+        float ang = Mathf.randomSeed(b.id, 360) + b.time * spikeSpin;
+        if(drawZone && zoneRadius > 0f){
+            PMDrawf.ring(x, y, zoneRadius, zoneRadius + 2f);
+            for(int i = 0; i < 4; i++){
+                float a = ang + 90 * i;
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), shortSpikeWidth, shortSpike, a + 180);
+            }
+            for(int i = 0; i < 4; i++){
+                float a = ang + 45 + 90 * i;
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), longSpikeWidth, longSpike, a + 180);
+            }
+        }
+
+        float fin = zoneLifeOffset + b.fin() * (1f - zoneLifeOffset);
+        PMDrawf.progressRing(x, y, zoneRadius + 4f, zoneRadius + 8f, fin);
+
+        PMDrawf.ring(x, y, targetRadius, targetRadius + 2f);
+        Lines.stroke(spokeWidth);
+        for(int i = 0; i < 4; i++){
+            float a = -ang + 90 * i;
+            Lines.lineAngleCenter(x + Angles.trnsx(a, targetRadius), y + Angles.trnsy(a, targetRadius), a, spokeLength, false);
+        }
     }
 
     @Override

@@ -399,6 +399,7 @@ public class PayloadBullets{
             trailWidth = 2.5f;
             trailColor = Pal.sapBulletBack; //Black doesn't work because of bloom
             targetColor = zoneColor = Color.black;
+            zoneLayer = Layer.bullet - 0.03f;
 
             accel = 0.01f;
             gravity = 0.02f;

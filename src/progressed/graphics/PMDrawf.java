@@ -127,6 +127,23 @@ public class PMDrawf{
         target(x, y, angle, radius, color, color, alpha);
     }
 
+    public static void progressRing(float x, float y, float rad1, float rad2, float progress){
+        if(Math.abs(rad1 - rad2) > 0.01f){
+            int sides = (int)(circleVertices(Math.max(rad1, rad2)) * progress);
+            float space = 360f * progress / sides;
+
+            for(int i = 0; i < sides; i++){
+                float a = 90f - space * i, cos = Mathf.cosDeg(a), sin = Mathf.sinDeg(a), cos2 = Mathf.cosDeg(a - space), sin2 = Mathf.sinDeg(a - space);
+                Fill.quad(
+                    x + rad1 * cos, y + rad1 * sin,
+                    x + rad1 * cos2, y + rad1 * sin2,
+                    x + rad2 * cos2, y + rad2 * sin2,
+                    x + rad2 * cos, y + rad2 *  sin
+                );
+            }
+        };
+    }
+
     public static void ring(float x, float y, float rad1, float rad2){
         if(Math.abs(rad1 - rad2) > 0.01f){
             int sides = circleVertices(Math.max(rad1, rad2));
