@@ -188,7 +188,7 @@ public class MissileFx{
         });
     }),
 
-    bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f, true).layer(Layer.effect + 0.005f),
+    bigBlackHoleSwirl = new SwirlEffect(90f, 16, 8f, 120f, 480f).layer(Layer.effect + 0.005f),
 
     blackHoleNukeParticle = new Effect(300f, e -> {
         rand.setSeed(e.id);

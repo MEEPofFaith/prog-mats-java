@@ -108,7 +108,7 @@ public class ModuleFx{
         };
     }).layer(Layer.effect + 1.004f),
 
-    abyssSwirl = new SwirlEffect(30f, Color.black, 5, 1.5f, 0f, 0f, 12f, 40f, false){{
+    abyssSwirl = new SwirlEffect(30f, Color.black, 5, 1.5f, 0f, 0f, 12f, 40f){{
         lightOpacity = -1f;
     }}.layer(Layer.effect + 1.005f),
 

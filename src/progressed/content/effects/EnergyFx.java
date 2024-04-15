@@ -97,7 +97,7 @@ public class EnergyFx{
         }
     }.followParent(true).rotWithParent(true),
 
-    kugelblitzCharge = new SwirlEffect(30f, 8, 2f, 30f, 90f, false){{
+    kugelblitzCharge = new SwirlEffect(30f, null, 8, 2f, 30f, 90f, -1f, -1f){{
         lightOpacity = -1f;
     }}.layer(Layer.bullet - 0.03f),
 
