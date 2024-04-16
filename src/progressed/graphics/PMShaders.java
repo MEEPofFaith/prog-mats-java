@@ -2,9 +2,12 @@ package progressed.graphics;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
+import mindustry.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -16,6 +19,7 @@ public class PMShaders{
     public static TractorConeShader tractorCone;
     public static AlphaShader alphaShader;
     public static DimShader dimShader;
+    public static SmallSpaceShader smallSpaceShader;
     public static PassThroughShader passThrough;
 
     public static void init(){
@@ -25,6 +29,7 @@ public class PMShaders{
         tractorCone = new TractorConeShader();
         alphaShader = new AlphaShader();
         dimShader = new DimShader();
+        smallSpaceShader = new SmallSpaceShader("smallspace");
         passThrough = new PassThroughShader();
     }
 
@@ -146,7 +151,34 @@ public class PMShaders{
         }
     }
 
-    static class PassThroughShader extends PMLoadShader{
+    public static class SmallSpaceShader extends PMLoadShader{
+        Texture texture;
+
+        public SmallSpaceShader(String frag){
+            super("screenspace", frag);
+        }
+
+        @Override
+        public void apply(){
+            if(texture == null){
+                texture = new Texture(Vars.tree.get("shaders/prog-mats-small-space.png"));
+                texture.setFilter(TextureFilter.linear);
+                texture.setWrap(TextureWrap.repeat);
+            }
+
+            setUniformf("u_campos", Core.camera.position.x, Core.camera.position.y);
+            setUniformf("u_ccampos", Core.camera.position);
+            setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
+            setUniformf("u_time", Time.time);
+
+            texture.bind(1);
+            renderer.effectBuffer.getTexture().bind(0);
+
+            setUniformi("u_stars", 1);
+        }
+    }
+
+    public static class PassThroughShader extends PMLoadShader{
         public PassThroughShader(){
             super("screenspace", "passThrough");
         }

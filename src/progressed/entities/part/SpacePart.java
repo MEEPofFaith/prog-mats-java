@@ -5,7 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import mindustry.entities.part.*;
-import mindustry.graphics.*;
+import progressed.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -25,10 +25,9 @@ public class SpacePart extends DrawPart{
     public void draw(PartParams params){
         Draw.draw(layer > 0 ? layer : Draw.z(), () -> {
             renderer.effectBuffer.begin(Color.clear);
-            float rot = params.rotation - 90f;
-            Draw.rect(region, params.x, params.y, rot);
+            Draw.rect(region, params.x, params.y, params.rotation - 90f);
             renderer.effectBuffer.end();
-            renderer.effectBuffer.blit(Shaders.space);
+            renderer.effectBuffer.blit(PMShaders.smallSpaceShader);
         });
     }
 
