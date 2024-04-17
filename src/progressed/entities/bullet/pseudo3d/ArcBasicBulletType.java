@@ -42,7 +42,7 @@ public class ArcBasicBulletType extends ArcBulletType{
 
     @Override
     public void draw(Bullet b){
-        if(drawZone) drawTargetZone(b);
+        drawTargetZone(b);
 
         ArcBulletData data = (ArcBulletData)b.data;
         float lastHX = Draw3D.x(b.lastX, data.lastZ),

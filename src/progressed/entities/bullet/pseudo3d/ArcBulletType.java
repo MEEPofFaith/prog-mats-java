@@ -37,9 +37,9 @@ public class ArcBulletType extends BulletType{
 
     public boolean drawZone = false;
     public float zoneLayer = Layer.bullet;
-    public float targetRadius = 12f, zoneRadius = 3f * 8f;
-    public float shortSpikeWidth = -1f, shortSpike = -1f;
-    public float longSpikeWidth = -1f, longSpike = -1f;
+    public float targetRadius = 12f, zoneRadius = 3f * 8f, progressRadius = -1f;
+    public float spikesWidth1 = -1f, spikesLength1 = -1f;
+    public float spikesWidth2 = -1f, spikesLength2 = -1f;
     public float spokeWidth = 2f, spokeLength = 8f;
     public float spikeSpin = 0.5f;
     public float zoneLifeOffset = 0f;
@@ -79,10 +79,11 @@ public class ArcBulletType extends BulletType{
 
     @Override
     public void init(){
-        if(longSpike < 0) longSpike = zoneRadius / 2f;
-        if(shortSpike < 0) shortSpike = longSpike / 2f;
-        if(shortSpikeWidth < 0) shortSpikeWidth = shortSpike / 2f;
-        if(longSpikeWidth < 0) longSpikeWidth = shortSpikeWidth;
+        if(spikesLength2 < 0) spikesLength2 = zoneRadius / 2f;
+        if(spikesLength1 < 0) spikesLength1 = spikesLength2 / 2f;
+        if(spikesWidth1 < 0) spikesWidth1 = spikesLength1 / 2f;
+        if(spikesWidth2 < 0) spikesWidth2 = spikesWidth1;
+        if(progressRadius < 0) progressRadius = Math.max((drawZone ? zoneRadius + Math.max(spikesLength1, spikesLength2) / 2f : 0f), targetRadius + spokeLength / 2f) + 4f;
 
         if(fragBullet instanceof ArcBulletType a){
             a.isInheritive = true;
@@ -253,7 +254,7 @@ public class ArcBulletType extends BulletType{
 
     @Override
     public void draw(Bullet b){
-        if(drawZone) drawTargetZone(b);
+        drawTargetZone(b);
         Draw.z(layer);
         drawTrail(b);
     }
@@ -277,16 +278,18 @@ public class ArcBulletType extends BulletType{
             PMDrawf.ring(x, y, zoneRadius, zoneRadius + 2f);
             for(int i = 0; i < 4; i++){
                 float a = ang + 90 * i;
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), shortSpikeWidth, shortSpike, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth1, spikesLength1, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth1, spikesLength1 / 2f, a);
             }
             for(int i = 0; i < 4; i++){
                 float a = ang + 45 + 90 * i;
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), longSpikeWidth, longSpike, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth2, spikesLength2, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth2, spikesLength2 / 2f, a);
             }
         }
 
-        float fin = zoneLifeOffset + b.fin() * (1f - zoneLifeOffset);
-        PMDrawf.progressRing(x, y, zoneRadius + 4f, zoneRadius + 8f, fin);
+        float fin = b.fin() / lifetimeScl;
+        PMDrawf.progressRing(x, y, progressRadius, progressRadius + 4f, fin);
 
         PMDrawf.ring(x, y, targetRadius, targetRadius + 2f);
         Lines.stroke(spokeWidth);

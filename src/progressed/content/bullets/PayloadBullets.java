@@ -233,7 +233,7 @@ public class PayloadBullets{
                     hitEffect = MissileFx.smallBoom;
                     hitSound = Sounds.explosion;
 
-                    zoneRadius = 2f * 8f;
+                    drawZone = false;
                     gravity = 0.05f;
                     arcFragDrift = 2f;
                     targetDriftDrag = 0.02f;
@@ -268,6 +268,7 @@ public class PayloadBullets{
                 buildingDamageMultiplier = 0.5f;
                 homingPower = 0.5f;
 
+                drawZone = false;
                 trailColor = targetColor = zoneColor = Pal.suppress;
                 trailLength = 12;
                 trailWidth = 1f;
@@ -397,9 +398,7 @@ public class PayloadBullets{
             zoneRadius = 8f * 8f;
             trailLength = 35;
             trailWidth = 2.5f;
-            trailColor = Pal.sapBulletBack; //Black doesn't work because of bloom
-            targetColor = zoneColor = Color.black;
-            zoneLayer = Layer.bullet - 0.03f;
+            targetColor = zoneColor = trailColor = Pal.sapBulletBack; //Black is too dark for bloom
 
             accel = 0.01f;
             gravity = 0.02f;
@@ -445,7 +444,7 @@ public class PayloadBullets{
 
         ohno = (ArcMissileBulletType)paragonCluster.copy();
         ohno.sprite = "prog-mats-sandbox-nuke";
-        ohno.targetColor = ohno.trailColor = ohno.zoneColor = Color.red;
+        ohno.targetColor = ohno.trailColor = ohno.zoneColor = Pal.remove;
         ohno.rangeChange = 500 * tilesize;
 
         ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();
