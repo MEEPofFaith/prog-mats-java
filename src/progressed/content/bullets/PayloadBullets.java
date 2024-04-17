@@ -385,7 +385,7 @@ public class PayloadBullets{
             }};
         }};
 
-        paragonBlackHole = new ArcMissileBulletType("prog-mats-blackhole-nuke"){{
+        paragonBlackHole = new ArcMissileBulletType("prog-mats-black-hole-nuke"){{
             lifetime = 3f * 60f;
             status = StatusEffects.none;
 
