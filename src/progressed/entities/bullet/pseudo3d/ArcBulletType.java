@@ -43,6 +43,7 @@ public class ArcBulletType extends BulletType{
     public float spokeWidth = 2f, spokeLength = 8f;
     public float spikeSpin = 0.5f;
     public float zoneLifeOffset = 0f;
+    public float growTime = 6f, shrinkTime = 0f;
     public Color zoneColor = Color.red, targetColor = Color.red;
 
     static{
@@ -89,6 +90,7 @@ public class ArcBulletType extends BulletType{
             a.isInheritive = true;
             a.zoneLifeOffset = a.zoneLifeOffset * a.lifetimeScl + lifetimeScl;
         }
+
         if(intervalBullet instanceof ArcBulletType a) a.isInheritive = true;
 
         super.init();
@@ -272,30 +274,38 @@ public class ArcBulletType extends BulletType{
     public void drawTargetZone(Bullet b){
         Draw.z(zoneLayer);
         Draw.color(zoneColor);
+
+        float realLife = b.lifetime * lifetimeScl;
+        float scl = Mathf.curve(b.time, 0, growTime) - Mathf.curve(b.time, realLife - shrinkTime, realLife);
+
         float x = b.aimX, y = b.aimY;
         float ang = Mathf.randomSeed(b.id, 360) + b.time * spikeSpin;
-        if(drawZone && zoneRadius > 0f){
-            PMDrawf.ring(x, y, zoneRadius, zoneRadius + 2f);
+        float zR = zoneRadius * scl;
+        if(drawZone && zR > 0f){
+            PMDrawf.ring(x, y, zR, zR + 2f);
+            float sW1 = spikesWidth1 * scl, sL1 = spikesLength1 * scl;
             for(int i = 0; i < 4; i++){
                 float a = ang + 90 * i;
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth1, spikesLength1, a + 180);
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth1, spikesLength1 / 2f, a);
+                Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW1, sL1, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW1, sL1 / 2f, a);
             }
+            float sW2 = spikesWidth2 * scl, sL2 = spikesLength2 * scl;
             for(int i = 0; i < 4; i++){
                 float a = ang + 45 + 90 * i;
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth2, spikesLength2, a + 180);
-                Drawf.tri(x + Angles.trnsx(a, zoneRadius), y + Angles.trnsy(a, zoneRadius), spikesWidth2, spikesLength2 / 2f, a);
+                Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW2, sL2, a + 180);
+                Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW2, sL2 / 2f, a);
             }
         }
 
         float fin = b.fin() / lifetimeScl;
-        PMDrawf.progressRing(x, y, progressRadius, progressRadius + 4f, fin);
+        PMDrawf.progressRing(x, y, progressRadius * scl, (progressRadius + 4f)  * scl, fin);
 
-        PMDrawf.ring(x, y, targetRadius, targetRadius + 2f);
-        Lines.stroke(spokeWidth);
+        PMDrawf.ring(x, y, targetRadius * scl, (targetRadius + 2f)  * scl);
+        Lines.stroke(spokeWidth * scl);
+        float tR = targetRadius * scl;
         for(int i = 0; i < 4; i++){
             float a = -ang + 90 * i;
-            Lines.lineAngleCenter(x + Angles.trnsx(a, targetRadius), y + Angles.trnsy(a, targetRadius), a, spokeLength, false);
+            Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, spokeLength * scl, false);
         }
     }
 
