@@ -69,7 +69,7 @@ public class PMBlocks{
     caliber,
 
     //Support
-    allure, vaccinator,
+    pheromone, vaccinator,
 
     //Behold: a laser pointer
 
@@ -580,8 +580,8 @@ public class PMBlocks{
             }
         };
 
-        allure = new SignalFlareTurret("signal"){{
-            requirements(Category.turret, with(
+        pheromone = new SignalFlareTurret("signal"){{
+            requirements(Category.defense, with(
                 Items.lead, 80,
                 Items.silicon, 130,
                 Items.plastanium, 110,

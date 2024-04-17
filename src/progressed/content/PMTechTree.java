@@ -152,7 +152,7 @@ public class PMTechTree{
 
         vanillaNode(segment, () -> {
             //Signal flare
-            node(allure);
+            node(pheromone);
         });
 
         // Drills
