@@ -105,6 +105,8 @@ public class SignalFlareTurret extends ItemTurret{
                 bullet = null;
             }
 
+            if(flaresMaxed()) return; //Don't bother with targeting when it can't shoot.
+
             if(hasAmmo()){
                 if(timer(timerTarget, targetInterval)){
                     findTarget();
@@ -131,26 +133,26 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(flares.size < flareLimit && bullet == null){
-                if(reloadCounter >= reload && !charging()){
-                    BulletType type = peekAmmo();
+            if(bullet != null) return;
 
-                    shoot(type);
+            if(reloadCounter >= reload && !charging()){
+                BulletType type = peekAmmo();
 
-                    reloadCounter = 0f;
+                shoot(type);
 
-                    targetFound = false;
-                }else{
-                    reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
-                }
+                reloadCounter = 0f;
+
+                targetFound = false;
+            }else{
+                reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
 
         @Override
         protected void updateCooling(){
-            if(flares.size < flareLimit && bullet == null){
-                super.updateCooling();
-            }
+            if(bullet != null) return;
+
+            super.updateCooling();
         }
 
         @Override
@@ -188,7 +190,11 @@ public class SignalFlareTurret extends ItemTurret{
 
         @Override
         public BlockStatus status(){
-            return (flares.size >= flareLimit || bullet != null) ? BlockStatus.noOutput : super.status();
+            return flaresMaxed() ? BlockStatus.noOutput : super.status();
+        }
+
+        public boolean flaresMaxed(){
+            return flares.size >= flareLimit || bullet != null;
         }
 
         public float countf(){

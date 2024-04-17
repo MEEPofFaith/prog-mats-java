@@ -597,7 +597,7 @@ public class PMBlocks{
             minRange = 5f * tilesize;
             range = 60f * tilesize;
             shootY = 23f / 4f;
-            reload = 900f;
+            reload = 120f;
             inaccuracy = 10f;
             velocityRnd = 0.2f;
             shootSound = Sounds.shootSnap;

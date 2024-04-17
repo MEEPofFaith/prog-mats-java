@@ -198,22 +198,22 @@ public class PMUnitTypes{
         }});
 
         flareSmall = EntityRegistry.content("small-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name){{
-            health = 300f;
+            health = 400f;
             hideDetails = false;
             attraction = 800f;
             flareY = 29f / 4f;
         }});
 
-        flareMedium = EntityRegistry.content("medium-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 360f){{
-            health = 900f;
+        flareMedium = EntityRegistry.content("medium-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 8f * 60f){{
+            health = 1500f;
             hideDetails = false;
             attraction = 11000f;
             flareY = 45f / 4f;
             flareEffectSize = 1.5f;
         }});
 
-        flareLarge = EntityRegistry.content("large-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 420f){{
-            health = 2700f;
+        flareLarge = EntityRegistry.content("large-flare", SignalFlareUnit.class, name -> new SignalFlareUnitType(name, 15f * 60f){{
+            health = 6000f;
             hideDetails = false;
             attraction = 26000f;
             flareY = 61f / 4f;
