@@ -269,6 +269,7 @@ public class PayloadBullets{
                 homingPower = 0.5f;
 
                 drawZone = false;
+                growTime = 6f;
                 trailColor = targetColor = zoneColor = Pal.suppress;
                 trailLength = 12;
                 trailWidth = 1f;
@@ -320,6 +321,7 @@ public class PayloadBullets{
                 homingRange = 30f * 8f;
 
                 hitShake = 5f;
+                growTime = 20f;
                 despawnEffect = MissileFx.missileExplosion;
                 absorbEffect = Pseudo3DFx.absorbed;
 
@@ -534,6 +536,7 @@ public class PayloadBullets{
         enough.fragBullet = cease;
         enough.arcFragDrift = 5f;
         enough.targetDriftDrag = 0.01f;
+        enough.growTime = 20f;
 
         ohno.fragBullet = enough;
     }

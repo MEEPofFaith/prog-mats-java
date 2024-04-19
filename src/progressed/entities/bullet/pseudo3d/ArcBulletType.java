@@ -43,7 +43,7 @@ public class ArcBulletType extends BulletType{
     public float spokeWidth = 2f, spokeLength = 8f;
     public float spikeSpin = 0.5f;
     public float zoneLifeOffset = 0f;
-    public float growTime = 6f, shrinkTime = 0f;
+    public float growTime = 10f, shrinkTime = 0f;
     public Color zoneColor = Color.red, targetColor = Color.red;
 
     static{
@@ -89,6 +89,7 @@ public class ArcBulletType extends BulletType{
         if(fragBullet instanceof ArcBulletType a){
             a.isInheritive = true;
             a.zoneLifeOffset = a.zoneLifeOffset * a.lifetimeScl + lifetimeScl;
+            shrinkTime = 0;
         }
 
         if(intervalBullet instanceof ArcBulletType a) a.isInheritive = true;
@@ -190,7 +191,7 @@ public class ArcBulletType extends BulletType{
         if(fragBullet instanceof ArcBulletType aType){
             for(int i = 0; i < fragBullets; i++){
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2f) * fragSpread);
-                aType.create3DInherit(b, a, aType.arcFragDrift, false);
+                ((ArcBulletData)aType.create3DInherit(b, a, aType.arcFragDrift, false).data).splitFrom = (ArcBulletType)b.type;
             }
         }else{
             super.createFrags(b, x, y);
@@ -276,20 +277,30 @@ public class ArcBulletType extends BulletType{
         Draw.color(zoneColor);
 
         float realLife = b.lifetime * lifetimeScl;
-        float scl = Mathf.curve(b.time, 0, growTime) - Mathf.curve(b.time, realLife - shrinkTime, realLife);
+        float grow = Mathf.curve(b.time, 0, growTime);
+        float shrink = Mathf.curve(b.time, realLife - shrinkTime, realLife);
+        float scl = grow - shrink;
+
+        ArcBulletType splitFrom = ((ArcBulletData)b.data).splitFrom;
+        boolean split = splitFrom != null;
+        if(split) grow = Interp.smooth.apply(grow);
+        float fout = 1 - shrink;
 
         float x = b.aimX, y = b.aimY;
         float ang = Mathf.randomSeed(b.id, 360) + b.time * spikeSpin;
-        float zR = zoneRadius * scl;
-        if(drawZone && zR > 0f){
+        if(drawZone){
+            float zR = split ? Mathf.lerp(splitFrom.zoneRadius, zoneRadius, grow) * fout : zoneRadius * scl;
             PMDrawf.ring(x, y, zR, zR + 2f);
-            float sW1 = spikesWidth1 * scl, sL1 = spikesLength1 * scl;
+
+            float sW1 = split ? Mathf.lerp(splitFrom.spikesWidth1, spikesWidth1, grow) * fout : spikesWidth1 * scl,
+                sL1 = split ? Mathf.lerp(splitFrom.spikesLength1, spikesLength1, grow) * fout : spikesLength1 * scl;
             for(int i = 0; i < 4; i++){
                 float a = ang + 90 * i;
                 Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW1, sL1, a + 180);
                 Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW1, sL1 / 2f, a);
             }
-            float sW2 = spikesWidth2 * scl, sL2 = spikesLength2 * scl;
+            float sW2 = split ? Mathf.lerp(splitFrom.spikesWidth2, spikesWidth2, grow) * fout : spikesWidth2 * scl,
+                sL2 = split ? Mathf.lerp(splitFrom.spikesLength2, spikesLength2, grow) * fout : spikesLength2 * scl;
             for(int i = 0; i < 4; i++){
                 float a = ang + 45 + 90 * i;
                 Drawf.tri(x + Angles.trnsx(a, zR), y + Angles.trnsy(a, zR), sW2, sL2, a + 180);
@@ -298,14 +309,17 @@ public class ArcBulletType extends BulletType{
         }
 
         float fin = b.fin() / lifetimeScl;
-        PMDrawf.progressRing(x, y, progressRadius * scl, (progressRadius + 4f)  * scl, fin);
+        float pR = split ? Mathf.lerp(splitFrom.progressRadius, progressRadius, grow) * fout : progressRadius * scl;
+        PMDrawf.progressRing(x, y, pR, pR + 4f, fin);
 
-        PMDrawf.ring(x, y, targetRadius * scl, (targetRadius + 2f)  * scl);
-        Lines.stroke(spokeWidth * scl);
-        float tR = targetRadius * scl;
+        float tR = split ? Mathf.lerp(splitFrom.targetRadius, targetRadius, grow) * fout : targetRadius * scl,
+            sW = split ? Mathf.lerp(splitFrom.spokeWidth, spokeWidth, grow) * fout : spokeWidth * scl,
+            sL = split ? Mathf.lerp(splitFrom.spokeLength, spokeLength, grow) * fout : spokeLength * scl;
+        PMDrawf.ring(x, y, tR, tR + 2);
+        Lines.stroke(sW);
         for(int i = 0; i < 4; i++){
             float a = -ang + 90 * i;
-            Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, spokeLength * scl, false);
+            Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, sL, false);
         }
     }
 
@@ -467,6 +481,7 @@ public class ArcBulletType extends BulletType{
         public float xAccel, yAccel;
         public float lastZ, z, zVel, gravity;
         public float targetDriftX, targetDriftY;
+        public ArcBulletType splitFrom;
 
         public ArcBulletData(float z, float zVel, float gravity){
             this.z = z;
