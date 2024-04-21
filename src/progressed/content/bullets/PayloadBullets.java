@@ -215,6 +215,7 @@ public class PayloadBullets{
                 trailWidth = 1f;
                 trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
+                growTime = 30f;
                 hitEffect = despawnEffect = Fx.none;
                 hitSound = despawnSound = Sounds.none;
 
@@ -227,13 +228,15 @@ public class PayloadBullets{
                 fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 220f;
                     splashDamageRadius = 4f * tilesize;
-                    keepVelocity = true;
                     buildingDamageMultiplier = 0.5f;
                     hitShake = 5f;
                     hitEffect = MissileFx.smallBoom;
                     hitSound = Sounds.explosion;
 
                     drawZone = false;
+                    growTime = 30f;
+
+                    keepVelocity = true;
                     gravity = 0.05f;
                     arcFragDrift = 2f;
                     targetDriftDrag = 0.02f;
@@ -284,6 +287,7 @@ public class PayloadBullets{
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
+            growTime = 30f;
             despawnEffect = MissileFx.nuclearExplosion;
             absorbEffect = Pseudo3DFx.absorbedLarge;
 
@@ -305,6 +309,7 @@ public class PayloadBullets{
             trailWidth = 2.5f;
             trailColor = targetColor = zoneColor = PMPal.missileFrag;
 
+            growTime = 40f;
             hitEffect = despawnEffect = Fx.none;
             hitSound = despawnSound = Sounds.none;
 
@@ -321,7 +326,7 @@ public class PayloadBullets{
                 homingRange = 30f * 8f;
 
                 hitShake = 5f;
-                growTime = 20f;
+                growTime = 120f;
                 despawnEffect = MissileFx.missileExplosion;
                 absorbEffect = Pseudo3DFx.absorbed;
 
@@ -344,6 +349,7 @@ public class PayloadBullets{
             absorbEffect = Pseudo3DFx.absorbedLarge;
 
             zoneRadius = 8f * 8f;
+            growTime = 20f;
             trailLength = 35;
             trailWidth = 2.5f;
             trailColor = targetColor = zoneColor = Pal.lancerLaser;
@@ -448,6 +454,7 @@ public class PayloadBullets{
         ohno.sprite = "prog-mats-sandbox-nuke";
         ohno.targetColor = ohno.trailColor = ohno.zoneColor = Pal.remove;
         ohno.rangeChange = 500 * tilesize;
+        ohno.gravity = 0.015f;
 
         ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();
 
@@ -536,7 +543,7 @@ public class PayloadBullets{
         enough.fragBullet = cease;
         enough.arcFragDrift = 5f;
         enough.targetDriftDrag = 0.01f;
-        enough.growTime = 20f;
+        enough.growTime = 30f;
 
         ohno.fragBullet = enough;
     }
