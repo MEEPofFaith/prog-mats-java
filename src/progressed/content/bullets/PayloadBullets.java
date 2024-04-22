@@ -206,6 +206,7 @@ public class PayloadBullets{
             accel = 0.015f;
             gravity = 0.05f;
             lifetimeScl = 0.33f;
+            arcFragCone = 1f;
             fragBullets = 3;
             fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
@@ -221,9 +222,8 @@ public class PayloadBullets{
 
                 keepVelocity = true;
                 gravity = 0.05f;
-                arcFragDrift = 2f;
-                targetDriftDrag = 0.02f;
                 lifetimeScl = 0.5f;
+                arcFragCone = 1f;
                 fragBullets = 3;
                 fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 220f;
@@ -238,8 +238,6 @@ public class PayloadBullets{
 
                     keepVelocity = true;
                     gravity = 0.05f;
-                    arcFragDrift = 2f;
-                    targetDriftDrag = 0.02f;
                     trailLength = 15;
                     trailWidth = 1f;
                     trailColor = targetColor = zoneColor = PMPal.missileFrag;
@@ -316,6 +314,7 @@ public class PayloadBullets{
             accel = 0.008f;
             gravity = 0.025f;
             lifetimeScl = 0.5f;
+            arcFragCone = 4f;
             fragBullets = 20;
             fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3500f;
@@ -330,8 +329,6 @@ public class PayloadBullets{
                 despawnEffect = MissileFx.missileExplosion;
                 absorbEffect = Pseudo3DFx.absorbed;
 
-                arcFragDrift = 4f;
-                targetDriftDrag = 0.01f;
                 gravity = 0.025f;
                 trailLength = 35;
                 trailWidth = 1f;
@@ -450,19 +447,11 @@ public class PayloadBullets{
             }};
         }};
 
-        ohno = (ArcMissileBulletType)paragonCluster.copy();
-        ohno.sprite = "prog-mats-sandbox-nuke";
-        ohno.targetColor = ohno.trailColor = ohno.zoneColor = Pal.remove;
-        ohno.rangeChange = 500 * tilesize;
-        ohno.gravity = 0.015f;
-
         ArcMissileBulletType stop = (ArcMissileBulletType)artemisRecursive.copy();
 
         ArcMissileBulletType why = (ArcMissileBulletType)stop.fragBullet.copy();
-        why.inheritVelDrift = true;
         ArcMissileBulletType tooFar = (ArcMissileBulletType)stop.fragBullet.fragBullet.copy();
         tooFar.buildingDamageMultiplier = 1f;
-        tooFar.inheritVelDrift = true;
         stop.fragBullet = why;
         stop.fragBullet.fragBullet = tooFar;
 
@@ -541,10 +530,13 @@ public class PayloadBullets{
         enough.buildingDamageMultiplier = 1f;
         enough.fragBullets = 10;
         enough.fragBullet = cease;
-        enough.arcFragDrift = 5f;
-        enough.targetDriftDrag = 0.01f;
         enough.growTime = 30f;
 
+        ohno = (ArcMissileBulletType)paragonCluster.copy();
+        ohno.sprite = "prog-mats-sandbox-nuke";
+        ohno.targetColor = ohno.trailColor = ohno.zoneColor = Pal.remove;
+        ohno.rangeChange = 500 * tilesize;
+        ohno.gravity = 0.015f;
         ohno.fragBullet = enough;
     }
 }

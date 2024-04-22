@@ -38,8 +38,8 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
     @Override
     public void arcBulletDataInit(Bullet b){
-        ArcBulletData a = (ArcBulletData)b.data;
         if(isInheritive) return;
+        ArcBulletData a = (ArcBulletData)b.data;
         a.updateAimPos(b);
     }
 }

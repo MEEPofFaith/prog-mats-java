@@ -135,6 +135,10 @@ public class Math3D{
         return vec;
     }
 
+    public static float dst(float x, float y, float z){
+        return sqrt(x * x + y * y + z * z);
+    }
+
     public static float dst(float x1, float y1, float z1, float x2, float y2, float z2){
         float xd = x2 - x1;
         float yd = y2 - y1;

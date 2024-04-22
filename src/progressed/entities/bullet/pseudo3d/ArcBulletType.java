@@ -24,14 +24,14 @@ public class ArcBulletType extends BulletType{
     private static float cdist = 0f;
     private static Unit result;
 
-    public boolean zAbsorbable = true, isInheritive, inheritZVel = true, inheritVelDrift = false;
+    public boolean zAbsorbable = true, isInheritive;
     public Color absorbEffectColor = Pal.missileYellowBack;
     public Effect absorbEffect = Pseudo3DFx.absorbedSmall;
     public float gravity = 1f;
     /** Scalar for bullet lifetime. Used to make the bullet despawn early for mid-air fragging. */
     public float lifetimeScl = 1f;
-    public float arcFragDrift = 0f, intervalDropDrift = 0f;
-    public float targetDriftDrag = 0.05f;
+    public float arcFragCone = 1f, intervalDropCone = 0f;
+    public float angleDriftDrag = 0.98f;
 
     public boolean bloomTrail = true;
 
@@ -191,7 +191,7 @@ public class ArcBulletType extends BulletType{
         if(fragBullet instanceof ArcBulletType aType){
             for(int i = 0; i < fragBullets; i++){
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2f) * fragSpread);
-                ((ArcBulletData)aType.create3DInherit(b, a, aType.arcFragDrift, false).data).splitFrom = (ArcBulletType)b.type;
+                ((ArcBulletData)aType.create3DInherit(b, a, aType.arcFragCone).data).splitFrom = (ArcBulletType)b.type;
             }
         }else{
             super.createFrags(b, x, y);
@@ -205,7 +205,7 @@ public class ArcBulletType extends BulletType{
                 float ang = b.rotation();
                 for(int i = 0; i < intervalBullets; i++){
                     float a = ang + Mathf.range(intervalRandomSpread) + intervalAngle + ((i - (intervalBullets - 1f)/2f) * intervalSpread);
-                    aType.create3DInherit(b, a, aType.intervalDropDrift, true);
+                    aType.create3DInherit(b, a, aType.intervalDropCone);
                 }
             }
         }else{
@@ -421,22 +421,25 @@ public class ArcBulletType extends BulletType{
         return bullet;
     }
 
-    public Bullet create3DInherit(Bullet b, float angle, float maxTargetDrift, boolean drop){
-        return create3DInherit(b, angle, maxTargetDrift, gravity, drop);
+    public Bullet create3DInherit(Bullet b, float angle, float inaccCone){
+        return create3DInherit(b, angle, inaccCone, gravity);
     }
 
-    public Bullet create3DInherit(Bullet b, float angle, float maxTargetDrift, float gravity, boolean drop){
-        Tmp.v1.trns(angle, maxTargetDrift * Mathf.sqrt(Mathf.random()));
+    public Bullet create3DInherit(Bullet b, float angle, float inaccCone, float gravity){
+        Tmp.v1.trns(angle, inaccCone * Mathf.sqrt(Mathf.random()));
         ArcBulletData data = ((ArcBulletData)b.data).copy();
         data.gravity = gravity;
-        data.addTargetDrift(Tmp.v1);
-        if(inheritVelDrift) data.addTargetDrift(b.vel);
-        if(!inheritZVel) data.zVel = 0;
-        float tx = drop ? b.x : b.aimX,
-            ty = drop ? b.y : b.aimY;
 
-        Bullet bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, tx, ty);
+        Bullet bullet;
+        if(inaccCone >= 0.01f){
+            PMMathf.randomCirclePoint(Tmp.v1, inaccCone);
+            data.driftRot = Tmp.v1.x;
+            data.driftTilt = Tmp.v1.y;
+        }
+
+        bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, b.aimX, b.aimY);
         bullet.initVel(b.rotation(), b.vel.len());
+
         if(backMove){
             bullet.set(b.x - bullet.vel.x * Time.delta, b.y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -480,7 +483,7 @@ public class ArcBulletType extends BulletType{
     public static class ArcBulletData implements Cloneable{
         public float xAccel, yAccel;
         public float lastZ, z, zVel, gravity;
-        public float targetDriftX, targetDriftY;
+        public float driftRot, driftTilt;
         public ArcBulletType splitFrom;
 
         public ArcBulletData(float z, float zVel, float gravity){
@@ -501,17 +504,11 @@ public class ArcBulletType extends BulletType{
             b.vel.sub(xAccel * Time.delta, yAccel * Time.delta);
             z -= zVel * Time.delta;
             zVel += gravity * Time.delta;
-
-            if(targetDriftX != 0 || targetDriftY != 0){
-                b.aimX -= targetDriftX * Time.delta;
-                b.aimY -= targetDriftY * Time.delta;
-            }
         }
 
-        /** Sets bullet lifetime based on initial z, initial z velocity, and the given gravity constant. */
+        /** Calculates time to impact based on z, zVel, and gravity, and sets lifetime accordingly. */
         public void updateLifetime(Bullet b){
-            //Calculate lifetime
-            b.lifetime(PMMathf.solve(-0.5f * gravity, zVel, z));
+            b.lifetime(PMMathf.solve(-0.5f * gravity, zVel, z) + b.time);
         }
 
         /** Sets constant acceleration in the x and y directions based on distance to target, initial velocity, and lifetime. */
@@ -537,25 +534,26 @@ public class ArcBulletType extends BulletType{
             z += zVel * Time.delta;
             zVel -= gravity * Time.delta;
 
-            if(targetDriftX != 0 || targetDriftY != 0){
-                b.aimX += targetDriftX * Time.delta;
-                b.aimY += targetDriftY * Time.delta;
-                float drag = Math.max(1f - ((ArcBulletType)b.type).targetDriftDrag * Time.delta, 0);
-                targetDriftX *= drag;
-                targetDriftY *= drag;
-                updateAccel(b);
+            boolean needUpdate = false;
+            if(!Mathf.zero(driftRot)){
+                b.vel.rotate(driftRot);
+                driftRot *= ((ArcBulletType)b.type).angleDriftDrag;
+                needUpdate = true;
             }
+            if(!Mathf.zero(driftTilt)){
+                Tmp.v1.set(b.vel.len(), zVel).rotate(driftTilt);
+                zVel = Tmp.v1.y;
+                driftTilt *= ((ArcBulletType)b.type).angleDriftDrag;
+
+                updateLifetime(b);
+                needUpdate = true;
+            }
+            if(needUpdate) updateAimPos(b);
         }
 
         public ArcBulletData setAccel(float angle, float a){
             xAccel = Angles.trnsx(angle, a);
             yAccel = Angles.trnsy(angle, a);
-            return this;
-        }
-
-        public ArcBulletData addTargetDrift(Vec2 drift){
-            targetDriftX += drift.x;
-            targetDriftY += drift.y;
             return this;
         }
 
