@@ -35,6 +35,16 @@ public class LightningEffect extends Effect{
         followParent = false;
     }
 
+    public LightningEffect colorFrom(Color colorFrom){
+        this.colorFrom = colorFrom;
+        return this;
+    }
+
+    public LightningEffect colorTo(Color colorTo){
+        this.colorTo = colorTo;
+        return this;
+    }
+
     public LightningEffect shrink(boolean s){
         shrink = s;
         return this;

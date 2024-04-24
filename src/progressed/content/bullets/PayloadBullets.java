@@ -341,7 +341,7 @@ public class PayloadBullets{
 
             hitSound = PMSounds.nuclearExplosion;
             hitShake = 30f;
-            despawnEffect = MissileFx.nuclearExplosion;
+            despawnEffect = Fx.none;
             absorbEffect = Pseudo3DFx.absorbedLarge;
 
             zoneRadius = 8f * 8f;
@@ -352,41 +352,13 @@ public class PayloadBullets{
 
             accel = 0.01f;
             gravity = 0.02f;
-            fragBullets = 60;
+            fragBullets = 1;
             fragRandomSpread = 0;
-            fragSpread = 360f / fragBullets;
-            fragVelocityMin = fragVelocityMax = fragLifeMin = fragLifeMax = 1f;
-            fragBullet = new SparkingBulletType(2.5f, 0, "large-orb"){{
-                //Distance to travel... ~40 tiles?
-                lifetime = (40 * 8) / speed * 4f;
-                drag = 0.01f;
-
-                empRadius = 6f * 8f;
-                empDamage = 150f;
-
-                width = height = 15f;
-                shrinkX = shrinkY = 0f;
-                frontColor = hitColor = Pal.lancerLaser;
-                backColor = trailColor = PMPal.lancerlaserDark;
-                //trailWidth = 3.25f;
-                //trailLength = 24;
-                hitEffect = Fx.none;
-
+            fragBullet = new EMPCloudBulletType(150f){{
+                lifetime = 15f * 60f;
                 status = PMStatusEffects.empStun;
-                suppressionRange = 10f * 8f;
+                radius = suppressionRange = 40f * tilesize;
                 statusDuration = suppressionDuration = 7f * 60f;
-                collides = false;
-                hittable = absorbable = false;
-
-                trailInterval = 2f;
-                trailEffect = MissileFx.hitEmpSpark;
-                //hitSound = Sounds.spark;
-
-                despawnEffect = new WaveEffect(){{
-                    lifetime = 10f;
-                    sizeTo = 30f;
-                    colorFrom = colorTo = Pal.lancerLaser;
-                }};
             }};
         }};
 
