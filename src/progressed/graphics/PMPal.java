@@ -18,13 +18,10 @@ public class PMPal{
 
     magma = valueOf("ff9c5a"),
 
-    lancerlaserDark = valueOf("8aa3f4"),
-    surgeDark = valueOf("d99f6b"),
-
     pixelFront = valueOf("FF84C1"),
     pixelBack = valueOf("EF4A9D"),
 
-    missileBasic = valueOf("D4816B"),
+    missileBasic = valueOf("ffa665"),
     missileFrag = valueOf("9CB664"),
 
     nexusLaser = valueOf("da89fa"),

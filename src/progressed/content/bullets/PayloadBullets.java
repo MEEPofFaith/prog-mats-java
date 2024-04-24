@@ -45,7 +45,7 @@ public class PayloadBullets{
             ammoMultiplier = 1f;
 
             spawnUnit = new RocketUnitType("basic-rocket-b", true){{
-                engineColor = trailColor = Pal.accent;
+                engineColor = trailColor = PMPal.missileBasic;
 
                 weapons.add(new Weapon(){{
                     rotate = false;
@@ -57,7 +57,7 @@ public class PayloadBullets{
                     shake = 10f;
                     shootSound = Sounds.none;
                     bullet = new ExplosionBulletType(526f, 8f * tilesize){{
-                        hitColor = Pal.accent;
+                        hitColor = PMPal.missileBasic;
                         shootEffect = RocketUnitType.rocketShoot;
                     }};
                 }});
@@ -94,7 +94,7 @@ public class PayloadBullets{
             ammoMultiplier = 1f;
 
             spawnUnit = new RocketUnitType("splitter-rocket-b", true){{
-                engineColor = trailColor = PMPal.missileFrag;
+                engineColor = trailColor = Pal.accent;
 
                 weapons.add(new MissileOwnerWeapon(){{
                     shootCone = 360f;
@@ -106,7 +106,7 @@ public class PayloadBullets{
                     shake = 10f;
                     shootSound = Sounds.missileLarge;
                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
-                        hitColor = PMPal.missileFrag;
+                        hitColor = Pal.accent;
                         shootEffect = RocketUnitType.rocketShoot;
 
                         fragBullets = 3;
@@ -115,7 +115,7 @@ public class PayloadBullets{
                         fragBullet = new BulletType(){{
                             spawnUnit = new RocketUnitType("splitter-rocket-split", false){{
                                 health = 120;
-                                engineColor = trailColor = PMPal.missileFrag;
+                                engineColor = trailColor = Pal.accent;
                                 homingDelay = 20f;
                                 missileAccelTime = 30f;
                                 targetDelay = 30f;
@@ -136,7 +136,7 @@ public class PayloadBullets{
                                     shake = 5f;
                                     shootSound = Sounds.missileSmall;
                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
-                                        hitColor = PMPal.missileFrag;
+                                        hitColor = Pal.accent;
 
                                         fragBullets = 3;
                                         fragAngle = 180f;
@@ -144,7 +144,7 @@ public class PayloadBullets{
                                         fragBullet = new BulletType(){{
                                             spawnUnit = new RocketUnitType("splitter-rocket-bit", false){{
                                                 health = 60;
-                                                engineColor = trailColor = PMPal.missileFrag;
+                                                engineColor = trailColor = Pal.accent;
                                                 homingDelay = 15f;
                                                 missileAccelTime = 20f;
                                                 targetDelay = 20f;
