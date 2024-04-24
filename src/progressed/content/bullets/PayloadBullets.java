@@ -266,7 +266,7 @@ public class PayloadBullets{
             bulletInterval = 20f;
             intervalDelay = 45f;
             intervalRandomSpread = 0f;
-            intervalBullet = new ArcBombBulletType(170f, 3f * tilesize, "prog-mats-bombing-missile-bomb"){{
+            intervalBullet = new ArcBombBulletType(300f, 3f * tilesize, "prog-mats-bombing-missile-bomb"){{
                 accel = 0f;
                 buildingDamageMultiplier = 0.5f;
                 homingPower = 0.5f;
@@ -320,7 +320,7 @@ public class PayloadBullets{
             fragBullets = 20;
             fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3500f;
-                splashDamageRadius = 2f * tilesize;
+                splashDamageRadius = 4f * tilesize;
                 buildingDamageMultiplier = 0.5f;
 
                 homingPower = 0.5f;
@@ -358,7 +358,7 @@ public class PayloadBullets{
             gravity = 0.02f;
             fragBullets = 1;
             fragRandomSpread = 0;
-            fragBullet = new EMPCloudBulletType(150f){{
+            fragBullet = new EMPCloudBulletType(1500f){{
                 lifetime = 15f * 60f;
                 status = PMStatusEffects.empStun;
                 radius = suppressionRange = 40f * tilesize;

@@ -50,6 +50,11 @@ public class EMPCloudBulletType extends BulletType{
     }
 
     @Override
+    public float continuousDamage(){
+        return damage / empInterval * 60f;
+    }
+
+    @Override
     public void draw(Bullet b){
         Draw.color(cloudColor);
         float scl = scl(b);
