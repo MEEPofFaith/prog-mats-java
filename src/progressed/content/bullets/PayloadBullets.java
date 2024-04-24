@@ -43,6 +43,7 @@ public class PayloadBullets{
 
         arbalestBasic = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
+            shootEffect = smokeEffect = Fx.none;
 
             spawnUnit = new RocketUnitType("basic-rocket-b", true){{
                 engineColor = trailColor = PMPal.missileBasic;
@@ -66,6 +67,7 @@ public class PayloadBullets{
 
         arbalestIncend = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
+            shootEffect = smokeEffect = Fx.none;
 
             spawnUnit = new RocketUnitType("incendiary-rocket-b", true){{
                 engineColor = trailColor = Pal.remove;
@@ -92,6 +94,7 @@ public class PayloadBullets{
 
         arbalestSplitter = new BulletType(0f, 0f){{
             ammoMultiplier = 1f;
+            shootEffect = smokeEffect = Fx.none;
 
             spawnUnit = new RocketUnitType("splitter-rocket-b", true){{
                 engineColor = trailColor = Pal.accent;

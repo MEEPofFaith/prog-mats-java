@@ -949,7 +949,7 @@ public class PMBlocks{
             recoil = 0.5f;
             rotateSpeed = 0.9f;
             shootSound = Sounds.missileLaunch;
-            shootEffect = Fx.shootBig;
+            shootEffect = Fx.none;
             smokeEffect = Fx.shootSmokeMissile;
 
             unitSort = UnitSorts.strongest;
