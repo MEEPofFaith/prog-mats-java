@@ -31,7 +31,7 @@ public class ArcBulletType extends BulletType{
     /** Scalar for bullet lifetime. Used to make the bullet despawn early for mid-air fragging. */
     public float lifetimeScl = 1f;
     public float arcFragCone = 1f, intervalDropCone = 0f;
-    public float angleDriftDrag = 0.98f;
+    public float angleDriftDrag = 0.02f;
 
     public boolean bloomTrail = true;
 
@@ -191,7 +191,7 @@ public class ArcBulletType extends BulletType{
         if(fragBullet instanceof ArcBulletType aType){
             for(int i = 0; i < fragBullets; i++){
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2f) * fragSpread);
-                ((ArcBulletData)aType.create3DInherit(b, a, aType.arcFragCone).data).splitFrom = (ArcBulletType)b.type;
+                ((ArcBulletData)aType.create3DInherit(b, a, arcFragCone).data).splitFrom = (ArcBulletType)b.type;
             }
         }else{
             super.createFrags(b, x, y);
@@ -427,14 +427,15 @@ public class ArcBulletType extends BulletType{
 
     public Bullet create3DInherit(Bullet b, float angle, float inaccCone, float gravity){
         Tmp.v1.trns(angle, inaccCone * Mathf.sqrt(Mathf.random()));
-        ArcBulletData data = ((ArcBulletData)b.data).copy();
+        ArcBulletData oldData = (ArcBulletData)b.data;
+        ArcBulletData data = oldData.copy();
         data.gravity = gravity;
 
         Bullet bullet;
-        if(inaccCone >= 0.01f){
+        if(!Mathf.zero(inaccCone)){
             PMMathf.randomCirclePoint(Tmp.v1, inaccCone);
-            data.driftRot = Tmp.v1.x;
-            data.driftTilt = Tmp.v1.y;
+            data.driftRot = Tmp.v1.x + oldData.driftRot;
+            data.driftTilt = Tmp.v1.y + oldData.driftTilt;
         }
 
         bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, b.aimX, b.aimY);
@@ -537,13 +538,13 @@ public class ArcBulletType extends BulletType{
             boolean needUpdate = false;
             if(!Mathf.zero(driftRot)){
                 b.vel.rotate(driftRot);
-                driftRot *= ((ArcBulletType)b.type).angleDriftDrag;
+                driftRot *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
                 needUpdate = true;
             }
             if(!Mathf.zero(driftTilt)){
                 Tmp.v1.set(b.vel.len(), zVel).rotate(driftTilt);
                 zVel = Tmp.v1.y;
-                driftTilt *= ((ArcBulletType)b.type).angleDriftDrag;
+                driftTilt *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
 
                 updateLifetime(b);
                 needUpdate = true;
