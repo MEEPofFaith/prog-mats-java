@@ -206,6 +206,7 @@ public class PayloadBullets{
             accel = 0.015f;
             gravity = 0.05f;
             lifetimeScl = 0.33f;
+            arcFragCone = 0.6f;
             fragBullets = 3;
             fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                 status = StatusEffects.none;
@@ -221,7 +222,9 @@ public class PayloadBullets{
 
                 keepVelocity = true;
                 gravity = 0.05f;
+                angleDriftDrag = 0.01f;
                 lifetimeScl = 0.5f;
+                arcFragCone = 0.7f;
                 fragBullets = 3;
                 fragBullet = new ArcMissileBulletType("prog-mats-recursive-missile-split"){{
                     splashDamage = 220f;
@@ -236,6 +239,7 @@ public class PayloadBullets{
 
                     keepVelocity = true;
                     gravity = 0.05f;
+                    angleDriftDrag = 0.01f;
                     trailLength = 15;
                     trailWidth = 1f;
                     trailColor = targetColor = zoneColor = PMPal.missileFrag;
@@ -312,7 +316,7 @@ public class PayloadBullets{
             accel = 0.008f;
             gravity = 0.025f;
             lifetimeScl = 0.5f;
-            arcFragCone = 0.25f;
+            arcFragCone = 0.5f;
             fragBullets = 20;
             fragBullet = new ArcMissileBulletType("prog-mats-cluster-nuke-split"){{
                 splashDamage = 3500f;
@@ -321,7 +325,7 @@ public class PayloadBullets{
 
                 homingPower = 0.5f;
                 homingRange = 30f * 8f;
-                angleDriftDrag = 0.985f;
+                angleDriftDrag = 0.01f;
 
                 hitShake = 5f;
                 growTime = 120f;
@@ -502,7 +506,7 @@ public class PayloadBullets{
         enough.fragBullets = 10;
         enough.fragBullet = cease;
         enough.growTime = 30f;
-        enough.angleDriftDrag = 0.985f;
+        enough.angleDriftDrag = 0.015f;
 
         ohno = (ArcMissileBulletType)paragonCluster.copy();
         ohno.sprite = "prog-mats-sandbox-nuke";
