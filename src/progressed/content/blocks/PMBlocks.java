@@ -1242,7 +1242,7 @@ public class PMBlocks{
             recipes(
                 basicCruiseMissile, incendiaryCruiseMissile, splitterCruiseMissile,
                 basicBallisticMissile, recursiveBallisticMissile, bombingBallisticMissile,
-                basicNuke, clusterNuke, empNuke
+                basicNuke, clusterNuke, empNuke, blackHoleNuke
             );
             recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
             setRecipeProductionStats();

@@ -234,14 +234,14 @@ public class PMPayloads{
         blackHoleNuke = new Missile("black-hole-nuke"){{
             buildCost(
                 PMItems.tenelium, 110,
-                Items.surgeAlloy, 65,
+                Items.phaseFabric, 90,
                 Items.silicon, 80
             );
 
             prev = emptyNuke;
             size = 3;
-            powerUse = 15f;
-            constructTime = 60f * 49f;
+            powerUse = 30f;
+            constructTime = 60f * 55f;
 
             explosionBullet = PayloadBullets.paragonBlackHole;
         }};
