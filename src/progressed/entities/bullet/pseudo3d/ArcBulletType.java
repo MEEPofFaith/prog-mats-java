@@ -233,12 +233,27 @@ public class ArcBulletType extends BulletType{
                 }
             }
 
-            if(target != null){
-                Tmp.v1.set(b.aimX, b.aimY).approachDelta(Tmp.v2.set(target.x(), target.y()), homingPower);
-                b.aimX = Tmp.v1.x;
-                b.aimY = Tmp.v1.y;
+            if(target != null){ //idk what I'm doing, but https://stackoverflow.com/questions/22099490/calculate-vector-after-rotating-it-towards-another-by-angle-θ-in-3d-space
                 ArcBulletData data = (ArcBulletData)b.data;
-                data.updateAccel(b);
+                Tmp.v31.set(b.vel, data.zVel); //Current direction
+                Tmp.v32.set(target.x() - b.x, target.y() - b.y, -data.z).setLength2(Tmp.v31.len2()); //Target direction
+                //TODO better target direction calculation. Take gravity into account for z.
+
+                float vel = Tmp.v31.len();
+                float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / (vel * vel)) * Mathf.radDeg;
+
+                if(angle <= homingPower * Time.delta){
+                    Tmp.v31.set(Tmp.v32);
+                }else{
+                    Tmp.v33.set(Tmp.v31).crs(Tmp.v32).crs(Tmp.v31).nor(); //Thingy
+
+                    float c = Mathf.cosDeg(homingPower);
+                    float s = Mathf.sinDeg(homingPower);
+                    Tmp.v31.scl(c).add(Tmp.v33.scl(s));
+                }
+
+                b.vel.set(Tmp.v31);
+                data.zVel = Tmp.v31.z;
             }
         }
     }
@@ -434,8 +449,8 @@ public class ArcBulletType extends BulletType{
         Bullet bullet;
         if(!Mathf.zero(inaccCone)){
             PMMathf.randomCirclePoint(Tmp.v1, inaccCone);
-            data.driftRot = Tmp.v1.x + oldData.driftRot;
-            data.driftTilt = Tmp.v1.y + oldData.driftTilt;
+            data.driftYaw = Tmp.v1.x + oldData.driftYaw;
+            data.driftPitch = Tmp.v1.y + oldData.driftPitch;
         }
 
         bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, b.aimX, b.aimY);
@@ -484,7 +499,7 @@ public class ArcBulletType extends BulletType{
     public static class ArcBulletData implements Cloneable{
         public float xAccel, yAccel;
         public float lastZ, z, zVel, gravity;
-        public float driftRot, driftTilt;
+        public float driftYaw, driftPitch;
         public ArcBulletType splitFrom;
 
         public ArcBulletData(float z, float zVel, float gravity){
@@ -536,15 +551,15 @@ public class ArcBulletType extends BulletType{
             zVel -= gravity * Time.delta;
 
             boolean needUpdate = false;
-            if(!Mathf.zero(driftRot)){
-                b.vel.rotate(driftRot);
-                driftRot *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
+            if(!Mathf.zero(driftYaw)){
+                b.vel.rotate(driftYaw);
+                driftYaw *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
                 needUpdate = true;
             }
-            if(!Mathf.zero(driftTilt)){
-                Tmp.v1.set(b.vel.len(), zVel).rotate(driftTilt);
+            if(!Mathf.zero(driftPitch)){
+                Tmp.v1.set(b.vel.len(), zVel).rotate(driftPitch);
                 zVel = Tmp.v1.y;
-                driftTilt *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
+                driftPitch *= 1f - ((ArcBulletType)b.type).angleDriftDrag;
 
                 updateLifetime(b);
                 needUpdate = true;
