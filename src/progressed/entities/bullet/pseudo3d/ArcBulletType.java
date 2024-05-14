@@ -269,9 +269,6 @@ public class ArcBulletType extends BulletType{
 
                 b.vel.set(Tmp.v31);
                 data.zVel = Tmp.v31.z;
-                Tmp.v1.set(data.xAccel, data.yAccel).setAngle(b.vel.angle()); //TODO make the math take accel into account
-                data.xAccel = Tmp.v1.x;
-                data.yAccel = Tmp.v1.y;
             }
         }
     }
@@ -431,10 +428,10 @@ public class ArcBulletType extends BulletType{
     }
 
     public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float vel, float aimX, float aimY){
-        ArcBulletData data = new ArcBulletData(z, zVel, gravity).setAccel(angle, accel);
+        ArcBulletData data = new ArcBulletData(z, zVel, gravity).setAccel(accel);
 
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
-        bullet.initVel(angle, vel);
+        bullet.initVel(angle, vel); //Non-zero so that rotation is correct
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -457,8 +454,7 @@ public class ArcBulletType extends BulletType{
         Tmp.v1.set(Tmp.v31.x, Tmp.v31.y);
 
         ArcBulletData data = new ArcBulletData(z, Tmp.v31.z, -Tmp.v32.z);
-        data.xAccel = Tmp.v32.x;
-        data.yAccel = Tmp.v32.y;
+        data.accel = Tmp.v32.len();
 
         Bullet bullet = beginBulletCreate(owner, team, x, y);
         bullet.vel.set(Tmp.v1);
@@ -542,7 +538,7 @@ public class ArcBulletType extends BulletType{
     }
 
     public static class ArcBulletData implements Cloneable{
-        public float xAccel, yAccel;
+        public float accel;
         public float lastZ, z, zVel, gravity;
         public float driftYaw, driftPitch;
         public ArcBulletType splitFrom;
@@ -562,7 +558,7 @@ public class ArcBulletType extends BulletType{
         }
 
         public void backMove(Bullet b){
-            b.vel.sub(xAccel * Time.delta, yAccel * Time.delta);
+            b.vel.sub(Tmp.v1.trns(b.rotation(), accel * Time.delta));
             z -= zVel * Time.delta;
             zVel += gravity * Time.delta;
         }
@@ -572,25 +568,22 @@ public class ArcBulletType extends BulletType{
             b.lifetime(PMMathf.solve(-0.5f * gravity, zVel, z) + b.time);
         }
 
-        /** Sets constant acceleration in the x and y directions based on distance to target, initial velocity, and lifetime. */
+        /** Sets constant acceleration in based on distance to target, current velocity, and lifetime. */
         public void updateAccel(Bullet b){
             float life = b.lifetime() - b.time();
-            //Calculate accels
-            float dx = b.aimX - b.x;
-            xAccel = (2 * (dx - b.vel.x * life)) / (life * life);
-            float dy = b.aimY - b.y;
-            yAccel = (2 * (dy - b.vel.y * life)) / (life * life);
+            float d = Mathf.dst(b.x, b.y, b.aimX, b.aimY);
+            accel = (2 * (d - b.vel.len() * life)) / (life * life);
         }
 
         /** Sets the bullet's aim pos based on accel, initial velocity, and lifetime */
         public void updateAimPos(Bullet b){
             float life = b.lifetime() - b.time();
-            b.aimX = 0.5f * xAccel * life * life + b.vel.x * life + b.x;
-            b.aimY = 0.5f * yAccel * life * life + b.vel.y * life + b.y;
+            b.aimX = 0.5f * xAccel(b) * life * life + b.vel.x * life + b.x;
+            b.aimY = 0.5f * yAccel(b) * life * life + b.vel.y * life + b.y;
         }
 
         public void update(Bullet b){
-            b.vel.add(xAccel * Time.delta, yAccel * Time.delta);
+            b.vel.add(Tmp.v1.trns(b.rotation(), accel * Time.delta));
             lastZ = z;
             z += zVel * Time.delta;
             zVel -= gravity * Time.delta;
@@ -612,10 +605,17 @@ public class ArcBulletType extends BulletType{
             if(needUpdate) updateAimPos(b);
         }
 
-        public ArcBulletData setAccel(float angle, float a){
-            xAccel = Angles.trnsx(angle, a);
-            yAccel = Angles.trnsy(angle, a);
+        public ArcBulletData setAccel(float a){
+            accel = a;
             return this;
+        }
+
+        public float xAccel(Bullet b){
+            return accel * Mathf.cosDeg(b.rotation());
+        }
+
+        public float yAccel(Bullet b){
+            return accel * Mathf.sinDeg(b.rotation());
         }
 
         public ArcBulletData copy(){
