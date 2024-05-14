@@ -235,25 +235,43 @@ public class ArcBulletType extends BulletType{
 
             if(target != null){ //idk what I'm doing, but https://stackoverflow.com/questions/22099490/calculate-vector-after-rotating-it-towards-another-by-angle-θ-in-3d-space
                 ArcBulletData data = (ArcBulletData)b.data;
-                Tmp.v31.set(b.vel, data.zVel); //Current direction
-                Tmp.v32.set(target.x() - b.x, target.y() - b.y, -data.z).setLength2(Tmp.v31.len2()); //Target direction
-                //TODO better target direction calculation. Take gravity into account for z.
+                Tmp.v31.set(b.vel, data.zVel); //Current velocity
 
-                float vel = Tmp.v31.len();
-                float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / (vel * vel)) * Mathf.radDeg;
+                float v2 = Tmp.v31.len2();
+                Vec2 tZvel = Math3D.homingZVel(b.x, b.y, data.z, target.x(), target.y(), v2, data.gravity); //Find target z vels.
 
-                if(angle <= homingPower * Time.delta){
+                //Two potential target velocities
+                Tmp.v1.set(b.vel).setAngle(b.angleTo(target));
+                Tmp.v2.set(Tmp.v1).setLength(Mathf.sqrt(v2 - tZvel.x * tZvel.x));
+                Tmp.v32.set(Tmp.v2.x, Tmp.v2.y, tZvel.x);
+                Tmp.v2.set(Tmp.v1).setLength(Mathf.sqrt(v2 - tZvel.y * tZvel.y));
+                Tmp.v33.set(Tmp.v2.x, Tmp.v2.y, tZvel.y);
+
+                float v = Mathf.sqrt(v2);
+                float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / (v * v)) * Mathf.radDeg;
+                float angle2 = (float)Math.acos(Tmp.v31.dot(Tmp.v33) / (v * v)) * Mathf.radDeg;
+
+                if(angle2 < angle){ //Pick the closer one
+                    Tmp.v32.set(Tmp.v33);
+                    angle = angle2;
+                }
+
+                float h = homingPower * Time.delta;
+                if(angle <= h){
                     Tmp.v31.set(Tmp.v32);
                 }else{
                     Tmp.v33.set(Tmp.v31).crs(Tmp.v32).crs(Tmp.v31).nor(); //Thingy
 
-                    float c = Mathf.cosDeg(homingPower);
-                    float s = Mathf.sinDeg(homingPower);
+                    float c = Mathf.cosDeg(h);
+                    float s = Mathf.sinDeg(h);
                     Tmp.v31.scl(c).add(Tmp.v33.scl(s));
                 }
 
                 b.vel.set(Tmp.v31);
                 data.zVel = Tmp.v31.z;
+                Tmp.v1.set(data.xAccel, data.yAccel).setAngle(b.vel.angle()); //TODO make the math take accel into account
+                data.xAccel = Tmp.v1.x;
+                data.yAccel = Tmp.v1.y;
             }
         }
     }
@@ -343,6 +361,33 @@ public class ArcBulletType extends BulletType{
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
         ArcBulletData data = (ArcBulletData)b.data;
         Drawf.light(Draw3D.x(b.x, data.z), Draw3D.y(b.y, data.z), lightRadius * (1f + hMul(data.z)), lightColor, lightOpacity * Draw3D.scaleAlpha(data.z));
+    }
+
+    /** Just draws a line from the aim pos to homing target */
+    public void drawHomingDebug(Bullet b){
+        if(homingPower > 0.0001f && b.time >= homingDelay){
+            Teamc target;
+            //home in on allies if possible
+            if(heals()){
+                target = Units.closestTarget(null, b.aimX, b.aimY, homingRange,
+                    e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
+                    t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
+                );
+            }else{
+                if(b.aimTile != null && b.aimTile.build != null && b.aimTile.build.team != b.team && collidesGround && !b.hasCollided(b.aimTile.build.id)){
+                    target = b.aimTile.build;
+                }else{
+                    target = Units.closestTarget(b.team, b.aimX, b.aimY, homingRange,
+                        e -> e != null && e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
+                        t -> t != null && collidesGround && !b.hasCollided(t.id));
+                }
+            }
+
+            if(target != null){
+                Lines.stroke(4, Color.red);
+                Lines.line(b.aimX, b.aimY, target.x(), target.y());
+            }
+        }
     }
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float aimX, float aimY){
@@ -579,16 +624,6 @@ public class ArcBulletType extends BulletType{
             }catch(CloneNotSupportedException whywhywhywhywhywhywhywhy){
                 throw new RuntimeException("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", whywhywhywhywhywhywhywhy);
             }
-        }
-
-        /** Calculates proper initial velocity for the bullet. Normal, horizontal velocity is stored in the input vec2, vertical velocity is returned as a float. */
-        public static float calcVel(Vec2 vec, float speed, float angle, float tilt, float inaccuracy){
-            PMMathf.randomCirclePoint(vec, inaccuracy);
-            float horiInacc = vec.x;
-            float vertInacc = vec.y;
-            Math3D.rotate(Tmp.v31, speed, angle, horiInacc, tilt + vertInacc);
-            vec.set(Tmp.v31.x, Tmp.v31.y);
-            return Tmp.v31.z;
         }
     }
 }

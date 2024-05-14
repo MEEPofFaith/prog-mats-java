@@ -135,6 +135,37 @@ public class Math3D{
         return vec;
     }
 
+    //See my notebook for calculations. Oh wait, you don't have access to it because I physically hold it.
+    public static Vec2 homingZVel(float x1, float y1, float z1, float x2, float y2, float v2, float g){
+        float d = Mathf.dst(x1, y1, x2, y2);
+
+        float a = v2 - (g * g) / 9;
+        float b = (-2 * z1 * g) / (3 * d);
+        float c = -1 - ((z1 * z1) / (d * d));
+        vec.set(PMMathf.quad(a, b, c)); //Solve for v.x^-1 (Two solutions)
+
+        vec.x = 1 / vec.x; //Convert to v.x
+        vec.x = Mathf.sqrt(v2 - (vec.x * vec.x)); //Solve for v.y
+        /*
+        float vx1 = vec.x;
+        vec.x = Mathf.sqrt(v2 - (vec.x * vec.x)); //Solve for v.y
+        float t1 = d / vx1;
+        if(!Mathf.zero(0.5 * t1 * t1 * g + t1 * vec.x + z1)) vec.x *= -1;
+        //One solution is negative. Check if current value is an actual solution. If not, assume it's supposed to be negative.
+         */
+
+        vec.y = 1 / vec.y;
+        vec.x = -Mathf.sqrt(v2 - (vec.y * vec.y)); //From logging, seems like second solution is always the negative one.
+        /*
+        float vx2 = vec.y;
+        vec.x = Mathf.sqrt(v2 - (vec.y * vec.y));
+        float t2 = d / vx2;
+        if(!Mathf.zero(0.5 * t2 * t2 * g + t2 * vec.y + z1)) vec.y *= -1;
+        */
+
+        return vec;
+    }
+
     public static float dst(float x, float y, float z){
         return sqrt(x * x + y * y + z * z);
     }
