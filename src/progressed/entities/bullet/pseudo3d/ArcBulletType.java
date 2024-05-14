@@ -237,7 +237,7 @@ public class ArcBulletType extends BulletType{
                 ArcBulletData data = (ArcBulletData)b.data;
                 Tmp.v31.set(b.vel, data.zVel); //Current velocity
 
-                float v2 = Tmp.v31.len2();
+                float v2 = Tmp.v31.len2(); //TODO take accel into account
                 Vec2 tZvel = Math3D.homingZVel(b.x, b.y, data.z, target.x(), target.y(), v2, data.gravity); //Find target z vels.
 
                 //Two potential target velocities
