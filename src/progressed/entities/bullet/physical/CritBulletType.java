@@ -14,6 +14,8 @@ import progressed.graphics.trails.*;
 import static mindustry.Vars.*;
 
 public class CritBulletType extends BasicBulletType{
+    protected static Rand critRand = new Rand();
+
     public float critChance = 0.15f, critMultiplier = 5f;
     public Effect critEffect = OtherFx.crit;
     public boolean bouncing, despawnHitEffects = true;
@@ -36,6 +38,13 @@ public class CritBulletType extends BasicBulletType{
         this(speed, damage, "bullet");
     }
 
+    public static boolean critChance(Bullet b, float chance){
+        if(chance >= 1) return true;
+
+        critRand.setSeed(b.id);
+        return critRand.nextFloat() < chance;
+    }
+
     @Override
     public void init(){
         super.init();
@@ -45,7 +54,9 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void init(Bullet b){
-        if(b.data == null) b.data = Mathf.chance(critChance) ? "crit" : null;
+        if(b.data == null){
+            b.data = critChance(b, critChance) ? "crit" : null;
+        }
         if(isCrit(b)) b.damage *= critMultiplier;
 
         super.init(b);
