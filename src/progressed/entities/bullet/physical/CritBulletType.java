@@ -45,8 +45,8 @@ public class CritBulletType extends BasicBulletType{
 
     @Override
     public void init(Bullet b){
-        if(b.data == null) b.data = Mathf.chance(critChance);
-        if((boolean)b.data) b.damage *= critMultiplier;
+        if(b.data == null) b.data = Mathf.chance(critChance) ? "crit" : null;
+        if(isCrit(b)) b.damage *= critMultiplier;
 
         super.init(b);
     }
@@ -61,7 +61,7 @@ public class CritBulletType extends BasicBulletType{
             ((PMTrail)(b.trail)).updateRot(b.x, b.y, b.rotation());
         }
 
-        if(Mathf.chanceDelta(1) && (boolean)b.data){
+        if(Mathf.chanceDelta(1) && isCrit(b)){
             critEffect.at(b.x, b.y, b.rotation(), b.team.color);
         }
 
@@ -143,7 +143,7 @@ public class CritBulletType extends BasicBulletType{
     @Override
     public float damageMultiplier(Bullet b){
         float critMul = 1f;
-        if(b.isAdded() && (boolean)b.data) critMul = critMultiplier;
+        if(b.isAdded() && isCrit(b)) critMul = critMultiplier;
 
         return super.damageMultiplier(b) * critMul;
     }
@@ -170,5 +170,9 @@ public class CritBulletType extends BasicBulletType{
                 b.vel.setAngle(b.angleTo(target));
             }
         }
+    }
+
+    public boolean isCrit(Bullet b){
+        return b.data instanceof String;
     }
 }

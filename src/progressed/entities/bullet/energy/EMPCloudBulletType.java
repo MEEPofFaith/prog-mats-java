@@ -20,7 +20,7 @@ public class EMPCloudBulletType extends BulletType{
     protected static Rand cloudRand = new Rand();
 
     public float radius = 20f * tilesize;
-    public float growTime = 6f * 60f;
+    public float growTime = 2f * 60f;
     public float empInterval = 20f;
     public float timeDuration = 60f * 10f;
     public float powerDamageScl = 2f, powerSclDecrease = 0.2f;
