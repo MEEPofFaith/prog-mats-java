@@ -558,7 +558,12 @@ public class ArcBulletType extends BulletType{
         }
 
         public void backMove(Bullet b){
-            b.vel.sub(Tmp.v1.trns(b.rotation(), accel * Time.delta));
+            float vSub = accel * Time.delta;
+            if(vSub > b.vel.len()){
+                b.vel.setLength(0); //Prevent rotation from being reversed
+            }else{
+                b.vel.sub(Tmp.v1.trns(b.rotation(), vSub));
+            }
             z -= zVel * Time.delta;
             zVel += gravity * Time.delta;
         }
