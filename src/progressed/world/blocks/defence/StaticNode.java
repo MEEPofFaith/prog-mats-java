@@ -130,8 +130,8 @@ public class StaticNode extends Block{
     public void load(){
         super.load();
 
-        laser = Core.atlas.find("prog-mats-rainbow-laser");
-        laserEnd = Core.atlas.find("prog-mats-rainbow-laser-end");
+        laser = Core.atlas.find(name + "-laser", "prog-mats-static-laser");
+        laserEnd = Core.atlas.find(name + "-laser-end", "prog-mats-static-laser-end");
     }
 
     @Override
