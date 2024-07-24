@@ -3,6 +3,7 @@ package progressed.entities.bullet.pseudo3d;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.gen.*;
 import progressed.graphics.*;
 
@@ -52,11 +53,20 @@ public class ArcBasicBulletType extends ArcBulletType{
             float scl = shadowScale(data.z),
                 sX = Angles.trnsx(225f, data.z) + b.x,
                 sY = Angles.trnsy(225f, data.z) + b.y,
-                sRot = Angles.angle(b.originX, b.originY, b.aimX, b.aimY), //TODO better shadow rotation calculation
+                sRot = Angles.angle(b.originX, b.originY, b.aimX, b.aimY),
                 sAlpha = Draw3D.shadowAlpha(data.z);
+
+            float pitch = Tmp.v1.set(b.vel.len(), data.zVel).angle(); //0 - 90 or 270-360
+            if(pitch <= 90){ //Going vertical, aim away from current point.
+                sRot = Mathf.lerp(sRot, sRot < 45f ? -135f : 225f, pitch / 90f);
+            }else if(pitch >= 270f){ //Falling down, aim towards current point.
+                sRot = Mathf.lerp(sRot, sRot > 225f ? 405f : 45f, (360f - pitch) / 90f);
+            }
+            float fsRot = sRot; //I love Java
+
             Draw3D.shadow(() -> {
                 Draw.scl(scl);
-                PMDrawf.shadow(region, sX, sY, sRot, sAlpha);
+                PMDrawf.shadow(region, sX, sY, fsRot, sAlpha);
                 Draw.scl();
             });
         }
