@@ -3,6 +3,7 @@ package progressed.graphics;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -18,13 +19,36 @@ import static mindustry.Vars.*;
 public class Draw3D{
     /** Arbitrary value that translates z coordinate in world units to camera offset height. */
     public static final float zToOffset = 1f/48f/tilesize;
-    public static final float zFadeBegin = 300f, zFadeEnd = 5000f;
+    /** z level in which the shadow becomes invisible. */
+    public static final float shadowMax = 1024f;
     public static final float scaleFadeBegin = 1.5f, scaleFadeEnd = 7f;
+    public static final float shadowLayer = Layer.flyingUnit + 1;
     private static final Color tmpCol = new Color();
     private static final Seq<QueuedBloom> bloomQueue = new Seq<>();
+    private static final Seq<Runnable> shadowQueue = new Seq<>();
 
     public static void init(){
         Events.run(Trigger.drawOver, () -> {
+            if(shadowQueue.any()){
+                Draw.draw(shadowLayer, () -> {
+                    FrameBuffer buffer = renderer.effectBuffer;
+                    buffer.begin(Color.clear);
+                    Draw.sort(false);
+                    Gl.blendEquationSeparate(Gl.funcAdd, Gl.max);
+
+                    for(Runnable s : shadowQueue){
+                        s.run();
+                    }
+
+                    Draw.sort(true);
+                    buffer.end();
+                    Gl.blendEquationSeparate(Gl.funcAdd, Gl.funcAdd);
+
+                    buffer.blit(PMShaders.passThrough);
+                });
+                shadowQueue.clear();
+            }
+
             if(bloomQueue.any()){
                 bloomQueue.sort(q -> q.layer);
                 Bloom bloom = renderer.bloom;
@@ -249,8 +273,12 @@ public class Draw3D{
         return z * zToOffset;
     }
 
-    public static float zAlpha(float z){
-        return 1f - Mathf.curve(z, zFadeBegin, zFadeEnd);
+    public static float shadowScale(float z){
+        return 1 + z / shadowMax * 5f;
+    }
+
+    public static float shadowAlpha(float z){
+        return Mathf.clamp(1f - Interp.circleOut.apply(z / shadowMax));
     }
 
     public static float scaleAlpha(float z){
@@ -292,6 +320,10 @@ public class Draw3D{
             draw.run();
             Draw.z(z);
         }
+    }
+
+    public static void shadow(Runnable draw){
+        shadowQueue.add(draw);
     }
 
     private static class QueuedBloom{

@@ -351,6 +351,7 @@ public class ArcBulletType extends BulletType{
             float a = -ang + 90 * i;
             Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, sL, false);
         }
+        Draw.color();
     }
 
     @Override

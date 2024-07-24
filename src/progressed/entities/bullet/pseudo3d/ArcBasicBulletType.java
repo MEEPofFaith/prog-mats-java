@@ -4,14 +4,12 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import progressed.graphics.*;
 
 import static progressed.graphics.Draw3D.*;
 
 public class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
-    public float shadowLayer = Layer.flyingUnit + 1;
     public boolean bloomSprite = true;
     public boolean drawShadow = false, spinShade = true;
     public TextureRegion region, blRegion, trRegion;
@@ -50,14 +48,17 @@ public class ArcBasicBulletType extends ArcBulletType{
         float hX = Draw3D.x(b.x, data.z),
             hY = Draw3D.y(b.y, data.z);
         float rot = Angles.angle(lastHX, lastHY, hX, hY);
-        if(drawShadow){
-            Draw.scl(1f + height(data.z));
-            Draw.z(shadowLayer);
-            float sX = Angles.trnsx(225f, data.z) + b.x,
+        if(drawShadow && data.z < shadowMax){
+            float scl = shadowScale(data.z),
+                sX = Angles.trnsx(225f, data.z) + b.x,
                 sY = Angles.trnsy(225f, data.z) + b.y,
                 sRot = Angles.angle(b.originX, b.originY, b.aimX, b.aimY), //TODO better shadow rotation calculation
-                sAlpha = Draw3D.zAlpha(data.z);
-            PMDrawf.shadow(region, sX, sY, sRot, sAlpha);
+                sAlpha = Draw3D.shadowAlpha(data.z);
+            Draw3D.shadow(() -> {
+                Draw.scl(scl);
+                PMDrawf.shadow(region, sX, sY, sRot, sAlpha);
+                Draw.scl();
+            });
         }
 
         Draw.z(layer);
