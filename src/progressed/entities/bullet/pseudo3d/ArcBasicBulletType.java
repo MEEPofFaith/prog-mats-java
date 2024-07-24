@@ -13,7 +13,7 @@ public class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
     public boolean bloomSprite = true;
     public boolean drawShadow = false, spinShade = true;
-    public TextureRegion region, blRegion, trRegion;
+    public TextureRegion region, blRegion, trRegion, shadowRegion;
 
     public ArcBasicBulletType(float speed, float damage, String sprite){
         super(speed, damage);
@@ -37,6 +37,8 @@ public class ArcBasicBulletType extends ArcBulletType{
             blRegion = Core.atlas.find(sprite + "-bl");
             trRegion = Core.atlas.find(sprite + "-tr");
         }
+
+        shadowRegion = Core.atlas.find(sprite + "-shadow", region);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ArcBasicBulletType extends ArcBulletType{
 
             Draw3D.shadow(() -> {
                 Draw.scl(scl);
-                PMDrawf.shadow(region, sX, sY, fsRot, sAlpha);
+                PMDrawf.shadow(shadowRegion, sX, sY, fsRot, sAlpha);
                 Draw.scl();
             });
         }
