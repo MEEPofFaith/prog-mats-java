@@ -297,7 +297,10 @@ public class ArcBulletType extends BulletType{
         if(trailLength > 0 && b.trail != null){
             float z = Draw.z();
             Draw.z(z - 0.0001f);
-            Draw3D.highBloom(bloomTrail, () -> b.trail.draw(trailColor, trailWidth));
+            Draw3D.highBloom(bloomTrail, () -> {
+                b.trail.draw(trailColor, trailWidth);
+                b.trail.drawCap(trailColor, trailWidth);
+            });
             Draw.z(z);
         }
     }
@@ -507,9 +510,6 @@ public class ArcBulletType extends BulletType{
         bullet.data = data;
         bullet.drag = drag;
         bullet.hitSize = hitSize;
-        if(trailLength > 0){
-            bullet.trail = b.trail.copy();
-        }
         bullet.add();
         return bullet;
     }

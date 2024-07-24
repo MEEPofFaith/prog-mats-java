@@ -46,15 +46,18 @@ public class HeightTrail extends Trail{
 
     public void drawCap(Color color, float width, boolean fade){
         if(points.size > 4){
-            Draw.color(color);
-            if(fade) Draw.alpha(Draw3D.scaleAlpha(lastH));
             int i = points.size - 4;
             float x1 = x(i - 4), y1 = y(i - 4),
                 x2 = x(-1), y2 = y(-1),
                 w1 = w(-1), w = w1 * width / (points.size / 4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
+            if(fade){
+                Draw.color(Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(lastH)));
+            }else{
+                Draw.color(color);
+            }
             Draw.rect("hcircle", x2, y2, w, w, Angles.angle(x1, y1, x2, y2));
-            Draw.reset();
+            Draw.color();
         }
     }
 
@@ -78,11 +81,10 @@ public class HeightTrail extends Trail{
                 y2 = y(i + 4);
                 w2 = w(i + 4);
                 z2 = items[i + 4 + 3];
-
             }else{
-                x2 = Draw3D.x(lastX, lastH);
-                y2 = Draw3D.y(lastY, lastH);
-                w2 = lastW * hScale(lastH);
+                x2 = x(-1);
+                y2 = y(-1);
+                w2 = w(-1);
                 z2 = lastH;
             }
 
@@ -114,7 +116,7 @@ public class HeightTrail extends Trail{
             lastAngle = a2;
         }
 
-        Draw.reset();
+        Draw.color();
     }
 
     @Override

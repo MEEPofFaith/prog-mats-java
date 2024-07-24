@@ -1,8 +1,10 @@
 package progressed.content.effects;
 
+import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.explosive.RocketBulletType.*;
+import progressed.graphics.*;
 import progressed.graphics.trails.*;
 
 import static arc.graphics.g2d.Draw.*;
@@ -19,8 +21,8 @@ public class TrailFadeFx{
         if(!state.isPaused()){
             trail.shorten();
         }
-        trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
+        trail.drawCap(e.color, e.rotation);
     }),
 
     rocketTrailFade = new Effect(440f, e -> {
@@ -32,8 +34,8 @@ public class TrailFadeFx{
         if(!state.isPaused()){
             data.trail.shorten();
         }
-        data.trail.drawCap(e.color, e.rotation);
         data.trail.draw(e.color, e.rotation);
+        data.trail.drawCap(e.color, e.rotation);
     }),
 
     driftTrailFade = new Effect(400f, e -> {
@@ -45,8 +47,8 @@ public class TrailFadeFx{
             trail.shorten();
             trail.drift();
         }
-        trail.drawCap(e.color, e.rotation);
         trail.draw(e.color, e.rotation);
+        trail.drawCap(e.color, e.rotation);
     }),
 
     heightTrailFade = new Effect(400f, e -> {
@@ -57,7 +59,12 @@ public class TrailFadeFx{
         if(!state.isPaused()){
             trail.shorten();
         }
-        trail.drawCap(e.color, e.rotation);
-        trail.draw(e.color, e.rotation);
+        int col = e.color.rgba8888();
+        float size = e.rotation;
+        Draw3D.highBloom(() -> {
+            Tmp.c1.rgba8888(col);
+            trail.draw(Tmp.c1, size);
+            trail.drawCap(Tmp.c1, size);
+        });
     }).layer(Layer.flyingUnit + 1.9f);
 }

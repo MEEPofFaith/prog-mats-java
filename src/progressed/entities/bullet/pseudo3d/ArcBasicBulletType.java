@@ -73,7 +73,7 @@ public class ArcBasicBulletType extends ArcBulletType{
             });
         }
 
-        Draw.z(layer);
+        Draw.z(layer + data.z / 3000f); //Higher elevation should draw above
         drawTrail(b);
         Draw3D.highBloom(bloomSprite, () -> {
             Draw.scl(1f + hMul(data.z));
