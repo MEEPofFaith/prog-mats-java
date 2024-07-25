@@ -17,13 +17,13 @@ public class Math3D{
     /** Properly rotates and tilts up a 3D vector.
      * @param vec3 Vec3 to write output to.
      * @param length Length of the vector.
-     * @param rotation Angle of the main angle.
-     * @param rotationOffset Rotational offset from the main angle.
-     * @param tilt 3D tilt. Tilts around the axis 90* of the main angle.
+     * @param yaw Angle of the main angle.
+     * @param yawOffset Rotational offset from the main angle.
+     * @param pitch Pitch. Tilts around the axis 90* of the main angle.
      */
-    public static Vec3 rotate(Vec3 vec3, float length, float rotation, float rotationOffset, float tilt){
-        return vec3.set(Angles.trnsx(rotationOffset, length), Angles.trnsy(rotationOffset, length), 0f)
-            .rotate(Vec3.Y, tilt).rotate(Vec3.Z, -rotation);
+    public static Vec3 rotate(Vec3 vec3, float length, float yaw, float yawOffset, float pitch){
+        return vec3.set(Angles.trnsx(yawOffset, length), Angles.trnsy(yawOffset, length), 0f)
+            .rotate(Vec3.Y, pitch).rotate(Vec3.Z, -yaw);
     }
 
     public static int linePointCounts(float x1, float y1, float z1, float x2, float y2, float z2){

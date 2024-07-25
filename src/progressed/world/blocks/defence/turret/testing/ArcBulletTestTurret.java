@@ -23,8 +23,9 @@ public class ArcBulletTestTurret extends FreeTurret{
     public ArcBulletTestTurret(String name){
         super(name);
 
-        shootType = new ArcBasicBulletType(25f, 400f){{
+        shootType = new ArcBoltBulletType(25f, 400f){{
             homingPower = 3f;
+            homingRange = 20f * 8f;
         }};
         reload = 10f;
         range = 45f * tilesize;

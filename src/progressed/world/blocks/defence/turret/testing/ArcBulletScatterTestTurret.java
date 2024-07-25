@@ -17,7 +17,9 @@ public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
         super(name);
 
 
-        shootType = new ArcBasicBulletType(15f, 30f);
+        shootType = new ArcBoltBulletType(15f, 30f){{
+            trailLength = 40;
+        }};
         reload = 1f;
         shotTilt = -90f;
         inaccuracy = 45f;
@@ -48,7 +50,7 @@ public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
                 shootAngle = Mathf.random(360),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 
-            ArcBulletType aType = (ArcBulletType)type;
+            ArcBoltBulletType aType = (ArcBoltBulletType)type;
             handleBullet(aType.create3DStraight(this, team, x, y, shotZ, shootAngle, Mathf.random(-90f, -90f + inaccuracy), aType.speed * velScl, bAccel), xOffset, yOffset, shootAngle - rotation);
 
             (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);

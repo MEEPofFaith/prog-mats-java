@@ -35,7 +35,7 @@ public abstract class ArcBulletType extends BulletType{
 
     public boolean bloomTrail = true;
 
-    public boolean drawZone = false;
+    public boolean drawZone = false, drawTarget = true, drawProgress = true;
     public float zoneLayer = Layer.bullet;
     public float targetRadius = 12f, zoneRadius = 3f * 8f, progressRadius = -1f;
     public float spikesWidth1 = -1f, spikesLength1 = -1f;
@@ -307,19 +307,24 @@ public abstract class ArcBulletType extends BulletType{
             }
         }
 
-        float fin = b.fin() / lifetimeScl;
-        float pR = split ? Mathf.lerp(splitFrom.progressRadius, progressRadius, grow) * fout : progressRadius * scl;
-        PMDrawf.progressRing(x, y, pR, pR + 4f, fin);
-
-        float tR = split ? Mathf.lerp(splitFrom.targetRadius, targetRadius, grow) * fout : targetRadius * scl,
-            sW = split ? Mathf.lerp(splitFrom.spokeWidth, spokeWidth, grow) * fout : spokeWidth * scl,
-            sL = split ? Mathf.lerp(splitFrom.spokeLength, spokeLength, grow) * fout : spokeLength * scl;
-        PMDrawf.ring(x, y, tR, tR + 2);
-        Lines.stroke(sW);
-        for(int i = 0; i < 4; i++){
-            float a = -ang + 90 * i;
-            Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, sL, false);
+        if(drawProgress){
+            float fin = b.fin() / lifetimeScl;
+            float pR = split ? Mathf.lerp(splitFrom.progressRadius, progressRadius, grow) * fout : progressRadius * scl;
+            PMDrawf.progressRing(x, y, pR, pR + 4f, fin);
         }
+
+        if(drawTarget){
+            float tR = split ? Mathf.lerp(splitFrom.targetRadius, targetRadius, grow) * fout : targetRadius * scl,
+                sW = split ? Mathf.lerp(splitFrom.spokeWidth, spokeWidth, grow) * fout : spokeWidth * scl,
+                sL = split ? Mathf.lerp(splitFrom.spokeLength, spokeLength, grow) * fout : spokeLength * scl;
+            PMDrawf.ring(x, y, tR, tR + 2);
+            Lines.stroke(sW);
+            for(int i = 0; i < 4; i++){
+                float a = -ang + 90 * i;
+                Lines.lineAngleCenter(x + Angles.trnsx(a, tR), y + Angles.trnsy(a, tR), a, sL, false);
+            }
+        }
+
         Draw.color();
     }
 
@@ -414,35 +419,6 @@ public abstract class ArcBulletType extends BulletType{
         if(bullet.trail != null){
             bullet.trail.clear();
         }
-        bullet.add();
-        return bullet;
-    }
-
-    public Bullet create3DStraight(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float vel, float accel){
-        Math3D.rotate(Tmp.v31, vel, angle, 0f, tilt);
-        Math3D.rotate(Tmp.v32, accel, angle, 0f, tilt);
-        Tmp.v1.set(Tmp.v31.x, Tmp.v31.y);
-
-        ArcBulletData data = createData(z, Tmp.v31.z, -Tmp.v32.z);
-        data.setAccel(Tmp.v32.len());
-
-        Bullet bullet = beginBulletCreate(owner, team, x, y);
-        bullet.vel.set(Tmp.v1);
-        bullet.rotation(Tmp.v1.angle());
-        if(backMove){
-            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-            data.backMove(bullet);
-        }else{
-            bullet.set(x, y);
-        }
-        bullet.data = data;
-        bullet.drag = drag;
-        bullet.hitSize = hitSize;
-        if(bullet.trail != null){
-            bullet.trail.clear();
-        }
-        data.updateLifetime(bullet);
-        data.updateAimPos(bullet);
         bullet.add();
         return bullet;
     }
