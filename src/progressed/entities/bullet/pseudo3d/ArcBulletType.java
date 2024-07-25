@@ -20,7 +20,7 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 import static progressed.graphics.Draw3D.*;
 
-public class ArcBulletType extends BulletType{
+public abstract class ArcBulletType extends BulletType{
     private static float cdist = 0f;
     private static Unit result;
 
@@ -97,6 +97,9 @@ public class ArcBulletType extends BulletType{
         super.init();
     }
 
+    public abstract ArcBulletData createData();
+    public abstract ArcBulletData createData(float z, float zVel, float gravity);
+
     @Override
     public void init(Bullet b){
         if(b.data instanceof ArcBulletData){
@@ -104,7 +107,7 @@ public class ArcBulletType extends BulletType{
             a.updateLifetime(b);
             arcBulletDataInit(b);
         }else{ //Invalid data, remove
-            b.data = new ArcBulletData(); //Prevent crash
+            b.data = createData(); //Prevent crash
             b.remove();
         }
 
@@ -121,7 +124,6 @@ public class ArcBulletType extends BulletType{
     public void update(Bullet b){
         if(!(b.data instanceof ArcBulletData data)) return;
         data.update(b);
-        //Log.info(data.z);
         super.update(b);
         if(b.time > b.lifetime * lifetimeScl || data.z <= 0f) b.remove();
     }
@@ -233,43 +235,7 @@ public class ArcBulletType extends BulletType{
                 }
             }
 
-            if(target != null){ //idk what I'm doing, but https://stackoverflow.com/questions/22099490/calculate-vector-after-rotating-it-towards-another-by-angle-θ-in-3d-space
-                ArcBulletData data = (ArcBulletData)b.data;
-                Tmp.v31.set(b.vel, data.zVel); //Current velocity
-
-                float v2 = Tmp.v31.len2(); //TODO take accel into account
-                Vec2 tZvel = Math3D.homingZVel(b.x, b.y, data.z, target.x(), target.y(), v2, data.gravity); //Find target z vels.
-
-                //Two potential target velocities
-                Tmp.v1.set(b.vel).setAngle(b.angleTo(target));
-                Tmp.v2.set(Tmp.v1).setLength(Mathf.sqrt(v2 - tZvel.x * tZvel.x));
-                Tmp.v32.set(Tmp.v2.x, Tmp.v2.y, tZvel.x);
-                Tmp.v2.set(Tmp.v1).setLength(Mathf.sqrt(v2 - tZvel.y * tZvel.y));
-                Tmp.v33.set(Tmp.v2.x, Tmp.v2.y, tZvel.y);
-
-                float v = Mathf.sqrt(v2);
-                float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / (v * v)) * Mathf.radDeg;
-                float angle2 = (float)Math.acos(Tmp.v31.dot(Tmp.v33) / (v * v)) * Mathf.radDeg;
-
-                if(angle2 < angle){ //Pick the closer one
-                    Tmp.v32.set(Tmp.v33);
-                    angle = angle2;
-                }
-
-                float h = homingPower * Time.delta;
-                if(angle <= h){
-                    Tmp.v31.set(Tmp.v32);
-                }else{
-                    Tmp.v33.set(Tmp.v31).crs(Tmp.v32).crs(Tmp.v31).nor(); //Thingy
-
-                    float c = Mathf.cosDeg(h);
-                    float s = Mathf.sinDeg(h);
-                    Tmp.v31.scl(c).add(Tmp.v33.scl(s));
-                }
-
-                b.vel.set(Tmp.v31);
-                data.zVel = Tmp.v31.z;
-            }
+            if(target != null) ((ArcBulletData)b.data).updateHoming(b, target);
         }
     }
 
@@ -401,7 +367,7 @@ public class ArcBulletType extends BulletType{
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float gravity, float velocityScl, float aimX, float aimY){
         Vec3 vel = Math3D.rotate(Tmp.v31, speed, angle, 0f, tilt);
-        ArcBulletData data = new ArcBulletData(z, vel.z * velocityScl, gravity);
+        ArcBulletData data = createData(z, vel.z * velocityScl, gravity);
 
         //Taken from normal bullet create
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
@@ -432,7 +398,7 @@ public class ArcBulletType extends BulletType{
     }
 
     public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float vel, float aimX, float aimY){
-        ArcBulletData data = new ArcBulletData(z, zVel, gravity).setAccel(accel);
+        ArcBulletData data = createData(z, zVel, gravity).setAccel(accel);
 
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
         bullet.initVel(angle, vel); //Non-zero so that rotation is correct
@@ -457,8 +423,8 @@ public class ArcBulletType extends BulletType{
         Math3D.rotate(Tmp.v32, accel, angle, 0f, tilt);
         Tmp.v1.set(Tmp.v31.x, Tmp.v31.y);
 
-        ArcBulletData data = new ArcBulletData(z, Tmp.v31.z, -Tmp.v32.z);
-        data.accel = Tmp.v32.len();
+        ArcBulletData data = createData(z, Tmp.v31.z, -Tmp.v32.z);
+        data.setAccel(Tmp.v32.len());
 
         Bullet bullet = beginBulletCreate(owner, team, x, y);
         bullet.vel.set(Tmp.v1);
@@ -538,8 +504,7 @@ public class ArcBulletType extends BulletType{
         return beginBulletCreate(owner, team, x, y, -1f, x, y);
     }
 
-    public static class ArcBulletData implements Cloneable{
-        public float accel;
+    public abstract static class ArcBulletData implements Cloneable{
         public float lastZ, z, zVel, gravity;
         public float driftYaw, driftPitch;
         public ArcBulletType splitFrom;
@@ -559,12 +524,6 @@ public class ArcBulletType extends BulletType{
         }
 
         public void backMove(Bullet b){
-            float vSub = accel * Time.delta;
-            if(vSub > b.vel.len()){
-                b.vel.setLength(0); //Prevent rotation from being reversed
-            }else{
-                b.vel.sub(Tmp.v1.trns(b.rotation(), vSub));
-            }
             z -= zVel * Time.delta;
             zVel += gravity * Time.delta;
         }
@@ -575,11 +534,7 @@ public class ArcBulletType extends BulletType{
         }
 
         /** Sets constant acceleration in based on distance to target, current velocity, and lifetime. */
-        public void updateAccel(Bullet b){
-            float life = b.lifetime() - b.time();
-            float d = Mathf.dst(b.x, b.y, b.aimX, b.aimY);
-            accel = (2 * (d - b.vel.len() * life)) / (life * life);
-        }
+        public abstract void updateAccel(Bullet b);
 
         /** Sets the bullet's aim pos based on accel, initial velocity, and lifetime */
         public void updateAimPos(Bullet b){
@@ -589,7 +544,6 @@ public class ArcBulletType extends BulletType{
         }
 
         public void update(Bullet b){
-            b.vel.add(Tmp.v1.trns(b.rotation(), accel * Time.delta));
             lastZ = z;
             z += zVel * Time.delta;
             zVel -= gravity * Time.delta;
@@ -611,18 +565,13 @@ public class ArcBulletType extends BulletType{
             if(needUpdate) updateAimPos(b);
         }
 
-        public ArcBulletData setAccel(float a){
-            accel = a;
-            return this;
-        }
+        public abstract void updateHoming(Bullet b, Teamc target);
 
-        public float xAccel(Bullet b){
-            return accel * Mathf.cosDeg(b.rotation());
-        }
+        public abstract ArcBulletData setAccel(float a);
 
-        public float yAccel(Bullet b){
-            return accel * Mathf.sinDeg(b.rotation());
-        }
+        public abstract float xAccel(Bullet b);
+
+        public abstract float yAccel(Bullet b);
 
         public ArcBulletData copy(){
             try{

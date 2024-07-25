@@ -20,7 +20,7 @@ public class ArcBombBulletType extends ArcMissileBulletType{
         ArcBulletData a = (ArcBulletData)b.data;
         a.zVel += zVelOffset;
         a.updateLifetime(b);
-        a.accel = 0f;
+        a.setAccel(0f);
     }
 
     @Override

@@ -326,7 +326,7 @@ public class PayloadBullets{
                 splashDamageRadius = 4f * tilesize;
                 buildingDamageMultiplier = 0.5f;
 
-                //homingPower = 0.5f;
+                homingPower = 0.5f;
                 homingRange = 30f * 8f;
                 angleDriftDrag = 0.01f;
 
