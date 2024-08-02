@@ -11,11 +11,10 @@ import progressed.graphics.*;
 import static mindustry.Vars.*;
 
 public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
-    public float bAccel = 0.3f;
+    public float bAccel = 0f;
 
     public ArcBulletScatterTestTurret(String name){
         super(name);
-
 
         shootType = new ArcBoltBulletType(15f, 30f){{
             trailLength = 40;

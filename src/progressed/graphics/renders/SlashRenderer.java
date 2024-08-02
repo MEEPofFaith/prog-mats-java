@@ -15,7 +15,8 @@ import static mindustry.Vars.renderer;
 public class SlashRenderer{
     private static int maxCount = 4;
     private static SlashShader slashShader;
-    private static final Seq<SlashData> slashes = new Seq<>();
+    private static final Seq<SlashData> slashes = new Seq<>(SlashData.class);
+    private static int slashIndex = 0;
     private static FrameBuffer buffer;
 
     private static void createShader(){
@@ -38,7 +39,13 @@ public class SlashRenderer{
 
     public static void addSlash(float x, float y, float a, float off, float length, float width, float color){
         if(off <= 0.001f) return;
-        slashes.add(new SlashData(x, y, a, off, length, width, color));
+        if(slashes.size <= slashIndex) slashes.add(new SlashData());
+
+        //Pool slashes
+        var slash = slashes.items[slashIndex];
+        slash.set(x, y, a, off, length, width, color);
+
+        slashIndex++;
     }
 
     public static void draw(){
@@ -50,7 +57,7 @@ public class SlashRenderer{
         Draw.draw(BHLayer.end + 1f, () -> {
             buffer.end();
 
-            if(slashes.size > maxCount) createShader();
+            while(slashes.size > maxCount) createShader();
 
             float[] slashArray = new float[slashes.size * 4];
             for(int i = 0; i < slashes.size; i++){
@@ -71,12 +78,13 @@ public class SlashRenderer{
                 drawSlashes();
             }
 
-            slashes.clear();
+            slashIndex = 0;
         });
     }
 
     private static void drawSlashes(){
-        for(SlashData slash : slashes){
+        for(int i = 0; i < slashIndex; i++){
+            SlashData slash = slashes.items[i];
             float ang = slash.angle * Mathf.radDeg;
             Tmp.v1.trns(ang, slash.length);
             Tmp.v2.trns(ang + 90f, slash.width);
@@ -112,7 +120,7 @@ public class SlashRenderer{
         public float x, y, angle, offset;
         public float length, width, color;
 
-        public SlashData(float x, float y, float angle, float offset, float length, float width, float color){
+        public void set(float x, float y, float angle, float offset, float length, float width, float color){
             this.x = x;
             this.y = y;
             this.angle = angle;
