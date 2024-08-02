@@ -59,8 +59,8 @@ public class SlashRenderer{
 
             while(slashes.size > maxCount) createShader();
 
-            float[] slashArray = new float[slashes.size * 4];
-            for(int i = 0; i < slashes.size; i++){
+            float[] slashArray = new float[slashIndex * 4];
+            for(int i = 0; i < slashIndex; i++){
                 SlashData slash = slashes.get(i);
                 slashArray[i * 4] = slash.x;
                 slashArray[i * 4 + 1] = slash.y;
