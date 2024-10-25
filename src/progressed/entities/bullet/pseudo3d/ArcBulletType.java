@@ -468,6 +468,9 @@ public abstract class ArcBulletType extends BulletType{
         //bullet.aimTile = world.tileWorld(aimX, aimY);
         bullet.aimX = aimX;
         bullet.aimY = aimY;
+        if(!(aimX == -1f && aimY == -1f)){
+            bullet.aimTile = world.tileWorld(aimX, aimY);
+        }
         bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
         return bullet;
     }
