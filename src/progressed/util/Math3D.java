@@ -149,7 +149,10 @@ public class Math3D{
         float B = p3;
         float C = p4 - p1;
 
-        return (float)(-Math.asin((C - 0.5f * A) / ((sign(B) * sqrt(0.25f * A * A + B * B)))) / 2 - Math.atan(0.5f * A / B)) / 2f;
+        float D = sign(B) * sqrt(0.25f * A * A + B * B);
+        float E = (float)(Math.atan(0.5f * A / B)) / 2f;
+
+        return (float)(-Math.asin((C - 0.5f * A) / D)) / 2 - E;
     }
 
     public static float dst(float x, float y, float z){
