@@ -249,54 +249,61 @@ public class PMDrawf{
         reset();
     }
 
+    private static void drawSpinSprite(TextureRegion[] regions, float x, float y, float w, float h, float r){
+        float ar = mod(r, 360f);
+
+        alpha(1f);
+        if(ar > 45f && ar <= 225f){
+            rect(regions[0], x, y, w, h * -1f, r);
+        }else{
+            rect(regions[0], x, y, w, h, r);
+        }
+
+        if(ar >= 180 && ar < 270){ //Bottom Left
+            float a = Interp.slope.apply(Mathf.curve(ar, 180, 270));
+            alpha(a);
+            rect(regions[1], x, y, w, h, r);
+        }else if(ar < 90 && ar >= 0){ //Top Right
+            float a = Interp.slope.apply(Mathf.curve(ar, 0, 90));
+            alpha(a);
+            rect(regions[2], x, y, w, h, r);
+        }
+        alpha(1f);
+    }
+
     /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
-    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r, float alpha){
-        if(alpha < 0.001f) return;
-        if(alpha < 0.999f){
+    public static void spinSprite(TextureRegion[] regions, float x, float y, float w, float h, float r, float alpha){
+        float xScl = xscl, yScl = yscl;
+        if(alpha < 0.99f){
             FrameBuffer buffer = renderer.effectBuffer;
             float z = Draw.z();
-            float xScl = xscl, yScl = yscl;
             Draw.draw(z, () -> {
                 buffer.begin(Color.clear);
-                Draw.scl(xScl, yScl);
-                spinSprite(base, bottomLeft, topRight, x, y, r);
+                drawSpinSprite(regions, x, y, w * xScl, h * yScl, r);
                 buffer.end();
 
                 alphaShader.alpha = alpha;
                 buffer.blit(alphaShader);
             });
-            return;
+        }else{
+            drawSpinSprite(regions, x, y, w * xScl, h * yScl, r);
         }
-
-        float ar = mod(r - 135f, 360f);
-        float a = mod(ar, 90f) / 90f;
-        alpha(1f);
-        if(ar >= 270){ //Bottom Right
-            rect(bottomLeft, x, y, r);
-            alpha(a);
-            yscl *= -1;
-            rect(base, x, y, r);
-            yscl *= -1;
-        }else if(ar >= 180){ //Bottom Left
-            rect(base, x, y, r);
-            alpha(a);
-            rect(bottomLeft, x, y, r);
-        }else if(ar >= 90){ //Top Left
-            rect(topRight, x, y, r);
-            alpha(a);
-            rect(base, x, y, r);
-        }else{ //Top Right
-            yscl *= -1;
-            rect(base, x, y, r);
-            yscl *= -1;
-            alpha(a);
-            rect(topRight, x, y, r);
-        }
-        alpha(1f);
     }
 
-    public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r){
-        spinSprite(base, bottomLeft, topRight, x, y, r, 1f);
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
+    public static void spinSprite(TextureRegion[] regions, float x, float y, float w, float h, float r){
+        spinSprite(regions, x, y, w, h, r, 1f);
+    }
+
+
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
+    public static void spinSprite(TextureRegion[] regions, float x, float y, float r, float alpha){
+        spinSprite(regions, x, y, regions[0].width / 4f, regions[0].height / 4f, r, alpha);
+    }
+
+    /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
+    public static void spinSprite(TextureRegion[] regions, float x, float y, float r){
+        spinSprite(regions, x, y, regions[0].width / 4f, regions[0].height / 4f, r);
     }
 
     public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot){
