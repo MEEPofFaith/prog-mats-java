@@ -57,6 +57,13 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         a.updateAimPos(b);
     }
 
+    @Override
+    public void updateHoming(Bullet b){
+        //Since the pitch calculation can only find one solution, only home when that one solution is the optimal one.
+        if(((ArcBulletData)b.data).zVel > 0) return;
+        super.updateHoming(b);
+    }
+
     public static class ArcMissileData extends ArcBulletData{
         public float accel;
 
