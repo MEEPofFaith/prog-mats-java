@@ -1424,7 +1424,8 @@ public class PMBlocks{
             hideDetails = false;
             radius = 64.5f;
             phaseRadiusBoost = 27.5f;
-            height = 15f * tilesize;
+            height = 2f * tilesize;
+            phaseHeightBoost = 3f * tilesize;
             shieldHealth = 3600f;
             phaseShieldBoost = 2000f;
             shieldCharge = 700f;
