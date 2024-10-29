@@ -90,7 +90,5 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
             }
             Draw.scl();
         });
-
-        drawHomingDebug(b);
     }
 }

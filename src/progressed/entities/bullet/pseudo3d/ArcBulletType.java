@@ -335,33 +335,6 @@ public abstract class ArcBulletType extends BulletType{
         Drawf.light(Draw3D.x(b.x, data.z), Draw3D.y(b.y, data.z), lightRadius * (1f + hMul(data.z)), lightColor, lightOpacity * Draw3D.scaleAlpha(data.z));
     }
 
-    /** Just draws a line from the aim pos to homing target */
-    public void drawHomingDebug(Bullet b){
-        if(homingPower > 0.0001f && b.time >= homingDelay){
-            Teamc target;
-            //home in on allies if possible
-            if(heals()){
-                target = Units.closestTarget(null, b.aimX, b.aimY, homingRange,
-                    e -> e.checkTarget(collidesAir, collidesGround) && e.team != b.team && !b.hasCollided(e.id),
-                    t -> collidesGround && (t.team != b.team || t.damaged()) && !b.hasCollided(t.id)
-                );
-            }else{
-                if(b.aimTile != null && b.aimTile.build != null && b.aimTile.build.team != b.team && collidesGround && !b.hasCollided(b.aimTile.build.id)){
-                    target = b.aimTile.build;
-                }else{
-                    target = Units.closestTarget(b.team, b.aimX, b.aimY, homingRange,
-                        e -> e != null && e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
-                        t -> t != null && collidesGround && !b.hasCollided(t.id));
-                }
-            }
-
-            if(target != null){
-                Lines.stroke(4, Color.red);
-                Lines.line(b.aimX, b.aimY, target.x(), target.y());
-            }
-        }
-    }
-
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float aimX, float aimY){
         return create3D(owner, team, x, y, z, angle, tilt, gravity, aimX, aimY);
     }
