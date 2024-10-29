@@ -272,7 +272,7 @@ public class PayloadBullets{
             intervalBullet = new ArcBombBulletType(300f, 3f * tilesize, "prog-mats-bombing-missile-bomb"){{
                 accel = 0f;
                 buildingDamageMultiplier = 0.5f;
-                homingPower = 0.5f;
+                homingPower = 8f;
 
                 drawZone = false;
                 growTime = 6f;
@@ -326,7 +326,7 @@ public class PayloadBullets{
                 splashDamageRadius = 4f * tilesize;
                 buildingDamageMultiplier = 0.5f;
 
-                homingPower = 1f;
+                homingPower = 0.5f;
                 homingRange = 64f * 8f;
                 angleDriftDrag = 0.01f;
 

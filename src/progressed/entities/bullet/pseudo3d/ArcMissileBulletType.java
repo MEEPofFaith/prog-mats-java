@@ -106,14 +106,14 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
             Tmp.v31.set(b.vel, zVel); //Current velocity
 
-            float v2 = Tmp.v31.len();
+            float v2 = Tmp.v31.len2();
             float pitch = Math3D.homingPitch(b.x, b.y, z, target.x(), target.y(), v2, accel, gravity); //Find target pitch between -pi/2 and pi/2
 
             float polar = Mathf.pi - (pitch + Mathf.halfPi); //0 = up, pi - down. Convert -pi/2-pi/2 -> pi-0
 
             Tmp.v32.setFromSpherical(b.angleTo(target) * Mathf.degRad, polar).setLength2(v2); //Target velocity
 
-            float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / v2) * Mathf.radDeg;
+            float angle = (float)Math.acos(Tmp.v31.dot(Tmp.v32) / Mathf.sqrt(v2)) * Mathf.radDeg;
 
             float h = type.homingPower * Time.delta;
             if(angle <= h){
