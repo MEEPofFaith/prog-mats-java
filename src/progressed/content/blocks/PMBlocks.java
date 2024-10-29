@@ -100,9 +100,6 @@ public class PMBlocks{
     // endregion
     // region Distribution
 
-    //Conveyor
-    floatingConveyor,
-
     //Misc
     burstDriver, sandDriver,
 
@@ -1083,21 +1080,6 @@ public class PMBlocks{
         // endregion
 
         // region Distribution
-        floatingConveyor = new CoveredConveyor("floating-conveyor"){{
-            requirements(Category.distribution, with(
-                Items.lead, 3,
-                Items.metaglass, 3,
-                Items.plastanium, 3,
-                PMItems.tenelium, 3
-            ));
-            health = 15;
-            floating = true;
-            placeableLiquid = true;
-            speed = 0.06f;
-            displayedSpeed = 8.4f;
-            buildCostMultiplier = 0.25f;
-        }};
-
         burstDriver = new BurstDriver("burst-driver"){{
             requirements(Category.distribution, with(
                 Items.titanium, 275,

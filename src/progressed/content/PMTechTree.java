@@ -161,14 +161,6 @@ public class PMTechTree{
             node(smartDrill);
         });
 
-        // Distribution
-        vanillaNode(armoredConveyor, () -> {
-            //Floating Conveyor
-            node(floatingConveyor, Seq.with(
-                new SectorComplete(SectorPresets.windsweptIslands)
-            ));
-        });
-
         vanillaNode(massDriver, () -> {
             //Burst Driver
             node(burstDriver, Seq.with(
