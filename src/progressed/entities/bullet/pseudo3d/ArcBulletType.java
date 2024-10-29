@@ -21,6 +21,7 @@ import static mindustry.Vars.*;
 import static progressed.graphics.Draw3D.*;
 
 public abstract class ArcBulletType extends BulletType{
+    private static final Vec2 homingTarget = new Vec2();
     private static float cdist = 0f;
     private static Unit result;
 
@@ -235,7 +236,13 @@ public abstract class ArcBulletType extends BulletType{
                 }
             }
 
-            if(target != null) ((ArcBulletData)b.data).updateHoming(b, target);
+            if(target != null){
+                homingTarget.set(target);
+                if(target instanceof Velc v){
+                    homingTarget.mulAdd(v.vel(), (b.lifetime - b.time) * Time.delta);
+                }
+                ((ArcBulletData)b.data).updateHoming(b, homingTarget);
+            }
         }
     }
 
@@ -517,7 +524,7 @@ public abstract class ArcBulletType extends BulletType{
             if(needUpdate) updateAimPos(b);
         }
 
-        public abstract void updateHoming(Bullet b, Teamc target);
+        public abstract void updateHoming(Bullet b, Position target);
 
         public abstract ArcBulletData setAccel(float a);
 

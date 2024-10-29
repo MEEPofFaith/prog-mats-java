@@ -1,6 +1,7 @@
 package progressed.entities.bullet.pseudo3d;
 
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.content.*;
@@ -102,13 +103,13 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         }
 
         @Override
-        public void updateHoming(Bullet b, Teamc target){
+        public void updateHoming(Bullet b, Position target){
             BulletType type = b.type;
 
             Tmp.v31.set(b.vel, zVel); //Current velocity
 
             float v2 = Tmp.v31.len2();
-            float pitch = Math3D.homingPitch(b.x, b.y, z, target.x(), target.y(), v2, accel, gravity); //Find target pitch between -pi/2 and pi/2
+            float pitch = Math3D.homingPitch(b.x, b.y, z, target.getX(), target.getY(), v2, accel, gravity); //Find target pitch between -pi/2 and pi/2
 
             float polar = Mathf.pi - (pitch + Mathf.halfPi); //0 = up, pi - down. Convert -pi/2-pi/2 -> pi-0
 

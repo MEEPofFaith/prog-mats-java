@@ -1,5 +1,6 @@
 package progressed.entities.bullet.pseudo3d;
 
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.entities.bullet.*;
@@ -95,7 +96,7 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
         }
 
         @Override
-        public void updateHoming(Bullet b, Teamc target){
+        public void updateHoming(Bullet b, Position target){
             BulletType type = b.type;
 
             Tmp.v1.set(b.aimX, b.aimY).approachDelta(Tmp.v2.set(target), type.homingPower);
