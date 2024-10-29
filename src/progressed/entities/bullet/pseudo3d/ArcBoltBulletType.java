@@ -1,6 +1,7 @@
 package progressed.entities.bullet.pseudo3d;
 
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -23,7 +24,7 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
 
     @Override
     public ArcBulletData createData(){
-        return new ArcBoltData();
+        return Pools.obtain(ArcBulletData.class, ArcBoltData::new);
     }
 
     @Override

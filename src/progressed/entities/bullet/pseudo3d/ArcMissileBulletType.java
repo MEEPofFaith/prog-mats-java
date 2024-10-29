@@ -2,6 +2,7 @@ package progressed.entities.bullet.pseudo3d;
 
 import arc.math.*;
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -36,7 +37,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
     @Override
     public ArcBulletData createData(){
-        return new ArcMissileData();
+        return Pools.obtain(ArcMissileData.class, ArcMissileData::new);
     }
 
     @Override

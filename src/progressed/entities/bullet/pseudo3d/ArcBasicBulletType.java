@@ -13,7 +13,7 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
     public boolean bloomSprite = true;
     public boolean drawShadow = false, spinShade = true;
-    public TextureRegion region, blRegion, trRegion, shadowRegion;
+    public TextureRegion region, shadowRegion;
     public TextureRegion[] regions;
 
     public ArcBasicBulletType(float speed, float damage, String sprite){
