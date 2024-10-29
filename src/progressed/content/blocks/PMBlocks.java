@@ -1421,17 +1421,18 @@ public class PMBlocks{
                 PMItems.tenelium, 125
             ));
             size = 4;
-            hideDetails = false;
+            sides = 4;
             radius = 64.5f;
             phaseRadiusBoost = 27.5f;
-            height = 2f * tilesize;
-            phaseHeightBoost = 3f * tilesize;
+            height = 8f * tilesize;
+            phaseHeightBoost = 4f * tilesize;
             shieldHealth = 3600f;
             phaseShieldBoost = 2000f;
             shieldCharge = 700f;
             phaseShieldCharge = 400f;
             chargeTime = 450f;
             cooldownBrokenBase *= 2f;
+            hideDetails = false;
 
             consumePower(7f);
             itemConsumer = consumeItems(with(Items.phaseFabric, 1, PMItems.tenelium, 1)).boost();
