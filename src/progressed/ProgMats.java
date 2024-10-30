@@ -133,7 +133,6 @@ public class ProgMats extends Mod{
         PMItems.load();
         PMBullets.load();
         PMBlocks.load();
-        PMPlanets.load();
         PMTechTree.load();
         PMLoadouts.load();
     }
