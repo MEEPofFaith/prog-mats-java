@@ -1,13 +1,13 @@
 package progressed.world.blocks.defence.turret.testing;
 
 import arc.struct.*;
-import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import progressed.content.blocks.*;
 import progressed.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -18,7 +18,7 @@ public class FreeTurret extends Turret{
     public FreeTurret(String name){
         super(name);
 
-        requirements(Category.turret, OS.username.equals("MEEPM") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with());
+        requirements(Category.turret, PMBlocks.incompleteVisibility(), with());
         size = 2;
     }
 

@@ -14,7 +14,6 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
@@ -47,7 +46,7 @@ public class PMModules{
 
     public static void load(){
         coil = new ItemTurretModule("coil"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
             Effect sfe = new MultiEffect(Fx.shootSmallColor, Fx.colorSpark);
@@ -88,7 +87,7 @@ public class PMModules{
         }};
 
         skeet = new ItemTurretModule("skeet"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
             float brange = 140f;
@@ -123,7 +122,7 @@ public class PMModules{
         }};
 
         burst = new PowerTurretModule("burst"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
             shootType = new BulletType(4.5f, 4f){{
@@ -152,7 +151,7 @@ public class PMModules{
         }};
 
         accentuate = new SweepLaserTurretModule("accentuate"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
             shootType = new PointLaserBulletType(){{
@@ -172,7 +171,7 @@ public class PMModules{
         }};
 
         augment = new BoostModule("augment"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
             hasPower = true;
@@ -183,7 +182,7 @@ public class PMModules{
         }};
 
         abyss = new PowerTurretModule("abyss"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             moduleSize = ModuleSize.medium;
             size = 2;
             outlineColor = Pal.darkOutline;
@@ -233,7 +232,7 @@ public class PMModules{
         }};
 
         halberd = new BeamModule("halberd"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             moduleSize = ModuleSize.medium;
             size = 2;
             outlineColor = Pal.darkOutline;
@@ -254,7 +253,7 @@ public class PMModules{
         }};
 
         gravity = new TractorConeModule("gravity"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             moduleSize = ModuleSize.medium;
             size = 2;
             outlineColor = Pal.darkOutline;
@@ -269,7 +268,7 @@ public class PMModules{
         }};
 
         firestorm = new ArcModule("firestorm"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             moduleSize = ModuleSize.large;
             size = 3;
             outlineColor = Pal.darkOutline;

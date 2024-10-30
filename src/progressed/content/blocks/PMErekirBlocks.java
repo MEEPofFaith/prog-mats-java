@@ -13,7 +13,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import progressed.content.*;
 import progressed.content.bullets.*;
 import progressed.content.effects.*;
@@ -179,7 +178,7 @@ public class PMErekirBlocks{
         }};
 
         matrix = new ModularTurret("matrix"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
+            requirements(Category.turret, PMBlocks.incompleteVisibility(), with());
             size = 7;
             scaledHealth = 370;
             regionSuffix = "-dark";
@@ -235,7 +234,7 @@ public class PMErekirBlocks{
 
         if(false){ //TODO Re-set these up once I create modules for Matrix.
             moduleAssembler = new PayloadCrafter("module-assembler"){{
-                requirements(Category.crafting, with(
+                requirements(Category.crafting, PMBlocks.incompleteVisibility(), with(
                     Items.copper, 220,
                     Items.lead, 250,
                     Items.silicon, 100
@@ -249,7 +248,7 @@ public class PMErekirBlocks{
             }};
 
             moduleFoundry = new PayloadCrafter("module-foundry"){{
-                requirements(Category.crafting, with(
+                requirements(Category.crafting, PMBlocks.incompleteVisibility(), with(
                     Items.lead, 540,
                     Items.silicon, 430,
                     PMItems.tenelium, 300,

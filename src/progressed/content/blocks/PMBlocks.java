@@ -133,6 +133,11 @@ public class PMBlocks{
 
     // endregion
 
+    /** For incomplete or test content that should not be visible publicly. */
+    public static BuildVisibility incompleteVisibility(){
+        return OS.username.equals("MEEPM") ? BuildVisibility.sandboxOnly : BuildVisibility.hidden;
+    }
+
     public static void load(){
         PMPayloads.load();
         PMModules.load();
@@ -1020,7 +1025,7 @@ public class PMBlocks{
         }};
 
         judgement = new NexusTurret("judgement"){{
-            requirements(Category.turret, BuildVisibility.sandboxOnly, with());
+            requirements(Category.turret, incompleteVisibility(), with());
             size = 9;
         }};
 
