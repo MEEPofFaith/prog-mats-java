@@ -10,7 +10,7 @@ import blackhole.graphics.*;
 import progressed.graphics.PMShaders.*;
 
 import static arc.Core.*;
-import static mindustry.Vars.renderer;
+import static mindustry.Vars.*;
 
 public class SlashRenderer{
     private static int maxCount = 4;
