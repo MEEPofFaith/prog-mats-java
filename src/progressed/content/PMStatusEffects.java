@@ -10,6 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import progressed.content.effects.*;
+import progressed.graphics.*;
 import progressed.type.statuseffects.*;
 
 import static mindustry.content.StatusEffects.*;
@@ -43,7 +44,7 @@ public class PMStatusEffects{
         }};
 
         empStun = new PMStatusEffect("emp-stun"){{
-            color = Pal.lancerLaser;
+            color = PMPal.nukeEmp;
             effect = MissileFx.hitEmpSpark;
             effectChance = 0.1f;
             speedMultiplier = 0.05f;

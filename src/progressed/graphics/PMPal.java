@@ -23,6 +23,7 @@ public class PMPal{
 
     missileBasic = valueOf("ffa665"),
     missileFrag = valueOf("9CB664"),
+    nukeEmp = valueOf("a1b0ff"),
 
     nexusLaser = valueOf("da89fa"),
     nexusLaserDark = valueOf("cf6aec");

@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.entities.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
@@ -26,7 +27,7 @@ public class EMPCloudBulletType extends BulletType{
     public float powerDamageScl = 2f, powerSclDecrease = 0.2f;
     public boolean hitUnits = true;
     public float unitDamageScl = 0.5f;
-    public Color cloudColor = Pal.lancerLaser.cpy().a(0.125f);
+    public Color cloudColor = PMPal.nukeEmp.cpy().a(0.125f);
     public int cloudGroups = 15, cloudsPerGroup = 6;
     public float cloudLifeMin = 0.9f;
     public float cloudRad = 9f * tilesize, cloudRadRand = -1f;
@@ -38,7 +39,7 @@ public class EMPCloudBulletType extends BulletType{
         super(0f, damage);
         collides = hittable = absorbable = false;
         hitEffect = despawnEffect = Fx.none;
-        hitColor = Pal.lancerLaser;
+        hitColor = PMPal.nukeEmp;
         layer = Layer.effect + 0.021f;
     }
 

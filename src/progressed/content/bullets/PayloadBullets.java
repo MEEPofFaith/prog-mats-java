@@ -355,7 +355,7 @@ public class PayloadBullets{
             growTime = 20f;
             trailLength = 35;
             trailWidth = 2.5f;
-            trailColor = targetColor = zoneColor = Pal.lancerLaser;
+            trailColor = targetColor = zoneColor = PMPal.nukeEmp;
 
             accel = 0.01f;
             gravity = 0.02f;
