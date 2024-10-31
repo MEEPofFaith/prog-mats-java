@@ -239,7 +239,7 @@ public abstract class ArcBulletType extends BulletType{
             if(target != null){
                 homingTarget.set(target);
                 if(target instanceof Velc v){
-                    homingTarget.mulAdd(v.vel(), (b.lifetime - b.time) * Time.delta);
+                    homingTarget.mulAdd(v.vel(), b.lifetime - b.time);
                 }
                 ((ArcBulletData)b.data).updateHoming(b, homingTarget);
             }

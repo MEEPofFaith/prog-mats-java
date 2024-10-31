@@ -3,6 +3,7 @@ package progressed.content.blocks;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -1338,20 +1339,34 @@ public class PMBlocks{
             }
         };
 
-        harmacist = new EffectZone("harmacist"){{
-            requirements(Category.units, BuildVisibility.sandboxOnly, with());
-            alwaysUnlocked = true;
+        harmacist = new EffectZone("harmacist"){
+            {
+                requirements(Category.units, BuildVisibility.sandboxOnly, with());
+                alwaysUnlocked = true;
 
-            size = 2;
-            range = 32f * tilesize;
-            height = 16f;
-            baseColor = Color.red;
-            reload = 5f;
-            affectOwnTeam = false;
-            affectEnemyTeam = true;
+                size = 2;
+                range = 32f * tilesize;
+                height = 16f;
+                baseColor = Color.red;
+                reload = 2f;
+                affectOwnTeam = false;
+                affectEnemyTeam = true;
 
-            zoneEffect = tile -> all.each(u -> PMBullets.harmanuke.create(tile, u.x, u.y, 0f));
-        }};
+                zoneEffect = tile -> all.each(u -> {
+                    Tmp.v1.set(u).mulAdd(u.vel, PMBullets.harmanuke.lifetime);
+                    if(!Tmp.v1.within(tile, range)) return;
+                    PMBullets.harmanuke.create(tile, Tmp.v1.x, Tmp.v1.y, 0f);
+                });
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+
+                stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
+                stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, PMBullets.harmanuke)));
+            }
+        };
         // endregion
 
         // region Effect

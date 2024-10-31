@@ -181,6 +181,8 @@ public class PMBullets{
 
             splashDamage = 1000f;
             splashDamageRadius = 80f;
+
+            displayAmmoMultiplier = false;
         }};
 
         burstDriverOrb = new BurstDriverOrb();
