@@ -189,7 +189,6 @@ public class PMBullets{
 
         MinigunBullets.load();
         SniperBullets.load();
-        ModuleBullets.load();
         PayloadBullets.load();
     }
 }

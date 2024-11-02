@@ -33,10 +33,10 @@ public class PMModules{
     public static Block
 
     //Small
-    coil, skeet, burst, accentuate, augment,
+    coil, vigil, scald, accentuate, augment,
 
     //Medium
-    abyss, halberd, gravity,
+    abyss, halberd, influx,
     //TODO? crit sniper
     //TODO swarm missile launcher
 
@@ -87,7 +87,7 @@ public class PMModules{
             limitRange();
         }};
 
-        skeet = new ItemTurretModule("skeet"){{
+        vigil = new ItemTurretModule("skeet"){{
             requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
@@ -123,7 +123,7 @@ public class PMModules{
             coolant = consume(new ConsumeLiquid(Liquids.water, 5f / 60f));
         }};
 
-        burst = new PowerTurretModule("burst"){{
+        scald = new PowerTurretModule("burst"){{
             requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
@@ -134,8 +134,7 @@ public class PMModules{
                 impact = true;
                 knockback = 5f;
                 hitColor = Color.white;
-                hitEffect = ModuleFx.hitSteam;
-                despawnEffect = Fx.none;
+                hitEffect = despawnEffect = Fx.none;
                 hittable = false;
                 buildingDamageMultiplier = 0.3f;
             }};
@@ -144,10 +143,12 @@ public class PMModules{
             range = 13.5f * tilesize;
             shootEffect = ModuleFx.steamBurst;
             shootSound = Sounds.flame;
-            shootCone = 60f;
+            shootCone = 20f;
+            velocityRnd = 0.4f;
             buildingFilter = b -> false; //Don't target buildings.
 
-            shoot = new ShootSpread(24, 5f);
+            int shots = 12;
+            shoot = new ShootSpread(shots, 10f / shots);
 
             consumePower(2f);
             consumeLiquid(Liquids.water, 12f / 60f);
@@ -258,7 +259,7 @@ public class PMModules{
             }});
         }};
 
-        gravity = new TractorConeModule("gravity"){{
+        influx = new TractorConeModule("gravity"){{
             requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             moduleSize = ModuleSize.medium;
             size = 2;
@@ -282,17 +283,19 @@ public class PMModules{
             ammo(Items.carbide, new ArcMissileBulletType("prog-mats-firestorm-missile"){{
                 lifetime = 75f;
                 splashDamage = 170f;
-                splashDamageRadius = 32f;
+                splashDamageRadius = 3f * 8f;
                 buildingDamageMultiplier = 0.3f;
                 hitShake = 3f;
                 collidesAir = false;
                 ammoMultiplier = 12;
 
                 accel = 0.2f;
-                gravity = 0.3f;
+                gravity = 0.1f;
+                homingPower = 8f;
                 trailLength = 15;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileBasic;
+                drawProgress = drawZone = false;
                 hitSound = Sounds.explosion;
 
                 hitEffect = MissileFx.smallBoom;
@@ -317,7 +320,7 @@ public class PMModules{
                 };
 
                 shots = 9;
-                shotDelay = 10f;
+                shotDelay = 8f;
             }};
         }};
     }

@@ -61,22 +61,12 @@ public class ModuleFx{
     steamBurst = new Effect(40f, e -> {
         rand.setSeed(e.id);
         for(int i = 0; i < 9; i++){
-            Tmp.v1.trns(e.rotation + rand.range(5f), rand.random(e.finpow() * 13.5f * tilesize));
+            Tmp.v1.trns(e.rotation + rand.range(10f / 2), rand.random(e.finpow() * 13.5f * tilesize));
             e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
                 color(e.color, Pal.lightishGray, b.fin());
                 Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, b.fout() * 3.4f + 0.3f);
             });
         }
-    }),
-
-    hitSteam = new Effect(14, e -> {
-        color(e.color, Pal.lightishGray, e.fin());
-        stroke(0.5f + e.fout());
-
-        randLenVectors(e.id, 2, 1f + e.fin() * 15f, e.rotation, 50f, (x, y) -> {
-            float ang = Mathf.angle(x, y);
-            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
-        });
     }),
 
     overdriveParticle = new Effect(100f, e -> {
