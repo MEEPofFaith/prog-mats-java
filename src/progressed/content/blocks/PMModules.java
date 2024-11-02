@@ -290,11 +290,10 @@ public class PMModules{
                 ammoMultiplier = 12;
 
                 accel = 0.2f;
-                gravity = 0.1f;
+                gravity = 0.3f;
                 inaccuracy = 45f;
-                homingPower = 16f;
+                homingPower = 15f;
                 homingRange = 160f;
-                snapAimPos = true;
                 trailLength = 15;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileBasic;
