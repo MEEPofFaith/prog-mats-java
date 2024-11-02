@@ -61,7 +61,7 @@ public class ModuleFx{
     steamBurst = new Effect(40f, e -> {
         rand.setSeed(e.id);
         for(int i = 0; i < 9; i++){
-            Tmp.v1.trns(e.rotation + rand.range(30f), rand.random(e.finpow() * 13.5f * tilesize));
+            Tmp.v1.trns(e.rotation + rand.range(5f), rand.random(e.finpow() * 13.5f * tilesize));
             e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
                 color(e.color, Pal.lightishGray, b.fin());
                 Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, b.fout() * 3.4f + 0.3f);

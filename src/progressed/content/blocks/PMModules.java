@@ -14,11 +14,12 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
-import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
+import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.pattern.*;
+import progressed.graphics.*;
 import progressed.world.blocks.defence.turret.payload.modular.modules.*;
 import progressed.world.draw.*;
 import progressed.world.module.ModuleModule.*;
@@ -99,6 +100,7 @@ public class PMModules{
                     hitColor = Color.valueOf("feb380");
                     hitEffect = Fx.hitBulletColor;
                     pierceDamageFactor = 0.5f;
+                    buildingDamageMultiplier = 0.3f;
 
                     shootEffect = ModuleFx.skeetShoot;
                     smokeEffect = Fx.colorSpark;
@@ -125,7 +127,7 @@ public class PMModules{
             requirements(Category.units, PMBlocks.incompleteVisibility(), with());
             outlineColor = Pal.darkOutline;
 
-            shootType = new BulletType(4.5f, 4f){{
+            shootType = new BulletType(4.5f, 2f){{
                 hitSize = 7f;
                 lifetime = 24f;
                 pierce = true;
@@ -135,6 +137,7 @@ public class PMModules{
                 hitEffect = ModuleFx.hitSteam;
                 despawnEffect = Fx.none;
                 hittable = false;
+                buildingDamageMultiplier = 0.3f;
             }};
 
             reload = 1.25f * 60f;
@@ -142,8 +145,9 @@ public class PMModules{
             shootEffect = ModuleFx.steamBurst;
             shootSound = Sounds.flame;
             shootCone = 60f;
+            buildingFilter = b -> false; //Don't target buildings.
 
-            shoot = new ShootSpread(12, 3f);
+            shoot = new ShootSpread(24, 5f);
 
             consumePower(2f);
             consumeLiquid(Liquids.water, 12f / 60f);
@@ -161,6 +165,7 @@ public class PMModules{
                 color = trailColor = Pal.remove;
                 shake = 0f;
                 trailLength = 24;
+                buildingDamageMultiplier = 0.3f;
             }};
 
             reload = 3f * 60f;
@@ -244,6 +249,7 @@ public class PMModules{
                 length = brange - shootY * 2 + 1f;
                 pierceCap = 4;
                 knockback = 1;
+                buildingDamageMultiplier = 0.3f;
 
                 growTime = 16f;
                 fadeTime = 28f;
@@ -273,7 +279,25 @@ public class PMModules{
             size = 3;
             outlineColor = Pal.darkOutline;
 
-            ammo(Items.carbide, ModuleBullets.firestormMissile);
+            ammo(Items.carbide, new ArcMissileBulletType("prog-mats-firestorm-missile"){{
+                lifetime = 75f;
+                splashDamage = 170f;
+                splashDamageRadius = 32f;
+                buildingDamageMultiplier = 0.3f;
+                hitShake = 3f;
+                collidesAir = false;
+                ammoMultiplier = 12;
+
+                accel = 0.2f;
+                gravity = 0.3f;
+                trailLength = 15;
+                trailWidth = 1f;
+                trailColor = targetColor = PMPal.missileBasic;
+                hitSound = Sounds.explosion;
+
+                hitEffect = MissileFx.smallBoom;
+                absorbEffect = Pseudo3DFx.absorbedSmall;
+            }});
 
             reload = 5f * 60f;
             maxAmmo = 27;
