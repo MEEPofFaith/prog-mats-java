@@ -245,6 +245,8 @@ public abstract class ArcBulletType extends BulletType{
                     homingTarget.mulAdd(v.vel(), b.lifetime - b.time);
                 }
                 ((ArcBulletData)b.data).updateHoming(b, homingTarget);
+            }else{
+                ((ArcBulletData)b.data).updateAimPos(b);
             }
         }
     }

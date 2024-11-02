@@ -12,6 +12,7 @@ import progressed.util.*;
 
 public class ArcMissileBulletType extends ArcBasicBulletType{
     public float accel = 0.1f;
+    public boolean snapAimPos = false;
 
     public ArcMissileBulletType(float damage, String sprite){
         super(0f, damage, sprite);
@@ -49,7 +50,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
     @Override
     public void arcBulletDataInit(Bullet b){
-        if(isInheritive) return;
+        if(isInheritive || snapAimPos) return;
         ArcBulletData a = (ArcBulletData)b.data;
         a.updateAimPos(b);
     }
@@ -118,7 +119,12 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
             b.vel.set(Tmp.v31);
             zVel = Tmp.v31.z;
-            updateAimPos(b);
+            if(((ArcMissileBulletType)b.type).snapAimPos){
+                b.aimX = target.getX();
+                b.aimY = target.getY();
+            }else{
+                updateAimPos(b);
+            }
         }
 
         @Override

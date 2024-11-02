@@ -294,6 +294,7 @@ public class PMModules{
                 inaccuracy = 45f;
                 homingPower = 16f;
                 homingRange = 160f;
+                snapAimPos = true;
                 trailLength = 15;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileBasic;

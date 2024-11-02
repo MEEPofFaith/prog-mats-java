@@ -87,7 +87,6 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
             b.aimX = Tmp.v1.x;
             b.aimY = Tmp.v1.y;
             updateAccel(b);
-            updateAimPos(b);
         }
 
         @Override
