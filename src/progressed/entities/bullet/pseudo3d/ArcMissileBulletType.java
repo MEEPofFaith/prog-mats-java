@@ -37,13 +37,8 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
     }
 
     @Override
-    public ArcBulletData createData(){
-        return Pools.obtain(ArcMissileData.class, ArcMissileData::new);
-    }
-
-    @Override
-    public ArcBulletData createData(float z, float zVel, float gravity){
-        return new ArcMissileData(z, zVel, gravity);
+    public ArcBulletData createData(Bullet b, float z, float zVel, float gravity){
+        return Pools.obtain(ArcMissileData.class, ArcMissileData::new).init(b, z, zVel, gravity);
     }
 
     @Override
@@ -68,14 +63,6 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
     public static class ArcMissileData extends ArcBulletData{
         public float accel;
-
-        public ArcMissileData(float z, float zVel, float gravity){
-            super(z, zVel, gravity);
-        }
-
-        public ArcMissileData(){
-            super();
-        }
 
         @Override
         public void backMove(Bullet b){
@@ -131,6 +118,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
 
             b.vel.set(Tmp.v31);
             zVel = Tmp.v31.z;
+            updateAimPos(b);
         }
 
         @Override

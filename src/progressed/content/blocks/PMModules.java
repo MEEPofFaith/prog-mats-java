@@ -291,7 +291,9 @@ public class PMModules{
 
                 accel = 0.2f;
                 gravity = 0.1f;
-                homingPower = 8f;
+                inaccuracy = 45f;
+                homingPower = 16f;
+                homingRange = 160f;
                 trailLength = 15;
                 trailWidth = 1f;
                 trailColor = targetColor = PMPal.missileBasic;

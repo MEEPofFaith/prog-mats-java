@@ -111,7 +111,7 @@ public class ArcMissileTurret extends SinglePayloadAmmoTurret{
                 xSpread = Mathf.range(xRand),
                 bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
                 bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset + xSpread, shootY + yOffset),
-                shootAngle = rotation + angleOffset + Mathf.range(inaccuracy + type.inaccuracy),
+                shootAngle = rotation + angleOffset + Mathf.range(inaccuracy),
                 accScl = 1f + Mathf.range(accelRnd / 2f),
                 velScl = 1f + Mathf.range(velocityRnd / 2f);
 

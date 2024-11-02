@@ -24,13 +24,8 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
     }
 
     @Override
-    public ArcBulletData createData(){
-        return Pools.obtain(ArcBulletData.class, ArcBoltData::new);
-    }
-
-    @Override
-    public ArcBulletData createData(float z, float zVel, float gravity){
-        return new ArcBoltData(z, zVel, gravity);
+    public ArcBulletData createData(Bullet b, float z, float zVel, float gravity){
+        return Pools.obtain(ArcBoltData.class, ArcBoltData::new).init(b, z, zVel, gravity);
     }
 
     /** Assuming accel and gravity stay constant, the bullet travels in a straight trajectory, */
@@ -39,13 +34,14 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
         Math3D.rotate(Tmp.v32, accel, angle, 0f, tilt);
         Tmp.v1.set(Tmp.v31.x, Tmp.v31.y);
 
-        ArcBoltData data = new ArcBoltData(z, Tmp.v31.z, -Tmp.v32.z);
-        data.xAccel = Tmp.v32.x;
-        data.yAccel = Tmp.v32.y;
-
         Bullet bullet = beginBulletCreate(owner, team, x, y);
         bullet.vel.set(Tmp.v1);
         bullet.rotation(Tmp.v1.angle());
+
+        ArcBoltData data = (ArcBoltData)createData(bullet, z, Tmp.v31.z, -Tmp.v32.z);
+        data.xAccel = Tmp.v32.x;
+        data.yAccel = Tmp.v32.y;
+
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -66,18 +62,6 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
 
     public static class ArcBoltData extends ArcBulletData{
         public float xAccel, yAccel;
-
-        public ArcBoltData(float z, float zVel, float gravity){
-            super(z, zVel, gravity);
-        }
-
-        public ArcBoltData(float z, float zVel){
-            this(z, zVel, 1f);
-        }
-
-        public ArcBoltData(){
-            this(0, 0);
-        }
 
         @Override
         public void backMove(Bullet b){
@@ -103,6 +87,7 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
             b.aimX = Tmp.v1.x;
             b.aimY = Tmp.v1.y;
             updateAccel(b);
+            updateAimPos(b);
         }
 
         @Override

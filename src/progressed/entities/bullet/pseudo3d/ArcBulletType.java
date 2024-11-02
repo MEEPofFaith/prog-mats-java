@@ -98,8 +98,11 @@ public abstract class ArcBulletType extends BulletType{
         super.init();
     }
 
-    public abstract ArcBulletData createData();
-    public abstract ArcBulletData createData(float z, float zVel, float gravity);
+    public ArcBulletData createData(Bullet b){
+        return createData(b, 0, 0, 1);
+    }
+
+    public abstract ArcBulletData createData(Bullet b, float z, float zVel, float gravity);
 
     @Override
     public void init(Bullet b){
@@ -108,7 +111,7 @@ public abstract class ArcBulletType extends BulletType{
             a.updateLifetime(b);
             arcBulletDataInit(b);
         }else{ //Invalid data, remove
-            b.data = createData(); //Prevent crash
+            b.data = createData(b); //Prevent crash
             b.remove();
         }
 
@@ -280,7 +283,6 @@ public abstract class ArcBulletType extends BulletType{
 
     public void drawTargetZone(Bullet b){
         Draw.z(zoneLayer);
-        Draw.color(zoneColor);
 
         float realLife = b.lifetime * lifetimeScl;
         float grow = Mathf.curve(b.time, 0, growTime);
@@ -294,6 +296,7 @@ public abstract class ArcBulletType extends BulletType{
 
         float x = b.aimX, y = b.aimY;
         float ang = Mathf.randomSeed(b.id, 360) + b.time * spikeSpin;
+        Draw.color(zoneColor);
         if(drawZone){
             float zR = split ? Mathf.lerp(splitFrom.zoneRadius, zoneRadius, grow) * fout : zoneRadius * scl;
             PMDrawf.ring(x, y, zR, zR + 2f);
@@ -321,6 +324,7 @@ public abstract class ArcBulletType extends BulletType{
         }
 
         if(drawTarget){
+            Draw.color(targetColor);
             float tR = split ? Mathf.lerp(splitFrom.targetRadius, targetRadius, grow) * fout : targetRadius * scl,
                 sW = split ? Mathf.lerp(splitFrom.spokeWidth, spokeWidth, grow) * fout : spokeWidth * scl,
                 sL = split ? Mathf.lerp(splitFrom.spokeLength, spokeLength, grow) * fout : spokeLength * scl;
@@ -352,12 +356,12 @@ public abstract class ArcBulletType extends BulletType{
 
     public Bullet create3D(Entityc owner, Team team, float x, float y, float z, float angle, float tilt, float gravity, float velocityScl, float aimX, float aimY){
         Vec3 vel = Math3D.rotate(Tmp.v31, speed, angle, 0f, tilt);
-        ArcBulletData data = createData(z, vel.z * velocityScl, gravity);
 
         //Taken from normal bullet create
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
-        bullet.rotation(angle);
+        bullet.rotation(angle + Mathf.range(inaccuracy));
         bullet.vel.set(vel.x, vel.y);
+        ArcBulletData data = createData(bullet, z, vel.z * velocityScl, gravity);
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -383,10 +387,9 @@ public abstract class ArcBulletType extends BulletType{
     }
 
     public Bullet create3DVel(Entityc owner, Team team, float x, float y, float z, float angle, float zVel, float gravity, float accel, float vel, float aimX, float aimY){
-        ArcBulletData data = createData(z, zVel, gravity).setAccel(accel);
-
         Bullet bullet = beginBulletCreate(owner, team, x, y, aimX, aimY);
-        bullet.initVel(angle, vel); //Non-zero so that rotation is correct
+        bullet.initVel(angle + Mathf.range(inaccuracy), vel); //Non-zero so that rotation is correct
+        ArcBulletData data = createData(bullet, z, zVel, gravity).setAccel(accel);
         if(backMove){
             bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
             data.backMove(bullet);
@@ -445,7 +448,7 @@ public abstract class ArcBulletType extends BulletType{
         bullet.time = 0f;
         bullet.originX = x;
         bullet.originY = y;
-        //bullet.aimTile = world.tileWorld(aimX, aimY);
+        bullet.aimTile = world.tileWorld(aimX, aimY);
         bullet.aimX = aimX;
         bullet.aimY = aimY;
         if(!(aimX == -1f && aimY == -1f)){
@@ -468,18 +471,13 @@ public abstract class ArcBulletType extends BulletType{
         public float driftYaw, driftPitch;
         public ArcBulletType splitFrom;
 
-        public ArcBulletData(float z, float zVel, float gravity){
+        public ArcBulletData(){}
+
+        public ArcBulletData init(Bullet b, float z, float zVel, float gravity){
             this.z = z;
             this.zVel = zVel;
             this.gravity = gravity;
-        }
-
-        public ArcBulletData(float z, float zVel){
-            this(z, zVel, 1f);
-        }
-
-        public ArcBulletData(){
-            this(0, 0);
+            return this;
         }
 
         public void backMove(Bullet b){
