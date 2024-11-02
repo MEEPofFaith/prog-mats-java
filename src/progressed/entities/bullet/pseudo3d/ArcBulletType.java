@@ -254,7 +254,8 @@ public abstract class ArcBulletType extends BulletType{
     @Override
     public void updateTrail(Bullet b){
         if(!headless && trailLength > 0){
-            if(b.trail == null){
+            //I'm not sure where or how it's possible for it to have been initialized to a normal Trail before this but somehow it is.
+            if(!(b.trail instanceof HeightTrail)){
                 b.trail = new HeightTrail(trailLength);
             }
             HeightTrail trail = (HeightTrail)b.trail;
