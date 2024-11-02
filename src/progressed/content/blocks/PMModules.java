@@ -38,7 +38,6 @@ public class PMModules{
     //Medium
     abyss, halberd, influx,
     //TODO? crit sniper
-    //TODO swarm missile launcher
 
     //Large
     firestorm, wasteland, judgement;
