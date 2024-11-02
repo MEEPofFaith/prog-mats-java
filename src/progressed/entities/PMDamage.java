@@ -404,6 +404,8 @@ public class PMDamage{
         if(tmpBuilding != null && tmpUnit != null){
             if(Mathf.dst2(x, y, Tmp.v1.x, Tmp.v1.y) <= Mathf.dst2(x, y, Tmp.v2.x, Tmp.v2.y)){
                 return Tmp.v1;
+            }else{
+                return Tmp.v2;
             }
         }else if(tmpBuilding != null){
             return Tmp.v1;
