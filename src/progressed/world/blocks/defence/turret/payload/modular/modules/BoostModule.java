@@ -24,7 +24,7 @@ import progressed.world.module.ModuleModule.*;
 
 import static mindustry.Vars.*;
 
-public class BoostModule extends Block{
+public class BoostModule extends Block implements TurretModule{
     public ModuleSize moduleSize = ModuleSize.small;
     //per tick
     public float healPercent = 1f / 60f;
@@ -50,7 +50,7 @@ public class BoostModule extends Block{
         suppressable = true;
         canOverdrive = false;
 
-        if(description != null) description += "\n" + Core.bundle.get("pm-module-use") + "\n" + Core.bundle.get("pm-module-single");
+        description = initDescription(description, true);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class BoostModule extends Block{
         return state.isEditor() || state.rules.infiniteResources;
     }
 
-    public class BoostModuleBuild extends Building implements TurretModule{
+    public class BoostModuleBuild extends Building implements TurretModuleBuild{
         public ModuleModule module;
         public float mendHeat, overdriveHeat;
 
@@ -132,7 +132,7 @@ public class BoostModule extends Block{
 
         @Override
         public void moduleDraw(){
-            TurretModule.super.moduleDraw();
+            TurretModuleBuild.super.moduleDraw();
 
             if(isDeployed()){
                 Draw.alpha(mendHeat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
@@ -151,7 +151,7 @@ public class BoostModule extends Block{
         }
 
         @Override
-        public boolean acceptModule(TurretModule module){
+        public boolean acceptModule(TurretModuleBuild module){
             return !(module instanceof BoostModuleBuild);
         }
 
@@ -178,7 +178,7 @@ public class BoostModule extends Block{
 
         @Override
         public boolean isActive(){
-            return TurretModule.super.isActive() && (mendHeat > 0.01f || overdriveHeat > 0.01f);
+            return TurretModuleBuild.super.isActive() && (mendHeat > 0.01f || overdriveHeat > 0.01f);
         }
 
         @Override

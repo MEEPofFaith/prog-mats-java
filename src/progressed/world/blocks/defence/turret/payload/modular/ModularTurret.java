@@ -171,7 +171,7 @@ public class ModularTurret extends PayloadBlock{
     }
 
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock{
-        public Seq<TurretModule> modules = new Seq<>();
+        public Seq<TurretModuleBuild> modules = new Seq<>();
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
         protected int selNum;
 
@@ -200,13 +200,13 @@ public class ModularTurret extends PayloadBlock{
         @Override
         public void updateTile(){
             if(moveInPayload()){
-                if(payload.build instanceof TurretModule module){
+                if(payload.build instanceof TurretModuleBuild module){
                     addModule(module);
                 }
                 payload = null;
             }
 
-            modules.each(TurretModule::moduleUpdate);
+            modules.each(TurretModuleBuild::moduleUpdate);
 
             unit.tile(this); //Set the unit's building back to the base. Turret#updateTile sets the unit's building to itself. (Vanilla is very much not prepared for me making multiple buildings share the same unit.)
             unit.team(team);
@@ -253,7 +253,7 @@ public class ModularTurret extends PayloadBlock{
 
             if(isPayload()) updatePos();
 
-            modules.each(TurretModule::moduleDraw);
+            modules.each(TurretModuleBuild::moduleDraw);
         }
 
         @Override
@@ -288,12 +288,12 @@ public class ModularTurret extends PayloadBlock{
         }
 
         /** @return the module it adds. */
-        public TurretModule addModule(TurretModule module){
+        public TurretModuleBuild addModule(TurretModuleBuild module){
             return addModule(module, nextMount(module.size()));
         }
 
         /** @return the module it adds. */
-        public TurretModule addModule(TurretModule module, short pos){
+        public TurretModuleBuild addModule(TurretModuleBuild module, short pos){
             module.module().moduleAdded(this, pos);
             module.module().updatePos(this);
             modules.add(module);
@@ -307,14 +307,14 @@ public class ModularTurret extends PayloadBlock{
             return module;
         }
 
-        public void removeMount(TurretModule module){
+        public void removeMount(TurretModuleBuild module){
             module.module().moduleRemoved();
             modules.remove(module);
         }
 
         public short nextMount(ModuleSize size){
             short mount = 0;
-            for(TurretModule m : modules){
+            for(TurretModuleBuild m : modules){
                 if(m.checkSize(size) && m.module().mountNumber == mount){
                     mount = (short)(m.module().mountNumber + 1);
                 }
@@ -419,7 +419,7 @@ public class ModularTurret extends PayloadBlock{
                 t.row();
 
                 if(selNum >= 0){
-                    TurretModule module = modules.get(selNum);
+                    TurretModuleBuild module = modules.get(selNum);
                     t.table(d -> {
                         if(slideDisplay){
                             d.setTransform(true);
@@ -449,9 +449,9 @@ public class ModularTurret extends PayloadBlock{
         /** @return if a module can be added. */
         public boolean acceptModule(ModuleSize size){
             return switch(size){
-                case small -> smallMountPos != null && modules.count(TurretModule::isSmall) + 1 <= smallMountPos.length;
-                case medium -> mediumMountPos != null && modules.count(TurretModule::isMedium) + 1 <= mediumMountPos.length;
-                case large -> largeMountPos != null && modules.count(TurretModule::isLarge) + 1 <= largeMountPos.length;
+                case small -> smallMountPos != null && modules.count(TurretModuleBuild::isSmall) + 1 <= smallMountPos.length;
+                case medium -> mediumMountPos != null && modules.count(TurretModuleBuild::isMedium) + 1 <= mediumMountPos.length;
+                case large -> largeMountPos != null && modules.count(TurretModuleBuild::isLarge) + 1 <= largeMountPos.length;
             };
         }
 
@@ -464,7 +464,7 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            TurretModule mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
+            TurretModuleBuild mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
 
             if(mount == null) return 0;
             return mount.build().acceptStack(item, amount, this);
@@ -479,14 +479,14 @@ public class ModularTurret extends PayloadBlock{
         public boolean acceptPayload(Building source, Payload payload){
             return super.acceptPayload(source, payload) &&
                 payload instanceof BuildPayload p &&
-                p.build instanceof TurretModule module &&
+                p.build instanceof TurretModuleBuild module &&
                 acceptModule(module.size()) &&
                 !modules.contains(m -> !m.acceptModule(module));
         }
 
         @Override
         public void handleItem(Building source, Item item){
-            TurretModule mount = modules.find(m -> m.build().acceptItem(this, item));
+            TurretModuleBuild mount = modules.find(m -> m.build().acceptItem(this, item));
             mount.build().handleItem(this, item);
         }
 
@@ -498,14 +498,14 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void handleStack(Item item, int amount, Teamc source){
-            TurretModule mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
+            TurretModuleBuild mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
 
             if(mount != null) mount.build().handleStack(item, amount, this);
         }
 
         @Override
         public void handleLiquid(Building source, Liquid liquid, float amount){
-            TurretModule mount = modules.find(m -> m.build().acceptLiquid(this, liquid));
+            TurretModuleBuild mount = modules.find(m -> m.build().acceptLiquid(this, liquid));
             mount.build().handleLiquid(this, liquid, amount);
         }
 
@@ -534,7 +534,7 @@ public class ModularTurret extends PayloadBlock{
                 int amount = read.i();
                 for(int i = 0; i < amount; i++){
                     Block module = content.block(read.s());
-                    TurretModule moduleBuild = (TurretModule)module.newBuilding().create(module, Team.derelict);
+                    TurretModuleBuild moduleBuild = (TurretModuleBuild)module.newBuilding().create(module, Team.derelict);
                     byte version = read.b();
                     moduleBuild.build().readAll(read, version);
                     moduleBuild.build().tile = emptyTile;

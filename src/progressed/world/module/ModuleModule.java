@@ -21,13 +21,13 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class ModuleModule extends BlockModule{
-    public TurretModule module;
+    public TurretModuleBuild module;
     public ModularTurretBuild parent;
     public float progress = 0, hAlpha;
     public short mountNumber, lastNumber;
     public boolean highlight, hasPower;
 
-    public ModuleModule(TurretModule module, boolean hasPower){
+    public ModuleModule(TurretModuleBuild module, boolean hasPower){
         this.module = module;
         this.hasPower = hasPower;
     }

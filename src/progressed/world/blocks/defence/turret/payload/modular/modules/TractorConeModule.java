@@ -1,6 +1,5 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
-import arc.*;
 import arc.audio.*;
 import arc.func.*;
 import arc.graphics.*;
@@ -29,7 +28,7 @@ import progressed.world.module.ModuleModule.*;
 import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
-public class TractorConeModule extends BaseTurret{
+public class TractorConeModule extends BaseTurret implements TurretModule{
     public final int timerTarget = timers++;
     public float retargetTime = 5f;
 
@@ -65,7 +64,7 @@ public class TractorConeModule extends BaseTurret{
         group = BlockGroup.turrets;
         connectedPower = false;
 
-        if(description != null) description += "\n" + Core.bundle.get("pm-module-use");
+        description = initDescription(description);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class TractorConeModule extends BaseTurret{
         return state.isEditor() || state.rules.infiniteResources;
     }
 
-    public class TractorConeModuleBuild extends BaseTurretBuild implements TurretModule{
+    public class TractorConeModuleBuild extends BaseTurretBuild implements TurretModuleBuild{
         public ModuleModule module;
         public Unit target;
         public float strength, totalProgress;
@@ -257,7 +256,7 @@ public class TractorConeModule extends BaseTurret{
 
         @Override
         public boolean isActive(){
-            return TurretModule.super.isActive() && strength > 0.001f;
+            return TurretModuleBuild.super.isActive() && strength > 0.001f;
         }
 
         @Override

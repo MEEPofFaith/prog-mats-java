@@ -1,6 +1,5 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
-import arc.*;
 import arc.func.*;
 import arc.struct.*;
 import arc.util.io.*;
@@ -22,7 +21,7 @@ import progressed.world.module.ModuleModule.*;
 import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
-public class LiquidTurretModule extends LiquidTurret{
+public class LiquidTurretModule extends LiquidTurret implements TurretModule{
     public ModuleSize moduleSize = ModuleSize.small;
 
     OrderedMap<String, Func<Building, Bar>> moduleBarMap = new OrderedMap<>();
@@ -37,7 +36,7 @@ public class LiquidTurretModule extends LiquidTurret{
 
         drawer = new DrawTurretModule();
 
-        if(description != null) description += "\n" + Core.bundle.get("pm-module-use");
+        description = initDescription(description);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class LiquidTurretModule extends LiquidTurret{
         return state.isEditor() || state.rules.infiniteResources;
     }
 
-    public class LiquidTurretModuleBuild extends LiquidTurretBuild implements TurretModule{
+    public class LiquidTurretModuleBuild extends LiquidTurretBuild implements TurretModuleBuild{
         public ModuleModule module;
 
         @Override
@@ -118,7 +117,7 @@ public class LiquidTurretModule extends LiquidTurret{
 
         @Override
         public void moduleRemoved(){
-            TurretModule.super.moduleRemoved();
+            TurretModuleBuild.super.moduleRemoved();
             unit = (BlockUnitc)UnitTypes.block.create(team);
         }
 

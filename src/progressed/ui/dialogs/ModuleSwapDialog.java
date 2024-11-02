@@ -32,7 +32,7 @@ public class ModuleSwapDialog extends BaseDialog{
                 for(short i = 0; i < swapSize.length; i++){
                     short ii = i;
                     if(swapSize[i] == i) continue;
-                    TurretModule mount = base.modules.find(m -> m.checkSize(size) && m.checkLastNumber(ii));
+                    TurretModuleBuild mount = base.modules.find(m -> m.checkSize(size) && m.checkLastNumber(ii));
                     if(mount != null){
                         base.configure(Point2.pack(base.modules.indexOf(mount), swapSize[i]));
                     }
@@ -84,7 +84,7 @@ public class ModuleSwapDialog extends BaseDialog{
                     pos.add(new Image(base.block.fullIcon));
 
                     short mNum = swaps[mSize.ordinal()][i];
-                    TurretModule mount = base.modules.find(m -> m.checkSize(mSize) && m.checkNumber(mNum));
+                    TurretModuleBuild mount = base.modules.find(m -> m.checkSize(mSize) && m.checkNumber(mNum));
                     String num = " (" + (mNum + 1) + ")";
 
                     if(mount != null){
