@@ -2,6 +2,7 @@ package progressed.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
+import blackhole.entities.bullet.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -38,6 +39,7 @@ public class PMModules{
     //Medium
     abyss, halberd, influx,
     //TODO? crit sniper
+    //TODO? mini missile launcher (tiny scathe)
 
     //Large
     firestorm, wasteland, judgement;
@@ -195,22 +197,22 @@ public class PMModules{
             float brange = 14.5f * 8f;
             range = brange;
             shootType = new AbyssBulletType(){{
-                splashDamage = 280f;
-                splashDamageRadius = 20f;
-                pierceArmor = true;
-                buildingDamageMultiplier = 0.3f;
-                lifetime = ModuleFx.abyssGrow.lifetime;
-                swirlEffects = 10;
-                maxSwirlDelay = lifetime - ModuleFx.abyssSwirl.lifetime;
                 length = brange;
-
                 beamEffect = ModuleFx.abyssBeam;
-                swirlEffect = ModuleFx.abyssSwirl;
-                growEffect = ModuleFx.abyssGrow;
-
-                //swirlRad = 4f * 8f;
-                despawnEffect = ModuleFx.abyssBurst;
-                displayAmmoMultiplier = false;
+                fragBullet = new BlackHoleBulletType(0, 130f / 30f){{
+                    growTime = 60f;
+                    shrinkTime = 60f;
+                    lifetime = 180f;
+                    force = 2f;
+                    scaledForce = 200f;
+                    suctionRadius = 8f * 8f;
+                    damageRadius = 0.5f * 8f;
+                    buildingDamageMultiplier = 0.3f;
+                    pierceArmor = true;
+                    loopSoundVolume = 0.1f;
+                    swirlEffect = Fx.none;
+                    displayAmmoMultiplier = false;
+                }};
             }};
 
             drawer = new DrawTurretModule(){{
@@ -226,7 +228,7 @@ public class PMModules{
                 }});
             }};
 
-            reload = 2.5f * 60f;
+            reload = 4f * 60f;
             shootSound = Sounds.bolt;
             linearWarmup = true;
             minWarmup = 1f;

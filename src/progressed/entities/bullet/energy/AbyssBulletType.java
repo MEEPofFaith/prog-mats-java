@@ -13,13 +13,7 @@ import progressed.entities.*;
 public class AbyssBulletType extends BulletType{
 
     public float length = 10f * 8f;
-    public int swirlEffects = 10;
-    public float maxSwirlDelay = 5f;
-    public float swirlRad = -1f;
-
     public Effect beamEffect = Fx.none;
-    public Effect swirlEffect = Fx.none;
-    public Effect growEffect = Fx.none;
 
     static{
         BlackHoleUtils.immuneBulletTypes.add(AbyssBulletType.class);
@@ -36,13 +30,11 @@ public class AbyssBulletType extends BulletType{
         hittable = false;
         absorbable = false;
         scaledSplashDamage = true;
-    }
+        instantDisappear = true;
+        fragBullets = 1;
 
-    @Override
-    public void init(){
-        super.init();
-
-        if(swirlRad < 0) swirlRad = splashDamageRadius;
+        //BE. Uncomment and remove createFrags override when next release
+        //fragOffsetMin = fragOffsetMax = 0;
     }
 
     @Override
@@ -61,17 +53,15 @@ public class AbyssBulletType extends BulletType{
         }
 
         b.set(Tmp.v1);
+    }
 
-        if(swirlEffect != Fx.none){
-            for(int i = 0; i < swirlEffects; i++){
-                Time.run(Mathf.random() * maxSwirlDelay, () -> {
-                    swirlEffect.at(b.x, b.y, swirlRad);
-                });
+    @Override
+    public void createFrags(Bullet b, float x, float y){
+        if(fragBullet != null && (fragOnAbsorb || !b.absorbed)){
+            for(int i = 0; i < fragBullets; i++){
+                float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2) * fragSpread);
+                fragBullet.create(b, x, y, a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
             }
-        }
-
-        if(growEffect != Fx.none){
-            growEffect.at(b.x, b.y, b.team.color);
         }
     }
 }

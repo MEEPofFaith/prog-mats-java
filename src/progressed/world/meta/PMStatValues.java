@@ -66,6 +66,11 @@ public class PMStatValues{
                     continue;
                 }
 
+                if(type instanceof AbyssBulletType){
+                    ammo(ObjectMap.of(t, type.fragBullet), indent, false).display(table);
+                    continue;
+                }
+
                 table.table(compact ? null : Styles.grayPanel, bt -> {
                     bt.left().top().defaults().padRight(3).left();
 

@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import blackhole.entities.effect.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
@@ -13,7 +12,6 @@ import progressed.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.*;
 import static mindustry.Vars.*;
 import static progressed.util.PMUtls.*;
 
@@ -96,19 +94,5 @@ public class ModuleFx{
             Vec2 p = Tmp.v1.trns(ang, d, w);
             Lines.lineAngle(e.x + p.x, e.y + p.y, ang, len);
         };
-    }).layer(Layer.effect + 1.004f),
-
-    abyssSwirl = new SwirlEffect(30f, Color.black, 5, 1.5f, 0f, 0f, 12f, 40f){{
-        lightOpacity = -1f;
-    }}.layer(Layer.effect + 1.005f),
-
-    abyssGrow = new Effect(45f, e -> {
-        float rad = 2f + e.fin(Interp.pow2Out) * 3f;
-        Fill.light(e.x, e.y, Lines.circleVertices(rad), rad, Color.black, Color.darkGray);
-    }).layer(Layer.effect + 1.006f),
-
-    abyssBurst = new Effect(30f, e -> {
-        float rad = 5f + e.fin(Interp.pow3Out) * 16f;
-        Fill.light(e.x, e.y, Lines.circleVertices(rad), rad, Color.clear, Tmp.c1.set(Color.black).lerp(Color.clear, e.fin(Interp.pow3In)));
-    }).layer(Layer.effect + 1.007f);
+    }).layer(Layer.effect + 1.004f);
 }
