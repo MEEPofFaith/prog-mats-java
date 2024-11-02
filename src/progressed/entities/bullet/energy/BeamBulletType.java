@@ -25,13 +25,12 @@ public class BeamBulletType extends ContinuousBulletType{
         super();
         this.damage = damage;
         this.beamSprite = beamSprite;
-    }
 
-    {
         lifetime = 32f;
         optimalLifeFract = 0.5f;
         laserAbsorb = false; //Apparently laser and pierce aren't applied at the same time.
         pierceCap = 4;
+        ammoMultiplier = 1;
     }
 
     @Override

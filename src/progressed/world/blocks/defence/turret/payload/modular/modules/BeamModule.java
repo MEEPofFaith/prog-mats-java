@@ -60,7 +60,12 @@ public class BeamModule extends ContinuousLiquidTurret implements TurretModule{
         super.setStats();
 
         stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, PMStatValues.ammo(ObjectMap.of(this, shootType)));
+        //TODO looks bad
+        stats.add(Stat.ammo, table -> {
+            table.row();
+            StatValues.number(liquidConsumed * 60f, StatUnit.perSecond, true).display(table);
+        });
+        stats.add(Stat.ammo, PMStatValues.ammo(ammoTypes));
     }
 
     @Override
