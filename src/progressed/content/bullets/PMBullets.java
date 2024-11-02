@@ -139,9 +139,9 @@ public class PMBullets{
             };
         }};
 
-        sentinelLaser = new LaserBlastBulletType(12f, 150f){{
+        sentinelLaser = new LaserBlastBulletType(12f, 200f){{
             lifetime = 36f;
-            splashDamage = 450f;
+            splashDamage = 500f;
             splashDamageRadius = 6f * 8f;
             scaledSplashDamage = true;
             buildingDamageMultiplier = 0.3f;
