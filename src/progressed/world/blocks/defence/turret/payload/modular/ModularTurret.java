@@ -45,6 +45,7 @@ public class ModularTurret extends PayloadBlock{
 
         acceptsPayload = true;
         outputsPayload = false;
+        hasItems = true; //To allow stack acceptance
         hasLiquids = true;
         hasPower = true;
         outputsLiquid = false;
@@ -173,6 +174,7 @@ public class ModularTurret extends PayloadBlock{
     public class ModularTurretBuild extends PayloadBlockBuild<BuildPayload> implements ControlBlock{
         public Seq<TurretModuleBuild> modules = new Seq<>();
         public BlockUnitc unit = (BlockUnitc)UnitTypes.block.create(team);
+        public int itemTarget;
         protected int selNum;
 
         @Override
@@ -464,10 +466,11 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            TurretModuleBuild mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
-
-            if(mount == null) return 0;
-            return mount.build().acceptStack(item, amount, this);
+            int[] total = {0};
+            modules.each(m -> {
+                total[0] += m.build().acceptStack(item, amount, this);
+            });
+            return Math.min(total[0], amount);
         }
 
         @Override
@@ -486,21 +489,42 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void handleItem(Building source, Item item){
-            TurretModuleBuild mount = modules.find(m -> m.build().acceptItem(this, item));
+            TurretModuleBuild mount = handleItemTarget(source, item);
             mount.build().handleItem(this, item);
+        }
+
+        public TurretModuleBuild handleItemTarget(Building source, Item item){
+            if(itemTarget >= modules.size) itemTarget = 0;
+
+            if(modules.get(itemTarget).build().acceptItem(source, item)){
+                itemTarget++;
+                if(itemTarget == modules.size) itemTarget = 0;
+                return modules.get(itemTarget);
+            }else{
+                for(int i = 0; i < modules.size; i++){
+                    itemTarget++;
+                    if(itemTarget == modules.size) itemTarget = 0;
+                    TurretModuleBuild m = modules.get(itemTarget);
+                    if(m.build().acceptItem(source, item)){
+                        return m;
+                    }
+                }
+                return null; //Shouldn't be possible.
+            }
         }
 
         @Override
         public int removeStack(Item item, int amount){
-            //Cannot remove items
+            //Cannot remove items, nothing to remove
             return 0;
         }
 
         @Override
         public void handleStack(Item item, int amount, Teamc source){
-            TurretModuleBuild mount = modules.find(m -> m.build().acceptStack(item, amount, this) > 0);
-
-            if(mount != null) mount.build().handleStack(item, amount, this);
+            Log.info("HUZZAH");
+            for(int i = 0; i < amount; i++){
+                handleItem(this, item);
+            }
         }
 
         @Override
