@@ -244,6 +244,7 @@ public class PMModules{
             size = 2;
             outlineColor = Pal.darkOutline;
             shootY = 4f;
+            liquidConsumed = 2.5f / 60f;
 
             float brange = 12f * 8f;
             range = brange;

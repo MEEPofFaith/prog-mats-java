@@ -505,8 +505,8 @@ public class ModularTurret extends PayloadBlock{
 
         @Override
         public void handleLiquid(Building source, Liquid liquid, float amount){
-            TurretModuleBuild mount = modules.find(m -> m.build().acceptLiquid(this, liquid));
-            mount.build().handleLiquid(this, liquid, amount);
+            Seq<TurretModuleBuild> mounts = modules.select(m -> m.build().acceptLiquid(this, liquid));
+            mounts.each(m -> m.build().handleLiquid(this, liquid, amount / mounts.size));
         }
 
         @Override
