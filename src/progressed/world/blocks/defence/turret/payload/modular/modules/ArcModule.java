@@ -87,7 +87,7 @@ public class ArcModule extends ItemTurretModule{
                 targets.clear();
                 PMDamage.allNearbyEnemies(team, x, y, range, h -> {
                     if(h instanceof Unit u){
-                        if(!u.dead() && unitFilter.get(u) && (u.isGrounded() || targetAir) && (!u.isGrounded() || targetGround) && dst(u) >= minRange) targets.add(u);
+                        if(!u.dead() && unitFilter.get(u) && u.checkTarget(targetAir, targetGround) && u.hittable() && dst(u) >= minRange) targets.add(u);
                     }else if(h instanceof Building b){
                         if(targetGround && buildingFilter.get(b) && dst(b) >= minRange) targets.add(b);
                     }

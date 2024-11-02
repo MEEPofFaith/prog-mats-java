@@ -390,7 +390,7 @@ public class PMDamage{
         tmpUnit = null;
 
         Units.nearbyEnemies(team, rect, e -> {
-            if((tmpUnit != null && e.dst2(x, y) > tmpUnit.dst2(x, y)) || !e.checkTarget(ground, air)) return;
+            if((tmpUnit != null && e.dst2(x, y) > tmpUnit.dst2(x, y)) || !e.checkTarget(ground, air) || !e.hittable()) return;
 
             e.hitbox(hitrect);
             Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
