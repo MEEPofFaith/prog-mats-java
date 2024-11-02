@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
+import arc.*;
 import arc.func.*;
 import arc.struct.*;
 import arc.util.io.*;
@@ -35,6 +36,8 @@ public class LiquidTurretModule extends LiquidTurret{
         connectedPower = false;
 
         drawer = new DrawTurretModule();
+
+        if(description != null) description += "\n" + Core.bundle.get("pm-module-use");
     }
 
     @Override

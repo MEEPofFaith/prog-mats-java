@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
+import arc.*;
 import arc.func.*;
 import arc.math.*;
 import arc.struct.*;
@@ -39,6 +40,8 @@ public class BeamModule extends ContinuousLiquidTurret{
         shootCone = 1f;
 
         drawer = new DrawTurretModule();
+
+        if(description != null) description += "\n" + Core.bundle.get("pm-module-use");
     }
 
     @Override

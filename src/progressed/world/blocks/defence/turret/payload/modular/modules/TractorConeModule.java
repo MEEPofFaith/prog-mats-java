@@ -1,5 +1,6 @@
 package progressed.world.blocks.defence.turret.payload.modular.modules;
 
+import arc.*;
 import arc.audio.*;
 import arc.func.*;
 import arc.graphics.*;
@@ -63,6 +64,8 @@ public class TractorConeModule extends BaseTurret{
         breakable = rebuildable = false;
         group = BlockGroup.turrets;
         connectedPower = false;
+
+        if(description != null) description += "\n" + Core.bundle.get("pm-module-use");
     }
 
     @Override

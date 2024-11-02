@@ -49,6 +49,8 @@ public class BoostModule extends Block{
         outlineIcon = true;
         suppressable = true;
         canOverdrive = false;
+
+        if(description != null) description += "\n" + Core.bundle.get("pm-module-use") + "\n" + Core.bundle.get("pm-module-single");
     }
 
     @Override
