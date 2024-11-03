@@ -220,9 +220,7 @@ public class PMModules{
                     x = 3f/4f;
                     y = -10f/4f;
 
-                    moveX = 0.9f;
-                    moveY = -2f/4f;
-                    moveRot = -6.5f;
+                    moveX = 6f/4f;
 
                     mirror = true;
                 }});
@@ -232,7 +230,7 @@ public class PMModules{
             shootSound = Sounds.bolt;
             linearWarmup = true;
             minWarmup = 1f;
-            shootWarmupSpeed = 1.5f / 60f;
+            shootWarmupSpeed = 3f / 60f;
             shootY = -2f/4f;
 
             consumePower(8f);
