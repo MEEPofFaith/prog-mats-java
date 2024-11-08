@@ -136,6 +136,7 @@ public class Math3D{
     }
 
     //See my notebook for half the calculation. Oh wait, you don't have access to it because I physically hold it.
+    //And apparently neither do I; I forgot to bring it with me to my dorm.
     public static float homingPitch(float x1, float y1, float z1, float x2, float y2, float v2, float a, float g){
         float dst = Mathf.dst(x1, y1, x2, y2);
 
