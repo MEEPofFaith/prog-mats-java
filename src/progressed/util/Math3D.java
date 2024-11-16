@@ -135,6 +135,23 @@ public class Math3D{
         return vec;
     }
 
+    /** Returns only a single float if dst is beyond where it can reach.
+     * Otherwise, the float array has two terms: 1st is the lower trajectory, 2nd is the higher trajectory */
+    public static float[] shootAngle(float dst, float g, float v){
+        float v2 = v * v;
+        float in = ((v2*v2) / (g*g * dst*dst)) - 1;
+
+        if(in < 0) return new float[]{Mathf.pi / 4};
+
+        float a = sqrt(in);
+        float b = v2 / (g * a);
+
+        return new float[]{
+            (float)Math.atan(b + a),
+            (float)Math.atan(b - a)
+        };
+    }
+
     //See my notebook for half the calculation. Oh wait, you don't have access to it because I physically hold it.
     //And apparently neither do I; I forgot to bring it with me to my dorm.
     public static float homingPitch(float x1, float y1, float z1, float x2, float y2, float v2, float a, float g){

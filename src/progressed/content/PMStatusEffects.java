@@ -18,7 +18,7 @@ import static mindustry.content.StatusEffects.*;
 public class PMStatusEffects{
     public static StatusEffect
     //Misc
-    incendiaryBurn, empStun, pinpointTarget,
+    incendiaryBurn, empStun, pinpointTarget, sludgeIncineration,
 
     //Anti-vaxxers are quivering in fear
     vcFrenzy, vcDisassembly, vcWeaken, vcCorvus,
@@ -78,6 +78,14 @@ public class PMStatusEffects{
                 }
             }
         };
+
+        sludgeIncineration = new PMStatusEffect("sludge-incineration"){{
+            color = PMPal.sludge;
+            speedMultiplier = reloadMultiplier = buildSpeedMultiplier = 0.75f;
+            dragMultiplier = 2f;
+            damage = 200f / 60f;
+            effect = MissileFx.incendBurning;
+        }};
 
         //Anti-vaxxers are quivering in fear
         vcFrenzy = new ExclusiveStatusEffect("frenzy"){{
