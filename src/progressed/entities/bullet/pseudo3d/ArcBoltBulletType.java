@@ -11,12 +11,12 @@ import progressed.util.*;
 public class ArcBoltBulletType extends ArcBasicBulletType{
     public ArcBoltBulletType(float speed, float damage, String sprite){
         super(speed, damage, sprite);
+
+        spinShade = drawZone = drawTarget = drawProgress = false;
     }
 
     public ArcBoltBulletType(float speed, float damage){
         this(speed, damage, "bullet");
-
-        spinShade = drawZone = drawTarget = drawProgress = false;
     }
 
     public ArcBoltBulletType(float speed){

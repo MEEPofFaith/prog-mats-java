@@ -30,6 +30,9 @@ public class PMLiquids{
             canStayOn.addAll(Liquids.water, Liquids.oil, Liquids.cryofluid);
             hideDetails = false;
             hidden = true;
+
+            colorFrom = Color.valueOf("d2701e");
+            colorTo = Color.valueOf("a21019");
         }};
     }
 }

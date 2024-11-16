@@ -19,7 +19,7 @@ public class MortarLiquidTurretModule extends LiquidTurretModule{
             queuedBullets--;
             if(dead || (!consumeAmmoOnce && !hasAmmo())) return;
 
-            ArcMissileBulletType m = (ArcMissileBulletType)type;
+            ArcBulletType m = (ArcBulletType)type;
             Vec2 inacc = Math3D.inaccuracy(inaccuracy);
 
             float
@@ -60,11 +60,11 @@ public class MortarLiquidTurretModule extends LiquidTurretModule{
 
         protected float shootAngle(ArcBulletType b){
             float[] angs = Math3D.shootAngle(Math.min(dst(targetPos), range()), b.gravity, b.speed);
+            float a = angs[0];
             if(angs.length == 2){
-                return angs[1];
-            }else{
-                return angs[0];
+                a = angs[1];
             }
+            return a * Mathf.radDeg;
         }
     }
 }

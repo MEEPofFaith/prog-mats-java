@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
+import progressed.content.*;
 import progressed.content.effects.*;
 import progressed.entities.bullet.energy.*;
 import progressed.entities.bullet.physical.*;
@@ -43,7 +44,6 @@ public class PMModules{
 
     //Large
     firestorm, wasteland, judgement;
-    //TODO? wasteland: a neoplasm artillery cannon. splits out globs that stick to enemies then explode
     //TODO judgement: 3 large beams
 
     public static void load(){
@@ -324,6 +324,31 @@ public class PMModules{
                 shots = 9;
                 shotDelay = 8f;
             }};
+        }};
+
+        wasteland = new MortarLiquidTurretModule("wasteland"){{
+            requirements(Category.units, PMBlocks.incompleteVisibility(), with());
+            moduleSize = ModuleSize.large;
+            size = 3;
+            outlineColor = Pal.darkOutline;
+
+            ammo(Liquids.neoplasm, new ArcBoltBulletType(3, 0, "prog-mats-sludge-glob"){{
+                bloomSprite = false;
+
+                gravity = 0.05f;
+
+                splashDamage = 100f;
+                splashDamageRadius = 12f * tilesize;
+                status = PMStatusEffects.sludgeIncineration;
+
+                puddles = 3;
+                puddleAmount = 30;
+                puddleLiquid = PMLiquids.sludge;
+            }});
+
+            reload = 90f;
+            minRange = 5 * tilesize;
+            range = 24 * tilesize;
         }};
     }
 
