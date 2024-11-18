@@ -75,6 +75,58 @@ public class Draw3D{
         return 1f + zToShadowScl * z;
     }
 
+    public static void line(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount, boolean scale){
+        float[] points = Math3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
+        float lastAngle = 0;
+        float stroke = Lines.getStroke() / 2f;
+        Color color = Draw.getColor();
+        for(int i = 0; i < points.length - 3; i += 3){
+            float px1 = points[i], py1 = points[i + 1], pz1 = points[i + 2];
+            float px2 = points[i + 3], py2 = points[i + 3 + 1], pz2 = points[i + 3 + 2];
+
+            Vec2 pos = Perspective.drawPos(px1, py1, pz1);
+            float dx1 = pos.x, dy1 = pos.y;
+            pos = Perspective.drawPos(px2, py2, pz2);
+            float dx2 = pos.x, dy2 = pos.y;
+
+            float a2 = -Angles.angleRad(dx1, dy1, dx2, dy2);
+            float a1 = i == 0 ? a2 : lastAngle;
+
+            float w1 = scale ? Perspective.scale(px1, py1, pz1) : 1,
+                w2 = scale ? Perspective.scale(px2, py2, pz2) : 1;
+
+            float
+                cx = Mathf.sin(a1) * stroke * w1,
+                cy = Mathf.cos(a1) * stroke * w1,
+                nx = Mathf.sin(a2) * stroke * w2,
+                ny = Mathf.cos(a2) * stroke * w2;
+            float c1 = Tmp.c1.set(color).mulA(Perspective.alpha(px1, py1, pz1)).toFloatBits(),
+                c2 = Tmp.c1.set(color).mulA(Perspective.alpha(px2, py2, pz2)).toFloatBits();
+
+            Fill.quad(
+                dx1 - cx, dy1 - cy, c1,
+                dx1 + cx, dy1 + cy, c1,
+                dx2 + nx, dy2 + ny, c2,
+                dx2 - nx, dy2 - ny, c2
+            );
+
+            lastAngle = a2;
+        }
+    }
+
+    public static void line(float x1, float y1, float z1, float x2, float y2, float z2, boolean scale){
+        line(x1, y1, z1, x2, y2, z2, Math3D.linePointCounts(x1, y1, z1, x2, y2, z2), scale);
+    }
+
+    public static void line(float x1, float y1, float z1, float x2, float y2, float z2){
+        line(x1, y1, z1, x2, y2, z2, true);
+    }
+
+    public static void lineAngleBase(float x, float y, float z, float length, float rotation, float rotationOffset, float tilt){
+        Math3D.rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
+        line(x, y, z, x + Tmp.v31.x, y + Tmp.v31.y, z + Tmp.v31.z);
+    }
+
     public static void tube(float x, float y, float rad, float z2, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
@@ -157,39 +209,6 @@ public class Draw3D{
         slantTube(x1, y1, x2, y2, z, rad, baseColor, topColor, 0f);
     }
 
-    public static void line(float x1, float y1, float z1, float x2, float y2, float z2){
-        Tmp.v1.set(Perspective.drawPos(x1, y1, z1));
-        Tmp.v2.set(Perspective.drawPos(x2, y2, z2));
-
-        Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
-    }
-
-    public static void drawLineSegments(float x1, float y1, float z1, float x2, float y2, float z2){
-        drawLineSegments(x1, y1, z1, x2, y2, z2, Math3D.linePointCounts(x1, y1, z1, x2, y2, z2));
-    }
-
-    public static void drawLineSegments(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
-        float[] points = Math3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
-        Lines.beginLine();
-        for(int i = 0; i < pointCount; i++){
-            Vec2 pos = Perspective.drawPos(points[i * 3], points[i * 3 + 1], points[i * 3 + 2]);
-            Lines.linePoint(pos.x, pos.y);
-        }
-        Lines.endLine();
-    }
-
-    public static void lineAngleBase(float x, float y, float z, float length, float rotation, float rotationOffset, float tilt){
-        Math3D.rotate(Tmp.v31, length, rotation, rotationOffset, tilt);
-        float z2 = z + Tmp.v31.z;
-        Vec2 pos = Perspective.drawPos(x, y, z);
-        float x1 = pos.x;
-        float y1 = pos.y;
-        pos = Perspective.drawPos(x + Tmp.v31.x, y + Tmp.v31.y, z2);
-        float x2 = pos.x;
-        float y2 = pos.y;
-        Lines.line(x1, y1, x2, y2);
-    }
-
     public static void drawAimDebug(float x, float y, float z, float length, float rotation, float tilt, float spread){
         Lines.stroke(3f);
         Draw.color(Color.blue); //Down
@@ -234,19 +253,15 @@ public class Draw3D{
     }
 
     public static void drawLineDebug(float x1, float y1, float z1, float x2, float y2, float z2){
+        line(x1, y1, z1, x2, y2, z2);
+
         int pointCount = Math3D.linePointCounts(x1, y1, z1, x2, y2, z2);
         float[] points = Math3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
-        Lines.beginLine();
-        for(int i = 0; i < pointCount; i++){
-            float x = points[i * 3],
-                y = points[i * 3 + 1];
-            Vec2 pos = Perspective.drawPos(x, y, points[i * 3 + 2]);
-            float hx = pos.x,
-                hy = pos.y;
-            Lines.linePoint(hx, hy);
-            Lines.line(x, y, hx, hy);
+        for(int i = 0; i < points.length; i += 3){
+            float x = points[i],
+                y = points[i + 1];
+            line(x, y, 0, x, y, points[i + 2]);
         }
-        Lines.endLine();
     }
 
     public static float layerOffset(float x, float y){
