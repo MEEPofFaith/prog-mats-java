@@ -2,14 +2,11 @@ package progressed;
 
 import arc.*;
 import arc.func.*;
-import arc.math.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
@@ -34,7 +31,7 @@ public class ProgMats extends Mod{
     public ProgMats(){
         super();
         Events.on(ClientLoadEvent.class, e -> {
-            loadSettings();
+            PMSettings.init();
             PMPal.init();
             hints.load();
         });
@@ -137,47 +134,11 @@ public class ProgMats extends Mod{
         PMLoadouts.load();
     }
 
-    void loadSettings(){
-        ui.settings.addCategory(bundle.get("setting.pm-title"), "prog-mats-settings-icon", t -> {
-            t.pref(new Separator("pm-graphics-settings"));
-            t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
-            t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
-            t.checkPref("pm-tesla-range", true);
-            t.pref(new Separator("pm-other-settings"));
-            t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
-        });
-    }
-
     public static boolean farting(){
         return settings.getBool("pm-farting", false);
     }
 
     static boolean TUEnabled(){
         return PMUtls.modEnabled("test-utils");
-    }
-
-    static class Separator extends Setting{
-        float height;
-
-        public Separator(String name){
-            super(name);
-        }
-
-        public Separator(float height){
-            this("");
-            this.height = height;
-        }
-
-        @Override
-        public void add(SettingsTable table){
-            if(name.isEmpty()){
-                table.image(Tex.clear).height(height).padTop(3f);
-            }else{
-                table.table(t -> {
-                    t.add(title).padTop(3f);
-                }).get().background(Tex.underline);
-            }
-            table.row();
-        }
     }
 }
