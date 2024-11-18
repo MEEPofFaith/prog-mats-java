@@ -59,12 +59,12 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
         float hX = curr.x,
             hY = curr.y;
         float rot = Angles.angle(lastHX, lastHY, hX, hY);
-        if(drawShadow && data.z < shadowMax){
+        if(drawShadow){
             float scl = shadowScale(data.z),
                 sX = Angles.trnsx(225f, data.z) + b.x,
                 sY = Angles.trnsy(225f, data.z) + b.y,
                 sRot = Angles.angle(b.originX, b.originY, b.aimX, b.aimY),
-                sAlpha = Draw3D.shadowAlpha(data.z);
+                sAlpha = shadowAlpha(data.z);
 
             float pitch = Tmp.v1.set(b.vel.len(), data.zVel).angle(); //0 - 90 or 270-360
             if(pitch <= 90){ //Going vertical, aim away from current point.
@@ -81,20 +81,18 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
             });
         }
 
-        if(Perspective.canDraw(data.z)){
-            Draw.z(layer + data.z / 3000f); //Higher elevation should draw above
-            drawTrail(b);
-            Draw3D.highBloom(bloomSprite, () -> {
-                Draw.scl(1f + hMul(data.z));
-                float alpha = Draw3D.scaleAlpha(data.z);
-                if(spinShade){
-                    PMDrawf.spinSprite(regions, hX, hY, rot, alpha);
-                }else{
-                    Draw.alpha(alpha);
-                    Draw.rect(region, hX, hY, rot);
-                }
-                Draw.scl();
-            });
-        }
+        Draw.z(layer + data.z / 3000f); //Higher elevation should draw above
+        drawTrail(b);
+        Draw3D.highBloom(bloomSprite, () -> {
+            Draw.scl(Perspective.scale(b.x, b.y, data.z));
+            float alpha = Perspective.alpha(b.x, b.y, data.z);
+            if(spinShade){
+                PMDrawf.spinSprite(regions, hX, hY, rot, alpha);
+            }else{
+                Draw.alpha(alpha);
+                Draw.rect(region, hX, hY, rot);
+            }
+            Draw.scl();
+        });
     }
 }

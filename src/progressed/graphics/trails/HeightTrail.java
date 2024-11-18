@@ -9,10 +9,8 @@ import arc.util.*;
 import mindustry.graphics.*;
 import progressed.graphics.perspective.*;
 
-import static progressed.graphics.perspective.Draw3D.*;
-
 public class HeightTrail extends Trail{
-    protected float lastH = 0f;
+    protected float lastZ = 0f;
 
     public HeightTrail(int length){
         super(length);
@@ -26,7 +24,7 @@ public class HeightTrail extends Trail{
         out.lastX = lastX;
         out.lastY = lastY;
         out.lastW = lastW;
-        out.lastH = lastH;
+        out.lastZ = lastZ;
         return out;
     }
 
@@ -49,14 +47,15 @@ public class HeightTrail extends Trail{
         if(points.size > 4){
             float[] items = points.items;
             int i = points.size - 4;
-            Vec2 pos1 = Perspective.drawPos(items[i - 4], items[i - 4 + 1], items[i - 4 + 3]);
+            float z1 = items[i - 4 + 3];
+            Vec2 pos1 = Perspective.drawPos(items[i - 4], items[i - 4 + 1], z1);
             float x1 = pos1.x, y1 = pos1.y;
-            Vec2 pos2 = Perspective.drawPos(lastX, lastY, lastH);
+            Vec2 pos2 = Perspective.drawPos(lastX, lastY, lastZ);
             float x2 = pos2.x, y2 = pos2.y;
-            float w1 = w(-1), w = w1 * width / (int)(points.size / 4) * i / 4f * 2f;
+            float w1 = Perspective.scale(lastX, lastY, lastZ), w = w1 * width / (points.size / 4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
             if(fade){
-                Draw.color(Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(lastH)));
+                Draw.color(Tmp.c1.set(color).mulA(Perspective.alpha(lastX, lastY, lastZ)));
             }else{
                 Draw.color(color);
             }
@@ -76,24 +75,24 @@ public class HeightTrail extends Trail{
         float size = width / (int)(points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
-            float z1 = z1 = items[i + 3];
-            Vec2 pos1 = Perspective.drawPos(items[i], items[i + 1], items[i + 3]);
-            float x1 = pos1.x, y1 = pos1.y, w1 = w(i);
+            float z1 = items[i + 3];
+            Vec2 pos1 = Perspective.drawPos(items[i], items[i + 1], z1);
+            float x1 = pos1.x, y1 = pos1.y, w1 = Perspective.scale(items[i], items[i + 1], z1);
             float x2, y2, w2, z2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
-                w2 = w(i + 4);
                 z2 = items[i + 4 + 3];
                 Vec2 pos2 = Perspective.drawPos(items[i + 4], items[i + 4 + 1], z2);
                 x2 = pos2.x;
                 y2 = pos2.y;
+                w2 = Perspective.scale(items[i + 4], items[i + 4 + 1], z2);
             }else{
-                w2 = w(-1);
-                z2 = lastH;
+                z2 = lastZ;
                 Vec2 pos2 = Perspective.drawPos(lastX, lastY, z2);
                 x2 = pos2.x;
                 y2 = pos2.y;
+                w2 = Perspective.scale(lastX, lastY, z2);
             }
 
             float a2 = -Angles.angleRad(x1, y1, x2, y2);
@@ -110,8 +109,8 @@ public class HeightTrail extends Trail{
             float c1 = Tmp.c1.toFloatBits(),
                 c2 = Tmp.c1.toFloatBits();
             if(fade){
-                c1 = Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(z1)).toFloatBits();
-                c2 = Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(z2)).toFloatBits();
+                c1 = Tmp.c1.set(color).mulA(Perspective.alpha(x1, y1, z1)).toFloatBits();
+                c2 = Tmp.c1.set(color).mulA(Perspective.alpha(x2, y2, z2)).toFloatBits();
             }
 
             Fill.quad(
@@ -163,13 +162,6 @@ public class HeightTrail extends Trail{
         lastX = x;
         lastY = y;
         lastW = width;
-        lastH = height;
-    }
-
-    public float w(int index){
-        if(index < 0) return lastW * hScale(lastH);
-
-        float[] items = points.items;
-        return items[index + 2] * hScale(items[index + 3]);
+        lastZ = height;
     }
 }

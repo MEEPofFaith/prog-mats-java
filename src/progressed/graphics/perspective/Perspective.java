@@ -2,18 +2,25 @@ package progressed.graphics.perspective;
 
 import arc.math.*;
 import arc.math.geom.*;
+import progressed.util.*;
 
 import static arc.Core.*;
 
 public class Perspective{
     private static final Vec2 offsetPos = new Vec2();
-    public static  float viewportOffset = 8f;
-    public static  float fov = 45f;
+    /** Viewport offset from the camera height in world units. */
+    public static float viewportOffset = 8f;
+    /** Field of View in degrees */
+    public static float fov = 45f;
+    /** Begin fading at this distance away from the viewport. */
+    public static float fadeDst = 32f;
 
+    /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
-        return z < cameraHeight();
+        return z < cameraHeight() - viewportOffset;
     }
 
+    /** @return Perspective projected coordinates to draw at. */
     public static Vec2 drawPos(float x, float y, float z){
         //viewport
         Vec2 v = viewportSize();
@@ -32,8 +39,54 @@ public class Perspective{
         return offsetPos;
     }
 
+    /** Multiplicative size scale at a point. */
+    public static float scale(float x, float y, float z){
+        float cx = camera.position.x, cy = camera.position.y;
+        float cz = cameraHeight();
+
+        x -= cx;
+        y -= cy;
+        z = cz - z;
+
+        float px = x / z * cz;
+        float py = y / z * cz;
+
+        float c1 = Mathf.dst(x, y), c2 = Mathf.dst(px, py);
+        float d1 = Mathf.dst(z, c1), d2 = Mathf.dst(cz, c2);
+
+        return d2 / d1;
+    }
+
+    /** Fade out based on distance to viewport. */
+    public static float alpha(float x, float y, float z){
+        float cx = camera.position.x, cy = camera.position.y;
+        float cz = cameraHeight();
+
+        float d1 = Math3D.dst(x, y, z, cx, cy, cz); //Distance between camera point
+
+        x -= cx;
+        y -= cy;
+        float pz = cz - z;
+
+        float vx = x / pz * viewportOffset,
+            vy = y / pz * viewportOffset;
+
+        float d2 = Math3D.dst(vx, vy, z); //Distance between camera and viewport pos
+
+        float dst = d1 - d2;
+        float realFadeDst = Math.min(fadeDst, cz - viewportOffset);
+
+        if(dst > realFadeDst){
+            return 1f;
+        }else if(!canDraw(z)){
+            return 0f;
+        }else{
+            return dst / realFadeDst;
+        }
+    }
+
     /** Calculates the camera height based on FOV and the size of the vanilla camera. */
-    public static  float cameraHeight(){
+    public static float cameraHeight(){
         float width = Math.max(camera.width, camera.height) / 2f;
         //TOA
         return (float)(width / Math.tan(fov / 2f * Mathf.degRad));

@@ -19,10 +19,10 @@ import progressed.content.effects.*;
 import progressed.content.effects.Pseudo3DFx.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
+import progressed.graphics.perspective.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.perspective.Draw3D.*;
 
 public class ShieldProjector extends ForceProjector{
     public float chargeTime = 900f, shieldCharge = 300f, phaseShieldCharge = 300f;
@@ -82,10 +82,12 @@ public class ShieldProjector extends ForceProjector{
             int next = (i + 1) % sides;
             float x2 = corners[next * 2];
             float y2 = corners[next * 2 + 1];
-            float x3 = x(x2, height);
-            float y3 = y(y2, height);
-            float x4 = x(x1, height);
-            float y4 = y(y1, height);
+            Vec2 pos = Perspective.drawPos(x2, y2, height);
+            float x3 = pos.x;
+            float y3 = pos.y;
+            pos = Perspective.drawPos(x1, y1, height);
+            float x4 = pos.x;
+            float y4 = pos.y;
             draw.draw(x1, y1, x2, y2, x3, y3, x4, y4);
         }
     }
