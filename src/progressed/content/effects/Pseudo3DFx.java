@@ -11,7 +11,7 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.perspective.Draw3D.*;
 
 public class Pseudo3DFx{
     public static Effect

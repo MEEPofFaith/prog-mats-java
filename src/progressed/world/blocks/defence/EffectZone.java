@@ -14,7 +14,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import progressed.gen.entities.*;
-import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 
 import static mindustry.Vars.*;
 

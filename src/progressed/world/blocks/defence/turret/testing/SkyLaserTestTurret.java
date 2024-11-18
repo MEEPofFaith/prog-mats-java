@@ -1,7 +1,7 @@
 package progressed.world.blocks.defence.turret.testing;
 
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 
 import static mindustry.Vars.*;
 

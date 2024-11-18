@@ -7,6 +7,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 
 import static mindustry.Vars.*;
 
@@ -21,10 +22,11 @@ public class ArcBulletScatterTestTurret extends ArcBulletTestTurret{
         }};
         reload = 1f;
         shotTilt = -90f;
-        inaccuracy = 45f;
+        inaccuracy = 60f;
         shoot = new ShootPattern(){{
             shots = 5;
         }};
+        shotZ = 360f;
     }
 
     public class ArcBulletScatterTestTurretBuild extends ArcBulletTestTurretBuild{

@@ -3,11 +3,13 @@ package progressed.entities.bullet.pseudo3d;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.gen.*;
 import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.perspective.Draw3D.*;
 
 public abstract class ArcBasicBulletType extends ArcBulletType{
     public String sprite;
@@ -50,10 +52,12 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
         drawTargetZone(b);
 
         ArcBulletData data = (ArcBulletData)b.data;
-        float lastHX = Draw3D.x(b.lastX, data.lastZ),
-            lastHY = Draw3D.y(b.lastY, data.lastZ);
-        float hX = Draw3D.x(b.x, data.z),
-            hY = Draw3D.y(b.y, data.z);
+        Vec2 last = Perspective.drawPos(b.lastX, b.lastY, data.lastZ);
+        float lastHX = last.x,
+            lastHY = last.y;
+        Vec2 curr = Perspective.drawPos(b.x, b.y, data.z);
+        float hX = curr.x,
+            hY = curr.y;
         float rot = Angles.angle(lastHX, lastHY, hX, hY);
         if(drawShadow && data.z < shadowMax){
             float scl = shadowScale(data.z),
@@ -77,18 +81,20 @@ public abstract class ArcBasicBulletType extends ArcBulletType{
             });
         }
 
-        Draw.z(layer + data.z / 3000f); //Higher elevation should draw above
-        drawTrail(b);
-        Draw3D.highBloom(bloomSprite, () -> {
-            Draw.scl(1f + hMul(data.z));
-            float alpha = Draw3D.scaleAlpha(data.z);
-            if(spinShade){
-                PMDrawf.spinSprite(regions, hX, hY, rot, alpha);
-            }else{
-                Draw.alpha(alpha);
-                Draw.rect(region, hX, hY, rot);
-            }
-            Draw.scl();
-        });
+        if(Perspective.canDraw(data.z)){
+            Draw.z(layer + data.z / 3000f); //Higher elevation should draw above
+            drawTrail(b);
+            Draw3D.highBloom(bloomSprite, () -> {
+                Draw.scl(1f + hMul(data.z));
+                float alpha = Draw3D.scaleAlpha(data.z);
+                if(spinShade){
+                    PMDrawf.spinSprite(regions, hX, hY, rot, alpha);
+                }else{
+                    Draw.alpha(alpha);
+                    Draw.rect(region, hX, hY, rot);
+                }
+                Draw.scl();
+            });
+        }
     }
 }

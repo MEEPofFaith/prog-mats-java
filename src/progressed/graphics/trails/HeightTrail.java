@@ -3,12 +3,13 @@ package progressed.graphics.trails;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
-import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.perspective.Draw3D.*;
 
 public class HeightTrail extends Trail{
     protected float lastH = 0f;
@@ -46,10 +47,13 @@ public class HeightTrail extends Trail{
 
     public void drawCap(Color color, float width, boolean fade){
         if(points.size > 4){
+            float[] items = points.items;
             int i = points.size - 4;
-            float x1 = x(i - 4), y1 = y(i - 4),
-                x2 = x(-1), y2 = y(-1),
-                w1 = w(-1), w = w1 * width / (points.size / 4) * i / 4f * 2f;
+            Vec2 pos1 = Perspective.drawPos(items[i - 4], items[i - 4 + 1], items[i - 4 + 3]);
+            float x1 = pos1.x, y1 = pos1.y;
+            Vec2 pos2 = Perspective.drawPos(lastX, lastY, lastH);
+            float x2 = pos2.x, y2 = pos2.y;
+            float w1 = w(-1), w = w1 * width / (int)(points.size / 4) * i / 4f * 2f;
             if(w1 <= 0.001f) return;
             if(fade){
                 Draw.color(Tmp.c1.set(color).mulA(Draw3D.scaleAlpha(lastH)));
@@ -69,23 +73,27 @@ public class HeightTrail extends Trail{
     public void draw(Color color, float width, boolean fade){
         float lastAngle = 0;
         float[] items = points.items;
-        float size = width / (points.size / 4);
+        float size = width / (int)(points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
-            float x1 = x(i), y1 = y(i), w1 = w(i), z1 = items[i + 3];
+            float z1 = z1 = items[i + 3];
+            Vec2 pos1 = Perspective.drawPos(items[i], items[i + 1], items[i + 3]);
+            float x1 = pos1.x, y1 = pos1.y, w1 = w(i);
             float x2, y2, w2, z2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
-                x2 = x(i + 4);
-                y2 = y(i + 4);
                 w2 = w(i + 4);
                 z2 = items[i + 4 + 3];
+                Vec2 pos2 = Perspective.drawPos(items[i + 4], items[i + 4 + 1], z2);
+                x2 = pos2.x;
+                y2 = pos2.y;
             }else{
-                x2 = x(-1);
-                y2 = y(-1);
                 w2 = w(-1);
                 z2 = lastH;
+                Vec2 pos2 = Perspective.drawPos(lastX, lastY, z2);
+                x2 = pos2.x;
+                y2 = pos2.y;
             }
 
             float a2 = -Angles.angleRad(x1, y1, x2, y2);
@@ -156,20 +164,6 @@ public class HeightTrail extends Trail{
         lastY = y;
         lastW = width;
         lastH = height;
-    }
-
-    public float x(int index){
-        if(index < 0) return Draw3D.x(lastX, lastH);
-
-        float[] items = points.items;
-        return Draw3D.x(items[index], items[index + 3]);
-    }
-
-    public float y(int index){
-        if(index < 0) return Draw3D.y(lastY, lastH);
-
-        float[] items = points.items;
-        return Draw3D.y(items[index + 1], items[index + 3]);
     }
 
     public float w(int index){

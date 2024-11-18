@@ -1,4 +1,4 @@
-package progressed.graphics;
+package progressed.graphics.perspective;
 
 import arc.*;
 import arc.graphics.*;
@@ -10,6 +10,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
+import progressed.graphics.*;
 import progressed.util.*;
 
 import static arc.Core.*;

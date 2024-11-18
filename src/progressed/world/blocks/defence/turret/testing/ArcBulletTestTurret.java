@@ -9,6 +9,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.pattern.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;

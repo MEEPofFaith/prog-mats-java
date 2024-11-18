@@ -14,11 +14,12 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 import progressed.graphics.trails.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
-import static progressed.graphics.Draw3D.*;
+import static progressed.graphics.perspective.Draw3D.*;
 
 public abstract class ArcBulletType extends BulletType{
     private static final Vec2 homingTarget = new Vec2();

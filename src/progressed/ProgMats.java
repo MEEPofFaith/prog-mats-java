@@ -17,6 +17,7 @@ import progressed.content.bullets.*;
 import progressed.content.effects.*;
 import progressed.gen.entities.*;
 import progressed.graphics.*;
+import progressed.graphics.perspective.*;
 import progressed.graphics.renders.*;
 import progressed.ui.*;
 import progressed.ui.dialogs.*;
