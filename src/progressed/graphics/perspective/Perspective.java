@@ -13,7 +13,7 @@ public class Perspective{
     /** Field of View in degrees */
     public static float fov = 45f;
     /** Begin fading at this distance away from the viewport. */
-    public static float fadeDst = 32f;
+    public static float fadeDst = 128f;
 
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
@@ -78,10 +78,10 @@ public class Perspective{
 
         if(dst > realFadeDst){
             return 1f;
-        }else if(!canDraw(z)){
+        }else if(!canDraw(z)){ //Behind viewport, should be 0
             return 0f;
         }else{
-            return dst / realFadeDst;
+            return Mathf.clamp(dst / realFadeDst);
         }
     }
 

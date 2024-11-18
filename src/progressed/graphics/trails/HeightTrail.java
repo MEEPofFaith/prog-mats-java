@@ -75,21 +75,25 @@ public class HeightTrail extends Trail{
         float size = width / (int)(points.size / 4);
 
         for(int i = 0; i < points.size; i += 4){
-            float z1 = items[i + 3];
-            Vec2 pos1 = Perspective.drawPos(items[i], items[i + 1], z1);
+            float px1 = items[i], py1 = items[i + 1], z1 = items[i + 3];
+            Vec2 pos1 = Perspective.drawPos(px1, py1, z1);
             float x1 = pos1.x, y1 = pos1.y, w1 = Perspective.scale(items[i], items[i + 1], z1);
-            float x2, y2, w2, z2;
+            float x2, y2, px2, py2, w2, z2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
+                px2 = items[i + 4];
+                py2 = items[i + 4 + 1];
                 z2 = items[i + 4 + 3];
-                Vec2 pos2 = Perspective.drawPos(items[i + 4], items[i + 4 + 1], z2);
+                Vec2 pos2 = Perspective.drawPos(px2, py2, z2);
                 x2 = pos2.x;
                 y2 = pos2.y;
                 w2 = Perspective.scale(items[i + 4], items[i + 4 + 1], z2);
             }else{
+                px2 = lastX;
+                py2 = lastY;
                 z2 = lastZ;
-                Vec2 pos2 = Perspective.drawPos(lastX, lastY, z2);
+                Vec2 pos2 = Perspective.drawPos(px2, py2, z2);
                 x2 = pos2.x;
                 y2 = pos2.y;
                 w2 = Perspective.scale(lastX, lastY, z2);
@@ -109,8 +113,8 @@ public class HeightTrail extends Trail{
             float c1 = Tmp.c1.toFloatBits(),
                 c2 = Tmp.c1.toFloatBits();
             if(fade){
-                c1 = Tmp.c1.set(color).mulA(Perspective.alpha(x1, y1, z1)).toFloatBits();
-                c2 = Tmp.c1.set(color).mulA(Perspective.alpha(x2, y2, z2)).toFloatBits();
+                c1 = Tmp.c1.set(color).mulA(Perspective.alpha(px1, py1, z1)).toFloatBits();
+                c2 = Tmp.c1.set(color).mulA(Perspective.alpha(px2, py2, z2)).toFloatBits();
             }
 
             Fill.quad(
