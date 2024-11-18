@@ -4,7 +4,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.gen.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 
 import static arc.math.Mathf.*;
 

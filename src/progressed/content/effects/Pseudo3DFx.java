@@ -5,7 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 import progressed.world.blocks.defence.*;
 import progressed.world.blocks.defence.ShieldProjector.*;
 

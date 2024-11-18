@@ -7,7 +7,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 
 public class ZTrail extends Trail{
     protected float lastZ = 0f;

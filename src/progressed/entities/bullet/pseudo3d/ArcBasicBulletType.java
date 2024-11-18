@@ -7,9 +7,9 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.gen.*;
 import progressed.graphics.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 
-import static progressed.graphics.perspective.Draw3D.*;
+import static progressed.graphics.draw3d.Draw3D.*;
 
 public abstract class ArcBasicBulletType extends ArcBulletType{
     public String sprite;

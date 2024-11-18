@@ -1,4 +1,4 @@
-package progressed.graphics.perspective;
+package progressed.graphics.draw3d;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;

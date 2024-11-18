@@ -4,7 +4,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import progressed.entities.bullet.explosive.RocketBulletType.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 import progressed.graphics.trails.*;
 
 import static arc.graphics.g2d.Draw.*;

@@ -14,7 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import progressed.content.effects.*;
 import progressed.graphics.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 import progressed.graphics.trails.*;
 import progressed.util.*;
 

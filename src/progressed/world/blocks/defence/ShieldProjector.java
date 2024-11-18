@@ -19,7 +19,7 @@ import progressed.content.effects.*;
 import progressed.content.effects.Pseudo3DFx.*;
 import progressed.entities.bullet.pseudo3d.*;
 import progressed.entities.bullet.pseudo3d.ArcBulletType.*;
-import progressed.graphics.perspective.*;
+import progressed.graphics.draw3d.*;
 import progressed.util.*;
 
 import static mindustry.Vars.*;
