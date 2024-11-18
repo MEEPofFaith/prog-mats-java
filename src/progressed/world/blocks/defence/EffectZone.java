@@ -159,7 +159,7 @@ public class EffectZone extends Block{
 
                 Lines.stroke(1f, Tmp.c1);
                 Lines.circle(x, y, range);
-                Draw3D.tube(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
+                Fill3D.tube(x, y, range, realHeight(), Tmp.c1, Tmp.c2);
             }
 
             Draw.color();

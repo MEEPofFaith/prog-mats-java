@@ -41,6 +41,6 @@ public class SkyBeamBulletType extends BulletType{
     public void draw(Bullet b){
         super.draw(b);
 
-        Draw3D.highBloom(bloom, () -> Draw3D.slantTube(b.x, b.y, b.originX, b.originY, z, radius, baseColor, topColor, offset));
+        Draw3D.highBloom(bloom, () -> Fill3D.slantTube(b.x, b.y, b.originX, b.originY, z, radius, baseColor, topColor, offset));
     }
 }
