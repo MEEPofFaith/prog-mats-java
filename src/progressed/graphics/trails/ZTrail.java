@@ -9,17 +9,17 @@ import arc.util.*;
 import mindustry.graphics.*;
 import progressed.graphics.perspective.*;
 
-public class HeightTrail extends Trail{
+public class ZTrail extends Trail{
     protected float lastZ = 0f;
 
-    public HeightTrail(int length){
+    public ZTrail(int length){
         super(length);
         points = new FloatSeq(length * 4);
     }
 
     @Override
     public Trail copy(){
-        HeightTrail out = new HeightTrail(length);
+        ZTrail out = new ZTrail(length);
         out.points.addAll(points);
         out.lastX = lastX;
         out.lastY = lastY;

@@ -153,7 +153,7 @@ public abstract class ArcBulletType extends BulletType{
     @Override
     public void removed(Bullet b){
         if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-            TrailFadeFx.heightTrailFade.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
+            TrailFadeFx.zTrailFade.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
         }
     }
 
@@ -250,9 +250,9 @@ public abstract class ArcBulletType extends BulletType{
     public void updateTrail(Bullet b){
         if(!headless && trailLength > 0){
             if(b.trail == null){
-                b.trail = new HeightTrail(trailLength);
+                b.trail = new ZTrail(trailLength);
             }
-            HeightTrail trail = (HeightTrail)b.trail;
+            ZTrail trail = (ZTrail)b.trail;
             trail.length = trailLength;
             trail.update(b.x, b.y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)), ((ArcBulletData)b.data).z);
         }

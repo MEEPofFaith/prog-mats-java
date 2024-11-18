@@ -15,7 +15,7 @@ public class SkyLaserTestTurret extends FreeTurret{
             lifetime = bRange / speed;
             radius = 1.5f * tilesize;
             drag = -0.01f;
-            height = 2400;
+            z = 2400;
         }};
         reload = 45f;
         shootY = 0f;
@@ -27,8 +27,8 @@ public class SkyLaserTestTurret extends FreeTurret{
             super.draw();
 
             SkyBeamBulletType type = (SkyBeamBulletType)shootType;
-            Draw3D.drawLineDebug(x, y, type.height, targetPos.x, targetPos.y, 0);
-            Draw3D.drawDiskDebug(targetPos.x, targetPos.y, x, y, type.height, type.radius);
+            Draw3D.drawLineDebug(x, y, type.z, targetPos.x, targetPos.y, 0);
+            Draw3D.drawDiskDebug(targetPos.x, targetPos.y, x, y, type.z, type.radius);
         }
     }
 }

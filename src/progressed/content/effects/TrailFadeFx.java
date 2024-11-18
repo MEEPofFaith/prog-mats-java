@@ -51,8 +51,8 @@ public class TrailFadeFx{
         trail.drawCap(e.color, e.rotation);
     }),
 
-    heightTrailFade = new Effect(400f, e -> {
-        if(!(e.data instanceof HeightTrail trail)) return;
+    zTrailFade = new Effect(400f, e -> {
+        if(!(e.data instanceof ZTrail trail)) return;
         //lifetime is how many frames it takes to fade out the trail
         e.lifetime = trail.length * 1.4f;
 

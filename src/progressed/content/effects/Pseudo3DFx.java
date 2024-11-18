@@ -104,7 +104,7 @@ public class Pseudo3DFx{
         if(!(e.data instanceof ShieldSizeData data)) return;
         stroke(3f * e.fout(), e.color);
         float[] corners = ShieldProjector.getShieldCorners(e.x, e.y, e.rotation, data.sides, data.rotation);
-        ShieldProjector.drawCorners(corners, data.height, data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
+        ShieldProjector.drawCorners(corners, data.z, data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
             Lines.line(x1, y1, x2, y2);
             Lines.line(x1, y1, x4, y4);
             Lines.line(x2, y2, x3, y3);
@@ -127,7 +127,7 @@ public class Pseudo3DFx{
                 Draw.alpha(0.09f + Mathf.clamp(0.08f));
             }
             Fill.polyBegin();
-            ShieldProjector.drawCorners(corners, data.height * e.fout(), data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
+            ShieldProjector.drawCorners(corners, data.z * e.fout(), data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
                 Fill.quad(x1, y1, x2, y2, x3, y3, x4, y4);
                 Fill.polyPoint(x4, y4);
             });
@@ -139,7 +139,7 @@ public class Pseudo3DFx{
                 Draw.z(Layer.shields + 0.001f);
             }
             Draw.alpha(1f);
-            ShieldProjector.drawCorners(corners, data.height * e.fout(), data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
+            ShieldProjector.drawCorners(corners, data.z * e.fout(), data.sides, (x1, y1, x2, y2, x3, y3, x4, y4) -> {
                 Lines.line(x1, y1, x2, y2);
                 Lines.line(x1, y1, x4, y4);
                 Lines.line(x2, y2, x3, y3);
@@ -151,13 +151,13 @@ public class Pseudo3DFx{
 
     public static class ShieldSizeData{
         public int sides;
-        public float height;
+        public float z;
         public float rotation;
 
-        public ShieldSizeData(int sides, float rotation, float height){
+        public ShieldSizeData(int sides, float rotation, float z){
             this.sides = sides;
             this.rotation = rotation;
-            this.height = height;
+            this.z = z;
         }
     }
 }
