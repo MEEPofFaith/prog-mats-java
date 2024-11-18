@@ -1,0 +1,59 @@
+name: Bug Report
+description: Create a report to help fix an issue.
+labels: ["bug"]
+
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platforms
+      description: What platform were you using when the bug occurred?
+      multiple: false
+      options:
+        - Android
+        - iOS
+        - Mac
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Mod Version
+      description: What version of the mod are you using?
+      placeholder: LATEST IS NOT A VERSION.
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: Explain your issue in detail.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How you happened across the issue, and what exactly you did to make the bug happen.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: (Crash) logs
+      description: Either crash reports from the crash folder, or the file you get when you go into Settings -> Game Data -> Export Crash logs.
+      placeholder: REQUIRED if you are reporting a crash.
+    validations:
+      required: false
+  - type: checkboxes
+    id: agreements
+    attributes:
+      label: Submission
+      description: Check the boxes to confirm that you have read the lines below.
+      options:
+        - label: I have updated to the latest release (https://github.com/MEEPofFaith/prog-mats-java/releases) to make sure my issue has not been fixed.
+          required: true
+        - label: I have searched the closed and open issues to make sure that this problem has not already been reported.
+          required: true
