@@ -67,12 +67,16 @@ public class Lines3D{
     }
 
     public static float[] linePoints(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
+        if(z1 > z2){ //Always return from bottom to top
+            return linePoints(x2, y2, z2, x1, y1, z1, pointCount);
+        }
+
         float[] points = new float[pointCount * 3];
         float px = (x2 - x1) / (pointCount - 1);
         float py = (y2 - y1) / (pointCount - 1);
         float pz = (z2 - z1) / (pointCount - 1);
 
-        for(int i = 0; i < pointCount; i++){
+        for(int i = 0; i < pointCount; i++){ //TODO check if goes above viewport z. If so, limit to viewport and cut short.
             points[i * 3] = x1 + px * i;
             points[i * 3 + 1] = y1 + py * i;
             points[i * 3 + 2] = z1 + pz * i;

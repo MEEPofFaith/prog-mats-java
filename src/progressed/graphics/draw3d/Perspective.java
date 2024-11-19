@@ -15,7 +15,7 @@ public class Perspective{
 
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
-        return z < cameraHeight() - viewportOffset;
+        return z < cameraZ() - viewportOffset;
     }
 
     /** @return Perspective projected coordinates to draw at. */
@@ -24,7 +24,7 @@ public class Perspective{
         Vec2 v = viewportSize();
         float vw = v.x, vh = v.y;
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraHeight();
+        float cz = cameraZ();
 
         x -= cx;
         y -= cy;
@@ -40,7 +40,7 @@ public class Perspective{
     /** Multiplicative size scale at a point. */
     public static float scale(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraHeight();
+        float cz = cameraZ();
 
         x -= cx;
         y -= cy;
@@ -58,7 +58,7 @@ public class Perspective{
     /** Fade out based on distance to viewport. */
     public static float alpha(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraHeight();
+        float cz = cameraZ();
 
         float d1 = Math3D.dst(x, y, z, cx, cy, cz); //Distance between camera point
 
@@ -84,7 +84,7 @@ public class Perspective{
     }
 
     /** Calculates the camera height based on FOV and the size of the vanilla camera. */
-    public static float cameraHeight(){
+    public static float cameraZ(){
         float width = Math.max(camera.width, camera.height) / 2f;
         //TOA
         return (float)(width / Math.tan(fov / 2f * Mathf.degRad));
