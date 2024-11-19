@@ -91,10 +91,10 @@ public class Lines3D{
         float py = (y2 - y1) / (pointCount - 1);
         float pz = (z2 - z1) / (pointCount - 1);
 
-        for(int i = 0; i < pointCount; i += 3){
-            points[i] = x1 + px * i;
-            points[i + 1] = y1 + py * i;
-            points[i + 2] = z1 + pz * i;
+        for(int i = 0; i < pointCount; i++){
+            points[i * 3] = x1 + px * i;
+            points[i * 3 + 1] = y1 + py * i;
+            points[i * 3 + 2] = z1 + pz * i;
         }
 
         return points;
