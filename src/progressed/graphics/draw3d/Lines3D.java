@@ -50,7 +50,7 @@ public class Lines3D{
     }
 
     public static void line(float x1, float y1, float z1, float x2, float y2, float z2, boolean scale){
-        line(x1, y1, z1, x2, y2, z2, linePointCounts(x1, y1, z1, x2, y2, z2), scale);
+        line(x1, y1, z1, x2, y2, z2, linePointCount(x1, y1, z1, x2, y2, z2), scale);
     }
 
     public static void line(float x1, float y1, float z1, float x2, float y2, float z2){
@@ -62,13 +62,28 @@ public class Lines3D{
         line(x, y, z, x + Tmp.v31.x, y + Tmp.v31.y, z + Tmp.v31.z);
     }
 
-    public static int linePointCounts(float x1, float y1, float z1, float x2, float y2, float z2){
+    public static int linePointCount(float x1, float y1, float z1, float x2, float y2, float z2){
         return (int)(Math3D.dst(x1, y1, z1, x2, y2, z2) / tilesize / tilesize);
     }
 
     public static float[] linePoints(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
         if(z1 > z2){ //Always return from bottom to top
-            return linePoints(x2, y2, z2, x1, y1, z1, pointCount);
+            float tx = x1, ty = y1, tz = z1;
+            x1 = x2;
+            y1 = y2;
+            z1 = z2;
+            x2 = tx;
+            y2 = ty;
+            z2 = tz;
+        }
+
+        float vz = Perspective.viewportZ();
+        if(z2 > vz){ //If line goes above viewport height, scale to viewport height.
+            float scl = vz / (z2 - z1);
+            x2 = x1 + (x2 - x1) * scl;
+            y2 = y1 + (y2 - y1) * scl;
+            z2 = vz;
+            pointCount = Mathf.ceil(pointCount * scl);
         }
 
         float[] points = new float[pointCount * 3];
@@ -76,7 +91,7 @@ public class Lines3D{
         float py = (y2 - y1) / (pointCount - 1);
         float pz = (z2 - z1) / (pointCount - 1);
 
-        for(int i = 0; i < pointCount; i++){ //TODO check if goes above viewport z. If so, limit to viewport and cut short.
+        for(int i = 0; i < pointCount; i++){
             points[i * 3] = x1 + px * i;
             points[i * 3 + 1] = y1 + py * i;
             points[i * 3 + 2] = z1 + pz * i;

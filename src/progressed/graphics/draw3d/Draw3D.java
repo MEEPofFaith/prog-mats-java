@@ -126,7 +126,7 @@ public class Draw3D{
     public static void drawLineDebug(float x1, float y1, float z1, float x2, float y2, float z2){
         Lines3D.line(x1, y1, z1, x2, y2, z2);
 
-        int pointCount = Lines3D.linePointCounts(x1, y1, z1, x2, y2, z2);
+        int pointCount = Lines3D.linePointCount(x1, y1, z1, x2, y2, z2);
         float[] points = Lines3D.linePoints(x1, y1, z1, x2, y2, z2, pointCount);
         for(int i = 0; i < points.length; i += 3){
             float x = points[i],

@@ -83,11 +83,21 @@ public class Perspective{
         }
     }
 
-    /** Calculates the camera height based on FOV and the size of the vanilla camera. */
+    /**
+     * Calculates the camera z coordinate based on FOV and the size of the vanilla camera.
+     * @return camera z coordinate
+     * */
     public static float cameraZ(){
         float width = Math.max(camera.width, camera.height) / 2f;
         //TOA
         return (float)(width / Math.tan(fov / 2f * Mathf.degRad));
+    }
+
+    /**
+     * @return viewport z coordinate
+     */
+    public static float viewportZ(){
+        return cameraZ() - viewportOffset;
     }
 
     /** Calculates the size of the viewport. */
