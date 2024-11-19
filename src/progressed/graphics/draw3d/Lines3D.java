@@ -67,7 +67,7 @@ public class Lines3D{
     }
 
     public static float[] linePoints(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount){
-        if(z1 > z2){ //Always return from bottom to top
+        if(z1 > z2){ //Always order from bottom to top. Needed for viewport check.
             float tx = x1, ty = y1, tz = z1;
             x1 = x2;
             y1 = y2;
@@ -78,7 +78,7 @@ public class Lines3D{
         }
 
         float vz = Perspective.viewportZ();
-        if(z2 > vz){ //If line goes above viewport height, scale to viewport height.
+        if(z2 > vz){ //If line goes above viewport, scale to viewport z.
             float scl = vz / (z2 - z1);
             x2 = x1 + (x2 - x1) * scl;
             y2 = y1 + (y2 - y1) * scl;

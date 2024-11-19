@@ -12,6 +12,8 @@ public class Perspective{
     public static float viewportOffset = 8f;
     /** Field of View in degrees */
     public static float fov = settings.getInt("pm-fov", 60);
+    public static float fadeDst = 128f;
+    public static float maxScale = 8f;
 
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
@@ -44,15 +46,18 @@ public class Perspective{
 
         x -= cx;
         y -= cy;
-        z = cz - z;
+        float zz = cz - z;
 
-        float px = x / z * cz;
-        float py = y / z * cz;
+        float px = x / zz * cz; //Position scaled to far plane.
+        float py = y / zz * cz;
 
-        float c1 = Mathf.dst(x, y), c2 = Mathf.dst(px, py);
-        float d1 = Mathf.dst(z, c1), d2 = Mathf.dst(cz, c2);
+        float vx = x / zz * viewportOffset; //Position scaled to near plane.
+        float vy = y / zz * viewportOffset;
 
-        return d2 / d1;
+        float d1 = Math3D.dst(vx, vy, cz - viewportOffset, x, y, z);
+        float d2 = Math3D.dst(vx, vy, cz - viewportOffset, px, py, 0);
+
+        return 1f + (1f - d1 / d2) * (maxScale - 1f);
     }
 
     /** Fade out based on distance to viewport. */
@@ -60,7 +65,7 @@ public class Perspective{
         float cx = camera.position.x, cy = camera.position.y;
         float cz = cameraZ();
 
-        float d1 = Math3D.dst(x, y, z, cx, cy, cz); //Distance between camera point
+        float d1 = Math3D.dst(x, y, z, cx, cy, cz); //Distance between camera and far point
 
         x -= cx;
         y -= cy;
@@ -72,14 +77,14 @@ public class Perspective{
         float d2 = Math3D.dst(vx, vy, z); //Distance between camera and viewport pos
 
         float dst = d1 - d2;
-        float fadeDst = (cz - viewportOffset) / 8f;
+        float fade = Math.min(fadeDst, cz - viewportOffset);
 
-        if(dst > fadeDst){
+        if(dst > fade){
             return 1f;
         }else if(!canDraw(z)){ //Behind viewport, should be 0
             return 0f;
         }else{
-            return Mathf.clamp(dst / fadeDst);
+            return Mathf.clamp(dst / fade);
         }
     }
 
