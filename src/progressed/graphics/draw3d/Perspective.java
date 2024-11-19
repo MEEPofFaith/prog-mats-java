@@ -11,9 +11,7 @@ public class Perspective{
     /** Viewport offset from the camera height in world units. */
     public static float viewportOffset = 8f;
     /** Field of View in degrees */
-    public static float fov = 45f;
-    /** Begin fading at this distance away from the viewport. */
-    public static float fadeDst = 128f;
+    public static float fov = settings.getInt("pm-fov", 60);
 
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
@@ -74,14 +72,14 @@ public class Perspective{
         float d2 = Math3D.dst(vx, vy, z); //Distance between camera and viewport pos
 
         float dst = d1 - d2;
-        float realFadeDst = Math.min(fadeDst, cz - viewportOffset);
+        float fadeDst = (cz - viewportOffset) / 8f;
 
-        if(dst > realFadeDst){
+        if(dst > fadeDst){
             return 1f;
         }else if(!canDraw(z)){ //Behind viewport, should be 0
             return 0f;
         }else{
-            return Mathf.clamp(dst / realFadeDst);
+            return Mathf.clamp(dst / fadeDst);
         }
     }
 
