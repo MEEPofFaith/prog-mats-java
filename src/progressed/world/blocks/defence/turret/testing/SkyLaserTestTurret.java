@@ -1,7 +1,6 @@
 package progressed.world.blocks.defence.turret.testing;
 
 import progressed.entities.bullet.pseudo3d.*;
-import progressed.graphics.draw3d.*;
 
 import static mindustry.Vars.*;
 
@@ -15,7 +14,7 @@ public class SkyLaserTestTurret extends FreeTurret{
             lifetime = bRange / speed;
             radius = 1.5f * tilesize;
             drag = -0.01f;
-            z = 1200;
+            z = 2000;
         }};
         reload = 45f;
         shootY = 0f;
@@ -27,8 +26,8 @@ public class SkyLaserTestTurret extends FreeTurret{
             super.draw();
 
             SkyBeamBulletType type = (SkyBeamBulletType)shootType;
-            Draw3D.drawLineDebug(x, y, type.z, targetPos.x, targetPos.y, 0);
-            Draw3D.drawDiskDebug(targetPos.x, targetPos.y, x, y, type.z, type.radius);
+            //Draw3D.drawLineDebug(x, y, type.z, targetPos.x, targetPos.y, 0);
+            //Draw3D.drawDiskDebug(targetPos.x, targetPos.y, x, y, type.z, type.radius);
         }
     }
 }

@@ -102,6 +102,7 @@ public class Draw3D{
         Lines.stroke(3f);
         Draw.color(Color.white);
         int vertCount = Lines.circleVertices(rad * Perspective.scale(x2, y2, z2));
+        if(vertCount < 0) return;
         float[] verts = Fill3D.diskVertices(x2, y2, z2, rotation, 0f, tilt, rad, vertCount);
         for(int i = 0; i <= vertCount; i += 3){
             float px2, py2, pz2;

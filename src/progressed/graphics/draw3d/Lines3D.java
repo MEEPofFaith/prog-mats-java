@@ -7,7 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import progressed.util.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Lines3D{
     public static void line(float x1, float y1, float z1, float x2, float y2, float z2, int pointCount, boolean scale){
@@ -83,7 +83,6 @@ public class Lines3D{
             x2 = x1 + (x2 - x1) * scl;
             y2 = y1 + (y2 - y1) * scl;
             z2 = vz;
-            pointCount = Mathf.ceil(pointCount * scl);
         }
 
         float[] points = new float[pointCount * 3];
@@ -98,5 +97,9 @@ public class Lines3D{
         }
 
         return points;
+    }
+
+    public static float[] linePoints(float x1, float y1, float z1, float x2, float y2, float z2){
+        return linePoints(x1, y1, z1, x2, y2, z2, linePointCount(x1, y1, z1, x2, y2, z2));
     }
 }
