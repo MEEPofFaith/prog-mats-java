@@ -82,26 +82,17 @@ public class Perspective{
 
     /** Fade out based on distance to viewport. */
     public static float alpha(float x, float y, float z){
-        float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ;
-
-        x -= cx;
-        y -= cy;
-        float zz = cz - z;
-
-        float vx = x / zz * viewportOffset, //Position scaled to near plane.
-            vy = y / zz * viewportOffset;
         float vz = viewportZ();
 
-        float dst = Math3D.dst(x, y, z, vx, vy, vz); //Distance between viewport and pos
-        float fade = Math.min(fadeDst, cz - viewportOffset);
+        float dst = dstToViewport(x, y, z);
+        float fade = Math.min(fadeDst, vz);
 
         if(dst > fade){
             return 1f;
         }else if(z > vz){ //Behind viewport, should be 0
             return 0f;
         }else{
-            return Mathf.clamp(dst / fade);
+            return Interp.pow2In.apply(Mathf.clamp(dst / fade));
         }
     }
 
@@ -129,6 +120,21 @@ public class Perspective{
             float v2 = v1 * (camera.width / camera.height);
             viewportSize.set(v2, v1);
         }
+    }
+
+    public static float dstToViewport(float x, float y, float z){
+        float cx = camera.position.x, cy = camera.position.y;
+        float cz = cameraZ;
+
+        x -= cx;
+        y -= cy;
+        float zz = cz - z;
+
+        float vx = x / zz * viewportOffset, //Position scaled to near plane.
+            vy = y / zz * viewportOffset;
+        float vz = viewportZ();
+
+        return Math3D.dst(x, y, z, vx, vy, vz); //Distance between viewport and pos
     }
 
     /**

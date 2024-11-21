@@ -15,7 +15,7 @@ public class SkyLaserTestTurret extends FreeTurret{
             lifetime = bRange / speed;
             radius = 1.5f * tilesize;
             drag = -0.01f;
-            z = 2000;
+            z = 2400;
         }};
         reload = 45f;
         shootY = 0f;
