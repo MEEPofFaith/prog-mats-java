@@ -1,32 +1,52 @@
 package progressed.graphics.draw3d;
 
+import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
+import mindustry.game.EventType.*;
 import progressed.util.*;
 
 import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class Perspective{
     private static final Vec2 offsetPos = new Vec2();
     /** Viewport offset from the camera height in world units. */
     public static float viewportOffset = 8f;
     /** Field of View in degrees */
-    public static float fov = settings.getInt("pm-fov", 60);
+    public static float fov = -1f;
     public static float fadeDst = 1024f;
     public static float maxScale = 8f;
 
+    private static float lastScale;
+    private static float cameraZ;
+    private static Vec2 viewportSize = new Vec2();
+
+    static{
+        if(!headless){
+            Events.run(Trigger.preDraw, () -> {
+                int newFov = settings.getInt("pm-fov", 60);
+                if(renderer.getDisplayScale() != lastScale || newFov != fov){
+                    lastScale = renderer.getDisplayScale();
+                    fov = newFov;
+                    cameraZ = calcCameraZ();
+                    viewportSize();
+                }
+            });
+        }
+    }
+
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
-        return z < cameraZ() - viewportOffset;
+        return z < cameraZ - viewportOffset;
     }
 
     /** @return Perspective projected coordinates to draw at. */
     public static Vec2 drawPos(float x, float y, float z){
         //viewport
-        Vec2 v = viewportSize();
-        float vw = v.x, vh = v.y;
+        float vw = viewportSize.x, vh = viewportSize.y;
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ();
+        float cz = cameraZ;
 
         x -= cx;
         y -= cy;
@@ -42,7 +62,7 @@ public class Perspective{
     /** Multiplicative size scale at a point. */
     public static float scale(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ();
+        float cz = cameraZ;
 
         x -= cx;
         y -= cy;
@@ -63,7 +83,7 @@ public class Perspective{
     /** Fade out based on distance to viewport. */
     public static float alpha(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ();
+        float cz = cameraZ;
 
         x -= cx;
         y -= cy;
@@ -85,32 +105,36 @@ public class Perspective{
         }
     }
 
-    /**
-     * Calculates the camera z coordinate based on FOV and the size of the vanilla camera.
-     * @return camera z coordinate
-     * */
     public static float cameraZ(){
-        float width = Math.max(camera.width, camera.height) / 2f;
-        //TOA
-        return (float)(width / Math.tan(fov / 2f * Mathf.degRad));
+        return cameraZ;
     }
 
     /**
      * @return viewport z coordinate
      */
     public static float viewportZ(){
-        return cameraZ() - viewportOffset;
+        return cameraZ - viewportOffset;
     }
 
     /** Calculates the size of the viewport. */
-    public static  Vec2 viewportSize(){
+    public static void viewportSize(){
         float v1 = (float)(Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
         if(camera.width >= camera.height){
             float v2 = v1 * (camera.height / camera.width);
-            return offsetPos.set(v1, v2);
+            viewportSize.set(v1, v2);
         }else{
             float v2 = v1 * (camera.width / camera.height);
-            return offsetPos.set(v2, v1);
+            viewportSize.set(v2, v1);
         }
+    }
+
+    /**
+     * Calculates the camera z coordinate based on FOV and the size of the vanilla camera.
+     * @return camera z coordinate
+     * */
+    private static float calcCameraZ(){
+        float width = Math.max(camera.width, camera.height) / 2f;
+        //TOA
+        return (float)(width / Math.tan(fov / 2f * Mathf.degRad));
     }
 }
