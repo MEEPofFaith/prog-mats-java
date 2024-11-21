@@ -79,7 +79,7 @@ public class Lines3D{
 
         float vz = Perspective.viewportZ();
         if(z2 > vz){ //If line goes above viewport, scale to viewport z.
-            float scl = vz / (z2 - z1);
+            float scl = (vz - z1) / (z2 - z1);
             x2 = x1 + (x2 - x1) * scl;
             y2 = y1 + (y2 - y1) * scl;
             z2 = vz;

@@ -12,7 +12,7 @@ import static mindustry.Vars.*;
 public class Perspective{
     private static final Vec2 offsetPos = new Vec2();
     /** Viewport offset from the camera height in world units. */
-    public static float viewportOffset = 8f;
+    public static float viewportOffset = 16f;
     /** Field of View in degrees */
     public static float fov = -1f;
     public static float fadeDst = 1024f;
@@ -20,7 +20,7 @@ public class Perspective{
 
     private static float lastScale;
     private static float cameraZ;
-    private static Vec2 viewportSize = new Vec2();
+    private static final Vec2 viewportSize = new Vec2();
 
     static{
         if(!headless){
@@ -38,7 +38,7 @@ public class Perspective{
 
     /** @return If the z coordinate is below the viewport height. */
     public static boolean canDraw(float z){
-        return z < cameraZ - viewportOffset;
+        return z < viewportZ();
     }
 
     /** @return Perspective projected coordinates to draw at. */
@@ -98,13 +98,16 @@ public class Perspective{
 
         if(dst > fade){
             return 1f;
-        }else if(!canDraw(z)){ //Behind viewport, should be 0
+        }else if(z > vz){ //Behind viewport, should be 0
             return 0f;
         }else{
             return Mathf.clamp(dst / fade);
         }
     }
 
+    /**
+     * @return camera z coordinate
+     */
     public static float cameraZ(){
         return cameraZ;
     }
