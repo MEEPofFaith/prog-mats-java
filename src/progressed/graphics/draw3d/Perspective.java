@@ -11,6 +11,7 @@ import static mindustry.Vars.*;
 
 public class Perspective{
     private static final Vec2 offsetPos = new Vec2();
+    private static final Vec3 scalingPos = new Vec3();
     /** Viewport offset from the camera height in world units. */
     public static float viewportOffset = 16f;
     /** Field of View in degrees */
@@ -46,16 +47,9 @@ public class Perspective{
         //viewport
         float vw = viewportSize.x, vh = viewportSize.y;
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ;
+        Vec3 scaled = scaleToViewport(x, y, z);
 
-        x -= cx;
-        y -= cy;
-        z = cz - z;
-
-        float vx = x / z * viewportOffset,
-            vy = y / z * viewportOffset;
-
-        offsetPos.set(vx / vw * camera.width, vy / vh * camera.height).add(cx, cy);
+        offsetPos.set(scaled.x / vw * camera.width, scaled.y / vh * camera.height).add(cx, cy);
         return offsetPos;
     }
 
@@ -122,7 +116,7 @@ public class Perspective{
         }
     }
 
-    public static float dstToViewport(float x, float y, float z){
+    public static Vec3 scaleToViewport(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
         float cz = cameraZ;
 
@@ -134,7 +128,13 @@ public class Perspective{
             vy = y / zz * viewportOffset;
         float vz = viewportZ();
 
-        return Math3D.dst(x, y, z, vx, vy, vz); //Distance between viewport and pos
+        return scalingPos.set(vx, vy, vz);
+    }
+
+    public static float dstToViewport(float x, float y, float z){
+        Vec3 scaled = scaleToViewport(x, y, z);
+        float cx = camera.position.x, cy = camera.position.y;
+        return scaled.dst(x - cx, y - cy, z);
     }
 
     /**

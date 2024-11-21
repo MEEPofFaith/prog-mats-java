@@ -73,35 +73,53 @@ public class ZTrail extends Trail{
         float lastAngle = 0;
         float[] items = points.items;
         float size = width / (int)(points.size / 4);
+        float vz = Perspective.viewportZ();
+        boolean calcLast = true;
 
         for(int i = 0; i < points.size; i += 4){
             float px1 = items[i], py1 = items[i + 1], z1 = items[i + 3];
+            float z2 = i < points.size - 4 ? items[i + 4 + 3] : lastZ;
+
+            if(z1 > vz && z2 > vz){
+                calcLast = true;
+                continue;
+            }
+
+            if(z1 > vz){ //Scale to near plane
+                Vec3 pos = Perspective.scaleToViewport(px1, py1, z1);
+                px1 = pos.x;
+                py1 = pos.y;
+                z1 = pos.z;
+            }
+
             Vec2 pos1 = Perspective.drawPos(px1, py1, z1);
             float x1 = pos1.x, y1 = pos1.y, w1 = Perspective.scale(items[i], items[i + 1], z1);
-            float x2, y2, px2, py2, w2, z2;
+            float px2, py2, x2, y2, w2;
 
             //last position is always lastX/Y/W
             if(i < points.size - 4){
                 px2 = items[i + 4];
                 py2 = items[i + 4 + 1];
-                z2 = items[i + 4 + 3];
-                Vec2 pos2 = Perspective.drawPos(px2, py2, z2);
-                x2 = pos2.x;
-                y2 = pos2.y;
-                w2 = Perspective.scale(items[i + 4], items[i + 4 + 1], z2);
             }else{
                 px2 = lastX;
                 py2 = lastY;
-                z2 = lastZ;
-                Vec2 pos2 = Perspective.drawPos(px2, py2, z2);
-                x2 = pos2.x;
-                y2 = pos2.y;
-                w2 = Perspective.scale(lastX, lastY, z2);
             }
+
+            if(z2 > vz){ //Scale to near plane
+                Vec3 pos = Perspective.scaleToViewport(px2, py2, z2);
+                px2 = pos.x;
+                py2 = pos.y;
+                z2 = pos.z;
+            }
+
+            Vec2 pos2 = Perspective.drawPos(px2, py2, z2);
+            x2 = pos2.x;
+            y2 = pos2.y;
+            w2 = Perspective.scale(px2, py2, z2);
 
             float a2 = -Angles.angleRad(x1, y1, x2, y2);
             //end of the trail (i = 0) has the same angle as the next.
-            float a1 = i == 0 ? a2 : lastAngle;
+            float a1 = calcLast ? a2 : lastAngle;
             if(w1 <= 0.001f || w2 <= 0.001f) continue;
 
             float
@@ -125,6 +143,7 @@ public class ZTrail extends Trail{
             );
 
             lastAngle = a2;
+            calcLast = false;
         }
 
         Draw.color();
