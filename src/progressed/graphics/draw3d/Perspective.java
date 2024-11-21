@@ -125,11 +125,7 @@ public class Perspective{
         y -= cy;
         float zz = cameraZ - z;
 
-        float vx = x / zz * viewportOffset, //Position scaled to near plane.
-            vy = y / zz * viewportOffset;
-        float vz = viewportZ();
-
-        return scalingPos.set(vx, vy, vz);
+        return scalingPos.set(x / zz * viewportOffset, y / zz * viewportOffset, viewportZ());
     }
 
     public static float dstToViewport(float x, float y, float z){
