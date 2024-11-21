@@ -1260,7 +1260,6 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 16f;
                 baseColor = Pal.heal;
                 reload = 40f;
 
@@ -1296,7 +1295,6 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 16f;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.speedBoost, 22f * tile.heat));
 
@@ -1322,7 +1320,6 @@ public class PMBlocks{
                 ));
                 size = 2;
                 range = 16f * tilesize;
-                height = 16f;
                 baseColor = Pal.redderDust;
 
                 zoneEffect = tile -> all.each(u -> u.apply(PMStatusEffects.strengthBoost, 22f * tile.heat));
@@ -1346,7 +1343,6 @@ public class PMBlocks{
 
                 size = 2;
                 range = 32f * tilesize;
-                height = 16f;
                 baseColor = Color.red;
                 reload = 2f;
                 affectOwnTeam = false;

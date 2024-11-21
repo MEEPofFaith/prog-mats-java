@@ -44,10 +44,13 @@ public class Fill3D{
     }
 
     public static void tube(float x, float y, float rad, float z2, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
+        float scl = Perspective.scale(x, y, z2);
+        if(scl < 0) return;
+
         int vert = Lines.circleVertices(rad);
         float space = 360f / vert;
         Vec2 pos = Perspective.drawPos(x, y, z2);
-        float angle = tubeStartAngle(x, y, pos.x, pos.y, rad, rad * Perspective.scale(x, y, z2));
+        float angle = tubeStartAngle(x, y, pos.x, pos.y, rad, rad * scl);
 
         for(int i = 0; i < vert; i++){
             float a = angle + space * i, cos = cosDeg(a), sin = sinDeg(a), cos2 = cosDeg(a + space), sin2 = sinDeg(a + space);
@@ -56,22 +59,20 @@ public class Fill3D{
                 y1 = y + rad * sin,
                 x2 = x + rad * cos2,
                 y2 = y + rad * sin2;
-
-            pos = Perspective.drawPos(x1, y1, z2);
-            float x3 = pos.x,
-                y3 = pos.y;
-            pos = Perspective.drawPos(x2, y2, z2);
-            float x4 = pos.x,
-                y4 = pos.y;
-
+            
             float cLerp1 = 1f - Angles.angleDist(a, 45f) / 180f,
                 cLerp2 = 1f - Angles.angleDist(a + space, 45f) / 180f;
-            float bc1f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp1).toFloatBits(),
-                tc1f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp1).toFloatBits(),
-                bc2f = tmpCol.set(baseColorLight).lerp(baseColorDark, cLerp2).toFloatBits(),
-                tc2f = tmpCol.set(topColorLight).lerp(topColorDark, cLerp2).toFloatBits();
+            Color bc1f = Tmp.c1.set(baseColorLight).lerp(baseColorDark, cLerp1),
+                tc1f = Tmp.c2.set(topColorLight).lerp(topColorDark, cLerp1),
+                bc2f = Tmp.c3.set(baseColorLight).lerp(baseColorDark, cLerp2),
+                tc2f = Tmp.c4.set(topColorLight).lerp(topColorDark, cLerp2);
 
-            Fill.quad(x1, y1, bc1f, x2, y2, bc2f, x4, y4, tc2f, x3, y3, tc1f);
+            quad(
+                x1, y1, 0, bc1f,
+                x2, y2, 0, bc2f,
+                x2, y2, z2, tc2f,
+                x1, y1, z2, tc1f
+            );
         }
     }
 
