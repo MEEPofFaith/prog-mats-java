@@ -15,7 +15,7 @@ public class SkyBeamBulletType extends BulletType{
     public float radius = tilesize;
     public boolean bloom = true;
     public Color baseColor = PMPal.nexusLaserDark;
-    public Color topColor = PMPal.nexusLaser.cpy().a(0);
+    public Color topColor = PMPal.nexusLaser;
 
     static{
         BlackHoleUtils.immuneBulletTypes.add(SkyBeamBulletType.class);

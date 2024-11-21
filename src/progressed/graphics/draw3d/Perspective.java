@@ -12,7 +12,7 @@ public class Perspective{
     public static float viewportOffset = 8f;
     /** Field of View in degrees */
     public static float fov = settings.getInt("pm-fov", 60);
-    public static float fadeDst = 128f;
+    public static float fadeDst = 1024f;
     public static float maxScale = 8f;
 
     /** @return If the z coordinate is below the viewport height. */
@@ -65,18 +65,15 @@ public class Perspective{
         float cx = camera.position.x, cy = camera.position.y;
         float cz = cameraZ();
 
-        float d1 = Math3D.dst(x, y, z, cx, cy, cz); //Distance between camera and far point
-
         x -= cx;
         y -= cy;
-        float pz = cz - z;
+        float zz = cz - z;
 
-        float vx = x / pz * viewportOffset,
-            vy = y / pz * viewportOffset;
+        float vx = x / zz * viewportOffset, //Position scaled to near plane.
+            vy = y / zz * viewportOffset;
+        float vz = viewportZ();
 
-        float d2 = Math3D.dst(vx, vy, z); //Distance between camera and viewport pos
-
-        float dst = d1 - d2;
+        float dst = Math3D.dst(x, y, z, vx, vy, vz); //Distance between viewport and pos
         float fade = Math.min(fadeDst, cz - viewportOffset);
 
         if(dst > fade){
