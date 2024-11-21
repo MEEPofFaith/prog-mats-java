@@ -43,7 +43,7 @@ public class Fill3D{
         quad(x1, y1, z1, color, x2, y2, z2, color, x3, y3, z3, color, x4, y4, z4, color);
     }
 
-    public static void tube(float x, float y, float rad, float z2, Color baseColorLight, Color baseColorDark, Color topColorLight, Color topColorDark){
+    public static void tube(float x, float y, float rad, float z2, Color baseColor, Color topColor){
         float scl = Perspective.scale(x, y, z2);
         if(scl < 0) return;
 
@@ -60,24 +60,13 @@ public class Fill3D{
                 x2 = x + rad * cos2,
                 y2 = y + rad * sin2;
             
-            float cLerp1 = 1f - Angles.angleDist(a, 45f) / 180f,
-                cLerp2 = 1f - Angles.angleDist(a + space, 45f) / 180f;
-            Color bc1f = Tmp.c1.set(baseColorLight).lerp(baseColorDark, cLerp1),
-                tc1f = Tmp.c2.set(topColorLight).lerp(topColorDark, cLerp1),
-                bc2f = Tmp.c3.set(baseColorLight).lerp(baseColorDark, cLerp2),
-                tc2f = Tmp.c4.set(topColorLight).lerp(topColorDark, cLerp2);
-
             quad(
-                x1, y1, 0, bc1f,
-                x2, y2, 0, bc2f,
-                x2, y2, z2, tc2f,
-                x1, y1, z2, tc1f
+                x1, y1, 0, baseColor,
+                x2, y2, 0, baseColor,
+                x2, y2, z2, topColor,
+                x1, y1, z2, topColor
             );
         }
-    }
-
-    public static void tube(float x, float y, float rad, float z2, Color baseColor, Color topColor){
-        tube(x, y, rad, z2, baseColor, baseColor, topColor, topColor);
     }
 
     public static void slantTube(float x1, float y1, float x2, float y2, float z2, float rad, Color baseColor, Color topColor){
