@@ -118,11 +118,12 @@ public class Perspective{
 
     public static Vec3 scaleToViewport(float x, float y, float z){
         float cx = camera.position.x, cy = camera.position.y;
-        float cz = cameraZ;
+
+        if(z < viewportZ()) return scalingPos.set(x - cx, y - cy, z);
 
         x -= cx;
         y -= cy;
-        float zz = cz - z;
+        float zz = cameraZ - z;
 
         float vx = x / zz * viewportOffset, //Position scaled to near plane.
             vy = y / zz * viewportOffset;
@@ -133,8 +134,7 @@ public class Perspective{
 
     public static float dstToViewport(float x, float y, float z){
         Vec3 scaled = scaleToViewport(x, y, z);
-        float cx = camera.position.x, cy = camera.position.y;
-        return scaled.dst(x - cx, y - cy, z);
+        return scaled.dst(x - camera.position.x, y - camera.position.y, z);
     }
 
     /**
