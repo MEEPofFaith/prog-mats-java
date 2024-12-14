@@ -28,6 +28,8 @@ public class Perspective{
         if(!headless){
             Events.run(Trigger.preDraw, () -> {
                 int newFov = settings.getInt("pm-fov", 60);
+                
+                //Recalculate viewport size on scale or fov change
                 if(renderer.getDisplayScale() != lastScale || newFov != fov){
                     lastScale = renderer.getDisplayScale();
                     fov = newFov;
@@ -111,18 +113,6 @@ public class Perspective{
         return cameraZ - viewportOffset;
     }
 
-    /** Calculates the size of the viewport. */
-    public static void viewportSize(){
-        float v1 = (float)(Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
-        if(camera.width >= camera.height){
-            float v2 = v1 * (camera.height / camera.width);
-            viewportSize.set(v1, v2);
-        }else{
-            float v2 = v1 * (camera.width / camera.height);
-            viewportSize.set(v2, v1);
-        }
-    }
-
     public static Vec3 scaleToViewport(float x, float y, float z){
         if(z <= groundTolerance) return scalingPos.set(x, y, 0);
 
@@ -140,6 +130,18 @@ public class Perspective{
     public static float dstToViewport(float x, float y, float z){
         Vec3 scaled = scaleToViewport(x, y, z);
         return scaled.dst(x - camera.position.x, y - camera.position.y, z);
+    }
+
+    /** Calculates the size of the viewport. */
+    private static void viewportSize(){
+        float v1 = (float)(Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
+        if(camera.width >= camera.height){
+            float v2 = v1 * (camera.height / camera.width);
+            viewportSize.set(v1, v2);
+        }else{
+            float v2 = v1 * (camera.width / camera.height);
+            viewportSize.set(v2, v1);
+        }
     }
 
     /**
