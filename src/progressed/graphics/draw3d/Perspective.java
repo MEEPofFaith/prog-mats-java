@@ -118,8 +118,6 @@ public class Perspective{
 
         float cx = camera.position.x, cy = camera.position.y;
 
-        if(z < viewportZ()) return scalingPos.set(x - cx, y - cy, z);
-
         x -= cx;
         y -= cy;
         float zz = cameraZ - z;
