@@ -95,6 +95,7 @@ public class ProgMats extends Mod{
 
 
             if(!TUEnabled()){ //TU already does this, don't double up
+                //TODO Adjust minZoom based on fov and scale to never result in a negative viewport z.
                 renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
                 renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
 

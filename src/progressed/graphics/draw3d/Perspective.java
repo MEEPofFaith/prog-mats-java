@@ -15,7 +15,7 @@ public class Perspective{
     /** z values below this are considered on the ground, and bypass calculations. */
     private static final float groundTolerance = 0.001f;
     /** Viewport offset from the camera height in world units. */
-    public static float viewportOffset = 16f;
+    public static float viewportOffset = 80f;
     /** Field of View in degrees */
     public static float fov = -1f;
     public static float fadeDst = 1024f;
@@ -95,7 +95,7 @@ public class Perspective{
         }else if(z > vz){ //Behind viewport, should be 0
             return 0f;
         }else{
-            return Interp.pow2In.apply(Mathf.clamp(dst / fade));
+            return Interp.pow5In.apply(Mathf.clamp(dst / fade));
         }
     }
 
@@ -107,10 +107,11 @@ public class Perspective{
     }
 
     /**
+     * Never returns a negative, max to 0. If that's happening, calculations are probably breaking, so don't zoom in so much.
      * @return viewport z coordinate
      */
     public static float viewportZ(){
-        return cameraZ - viewportOffset;
+        return Math.max(cameraZ - viewportOffset, 0f);
     }
 
     public static Vec3 scaleToViewport(float x, float y, float z){
