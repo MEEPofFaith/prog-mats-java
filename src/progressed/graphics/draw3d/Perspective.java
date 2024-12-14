@@ -12,12 +12,13 @@ import static mindustry.Vars.*;
 public class Perspective{
     private static final Vec2 offsetPos = new Vec2();
     private static final Vec3 scalingPos = new Vec3();
+    /** z values below this are considered on the ground, and bypass calculations. */
+    private static final float groundTolerance = 0.001f;
     /** Viewport offset from the camera height in world units. */
     public static float viewportOffset = 16f;
     /** Field of View in degrees */
     public static float fov = -1f;
     public static float fadeDst = 1024f;
-    public static float maxScale = 8f;
 
     private static float lastScale;
     private static float cameraZ;
@@ -44,6 +45,8 @@ public class Perspective{
 
     /** @return Perspective projected coordinates to draw at. */
     public static Vec2 drawPos(float x, float y, float z){
+        if(z <= groundTolerance) return offsetPos.set(x, y);
+
         //viewport
         float vw = viewportSize.x, vh = viewportSize.y;
         float cx = camera.position.x, cy = camera.position.y;
@@ -55,6 +58,8 @@ public class Perspective{
 
     /** Multiplicative size scale at a point. */
     public static float scale(float x, float y, float z){
+        if(z <= groundTolerance) return 1f;
+
         float cx = camera.position.x, cy = camera.position.y;
         float cz = cameraZ;
 
@@ -71,11 +76,13 @@ public class Perspective{
         float d1 = Math3D.dst(vx, vy, cz - viewportOffset, x, y, z);
         float d2 = Math3D.dst(vx, vy, cz - viewportOffset, px, py, 0);
 
-        return 1f + (1f - d1 / d2) * (maxScale - 1f);
+        return 1f + (1 / viewportSize.x * camera.width - 1) * (1f - d1/d2);
     }
 
     /** Fade out based on distance to viewport. */
     public static float alpha(float x, float y, float z){
+        if(z <= groundTolerance) return 1f;
+
         float vz = viewportZ();
 
         float dst = dstToViewport(x, y, z);
@@ -117,6 +124,8 @@ public class Perspective{
     }
 
     public static Vec3 scaleToViewport(float x, float y, float z){
+        if(z <= groundTolerance) return scalingPos.set(x, y, 0);
+
         float cx = camera.position.x, cy = camera.position.y;
 
         if(z < viewportZ()) return scalingPos.set(x - cx, y - cy, z);
