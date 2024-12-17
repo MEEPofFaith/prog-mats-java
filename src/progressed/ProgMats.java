@@ -4,7 +4,6 @@ import arc.*;
 import arc.func.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
-import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -27,7 +26,6 @@ import static mindustry.Vars.*;
 public class ProgMats extends Mod{
     public static ModuleSwapDialog swapDialog;
     public static PMHints hints = new PMHints();
-    boolean hasProc;
 
     public ProgMats(){
         super();
@@ -47,6 +45,8 @@ public class ProgMats extends Mod{
 
         if(!headless){
             Events.on(ContentInitEvent.class, e -> content.blocks().each(b -> b instanceof ModularTurret, (ModularTurret b) -> b.setClip(PMModules.maxClip)));
+
+            settings.put("tu-disable-zoom", true);
         }
     }
 
@@ -93,33 +93,7 @@ public class ProgMats extends Mod{
                 }
             });
 
-
-            if(!TUEnabled()){ //TU already does this, don't double up
-                //TODO Adjust minZoom based on fov and scale to never result in a negative viewport z.
-                renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
-                renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
-
-                Events.on(WorldLoadEvent.class, e -> {
-                    //reset
-                    hasProc = Groups.build.contains(b -> b.block.privileged); //Check for world procs
-                    renderer.minZoom = 0.667f;
-                    renderer.maxZoom = 24f;
-                });
-
-                Events.run(Trigger.update, () -> {
-                    if(state.isGame()){ //Zoom range
-                        if(hasProc){
-                            if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
-                                renderer.minZoom = 1.5f;
-                                renderer.maxZoom = 6f;
-                            }else{
-                                renderer.minZoom = 0.667f;
-                                renderer.maxZoom = 24f;
-                            }
-                        }
-                    }
-                });
-            }
+            setupZoom();
         }
     }
 
@@ -140,7 +114,21 @@ public class ProgMats extends Mod{
         return settings.getBool("pm-farting", false);
     }
 
-    static boolean TUEnabled(){
-        return PMUtls.modEnabled("test-utils");
+    private static void setupZoom(){
+        //TODO Adjust minZoom based on fov and scale to never result in a negative viewport z.
+        renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
+        renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
+
+        Events.run(Trigger.update, () -> {
+            if(state.isGame()){ //Zoom range
+                if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                    renderer.minZoom = 1.5f;
+                    renderer.maxZoom = 6f;
+                }else{
+                    renderer.minZoom = 0.667f;
+                    renderer.maxZoom = 24f;
+                }
+            }
+        });
     }
 }
