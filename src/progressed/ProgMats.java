@@ -117,7 +117,7 @@ public class ProgMats extends Mod{
     private static void setupZoom(){
         //TODO Adjust minZoom based on fov and scale to never result in a negative viewport z.
         renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
-        renderer.maxZoom = Math.max(renderer.maxZoom, 24f); //Get a closer look at yourself
+        renderer.maxZoom = Perspective.maxZoom(); //Get a closer look at yourself
 
         Events.run(Trigger.update, () -> {
             if(state.isGame()){ //Zoom range
@@ -126,7 +126,7 @@ public class ProgMats extends Mod{
                     renderer.maxZoom = 6f;
                 }else{
                     renderer.minZoom = 0.667f;
-                    renderer.maxZoom = 24f;
+                    renderer.maxZoom = Perspective.maxZoom();
                 }
             }
         });

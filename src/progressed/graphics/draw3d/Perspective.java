@@ -131,6 +131,14 @@ public class Perspective{
         return scaled.dst(x - camera.position.x, y - camera.position.y, z);
     }
 
+    public static float maxZoom(){
+        float minCZ = viewportOffset * 2f;
+        float minWidth = (float)(minCZ * Math.tan(fov / 2f * Mathf.degRad)) * 2f;
+        float maxScale = Math.max(Core.graphics.getHeight(), Core.graphics.getWidth()) / minWidth;
+
+        return Math.min(24f, maxScale);
+    }
+
     /** Calculates the size of the viewport. */
     private static void viewportSize(){
         float v1 = (float)(Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
