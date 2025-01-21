@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         with:
-          name: Confictura (zipped)
+          name: MeepscCont (zipped)
           path: build/libs/MeepscCont.jar
           if-no-files-found: error
           compression-level: 0
