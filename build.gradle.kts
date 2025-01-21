@@ -27,6 +27,7 @@ val arcVersion: String by project
 val mindustryVersion: String by project
 val mindustryBEVersion: String by project
 val entVersion: String by project
+val blackholesVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
@@ -46,6 +47,10 @@ fun arc(module: String): String{
 
 fun mindustry(module: String): String{
     return "com.github.Anuken.Mindustry$module:$mindustryVersion"
+}
+
+fun blackholes(module: String): String{
+    return "com.github.MEEPofFaith$module:$blackholesVersion"
 }
 
 fun entity(module: String): String{
@@ -116,6 +121,7 @@ project(":"){
 
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
+        compileOnly(blackholes(":MindustryBlackHoleRenderer"))
     }
 
     val jar = tasks.named<Jar>("jar"){
