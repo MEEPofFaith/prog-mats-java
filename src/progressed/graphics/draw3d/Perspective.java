@@ -16,6 +16,8 @@ public class Perspective{
     private static final float groundTolerance = 0.001f;
     /** Viewport offset from the camera height in world units. */
     public static float viewportOffset = 80f;
+    /** Minimum z value for the viewport. */
+    public static float minViewportZ = 20f;
     /** Field of View in degrees */
     public static float fov = -1f;
     public static float fadeDst = 1024f;
@@ -132,7 +134,7 @@ public class Perspective{
     }
 
     public static float maxZoom(){
-        float minCZ = viewportOffset * 2f;
+        float minCZ = minViewportZ + viewportOffset;
         float minWidth = (float)(minCZ * Math.tan(fov / 2f * Mathf.degRad)) * 2f;
         float maxScale = Math.max(Core.graphics.getHeight(), Core.graphics.getWidth()) / minWidth;
 
