@@ -5,6 +5,7 @@ import arc.math.*;
 import mindustry.gen.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -15,7 +16,7 @@ public class PMSettings{
             t.pref(new Separator("pm-graphics-settings"));
             t.sliderPref("pm-sword-opacity", 100, 20, 100, 5, s -> s + "%");
             t.sliderPref("pm-zone-opacity", 100, 0, 100, 5, s -> s + "%");
-            t.sliderPref("pm-fov", 60, 10, 120, 5, s -> s + " deg");
+            t.sliderPref("pm-fov", 60, 10, 120, 5, s -> s + " " + StatUnit.degrees.localized());
             t.checkPref("pm-tesla-range", true);
             t.pref(new Separator("pm-other-settings"));
             t.checkPref("pm-farting", false, b -> Sounds.wind3.play(Interp.pow2In.apply(Core.settings.getInt("sfxvol") / 100f) * 5f));
