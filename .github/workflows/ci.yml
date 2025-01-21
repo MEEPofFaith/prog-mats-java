@@ -32,11 +32,11 @@ jobs:
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         with:
           name: Confictura (zipped)
-          path: build/libs/ModTemplate.jar
+          path: build/libs/MeepscCont.jar
           if-no-files-found: error
           compression-level: 0
       - name: Upload built mod artifact into release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'release' && github.event.action == 'created'
         with:
-          files: build/libs/ModTemplate.jar
+          files: build/libs/MeepscCont.jar
