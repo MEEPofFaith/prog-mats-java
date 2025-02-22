@@ -4,6 +4,7 @@ import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.game.EventType.*;
+import progressed.*;
 import progressed.util.*;
 
 import static arc.Core.*;
@@ -36,9 +37,15 @@ public class Perspective{
                     lastScale = renderer.getDisplayScale();
                     fov = newFov;
                     cameraZ = calcCameraZ();
-                    viewportSize();
+                    updateViewportSize();
                 }
             });
+
+            Events.on(ResizeEvent.class, e -> app.post(() -> {
+                cameraZ = calcCameraZ();
+                updateViewportSize();
+                ProgMats.updateZoomRange();
+            }));
         }
     }
 
@@ -142,7 +149,7 @@ public class Perspective{
     }
 
     /** Calculates the size of the viewport. */
-    private static void viewportSize(){
+    private static void updateViewportSize(){
         float v1 = (float)(Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
         if(camera.width >= camera.height){
             float v2 = v1 * (camera.height / camera.width);

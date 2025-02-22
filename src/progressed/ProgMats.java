@@ -114,21 +114,22 @@ public class ProgMats extends Mod{
         return settings.getBool("pm-farting", false);
     }
 
+    public static void updateZoomRange(){
+        if(state.isGame()){ //Zoom range
+            if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                renderer.minZoom = 1.5f;
+                renderer.maxZoom = 6f;
+            }else{
+                renderer.minZoom = 0.667f;
+                renderer.maxZoom = Perspective.maxZoom();
+            }
+        }
+    }
+
     private static void setupZoom(){
-        //TODO Adjust minZoom based on fov and scale to never result in a negative viewport z.
         renderer.minZoom = Math.min(renderer.minZoom, 0.667f); //Zoom out farther
         renderer.maxZoom = Perspective.maxZoom(); //Get a closer look at yourself
 
-        Events.run(Trigger.update, () -> {
-            if(state.isGame()){ //Zoom range
-                if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
-                    renderer.minZoom = 1.5f;
-                    renderer.maxZoom = 6f;
-                }else{
-                    renderer.minZoom = 0.667f;
-                    renderer.maxZoom = Perspective.maxZoom();
-                }
-            }
-        });
+        Events.run(Trigger.update, ProgMats::updateZoomRange);
     }
 }
