@@ -1,7 +1,6 @@
 package progressed.ai;
 
 import arc.math.geom.*;
-import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -11,8 +10,8 @@ import progressed.world.blocks.production.UnitMinerDepot.*;
 import static mindustry.Vars.*;
 
 public class DepotMinerAI extends AIController{
-    protected final Vec2 targetPos = new Vec2(), vecOut = new Vec2();
-    protected int pathId = -1;
+    protected final Vec2 targetPos = new Vec2(), vecOut = new Vec2(), vecMovePos = new Vec2();
+    protected static final boolean[] noFound = {false};
 
     public boolean mining = true;
     public Tile targetTile;
@@ -46,7 +45,6 @@ public class DepotMinerAI extends AIController{
                 if(targetTile != home.oreTiles.get(targetItem())){
                     targetTile = home.oreTiles.get(targetItem());
                     targetPos.set(targetTile.worldx(), targetTile.worldy());
-                    pathId = Vars.controlPath.nextTargetId();
                 }
 
                 if(unit.within(targetTile, unit.type.mineRange)){
@@ -64,7 +62,6 @@ public class DepotMinerAI extends AIController{
             if(targetTile != home.tile){
                 targetTile = home.tile;
                 targetPos.set(home);
-                pathId = Vars.controlPath.nextTargetId();
             }
 
             if(unit.within(home, unit.type.range)){
@@ -76,7 +73,7 @@ public class DepotMinerAI extends AIController{
                 mining = true;
             }
         }
-        if(pathId != -1) move();
+        move();
         faceMovement();
         if(!unit.moving() && unit.mineTile != null) unit.lookAt(unit.mineTile);
     }
@@ -87,7 +84,7 @@ public class DepotMinerAI extends AIController{
         }else{
             vecOut.set(targetPos);
 
-            boolean move = Vars.controlPath.getPathPosition(unit, pathId, targetPos, vecOut);
+            boolean move = controlPath.getPathPosition(unit, vecMovePos, targetPos, vecOut, noFound);
             if(move){
                 moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0f);
             }

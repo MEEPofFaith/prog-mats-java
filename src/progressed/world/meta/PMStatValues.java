@@ -441,7 +441,7 @@ public class PMStatValues{
                                         if(i % col == 0) req.row();
 
                                         ItemStack stack = recipe.itemRequirements[i];
-                                        req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5);
+                                        req.add(StatValues.displayItem(stack.item, stack.amount, false)).pad(5);
 
                                         i++;
                                     }

@@ -183,11 +183,6 @@ public class UnitMinerDepot extends Block{
         }
 
         @Override
-        public boolean shouldActiveSound(){
-            return shouldConsume() && warmup > 0.01f;
-        }
-
-        @Override
         public void draw(){
             Draw.rect(block.region, x, y);
             if(unit == null){

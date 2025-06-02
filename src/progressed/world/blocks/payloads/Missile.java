@@ -57,7 +57,7 @@ public class Missile extends Block{
 
     @Override
     public void init(){
-        if(constructTime < 0) constructTime = buildCost;
+        if(constructTime < 0) constructTime = buildTime;
         if(elevation < 0) elevation = size / 3f;
         if(explosionArea < 0) explosionArea = size * tilesize;
 

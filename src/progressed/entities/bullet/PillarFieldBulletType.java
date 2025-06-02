@@ -79,7 +79,7 @@ public class PillarFieldBulletType extends BulletType{
                 Tile t = data.tiles.get(i);
                 if(t.block() == Blocks.air){
                     //Don't want this spawning under a ground unit and instantly killing it.
-                    boolean occupied = Groups.unit.intersect(t.worldx(), t.worldy(), 1, 1).contains(Flyingc::isGrounded);
+                    boolean occupied = Groups.unit.intersect(t.worldx(), t.worldy(), 1, 1).contains(Unitc::isGrounded);
                     if(!occupied){
                         data.tiles.remove(t);
                         placeEffect.at(t.worldx(), t.worldy(), pillar.size);

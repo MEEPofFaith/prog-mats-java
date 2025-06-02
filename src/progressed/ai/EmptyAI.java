@@ -26,9 +26,4 @@ public class EmptyAI implements UnitController{
 
     @Override
     public void removed(Unit unit){}
-
-    @Override
-    public boolean isBeingControlled(Unit player){
-        return false;
-    }
 }

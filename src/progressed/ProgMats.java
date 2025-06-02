@@ -2,15 +2,12 @@ package progressed;
 
 import arc.*;
 import arc.func.*;
-import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 import progressed.content.*;
 import progressed.content.blocks.*;
 import progressed.content.bullets.*;
-import progressed.content.effects.*;
 import progressed.gen.entities.*;
 import progressed.graphics.*;
 import progressed.graphics.draw3d.*;
@@ -53,8 +50,6 @@ public class ProgMats extends Mod{
     @Override
     public void init(){
         if(!headless){
-            if(OS.username.equals("MEEP")) experimental = true;
-
             LoadedMod progM = mods.locateMod("prog-mats");
             Func<String, String> getModBundle = value -> bundle.get("mod." + progM.meta.name + "." + value);
 
@@ -79,17 +74,6 @@ public class ProgMats extends Mod{
 
                 if(farting()){
                     PMSounds.overrideSounds();
-
-                    Events.run(Trigger.newGame, () -> {
-                        if(settings.getBool("skipcoreanimation")) return;
-                        Time.run(coreLandDuration, () -> {
-                            CoreBuild core = player.bestCore();
-                            if(core != null){
-                                OtherFx.fard.at(core);
-                                PMSounds.gigaFard.at(core.x, core.y, 1f, 10f);
-                            }
-                        });
-                    });
                 }
             });
 
