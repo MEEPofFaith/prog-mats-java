@@ -86,7 +86,7 @@ public class DepotMinerAI extends AIController{
 
             boolean move = controlPath.getPathPosition(unit, vecMovePos, targetPos, vecOut, noFound);
             if(move){
-                moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0f);
+                moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0.5f, 8f);
             }
         }
     }
