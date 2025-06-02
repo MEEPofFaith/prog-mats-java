@@ -115,6 +115,11 @@ public class CrashCore extends CoreBlock{
         }
 
         @Override
+        public void updateLaunch(){
+            //Cancel landing particles
+        }
+
+        @Override
         public void drawLanding(float x, float y){
             float fin = renderer.getLandTimeIn();
             fin = Mathf.curve(fin, 0.875f, 1f);
