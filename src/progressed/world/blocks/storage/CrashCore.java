@@ -63,37 +63,6 @@ public class CrashCore extends CoreBlock{
         return teamRegion.found() ? new TextureRegion[]{region, teamRegions[Team.sharded.id]} : new TextureRegion[]{region};
     }
 
-    @Override
-    public void drawLanding(CoreBuild build, float x, float y){
-        if(renderer.isLaunching()){
-            super.drawLanding(build, x, y);
-            return;
-        }
-
-        float fin = 1f - renderer.getLandTime() / coreLandDuration;
-        fin = Mathf.curve(fin, 0.875f, 1f);
-        float fout = 1f - fin;
-
-        float scl = Scl.scl(4f) / renderer.getDisplayScale();
-        float dst = 400f * fout;
-        float ang = Mathf.randomSeed(build.id, 112.5f, 157.5f);
-        Tmp.v1.trns(ang, dst);
-
-        Draw.scl(scl);
-        Draw.alpha(1f - fout);
-        Draw.rect(region, x + Tmp.v1.x, y + Tmp.v1.y);
-
-        if(teamRegions[build.team.id] == teamRegion){
-            Draw.color(build.team.color);
-            Draw.alpha(1f - fout);
-        }
-        Draw.rect(teamRegions[build.team.id], x + Tmp.v1.x, y + Tmp.v1.y);
-
-        Draw.color();
-        Draw.scl();
-        Draw.reset();
-    }
-
     public void explode(CrashCoreBuild core){
         landExplosion.at(core);
         explosionSound.at(core.x, core.y, Mathf.random(explosionSoundPitchMin, explosionSoundPitchMax), explosionSoundVolume);
@@ -146,10 +115,29 @@ public class CrashCore extends CoreBlock{
         }
 
         @Override
-        public void updateLandParticles(){
-            if(renderer.isLaunching()){
-                super.updateLandParticles();
+        public void drawLanding(float x, float y){
+            float fin = renderer.getLandTimeIn();
+            fin = Mathf.curve(fin, 0.875f, 1f);
+            float fout = 1f - fin;
+
+            float scl = Scl.scl(4f) / renderer.getDisplayScale();
+            float dst = 400f * fout;
+            float ang = Mathf.randomSeed(id, 112.5f, 157.5f);
+            Tmp.v1.trns(ang, dst);
+
+            Draw.scl(scl);
+            Draw.alpha(1f - fout);
+            Draw.rect(region, x + Tmp.v1.x, y + Tmp.v1.y);
+
+            if(teamRegions[team.id] == teamRegion){
+                Draw.color(team.color);
+                Draw.alpha(1f - fout);
             }
+            Draw.rect(teamRegions[team.id], x + Tmp.v1.x, y + Tmp.v1.y);
+
+            Draw.color();
+            Draw.scl();
+            Draw.reset();
         }
     }
 }
