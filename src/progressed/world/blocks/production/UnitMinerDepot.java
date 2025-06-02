@@ -207,6 +207,8 @@ public class UnitMinerDepot extends Block{
                 Tile ore = oreTiles.get(targetItem);
                 PMDrawf.targetLine(x, y, ore.worldx(), ore.worldy(), hitSize() / 1.4f + 1f, 8f / 2f, targetItem.color);
             }
+
+            Draw.reset();
         }
 
         @Override
