@@ -19,7 +19,10 @@ public class PMHints{
     ObjectSet<Block> placedBlocks = new ObjectSet<>();
 
     public void load(){
-        Vars.ui.hints.hints.add(PMHint.values()).as();
+        Seq<Hint> hints = Vars.ui.hints.hints;
+        hints.add(PMHint.values()).as();
+        hints.removeAll(h -> !h.valid() || h.finished() || (h.show() && h.complete()));
+        hints.sort(Hint::order);
 
         Events.on(BlockBuildEndEvent.class, event -> {
             if(!event.breaking && event.unit == player.unit()){
