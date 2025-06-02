@@ -13,14 +13,14 @@ buildscript{
     }
 
     repositories{
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+        if(!useJitpack) maven("https://maven.xpdustry.com/mindustry")
         maven("https://jitpack.io")
     }
 }
 
 plugins{
     java
-    id("com.github.GlennFolker.EntityAnno") apply false
+    id("com.github.GglLfr.EntityAnno") apply false
 }
 
 val arcVersion: String by project
@@ -39,7 +39,7 @@ val androidSdkVersion: String by project
 val androidBuildVersion: String by project
 val androidMinVersion: String by project
 
-val useJitpack = property("mindustryBE").toString().toBooleanStrict()
+val useJitpack = property("mindustryBE").toString().toBoolean()
 
 fun arc(module: String): String{
     return "com.github.Anuken.Arc$module:$arcVersion"
@@ -54,7 +54,7 @@ fun blackholes(module: String): String{
 }
 
 fun entity(module: String): String{
-    return "com.github.GlennFolker.EntityAnno$module:$entVersion"
+    return "com.github.GglLfr.EntityAnno$module:$entVersion"
 }
 
 allprojects{
@@ -82,10 +82,10 @@ allprojects{
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://oss.sonatype.org/content/repositories/releases/")
-        maven("https://raw.githubusercontent.com/GlennFolker/EntityAnnoMaven/main")
+        maven("https://raw.githubusercontent.com/GglLfr/EntityAnnoMaven/main")
 
-        // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+        // Use xpdustry's non-buggy repository for release Mindustry and Arc builds.
+        if(!useJitpack) maven("https://maven.xpdustry.com/mindustry")
         maven("https://jitpack.io")
     }
 
@@ -103,7 +103,7 @@ allprojects{
 }
 
 project(":"){
-    apply(plugin = "com.github.GlennFolker.EntityAnno")
+    apply(plugin = "com.github.GglLfr.EntityAnno")
     configure<EntityAnnoExtension>{
         modName = project.properties["modName"].toString()
         mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
@@ -129,13 +129,13 @@ project(":"){
 
         val meta = layout.projectDirectory.file("$temporaryDir/mod.json")
         from(
-            files(sourceSets["main"].output.classesDirs),
-            files(sourceSets["main"].output.resourcesDir),
-            configurations.runtimeClasspath.map{conf -> conf.map{if(it.isDirectory) it else zipTree(it)}},
+                files(sourceSets["main"].output.classesDirs),
+                files(sourceSets["main"].output.resourcesDir),
+                configurations.runtimeClasspath.map{conf -> conf.map{if(it.isDirectory) it else zipTree(it)}},
 
-            files(layout.projectDirectory.dir("assets")),
-            layout.projectDirectory.file("icon.png"),
-            meta
+                files(layout.projectDirectory.dir("assets")),
+                layout.projectDirectory.file("icon.png"),
+                meta
         )
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
@@ -154,8 +154,8 @@ project(":"){
 
             val isJson = metaJson.asFile.exists()
             val map = (if(isJson) metaJson else metaHjson).asFile
-                .reader(Charsets.UTF_8)
-                .use{Jval.read(it)}
+                    .reader(Charsets.UTF_8)
+                    .use{Jval.read(it)}
 
             map.put("name", modName)
             meta.asFile.writer(Charsets.UTF_8).use{file -> BufferedWriter(file).use{map.writeTo(it, Jval.Jformat.formatted)}}
@@ -175,30 +175,30 @@ project(":"){
             providers.exec{
                 // Find Android SDK root.
                 val sdkRoot = File(
-                    OS.env("ANDROID_SDK_ROOT") ?: OS.env("ANDROID_HOME") ?:
-                    throw IllegalStateException("Neither `ANDROID_SDK_ROOT` nor `ANDROID_HOME` is set.")
+                        OS.env("ANDROID_SDK_ROOT") ?: OS.env("ANDROID_HOME") ?:
+                        throw IllegalStateException("Neither `ANDROID_SDK_ROOT` nor `ANDROID_HOME` is set.")
                 )
-    
+
                 // Find `d8`.
                 val d8 = File(sdkRoot, "build-tools/$androidBuildVersion/${if(OS.isWindows) "d8.bat" else "d8"}")
                 if(!d8.exists()) throw IllegalStateException("Android SDK `build-tools;$androidBuildVersion` isn't installed or is corrupted")
-    
+
                 // Initialize a release build.
                 val input = desktopJar.get().asFile
                 val command = arrayListOf("$d8", "--release", "--min-api", androidMinVersion, "--output", "$dexJar", "$input")
-    
+
                 // Include all compile and runtime classpath.
                 (configurations.compileClasspath.get().toList() + configurations.runtimeClasspath.get().toList()).forEach{
                     if(it.exists()) command.addAll(arrayOf("--classpath", it.path))
                 }
-    
+
                 // Include Android platform as library.
                 val androidJar = File(sdkRoot, "platforms/android-$androidSdkVersion/android.jar")
                 if(!androidJar.exists()) throw IllegalStateException("Android SDK `platforms;android-$androidSdkVersion` isn't installed or is corrupted")
-    
+
                 command.addAll(arrayOf("--lib", "$androidJar"))
                 if(OS.isWindows) command.addAll(0, arrayOf("cmd", "/c").toList())
-    
+
                 // Run `d8`.
                 commandLine(command)
             }.result.get().rethrowFailure()
