@@ -10,6 +10,7 @@ import mindustry.ui.fragments.HintsFragment.*;
 import mindustry.world.*;
 import progressed.*;
 import progressed.content.blocks.*;
+import progressed.world.blocks.defence.turret.payload.modular.ModularTurret.*;
 import progressed.world.blocks.production.UnitMinerDepot.*;
 
 import static mindustry.Vars.*;
@@ -39,12 +40,16 @@ public class PMHints{
             if(e.building instanceof UnitMinerDepotBuild){
                 events.add("minercontrol");
             }
+            if(e.building instanceof ModularTurretBuild){
+                events.add("modularturret");
+            }
         });
     }
 
     /** Methods copied from {@link DefaultHint}. */
     public enum PMHint implements Hint{
-        minerControl(() -> state.rules.defaultTeam.data().getBuildings(PMBlocks.unitMinerDepot).size > 0, () -> ProgMats.hints.events.contains("factorycontrol"));
+        minerControl(() -> state.rules.defaultTeam.data().getCount(PMBlocks.unitMinerDepot) > 0, () -> ProgMats.hints.events.contains("factorycontrol")),
+        modularTurret(() -> state.rules.defaultTeam.data().getCount(PMErekirBlocks.matrix) > 0, () -> ProgMats.hints.events.contains("modularturret"));
 
         String text;
         int visibility = visibleAll;
