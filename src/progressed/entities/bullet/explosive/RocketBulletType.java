@@ -161,11 +161,9 @@ public class RocketBulletType extends BasicBulletType{
         Bullet bullet = super.create(owner, team, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY);
         if(backSpeed != 0f){
             bullet.initVel(angle, -backSpeed * velocityScl);
-            if(backMove){
-                bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-            }else{
-                bullet.set(x, y);
-            }
+            bullet.set(x, y);
+            bullet.lastX = x;
+            bullet.lastY = y;
             if(keepVelocity && owner instanceof Velc v) bullet.vel.add(v.vel());
         }
         bullet.data = new RocketData(angle);

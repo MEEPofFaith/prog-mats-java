@@ -46,14 +46,10 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
         Bullet bullet = beginBulletCreate(owner, team, x, y);
         bullet.vel.set(Tmp.v1);
         bullet.rotation(Tmp.v1.angle());
-        if(backMove){
-            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-            data.backMove(bullet);
-        }else{
-            bullet.set(x, y);
-        }
+        bullet.set(x, y);
+        bullet.lastX = x;
+        bullet.lastY = y;
         bullet.data = data;
-        bullet.drag = drag;
         bullet.hitSize = hitSize;
         if(bullet.trail != null){
             bullet.trail.clear();
@@ -77,12 +73,6 @@ public class ArcBoltBulletType extends ArcBasicBulletType{
 
         public ArcBoltData(){
             this(0, 0);
-        }
-
-        @Override
-        public void backMove(Bullet b){
-            b.vel.sub(xAccel * Time.delta, yAccel * Time.delta);
-            super.backMove(b);
         }
 
         @Override

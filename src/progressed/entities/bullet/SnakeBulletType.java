@@ -18,7 +18,6 @@ public class SnakeBulletType extends BasicBulletType{
 
     public SnakeBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage, bulletSprite);
-        backMove = false;
     }
 
     @Override
@@ -29,19 +28,16 @@ public class SnakeBulletType extends BasicBulletType{
             if(body == null){
                 body = (SnakeBulletType)copy();
                 body.setSegments = false;
-                body.backMove = true;
             }
             if(head == null){
                 head = (SnakeBulletType)body.copy();
                 head.sprite += "-head";
                 head.setSegments = false;
-                head.backMove = true;
             }
             if(tail == null){
                 tail = (SnakeBulletType)body.copy();
                 tail.sprite += "-tail";
                 head.setSegments = false;
-                head.backMove = true;
             }
         }
 

@@ -32,7 +32,7 @@ public class CrossLaserBulletType extends LaserBulletType{
                 Tmp.v1.trns(b.rotation(), b.fdata * crossSection);
                 float x = b.x + Tmp.v1.x, y = b.y + Tmp.v1.y;
                 float resultLength = PMDamage.findLaserLength(x, y, b.rotation() + 90f * Mathf.signs[i], b.team, crossLength);
-                Damage.collideLine(b, b.team, b.type.hitEffect, x, y, b.rotation() + 90f * Mathf.signs[i], resultLength, largeHit);
+                Damage.collideLine(b, b.team, x, y, b.rotation() + 90f * Mathf.signs[i], resultLength, largeHit);
                 ((CrossLaserData)b.data).addLength(resultLength, i);
             }
         });

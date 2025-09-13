@@ -78,18 +78,6 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         }
 
         @Override
-        public void backMove(Bullet b){
-            float vSub = accel * Time.delta;
-            if(vSub > b.vel.len()){
-                b.vel.setLength(0); //Prevent rotation from being reversed
-            }else{
-                b.vel.sub(Tmp.v1.trns(b.rotation(), vSub));
-            }
-
-            super.backMove(b);
-        }
-
-        @Override
         public void updateAccel(Bullet b){
             float life = b.lifetime() - b.time();
             float d = Mathf.dst(b.x, b.y, b.aimX, b.aimY);

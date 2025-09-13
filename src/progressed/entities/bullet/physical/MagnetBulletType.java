@@ -36,12 +36,6 @@ public class MagnetBulletType extends BasicBulletType{
                 Tmp.v1.trns(b.angleTo(target), (force + (1f - b.dst(target) / attractRange) * scaledForce));
                 if(!Tmp.v1.isZero()){
                     b.vel().add(Tmp.v1);
-
-                    //manually move bullets to simulate velocity for remote players
-                    if(b.isRemote()){
-                        b.move(Tmp.v1.x, Tmp.v1.y);
-                    }
-
                     b.lifetime(b.lifetime + lifeExtention);
                 }
                 Tmp.v1.setZero();

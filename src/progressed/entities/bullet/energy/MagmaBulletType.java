@@ -36,7 +36,7 @@ public class MagmaBulletType extends BulletType{
         lifetime = 16f;
         hitColor = PMPal.magma;
         makeFire = true;
-        keepVelocity = backMove = false;
+        keepVelocity = false;
         hittable = absorbable = false;
         collides = collidesTiles = false;
         collidesGround = true;
