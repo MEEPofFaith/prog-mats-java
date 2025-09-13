@@ -245,9 +245,11 @@ public class SwordTurret extends BaseTurret{
                 int id = readUnitIds.get(i);
                 if(id != -1){
                     SwordUnitc u = (SwordUnitc)Groups.unit.getByID(id);
-                    u.orbitPos(i);
-                    swords.add(u);
-                    readUnitIds.set(i, -1);
+                    if(unit != null || !net.client()){
+                        u.orbitPos(i);
+                        swords.add(u);
+                        readUnitIds.set(i, -1);
+                    }
                 }
             }
 
