@@ -94,7 +94,12 @@ public class SwordUnitType extends UnitType{
         super.drawBody(unit);
 
         if(heatRegion.found() && unit instanceof SwordUnitc sunit && sunit.heat() > 0.01f){
-            Drawf.additive(heatRegion, heatColor.write(Tmp.c1).mulA(sunit.heat()), unit.x, unit.y, unit.rotation - 90f, Draw.z());
+            //WHY ARE YOU LIKE THIS
+            //Drawf.additive(heatRegion, heatColor, sunit.heat(), unit.x, unit.y, unit.rotation - 90f, Draw.z());
+
+            Draw.color(heatColor, heatColor.a * sunit.heat());
+            Draw.rect(heatRegion, unit.x, unit.y, unit.rotation - 90f);
+            Draw.color();
         }
     }
 

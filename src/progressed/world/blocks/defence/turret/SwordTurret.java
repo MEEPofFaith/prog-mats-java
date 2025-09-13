@@ -40,7 +40,7 @@ public class SwordTurret extends BaseTurret{
 
     public SwordUnitType swordType = (SwordUnitType)PMUnitTypes.danceSword;
     public int maxSwords = 1;
-    public float buildTime = 60f * 5f;
+    public float constructTime = 60f * 5f;
     public float buildPowerUse, attackPowerUse;
     public float buildY = Float.NEGATIVE_INFINITY, buildWaveOffset = 0.1f;
     /** Visual elevation of turret shadow, -1 to use defaults. */
@@ -50,7 +50,7 @@ public class SwordTurret extends BaseTurret{
     /** If true, attack warmup is linear instead of a curve. */
     public boolean linearWarmup = false;
     public float targetRad = 4f, targetLayer = Layer.bullet, targetY = Float.NEGATIVE_INFINITY;
-    public Color swordColor, targetColor = Pal.remove;
+    public Color swordColor, targetColor;
     /** Function for choosing which unit to target. */
     public Sortf unitSort = UnitSorts.closest;
     /** Filter for types of units to attack. */
@@ -270,7 +270,7 @@ public class SwordTurret extends BaseTurret{
 
             //Sword construction stuff
             if(shouldConsume() && swordCount() < maxSwords){
-                buildProgress += edelta() / buildTime;
+                buildProgress += edelta() / constructTime;
                 totalProgress += edelta();
 
                 if(buildProgress >= 1f){

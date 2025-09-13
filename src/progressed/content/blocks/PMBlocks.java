@@ -721,6 +721,7 @@ public class PMBlocks{
             maxSwords = 3;
             unitSort = UnitSorts.weakest;
             targetY = 35f / 4f;
+            targetColor = Pal.remove;
 
             buildPowerUse = 4f;
             attackPowerUse = 6.5f;
@@ -745,6 +746,7 @@ public class PMBlocks{
             unitSort = UnitSorts.weakest;
             targetY = 67f / 4f;
             targetRad = 6f;
+            targetColor = Pal.remove;
 
             buildPowerUse = 6f;
             attackPowerUse = 13.5f;
