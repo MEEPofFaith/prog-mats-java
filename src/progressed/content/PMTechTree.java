@@ -98,7 +98,7 @@ public class PMTechTree{
             //Missiles
             node(artemis, combineCosts(artemis, emptyBallisticMissile, basicBallisticMissile), Seq.with(
                 new SectorComplete(SectorPresets.impact0078),
-                new Research(launchPad),
+                new Research(advancedLaunchPad),
                 new Research(javelin)
             ), () -> {
                 //Nukes
