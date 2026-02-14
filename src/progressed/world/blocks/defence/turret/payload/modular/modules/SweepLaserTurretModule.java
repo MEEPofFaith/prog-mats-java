@@ -22,7 +22,7 @@ public class SweepLaserTurretModule extends PowerTurretModule{
         canOverdrive = false;
         shootSound = Sounds.none;
         loopSoundVolume = 0.5f;
-        loopSound = Sounds.laserbeam;
+        loopSound = Sounds.beamMeltdown;
 
         drawer = new DrawTurretModule();
     }

@@ -42,7 +42,7 @@ public class PMSounds{
         content.blocks().each(b -> b instanceof PowerGenerator, (PowerGenerator b) -> b.explodeSound = funiBoom);
         content.units().each(u -> u.deathSound = Sounds.wind3);
 
-        Sounds.press.load(soundFile("press-boom"));
+        Sounds.uiButton.load(soundFile("press-boom"));
     }
 
     protected static String soundPath(String soundName){

@@ -107,7 +107,7 @@ public class PayloadBullets{
                     deathExplosionEffect = MissileFx.missileExplosion;
                     shootOnDeath = true;
                     shake = 10f;
-                    shootSound = Sounds.missileLarge;
+                    shootSound = Sounds.shootMissileLarge;
                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                         hitColor = Pal.accent;
                         shootEffect = RocketUnitType.rocketShoot;
@@ -137,7 +137,7 @@ public class PayloadBullets{
                                     deathExplosionEffect = MissileFx.missileExplosion;
                                     shootOnDeath = true;
                                     shake = 5f;
-                                    shootSound = Sounds.missileSmall;
+                                    shootSound = Sounds.shootMissileSmall;
                                     bullet = new ExplosionBulletType(150f, 8f * tilesize){{
                                         hitColor = Pal.accent;
 
@@ -373,7 +373,7 @@ public class PayloadBullets{
             lifetime = 3f * 60f;
             status = StatusEffects.none;
 
-            hitSound = Sounds.dullExplosion;
+            hitSound = Sounds.explosionDull;
             hitShake = 30f;
             despawnEffect = Fx.none;
             absorbEffect = Pseudo3DFx.absorbedLarge;
@@ -446,9 +446,9 @@ public class PayloadBullets{
             trailLength = 18;
             missileAccelTime = 2f * 60f;
             lowAltitude = true;
-            loopSound = Sounds.missileTrail;
+            loopSound = Sounds.loopMissileTrail;
             loopSoundVolume = 0.6f;
-            deathSound = Sounds.largeExplosion;
+            deathSound = Sounds.explosionMissile;
 
             fogRadius = 6f;
 

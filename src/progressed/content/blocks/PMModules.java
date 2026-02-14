@@ -71,7 +71,7 @@ public class PMModules{
                 }}
             );
 
-            shootSound = Sounds.shootAlt;
+            shootSound = Sounds.shootBreach;
             targetUnderBlocks = false;
             reload = 40f;
             range = 18f * 8f;
@@ -140,7 +140,7 @@ public class PMModules{
             reload = 1.25f * 60f;
             range = 13.5f * tilesize;
             shootEffect = ModuleFx.steamBurst;
-            shootSound = Sounds.flame;
+            shootSound = Sounds.shootFlamePlasma;
             shootCone = 60f;
 
             shoot = new ShootSpread(12, 3f);
@@ -222,7 +222,7 @@ public class PMModules{
             }};
 
             reload = 2.5f * 60f;
-            shootSound = Sounds.bolt;
+            shootSound = Sounds.shootAlpha;
             linearWarmup = true;
             minWarmup = 1f;
             shootWarmupSpeed = 1.5f / 60f;
@@ -280,7 +280,7 @@ public class PMModules{
             range = 27f * 8f;
             minRange = 7f * 8f;
             targetAir = false;
-            shootSound = Sounds.missileSmall;
+            shootSound = Sounds.shootMissileSmall;
             hideDetails = false;
 
             shoot = new ShootBarrel(){{

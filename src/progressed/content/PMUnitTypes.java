@@ -93,7 +93,7 @@ public class PMUnitTypes{
                 rotate = false;
                 reload = 120f;
                 shootCone = 5f;
-                shootSound = Sounds.missileSmall;
+                shootSound = Sounds.shootMissileSmall;
                 layerOffset = -0.005f;
 
                 bullet = new BulletType(0, 0){{
@@ -179,7 +179,7 @@ public class PMUnitTypes{
                 rotate = true;
                 rotateSpeed = 35f;
                 reload = 35f;
-                shootSound = Sounds.laser;
+                shootSound = Sounds.shootLancer;
 
                 bullet = new LaserBulletType(){{
                     damage = 45f;

@@ -17,7 +17,7 @@ public class SparkingBulletType extends BasicBulletType{
     public boolean hitUnits = true;
     public float unitDamageScl = 0.5f;
     public Effect hitPowerEffect = MissileFx.hitEmpSpark, chainEffect = Fx.chainEmp;
-    public Sound empSound = Sounds.spark;
+    public Sound empSound = Sounds.shootArc;
 
     public SparkingBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage, bulletSprite);

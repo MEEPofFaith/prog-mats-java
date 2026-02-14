@@ -49,7 +49,7 @@ public class TeslaTurret extends Block{
     public float sectionRad = 0.14f, blinkScl = 20f;
     public int sections = 5;
 
-    public Sound shootSound = Sounds.spark;
+    public Sound shootSound = Sounds.shootArc;
     public LightningEffect lightningEffect = LightningFx.teslaLightning;
     public Effect shootEffect = Fx.sparkShoot;
     public Effect hitEffect = Fx.hitLaserBlast;

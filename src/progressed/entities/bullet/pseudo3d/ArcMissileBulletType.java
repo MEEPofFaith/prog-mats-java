@@ -17,7 +17,7 @@ public class ArcMissileBulletType extends ArcBasicBulletType{
         super(0f, damage, sprite);
 
         despawnEffect = MissileFx.missileExplosion;
-        hitSound = Sounds.largeExplosion;
+        hitSound = Sounds.explosionMissile;
         ammoMultiplier = 1;
         scaleLife = true;
         scaledSplashDamage = true;

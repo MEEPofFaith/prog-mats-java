@@ -162,7 +162,7 @@ public class PMBlocks{
             range = 255f;
             scaledHealth = 140f;
             shootCone = 35f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootSpectre;
             targetAir = targetGround = true;
             recoil = 3f;
             recoilTime = 90f;
@@ -200,7 +200,7 @@ public class PMBlocks{
             maxSpeed = 27f;
             scaledHealth = 150;
             shootCone = 35f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootSpectre;
             targetAir = targetGround = true;
             recoil = 3f;
             recoilTime = 90f;
@@ -247,7 +247,7 @@ public class PMBlocks{
             maxSpeed = 24f;
             scaledHealth = 160f;
             shootCone = 35f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootSpectre;
             targetAir = targetGround = true;
             recoil = 3f;
             recoilTime = 90f;
@@ -569,7 +569,7 @@ public class PMBlocks{
                 rotateSpeed = 2.5f;
                 recoil = 5f;
                 cooldownTime = 300f;
-                shootSound = Sounds.cannon;
+                shootSound = Sounds.shootOmura;
 
                 coolant = consumeCoolant(0.2f);
             }
@@ -603,7 +603,7 @@ public class PMBlocks{
             reload = 120f;
             inaccuracy = 10f;
             velocityRnd = 0.2f;
-            shootSound = Sounds.shootSnap;
+            shootSound = Sounds.shootScatter;
             maxAmmo = 30;
             ammoPerShot = 10;
 
@@ -636,7 +636,7 @@ public class PMBlocks{
                     spread = 15;
                 }};
 
-                shootSound = Sounds.shootSnap;
+                shootSound = Sounds.shootScatter;
 
                 coolant = consumeCoolant(0.2f);
             }
@@ -684,7 +684,7 @@ public class PMBlocks{
 
             shootSound = Sounds.none;
             loopSoundVolume = 1f;
-            loopSound = Sounds.laserbeam;
+            loopSound = Sounds.beamPlasmaSmall;
 
             rotateSpeed = 6f;
             rotateSpeedAccel = 0.2f;
@@ -780,7 +780,7 @@ public class PMBlocks{
             recoilTime = 240f;
             cooldownTime = 300f;
             shootY = -11f / 4f;
-            shootSound = Sounds.dullExplosion;
+            shootSound = Sounds.explosionDull;
             shootType = PMBullets.blackHole;
 
             consumePower(35f);
@@ -856,7 +856,7 @@ public class PMBlocks{
             shootWarmupSpeed = 0.05f;
             minWarmup = 0.9f;
             heatColor = Pal.surge;
-            shootSound = Sounds.malignShoot;
+            shootSound = Sounds.shootMalign;
             rotateSpeed = 2f;
             recoil = 8f;
             recoilTime = 300f;
@@ -953,7 +953,7 @@ public class PMBlocks{
             range = 800f;
             recoil = 0.5f;
             rotateSpeed = 0.9f;
-            shootSound = Sounds.missileLaunch;
+            shootSound = Sounds.shootMissileLarge;
             shootEffect = Fx.none;
             smokeEffect = Fx.shootSmokeMissile;
 
@@ -984,7 +984,7 @@ public class PMBlocks{
             range = 85f * 8f;
             minRange = 25f * 8f;
             shootY = 0f;
-            shootSound = Sounds.missileLaunch;
+            shootSound = Sounds.shootMissileLarge;
             cooldownTime = 3.5f * 60f;
             shake = 5f;
             unitSort = UnitSorts.strongest;
@@ -1017,7 +1017,7 @@ public class PMBlocks{
             range = 240f * 8f;
             minRange = 50f * 8f;
             shootY = 0f;
-            shootSound = Sounds.missileLaunch;
+            shootSound = Sounds.shootMissileLarge;
             cooldownTime = 6f * 60f;
             shake = 10f;
             unitSort = UnitSorts.strongest;
@@ -1166,7 +1166,7 @@ public class PMBlocks{
             hasPower = true;
             hasLiquids = false;
             craftEffect = CrafterFx.superSmeltsmoke;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 1f; //Big flame louder sound. LIKE REALLY LOUD.
 
             drawer = new DrawMulti(
@@ -1206,7 +1206,7 @@ public class PMBlocks{
             ));
 
             size = 5;
-            ambientSound = Sounds.machine;
+            ambientSound = Sounds.loopMachine;
             recipes(
                 emptyCruiseMissile,
                 emptyBallisticMissile,
@@ -1227,7 +1227,7 @@ public class PMBlocks{
 
             size = 5;
             hideDetails = false;
-            ambientSound = Sounds.machine;
+            ambientSound = Sounds.loopMachine;
             liquidCapacity = 80f;
             recipes(
                 basicCruiseMissile, incendiaryCruiseMissile, splitterCruiseMissile,

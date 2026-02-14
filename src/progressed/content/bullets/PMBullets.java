@@ -151,7 +151,7 @@ public class PMBullets{
             makeFire = true;
             trailColor = hitColor = Pal.lancerLaser;
             hitEffect = EnergyFx.sentinelBlast;
-            hitSound = Sounds.shockBlast;
+            hitSound = Sounds.explosionArtilleryShockBig;
             hitSoundVolume = 4f;
         }};
 
@@ -163,7 +163,7 @@ public class PMBullets{
             frontColor = Color.white;
             mixColorTo = Color.white;
 
-            hitSound = Sounds.plasmaboom;
+            hitSound = Sounds.explosionQuad;
 
             hitShake = 4f;
 

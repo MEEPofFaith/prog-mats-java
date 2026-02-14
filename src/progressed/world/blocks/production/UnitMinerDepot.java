@@ -45,7 +45,7 @@ public class UnitMinerDepot extends Block{
         clearOnDoubleTap = true;
         commandable = true;
         itemCapacity = 200;
-        ambientSound = Sounds.respawning;
+        ambientSound = Sounds.loopUnitBuilding;
         flags = EnumSet.of(BlockFlag.drill); //Technically
 
         config(Item.class, (UnitMinerDepotBuild build, Item item) -> {

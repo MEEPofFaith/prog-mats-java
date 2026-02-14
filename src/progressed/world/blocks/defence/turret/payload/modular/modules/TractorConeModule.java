@@ -48,7 +48,7 @@ public class TractorConeModule extends BaseTurret{
     public StatusEffect status = StatusEffects.none;
     public float statusDuration = 300;
 
-    public Sound shootSound = Sounds.tractorbeam;
+    public Sound shootSound = Sounds.beamParallax;
     public float shootSoundVolume = 0.9f;
 
     public ModuleSize moduleSize = ModuleSize.small;

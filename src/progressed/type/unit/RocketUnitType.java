@@ -36,9 +36,9 @@ public class RocketUnitType extends MissileUnitType{
         missileAccelTime = 2f * 60f;
         lowAltitude = true;
         outlineColor = Pal.darkerMetal;
-        loopSound = Sounds.missileTrail;
+        loopSound = Sounds.loopMissileTrail;
         loopSoundVolume = 0.6f;
-        deathSound = Sounds.largeExplosion;
+        deathSound = Sounds.explosionMissile;
 
         fogRadius = 6f;
 

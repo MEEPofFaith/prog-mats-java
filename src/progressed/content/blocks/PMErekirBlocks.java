@@ -115,7 +115,7 @@ public class PMErekirBlocks{
             shootWarmupSpeed = 0.03f;
             minWarmup = 1f;
             warmupMaintainTime = 30f;
-            shootSound = Sounds.pulseBlast;
+            shootSound = Sounds.explosionNavanax;
             rotateSpeed = 1.5f;
 
             shootType = PMBullets.sentinelLaser;
@@ -152,7 +152,7 @@ public class PMErekirBlocks{
             recoilTime = 60f;
             shake = 2f;
             shootY = -1f;
-            shootSound = Sounds.artillery;
+            shootSound = Sounds.shootRipple;
             setWarmupTime(0.75f);
 
             drawer = new DrawMulti(

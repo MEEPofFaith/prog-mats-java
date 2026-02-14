@@ -26,7 +26,7 @@ public class EruptorTurret extends PowerTurret{
 
         targetAir = false;
         shootSound = Sounds.none;
-        loopSound = Sounds.beam;
+        loopSound = Sounds.beamMeltdown;
         loopSoundVolume = 2f;
         heatColor = Color.valueOf("f08913");
     }

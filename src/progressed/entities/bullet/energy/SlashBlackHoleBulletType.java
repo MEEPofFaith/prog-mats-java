@@ -19,7 +19,7 @@ public class SlashBlackHoleBulletType extends BlackHoleBulletType{
     public float slashWidthFrom = tilesize, slashWidthTo;
     public Color slashColor;
     public Effect slashEffect = Fx.none;
-    public Sound slashSound = Sounds.laserblast;
+    public Sound slashSound = Sounds.explosionCore;
     public float slashSoundVolume = 2f;
 
     public SlashBlackHoleBulletType(float speed, float damage){
