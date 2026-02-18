@@ -33,21 +33,14 @@ public class OtherFx{
         Floor f = t.floor();
         if(f instanceof SteamVent) return;
         TextureRegion region = f.variantRegions[Mathf.randomSeed(t.pos(), 0, Math.max(0, f.variantRegions.length - 1))];
-        float x = t.drawx(), y = t.drawy() + e.rotation * e.fout();
+        float x = t.drawx(), riseAmount = e.rotation * e.fout(), y = t.drawy();
 
-        Draw.z(Draw.z() - ((float)t.y / world.height()) / 1000f);;
-        for(int i = 0; i < region.width; i++){
-            PixmapRegion image = Core.atlas.getPixmap(region);
-            float c1 = Tmp.c1.set(image.get(i, 0)).toFloatBits();
-            float c2 = Tmp.c2.set(Tmp.c1).lerp(Color.black, e.fout() / 4f).toFloatBits();
-
-            float px = x - region.width / 4f / 2f + i / 4f, py = y - region.height / 4f / 2f, by = py - e.rotation * e.fout();
-            float p = 1f / 8f;
-
-            Fill.quad(px - p, by, c2, px - p, py, c1, px + p, py, c1, px + p, by, c2);
-        }
-
-        rect(region, x, y);
+        Draw.z(Draw.z() - ((float)t.y / world.height()) / 1000f);
+        TextureRegion riseRegion = Tmp.tr1;
+        riseRegion.set(region);
+        riseRegion.set(region.u, region.v, region.u2, region.v + (region.v2 - region.v) / region.height);
+        Draw.rect(riseRegion, x, y - region.height / 8f + riseAmount / 2f, region.width / 4f, riseAmount);
+        rect(region, x, y + riseAmount);
     }).layer(Layer.floor + 0.01f),
 
     concretionSlam = new Effect(23, e -> {

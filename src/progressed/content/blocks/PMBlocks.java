@@ -474,6 +474,7 @@ public class PMBlocks{
             shootType = new MagmaBulletType(76f, 24f){{
                 shake = 2f;
                 crackEffects = 6;
+                groundRise = 6f;
             }};
 
             consumePower(17f);
