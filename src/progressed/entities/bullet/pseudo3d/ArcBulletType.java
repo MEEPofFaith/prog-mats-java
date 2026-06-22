@@ -405,14 +405,13 @@ public abstract class ArcBulletType extends BulletType{
         ArcBulletData data = oldData.copy();
         data.gravity = gravity;
 
-        Bullet bullet;
         if(!Mathf.zero(inaccCone)){
             PMMathf.randomCirclePoint(Tmp.v1, inaccCone);
             data.driftYaw = Tmp.v1.x + oldData.driftYaw;
             data.driftPitch = Tmp.v1.y + oldData.driftPitch;
         }
 
-        bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, b.aimX, b.aimY);
+        Bullet bullet = beginBulletCreate(b.owner, b.team, b.x, b.y, b.aimX, b.aimY);
         bullet.initVel(b.rotation(), b.vel.len());
 
         bullet.set(b.x, b.y);
@@ -434,7 +433,6 @@ public abstract class ArcBulletType extends BulletType{
         bullet.time = 0f;
         bullet.originX = x;
         bullet.originY = y;
-        //bullet.aimTile = world.tileWorld(aimX, aimY);
         bullet.aimX = aimX;
         bullet.aimY = aimY;
         if(!(aimX == -1f && aimY == -1f)){
